@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI活用研修 ｜ 募集要項</title>
+<!--
+===============================================================================
+  AI活用研修 ／ 募集要項テンプレート
+===============================================================================
+  【Copilotへの依頼内容】
+  このHTMLは「社内公募の募集要項」のデザインテンプレートです。
+  デザイン・レイアウト・CSS・SVG・JavaScript は一切変更せず、
+  以下の {{ }} で囲まれた箇所と、本文テキストだけを差し替えてください。
+
+  ■ 必ず差し替える項目（{{ }} で検索できます）
+    {{開催回}}        … 例：第1期
+    {{定員}}          … 例：30
+    {{活動期間}}      … 例：2026年11月6日 〜 2026年12月18日（約6週間）
+    {{初回研修日}}    … 例：2026年11月6日（金）14:00〜16:00
+    {{応募締切}}      … 例：2026年10月23日（金）17:00
+    {{結果通知日}}    … 例：2026年10月30日（金）
+    {{申込フォームURL}} … 社内Formsのリンク
+    {{説明会情報}}    … 説明会をやらない場合は、その行ごと削除してよい
+    {{主催部署}}      … 例：IT企画部 活用推進チーム
+    {{問い合わせ先}}  … 例：IT企画部 活用推進チーム（Teams：〇〇）
+
+  ■ 本文について
+    各セクションの文章は、実際の企画内容に合わせて書き換えてください。
+    ただし1文の長さと行数は、いまの分量を大きく超えないようにしてください
+    （レイアウトが崩れます）。
+
+  ■ 変更しないでください
+    <style> 内のすべて／<svg> 内のすべて／<script> 内のすべて／class属性
+
+  ■ 配色について
+    白背景ベースです。同じ内容の濃紺ベース版も別ファイルであります。
+
+  ■ 動作について
+    外部への通信は一切ありません。社内ネットワークでもそのまま開けます。
+    1ファイルで完結しているので、ポータルに置くかTeamsで共有できます。
+===============================================================================
+-->
+<style>
+:root{
+  --void:#FFFFFF; --deep:#FFFFFF; --panel:#F7F9FC; --panel2:#FBFCFE;
+  --grid:#E3EAF4; --edge:#D8E0EB;
+  --ink:#101725; --ink2:#414D60; --dim:#6B7789;
+  --cy:#1B7FA8; --cy-dim:#A8C8D8; --cy-soft:rgba(27,127,168,.07);
+  --hot:#C2410C; --hot2:#9A3409; --hot-soft:rgba(194,65,12,.07);
+  --go:#1F8A5F;
+  --disp:"Yu Gothic UI","Yu Gothic",YuGothic,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,system-ui,sans-serif;
+  --mono:"SFMono-Regular",Consolas,"Courier New",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+svg{max-width:100%}
+html{scroll-behavior:smooth}
+body{
+  background:var(--void); color:var(--ink); font-family:var(--disp);
+  font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased;
+  font-feature-settings:"palt" 1; overflow-x:hidden;
+}
+body::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    linear-gradient(transparent 39px, var(--grid) 39px, var(--grid) 40px, transparent 40px) 0 0/100% 40px,
+    linear-gradient(90deg, transparent 39px, var(--grid) 39px, var(--grid) 40px, transparent 40px) 0 0/40px 100%;
+  opacity:.85;
+  mask-image:radial-gradient(120% 90% at 50% 0%, #000 0%, #000 45%, transparent 100%);
+  -webkit-mask-image:radial-gradient(120% 90% at 50% 0%, #000 0%, #000 45%, transparent 100%);
+}
+body::after{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(70% 45% at 78% 6%, rgba(194,65,12,.045), transparent 62%),
+             radial-gradient(60% 40% at 12% 22%, rgba(27,127,168,.045), transparent 64%);
+}
+.page{position:relative; z-index:1}
+.wrap{max-width:1140px; margin:0 auto; padding:0 26px}
+::selection{background:var(--hot); color:#fff}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--hot); outline-offset:3px; border-radius:4px}
+
+/* ---------- 共通パーツ ---------- */
+.tag{
+  display:inline-flex; align-items:center; gap:8px; font-family:var(--mono);
+  font-size:11px; letter-spacing:.18em; color:var(--cy); text-transform:uppercase;
+}
+.tag::before{content:""; width:22px; height:1px; background:var(--cy-dim)}
+.sec{padding:96px 0; position:relative}
+.sec-head{margin-bottom:44px}
+.sec-no{
+  font-family:var(--mono); font-size:56px; font-weight:600; line-height:1;
+  color:transparent; -webkit-text-stroke:1px #CFD9E6; letter-spacing:-.02em;
+  display:block; margin-bottom:-14px;
+}
+.sec h2{
+  font-size:clamp(26px,3.6vw,40px); font-weight:900; letter-spacing:-.02em;
+  line-height:1.3; text-wrap:balance;
+}
+.sec h2 em{font-style:normal; color:var(--hot2)}
+.sec-lead{color:var(--ink2); margin-top:14px; max-width:62ch; font-size:16.5px}
+.card{
+  background:linear-gradient(180deg, var(--deep) 0%, var(--panel) 100%);
+  border:1px solid var(--edge); border-radius:4px; position:relative;
+  box-shadow:0 1px 2px rgba(16,23,37,.04);
+}
+.card::before,.card::after{
+  content:""; position:absolute; width:9px; height:9px; border:1px solid var(--cy-dim);
+}
+.card::before{top:-1px; left:-1px; border-right:0; border-bottom:0}
+.card::after{bottom:-1px; right:-1px; border-left:0; border-top:0}
+
+/* ---------- ヘッダー ---------- */
+.topbar{
+  position:sticky; top:0; z-index:40; backdrop-filter:blur(10px);
+  background:rgba(255,255,255,.90); border-bottom:1px solid var(--edge);
+}
+.topbar .in{display:flex; align-items:center; gap:18px; height:58px}
+.brand{font-family:var(--mono); font-size:12px; letter-spacing:.16em; color:var(--ink2)}
+.brand b{color:var(--hot2)}
+.topbar .due{
+  margin-left:auto; font-family:var(--mono); font-size:11.5px; color:var(--dim);
+  display:flex; align-items:center; gap:9px;
+}
+.topbar .due b{color:var(--ink); font-size:13px}
+.blip{width:7px;height:7px;border-radius:50%;background:var(--hot);flex:none}
+.btn{
+  display:inline-flex; align-items:center; gap:10px; font-weight:800; font-size:15px;
+  background:var(--hot); color:#FFFFFF; padding:13px 26px; border-radius:2px;
+  text-decoration:none; border:0; cursor:pointer; font-family:var(--disp);
+  white-space:nowrap; flex:none;
+  transition:background .16s ease;
+}
+.btn:hover{background:var(--hot2); color:#FFFFFF}
+.btn.sm{font-size:13px; padding:9px 18px}
+.btn .arw{font-family:var(--mono)}
+
+/* ---------- HERO ---------- */
+.hero{padding:76px 0 40px; position:relative}
+.hero .in{display:grid; grid-template-columns:1.16fr .84fr; gap:40px; align-items:center}
+.hero h1{
+  font-size:clamp(36px,5.4vw,64px); font-weight:900; line-height:1.14;
+  letter-spacing:-.04em; word-break:keep-all; margin:18px 0 0; text-wrap:balance;
+}
+.hero h1 .l2{display:block; color:var(--hot)}
+.hero .sub{color:var(--ink2); font-size:17.5px; margin-top:22px; max-width:46ch}
+.hero .sub b{color:var(--ink); font-weight:800}
+.specs{display:flex; gap:10px; margin-top:30px; flex-wrap:wrap}
+.spec{
+  border:1px solid var(--edge); background:#FFFFFF; padding:11px 16px; border-radius:3px;
+  min-width:104px;
+}
+.spec .k{font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:var(--dim)}
+.spec .v{font-size:23px; font-weight:900; letter-spacing:-.01em; line-height:1.25}
+.spec .v small{font-size:13px; font-weight:700; color:var(--ink2); margin-left:2px}
+.hero .cta{margin-top:34px; display:flex; align-items:center; gap:18px; flex-wrap:wrap}
+.hero .cta .note{font-family:var(--mono); font-size:11.5px; color:var(--dim)}
+.robot-stage{position:relative; display:flex; justify-content:center; align-items:center; min-height:420px}
+.robot-stage svg{width:100%; max-width:430px; height:auto; overflow:visible}
+.scan{
+  position:absolute; left:50%; top:50%; width:340px; height:340px; transform:translate(-50%,-50%);
+  border:1px solid rgba(27,127,168,.18); border-radius:50%; pointer-events:none;
+}
+.scan::after{
+  content:""; position:absolute; inset:-34px; border:1px dashed rgba(27,127,168,.15); border-radius:50%;
+}
+
+/* ロボットの組み立てアニメーション */
+.part{transform:translate(var(--dx,0px), var(--dy,0px)); opacity:.24;
+  transition:transform 1.05s cubic-bezier(.16,.9,.3,1), opacity .8s ease;}
+.built .part{transform:translate(0,0); opacity:1}
+.built .part.p1{transition-delay:.05s} .built .part.p2{transition-delay:.16s}
+.built .part.p3{transition-delay:.27s} .built .part.p4,.built .part.p4b{transition-delay:.38s}
+.built .part.p5{transition-delay:.49s} .built .part.p6{transition-delay:.60s}
+.core-glow{opacity:.92}
+
+/* ---------- 数字タイル ---------- */
+.stats{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+.stat{padding:26px 24px 24px; overflow:hidden}
+.stat .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; color:var(--cy)}
+.stat .n{font-size:54px; font-weight:900; letter-spacing:-.04em; line-height:1.05; margin:10px 0 2px}
+.stat .n small{font-size:20px; margin-left:3px; color:var(--ink2)}
+.stat .t{font-weight:800; font-size:15.5px; margin-bottom:6px}
+.stat p{color:var(--dim); font-size:13.5px; line-height:1.7}
+.meter{height:3px; background:var(--edge); margin:16px 0 0; position:relative; overflow:hidden}
+.meter i{position:absolute; inset:0 auto 0 0; background:linear-gradient(90deg,var(--hot),var(--hot2)); width:0; transition:width 1.3s cubic-bezier(.2,.8,.2,1)}
+.in-view .meter i{width:var(--w,60%)}
+
+/* ---------- Before / After ---------- */
+.ba{display:grid; grid-template-columns:1fr auto 1fr; gap:22px; align-items:stretch}
+.ba .box{padding:26px 26px 24px}
+.ba .box h3{font-size:12px; font-family:var(--mono); letter-spacing:.16em; margin-bottom:16px}
+.ba .before{border-color:#E3DCE9} .ba .before h3{color:#7A6B88}
+.ba .after{border-color:rgba(194,65,12,.34); background:linear-gradient(180deg,rgba(194,65,12,.05),var(--deep))}
+.ba .after h3{color:var(--hot2)}
+.ba li{list-style:none; display:flex; gap:11px; padding:9px 0; font-size:15px; border-top:1px dashed rgba(16,23,37,.09)}
+.ba li:first-of-type{border-top:0}
+.ba .mk{font-family:var(--mono); flex:none; width:15px}
+.ba .before .mk{color:#8E7F9C} .ba .after .mk{color:var(--hot)}
+.ba .arrow{display:flex; align-items:center; justify-content:center; font-family:var(--mono);
+  color:var(--hot); font-size:26px; letter-spacing:-.1em}
+
+/* ---------- 得られるもの ---------- */
+.gains{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:22px}
+.gain{padding:22px 22px 20px; display:flex; gap:15px; align-items:flex-start}
+.hexw{flex:none; width:42px; height:46px; position:relative}
+.hexw svg{width:42px; height:46px; display:block}
+.gain h4{font-size:15.5px; font-weight:800; margin-bottom:5px}
+.gain p{font-size:13.4px; color:var(--dim); line-height:1.7}
+
+/* ---------- 6つの問い ---------- */
+.qsplit{display:grid; grid-template-columns:1fr 250px; gap:34px; align-items:center; padding:30px 30px 28px}
+.qgrid{display:grid; grid-template-columns:1fr 1fr; gap:11px}
+.q{background:#FFFFFF; border:1px solid var(--edge); border-radius:3px; padding:15px 17px}
+.q .n{font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; color:var(--cy)}
+.q h4{font-size:15.5px; font-weight:800; margin:5px 0 3px}
+.q p{font-size:12.8px; color:var(--dim); line-height:1.6}
+.q.key{border-color:rgba(194,65,12,.38); background:rgba(194,65,12,.05)}
+.q.key .n{color:var(--hot2)}
+.qbot{text-align:center}
+.qbot svg{width:100%; max-width:180px; height:auto; margin:0 auto}
+.qbot .cap{font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:var(--dim); margin-top:16px}
+.qbot .cap b{display:block; font-family:var(--disp); font-size:15px; color:var(--ink); letter-spacing:0; margin-top:6px}
+.qfoot{margin-top:20px; padding:0 2px; color:var(--dim); font-size:13.2px; line-height:1.75; max-width:78ch}
+.qfoot b{color:var(--ink2)}
+
+/* ---------- 工程 ---------- */
+.steps{display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-top:26px}
+.step{padding:20px 16px 18px; position:relative}
+.step .wk{font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:var(--cy)}
+.step .bot{height:66px; margin:12px 0 12px; display:flex; align-items:flex-end;
+  justify-content:flex-start; overflow:hidden}
+.step .bot svg{height:66px; width:auto; max-width:100%; display:block; flex:none}
+.step h4{font-size:14.5px; font-weight:800; line-height:1.45; margin-bottom:6px}
+.step p{font-size:12.6px; color:var(--dim); line-height:1.65}
+.step .hrs{font-family:var(--mono); font-size:10.5px; color:var(--hot2); margin-top:10px;
+  padding-top:9px; border-top:1px dashed rgba(16,23,37,.10)}
+
+/* ---------- 条件 ---------- */
+.cond{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+.cond .box{padding:28px}
+.cond h3{font-size:15px; font-weight:900; margin-bottom:4px}
+.cond .h-note{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; margin-bottom:18px}
+.must h3{color:var(--hot2)} .must .h-note{color:var(--dim)}
+.want h3{color:var(--cy)} .want .h-note{color:var(--dim)}
+.cond li{list-style:none; display:flex; gap:12px; padding:11px 0; font-size:15px; line-height:1.65;
+  border-top:1px dashed rgba(16,23,37,.09)}
+.cond li:first-of-type{border-top:0}
+.ck{flex:none; width:17px; height:17px; margin-top:4px; border:1.5px solid var(--hot); position:relative; border-radius:2px}
+.ck::after{content:""; position:absolute; left:4px; top:0px; width:5px; height:10px;
+  border:solid var(--hot); border-width:0 1.6px 1.6px 0; transform:rotate(42deg)}
+.want .ck{border-color:var(--cy-dim); border-radius:50%}
+.want .ck::after{border-color:var(--cy)}
+
+/* ---------- FAQ ---------- */
+.faq{margin-top:10px; display:flex; flex-direction:column; gap:9px}
+details{border:1px solid var(--edge); background:#FFFFFF; border-radius:3px; overflow:hidden}
+details[open]{border-color:rgba(194,65,12,.34)}
+summary{padding:17px 22px; cursor:pointer; font-weight:800; font-size:15.5px; list-style:none;
+  display:flex; gap:14px; align-items:center}
+summary::-webkit-details-marker{display:none}
+summary .q{font-family:var(--mono); color:var(--hot); font-size:12px; flex:none}
+summary .pm{margin-left:auto; font-family:var(--mono); color:var(--dim); font-size:18px; flex:none; transition:transform .2s}
+details[open] summary .pm{transform:rotate(45deg); color:var(--hot)}
+details .a{padding:0 22px 20px 48px; color:var(--ink2); font-size:14.6px; line-height:1.85}
+
+/* ---------- 応募 ---------- */
+.apply{padding:54px 46px; margin-top:20px;
+  background:
+    radial-gradient(90% 130% at 88% 0%, rgba(194,65,12,.09), transparent 62%),
+    linear-gradient(180deg,var(--panel2),var(--deep));
+  border:1px solid rgba(194,65,12,.30);
+}
+.apply h2{font-size:clamp(24px,3.4vw,36px); font-weight:900; letter-spacing:-.02em; line-height:1.3}
+.flow3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:30px 0 32px}
+.f3{border-left:2px solid var(--hot); padding:4px 0 4px 16px}
+.f3 .n{font-family:var(--mono); font-size:11px; color:var(--hot2); letter-spacing:.14em}
+.f3 h4{font-size:15.5px; font-weight:800; margin:5px 0 4px}
+.f3 p{font-size:13.2px; color:var(--dim); line-height:1.7}
+.dates{display:flex; gap:10px; flex-wrap:wrap; margin-top:26px}
+.date{border:1px solid var(--edge); background:#FFFFFF; padding:11px 16px; border-radius:3px}
+.date .k{font-family:var(--mono); font-size:10px; letter-spacing:.13em; color:var(--dim)}
+.date .v{font-weight:800; font-size:15px; margin-top:2px}
+.date.hot{border-color:rgba(194,65,12,.42); background:rgba(194,65,12,.06)}
+.date.hot .v{color:var(--hot2)}
+
+footer{border-top:1px solid var(--edge); margin-top:80px; padding:34px 0 60px; color:var(--dim); font-size:13.4px}
+footer .in{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; align-items:flex-end}
+footer b{color:var(--ink2)}
+.ph{color:var(--hot2)}
+
+/* ---------- スクロール表示 ---------- */
+.reveal{opacity:1; transform:none;
+  transition:opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1)}
+.js .reveal{opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1)}
+.reveal.in-view{opacity:1; transform:none}
+
+/* ---------- レスポンシブ ---------- */
+@media (max-width:980px){
+  .hero .in{grid-template-columns:1fr; gap:10px}
+  .robot-stage{min-height:330px; order:-1}
+  .robot-stage svg{max-width:280px}
+  .scan{width:250px;height:250px}
+  .stats,.gains,.flow3{grid-template-columns:1fr}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .ba{grid-template-columns:1fr}
+  .ba .arrow{transform:rotate(90deg); padding:6px 0}
+  .cond{grid-template-columns:1fr}
+  .apply{padding:36px 24px}
+  .sec{padding:70px 0}
+}
+@media (max-width:700px){
+  .topbar .in{height:52px; gap:12px}
+  .topbar .due{display:none}
+  .brand{font-size:11px}
+  .btn.sm{font-size:12.5px; padding:8px 15px}
+}
+@media (max-width:980px){ .qsplit{grid-template-columns:1fr; gap:26px} .qgrid{grid-template-columns:1fr} .qbot{order:-1} }
+@media (max-width:560px){ .steps{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important; transition:none!important}
+  .reveal{opacity:1; transform:none}
+  .part{transform:translate(0,0); opacity:1}
+  .meter i{width:var(--w,60%)}
+  html{scroll-behavior:auto}
+}
+@media print{
+  body{background:#fff; color:#111}
+  body::before,body::after,.scan,.topbar{display:none}
+  .card,.apply,.step,.stat,details{background:#fff!important; border-color:#bbb!important; color:#111}
+  .sec{padding:24px 0; break-inside:avoid}
+  .sec h2,.hero h1,.spec .v,.stat .n{color:#111}
+  .hero h1 .l2,.sec h2 em,.stat .k,.tag{color:#C2410C}
+  p,.sec-lead,.gain p,.step p{color:#333}
+  .btn{background:#C2410C;color:#fff}
+  details{break-inside:avoid} details .a{display:block}
+}
+</style>
+</head>
+<script>document.documentElement.className+=" js";</script>
+<body>
+<div class="page">
+<!-- ============ ヘッダー ============ -->
+<div class="topbar"><div class="wrap in">
+  <span class="brand">AI活用研修 ／ <b>社内公募</b></span>
+  <span class="due"><span class="blip"></span>応募締切 <b>{{応募締切}}</b></span>
+  <a class="btn sm" href="{{申込フォームURL}}">申し込む <span class="arw">→</span></a>
+</div></div>
+
+<!-- ============ HERO ============ -->
+<header class="hero"><div class="wrap in">
+  <div>
+    <span class="tag">AI活用研修 ／ {{開催回}}</span>
+    <h1>その仕事、<br><span class="l2">相棒に任せる。</span></h1>
+    <p class="sub">毎週くり返している作業を、<b>自分専用のAIエージェント</b>に引き受けてもらう。
+      6週間かけて、自分の手で1体つくり切ります。プログラミングは使いません。</p>
+    <div class="specs">
+      <div class="spec"><div class="k">TEAM SIZE</div><div class="v">{{定員}}<small>名</small></div></div>
+      <div class="spec"><div class="k">DURATION</div><div class="v">6<small>週間</small></div></div>
+      <div class="spec"><div class="k">PER WEEK</div><div class="v">2〜3<small>時間</small></div></div>
+      <div class="spec"><div class="k">CODING</div><div class="v">0<small>行</small></div></div>
+    </div>
+    <div class="cta">
+      <a class="btn" href="{{申込フォームURL}}">エントリーする <span class="arw">→</span></a>
+      <span class="note">所要15分／締切 {{応募締切}}</span>
+    </div>
+  </div>
+  <div class="robot-stage">
+    <div class="scan"></div>
+    <svg id="heroBot" viewBox="0 0 300 360" role="img" aria-label="組み立て中のロボットの図">
+      <defs>
+        <linearGradient id="mt" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#EDF2F9"/><stop offset="1" stop-color="#D8E2F0"/>
+        </linearGradient>
+        <linearGradient id="ht" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#FF6A13"/><stop offset="1" stop-color="#D2621A"/>
+        </linearGradient>
+        <filter id="gl" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- 脚 -->
+      <g class="part p5" style="--dx:0px;--dy:66px">
+        <rect x="112" y="266" width="26" height="56" rx="6" fill="url(#mt)" stroke="#9CB0CA"/>
+        <rect x="162" y="266" width="26" height="56" rx="6" fill="url(#mt)" stroke="#9CB0CA"/>
+        <rect x="104" y="318" width="42" height="15" rx="5" fill="#E4EBF5" stroke="#9CB0CA"/>
+        <rect x="154" y="318" width="42" height="15" rx="5" fill="#E4EBF5" stroke="#9CB0CA"/>
+        <path d="M118 278h14M168 278h14" stroke="#4E93AE" stroke-width="1.4"/>
+      </g>
+      <!-- 背面パーツ -->
+      <g class="part p6" style="--dx:74px;--dy:-14px">
+        <rect x="196" y="150" width="30" height="62" rx="7" fill="#E4EBF5" stroke="#9CB0CA"/>
+        <path d="M203 164h16M203 176h16M203 188h10" stroke="#4E93AE" stroke-width="1.6"/>
+      </g>
+      <!-- 腕 -->
+      <g class="part p4" style="--dx:-74px;--dy:6px">
+        <rect x="70" y="150" width="24" height="76" rx="9" fill="url(#mt)" stroke="#9CB0CA"/>
+        <circle cx="82" cy="234" r="12" fill="#E4EBF5" stroke="#9CB0CA"/>
+        <path d="M78 168h8" stroke="#4E93AE" stroke-width="1.6"/>
+      </g>
+      <g class="part p4b" style="--dx:74px;--dy:6px">
+        <rect x="206" y="150" width="24" height="76" rx="9" fill="url(#mt)" stroke="#9CB0CA"/>
+        <circle cx="218" cy="234" r="12" fill="#E4EBF5" stroke="#9CB0CA"/>
+        <path d="M214 168h8" stroke="#4E93AE" stroke-width="1.6"/>
+      </g>
+      <!-- 胴 -->
+      <g class="part p3" style="--dx:0px;--dy:44px">
+        <rect x="96" y="142" width="108" height="128" rx="16" fill="url(#mt)" stroke="#7E95B4" stroke-width="1.4"/>
+        <rect x="112" y="160" width="76" height="52" rx="8" fill="#26324A" stroke="#9CB0CA"/>
+        <circle class="core-glow" cx="150" cy="186" r="15" fill="url(#ht)" filter="url(#gl)"/>
+        <circle cx="150" cy="186" r="7" fill="#FFE3C9"/>
+        <path d="M112 232h76M112 244h48" stroke="#AEBED2" stroke-width="2"/>
+        <rect x="170" y="238" width="18" height="12" rx="3" fill="#E4EBF5" stroke="#4E93AE"/>
+      </g>
+      <!-- 首 -->
+      <g class="part p2" style="--dx:0px;--dy:26px">
+        <rect x="136" y="126" width="28" height="20" rx="5" fill="#E4EBF5" stroke="#9CB0CA"/>
+      </g>
+      <!-- 頭 -->
+      <g class="part p1" style="--dx:0px;--dy:-78px">
+        <rect x="96" y="42" width="108" height="88" rx="22" fill="url(#mt)" stroke="#6D89AC" stroke-width="1.4"/>
+        <rect x="112" y="62" width="76" height="40" rx="12" fill="#26324A" stroke="#AEBED2"/>
+        <circle cx="134" cy="82" r="8.5" fill="#6FD0EA" filter="url(#gl)"/>
+        <circle cx="166" cy="82" r="8.5" fill="#6FD0EA" filter="url(#gl)"/>
+        <path d="M150 42V22" stroke="#7E95B4" stroke-width="2.6"/>
+        <circle cx="150" cy="17" r="6.5" fill="url(#ht)" filter="url(#gl)"/>
+        <path d="M120 116h60" stroke="#AEBED2" stroke-width="2.4"/>
+      </g>
+    </svg>
+  </div>
+</div></header>
+
+<!-- ============ 01 なぜ、いま ============ -->
+<section class="sec wrap reveal" id="why">
+  <div class="sec-head">
+    <span class="sec-no">01</span>
+    <span class="tag">なぜ、いま</span>
+    <h2>AIを<em>「使う」</em>から、<em>「任せる」</em>へ。</h2>
+    <p class="sec-lead">検索や要約に使うところまでは、多くの方ができるようになりました。
+      次の段階は、自分の業務を覚えさせた相棒をつくって、くり返している作業そのものを引き受けてもらうこと。
+      この研修は、そのやり方を6週間で身につける場です。</p>
+  </div>
+  <div class="stats">
+    <div class="card stat"><div class="k">TIME</div>
+      <div class="n">6<small>週間</small></div>
+      <div class="t">短期集中で、1体つくり切る</div>
+      <p>座学だけで終わりません。自分の業務をテーマに、実際に動くエージェントを完成させるところまでやります。</p>
+      <div class="meter" style="--w:100%"><i></i></div></div>
+    <div class="card stat"><div class="k">EFFORT</div>
+      <div class="n">2〜3<small>h／週</small></div>
+      <div class="t">通常業務と両立できる負荷</div>
+      <p>研修は2回だけ。あとは自分のペースで進めます。毎週15分のチェックインがあるので、ひとりで詰まったままになりません。</p>
+      <div class="meter" style="--w:38%"><i></i></div></div>
+    <div class="card stat"><div class="k">STATUS</div>
+      <div class="n">{{定員}}<small>名限定</small></div>
+      <div class="t">修了者は社内公認の推進者に</div>
+      <p>修了すると認定証が発行され、部署の相談先として社内に登録されます。次の期の推薦者にもなります。</p>
+      <div class="meter" style="--w:64%"><i></i></div></div>
+  </div>
+</section>
+<!-- ============ 02 何が変わるか ============ -->
+<section class="sec wrap reveal" id="change">
+  <div class="sec-head">
+    <span class="sec-no">02</span>
+    <span class="tag">変化</span>
+    <h2>6週間後は、こう変わります。</h2>
+  </div>
+  <div class="ba">
+    <div class="card box before"><h3>BEFORE ／ いまの使い方</h3>
+      <ul>
+        <li><span class="mk">01</span><span>聞きたいことを、毎回いちから説明している</span></li>
+        <li><span class="mk">02</span><span>資料の置き場所を探すところから始まる</span></li>
+        <li><span class="mk">03</span><span>同じ問い合わせに、毎週おなじ答えを書いている</span></li>
+        <li><span class="mk">04</span><span>うまい使い方を見つけても、自分の中で止まっている</span></li>
+      </ul>
+    </div>
+    <div class="arrow">▶</div>
+    <div class="card box after"><h3>AFTER ／ 相棒がいる状態</h3>
+      <ul>
+        <li><span class="mk">01</span><span>業務の前提を覚えた相棒が、最初から文脈を知っている</span></li>
+        <li><span class="mk">02</span><span>部署の資料を読ませてあるので、根拠つきで答えが返る</span></li>
+        <li><span class="mk">03</span><span>よくある問い合わせは、相棒が一次対応してくれる</span></li>
+        <li><span class="mk">04</span><span>つくったものを部署に配って、チームの時間が浮く</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="gains">
+    <div class="card gain"><div class="hexw">
+      <svg viewBox="0 0 42 46" aria-hidden="true"><path d="M21 1 40 12v22L21 45 2 34V12z" fill="rgba(194,65,12,.09)" stroke="#C2410C"/><path d="M13 23h16M21 15v16" stroke="#FFA24D" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </div><div><h4>つくれるようになる</h4><p>初回研修の2時間で、その場で動くエージェントを1体つくります。「自分にもできる」を最初の日に持ち帰れます。</p></div></div>
+
+    <div class="card gain"><div class="hexw">
+      <svg viewBox="0 0 42 46" aria-hidden="true"><path d="M21 1 40 12v22L21 45 2 34V12z" fill="rgba(27,127,168,.09)" stroke="#54D3F5"/><circle cx="21" cy="20" r="5" stroke="#54D3F5" stroke-width="2" fill="none"/><path d="M12 33c2-5 5-7 9-7s7 2 9 7" stroke="#54D3F5" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      </div><div><h4>詰まったら聞ける</h4><p>作成期間中は毎週15分のチェックインと、質問窓口があります。ひとりで抱え込む時間をつくりません。</p></div></div>
+
+    <div class="card gain"><div class="hexw">
+      <svg viewBox="0 0 42 46" aria-hidden="true"><path d="M21 1 40 12v22L21 45 2 34V12z" fill="rgba(194,65,12,.09)" stroke="#C2410C"/><path d="M12 26l6-7 5 5 7-9" stroke="#FFA24D" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div><div><h4>効果を数字で言える</h4><p>「なんとなく便利」で終わらせません。どの作業が何分減ったかを自分の言葉で説明できる状態にします。</p></div></div>
+
+    <div class="card gain"><div class="hexw">
+      <svg viewBox="0 0 42 46" aria-hidden="true"><path d="M21 1 40 12v22L21 45 2 34V12z" fill="rgba(31,138,95,.09)" stroke="#1F8A5F"/><path d="M14 30V17M21 30v-9M28 30V13" stroke="#1F8A5F" stroke-width="2.6" stroke-linecap="round"/></svg>
+      </div><div><h4>成果が社内に届く</h4><p>優秀な事例は成果発表会で表彰し、社内ポータルの記事と動画で全社に紹介します。</p></div></div>
+
+    <div class="card gain"><div class="hexw">
+      <svg viewBox="0 0 42 46" aria-hidden="true"><path d="M21 1 40 12v22L21 45 2 34V12z" fill="rgba(27,127,168,.09)" stroke="#54D3F5"/><circle cx="15" cy="17" r="3.4" stroke="#54D3F5" stroke-width="1.8" fill="none"/><circle cx="28" cy="17" r="3.4" stroke="#54D3F5" stroke-width="1.8" fill="none"/><circle cx="21" cy="30" r="3.4" stroke="#54D3F5" stroke-width="1.8" fill="none"/><path d="M17 19l3 8M26 19l-3 8M18 17h7" stroke="#2C7FA0" stroke-width="1.4"/></svg>
+      </div><div><h4>他部署の仲間ができる</h4><p>グループは部署をまたいで編成します。自分の部署では出てこない発想に出会えます。</p></div></div>
+
+    <div class="card gain"><div class="hexw">
+      <svg viewBox="0 0 42 46" aria-hidden="true"><path d="M21 1 40 12v22L21 45 2 34V12z" fill="rgba(194,65,12,.09)" stroke="#C2410C"/><path d="M21 12v13l8 5" stroke="#FFA24D" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="21" cy="23" r="10" stroke="#C2410C" stroke-width="1.6" fill="none"/></svg>
+      </div><div><h4>終わっても続く</h4><p>修了後は推進者コミュニティに参加。新機能の情報が届き、次に困ったときも相談できます。</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 03 つくるもの ============ -->
+<section class="sec wrap reveal" id="how">
+  <div class="sec-head">
+    <span class="sec-no">03</span>
+    <span class="tag">つくるもの</span>
+    <h2>やることは、<em>6つの問い</em>に答えるだけ。</h2>
+    <p class="sec-lead">研修で配るシートに、自分の仕事のことを順番に書いていきます。
+      むずかしい用語は出てきません。6つ書き終えたときには、相棒が動いています。</p>
+  </div>
+  <div class="card qsplit">
+    <div class="qgrid">
+      <div class="q key"><div class="n">Q1</div><h4>業務課題</h4><p>いま、どの手間をなくしたいか</p></div>
+      <div class="q"><div class="n">Q2</div><h4>目的</h4><p>それができると、何が変わるか</p></div>
+      <div class="q"><div class="n">Q3</div><h4>必要情報</h4><p>どの社内資料を読ませるか</p></div>
+      <div class="q"><div class="n">Q4</div><h4>利用者</h4><p>自分だけで使うか、部署で使うか</p></div>
+      <div class="q"><div class="n">Q5</div><h4>成果指標</h4><p>何が、どれだけ良くなるか</p></div>
+      <div class="q key"><div class="n">Q6</div><h4>展開計画</h4><p>誰に、どこまで広げるか</p></div>
+    </div>
+    <div class="qbot">
+      <svg viewBox="0 0 300 350" role="img" aria-label="完成したエージェントのイメージ">
+        <defs>
+          <linearGradient id="mt3" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#EDF2F9"/><stop offset="1" stop-color="#D8E2F0"/>
+          </linearGradient>
+          <linearGradient id="ht3" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#C2410C"/><stop offset="1" stop-color="#F0A055"/>
+          </linearGradient>
+        </defs>
+        <rect x="112" y="266" width="26" height="56" rx="6" fill="url(#mt3)" stroke="#9CB0CA"/>
+        <rect x="162" y="266" width="26" height="56" rx="6" fill="url(#mt3)" stroke="#9CB0CA"/>
+        <rect x="104" y="318" width="42" height="15" rx="5" fill="#E4EBF5" stroke="#9CB0CA"/>
+        <rect x="154" y="318" width="42" height="15" rx="5" fill="#E4EBF5" stroke="#9CB0CA"/>
+        <rect x="196" y="150" width="30" height="62" rx="7" fill="#E4EBF5" stroke="#9CB0CA"/>
+        <path d="M203 164h16M203 176h16M203 188h10" stroke="#4E93AE" stroke-width="1.6"/>
+        <rect x="70" y="150" width="24" height="76" rx="9" fill="url(#mt3)" stroke="#9CB0CA"/>
+        <circle cx="82" cy="234" r="12" fill="#E4EBF5" stroke="#9CB0CA"/>
+        <rect x="206" y="150" width="24" height="76" rx="9" fill="url(#mt3)" stroke="#9CB0CA"/>
+        <circle cx="218" cy="234" r="12" fill="#E4EBF5" stroke="#9CB0CA"/>
+        <rect x="96" y="142" width="108" height="128" rx="16" fill="url(#mt3)" stroke="#7E95B4" stroke-width="1.4"/>
+        <rect x="112" y="160" width="76" height="52" rx="8" fill="#26324A" stroke="#9CB0CA"/>
+        <circle cx="150" cy="186" r="15" fill="url(#ht3)"/><circle cx="150" cy="186" r="7" fill="#FFE3C9"/>
+        <path d="M112 232h76M112 244h48" stroke="#AEBED2" stroke-width="2"/>
+        <rect x="170" y="238" width="18" height="12" rx="3" fill="#E4EBF5" stroke="#4E93AE"/>
+        <rect x="136" y="126" width="28" height="20" rx="5" fill="#E4EBF5" stroke="#9CB0CA"/>
+        <rect x="96" y="42" width="108" height="88" rx="22" fill="url(#mt3)" stroke="#6D89AC" stroke-width="1.4"/>
+        <rect x="112" y="62" width="76" height="40" rx="12" fill="#26324A" stroke="#AEBED2"/>
+        <circle cx="134" cy="82" r="8.5" fill="#6FD0EA"/><circle cx="166" cy="82" r="8.5" fill="#6FD0EA"/>
+        <path d="M150 42V22" stroke="#7E95B4" stroke-width="2.6"/>
+        <circle cx="150" cy="17" r="6.5" fill="url(#ht3)"/>
+        <path d="M120 116h60" stroke="#AEBED2" stroke-width="2.4"/>
+      </svg>
+      <div class="cap">RESULT<b>動く相棒が1体</b></div>
+    </div>
+  </div>
+  <p class="qfoot"><b>テーマが決まらなくても大丈夫です。</b>2週目に、この6つを埋めるためのシートと、
+    「向いているテーマ／向いていないテーマ」の例をお配りします。運営が一緒に絞り込みます。</p>
+</section>
+
+<!-- ============ 04 6週間の工程 ============ -->
+<section class="sec wrap reveal" id="flow">
+  <div class="sec-head">
+    <span class="sec-no">04</span>
+    <span class="tag">進め方</span>
+    <h2>6週間の進め方。</h2>
+    <p class="sec-lead">集まるのは、はじめの研修2回と、最後の発表だけ。あいだは自分のペースで進めます。
+      毎週15分のチェックインがあるので、気づいたら止まっていた、が起きません。</p>
+  </div>
+  <div class="steps">
+    <div class="card step"><div class="wk">WEEK 01</div>
+      <div class="bot"><svg viewBox="0 0 44 54" aria-hidden="true"><rect x="8" y="2" width="28" height="24" rx="7" fill="#E8EEF7" stroke="#6D89AC"/><circle cx="16" cy="14" r="3.4" fill="#1B7FA8"/><circle cx="28" cy="14" r="3.4" fill="#1B7FA8"/><path d="M6 46h32" stroke="#C3D0E1" stroke-dasharray="3 4"/></svg></div>
+      <h4>はじめの研修</h4>
+      <p>しくみを知って、その場でハンズオン。全員が1体つくって帰ります。</p>
+      <div class="hrs">集合 ／ 2h</div></div>
+
+    <div class="card step"><div class="wk">WEEK 02</div>
+      <div class="bot"><svg viewBox="0 0 44 54" aria-hidden="true"><rect x="8" y="2" width="28" height="24" rx="7" fill="#E8EEF7" stroke="#6D89AC"/><circle cx="16" cy="14" r="3.4" fill="#1B7FA8"/><circle cx="28" cy="14" r="3.4" fill="#1B7FA8"/><rect x="10" y="28" width="24" height="20" rx="5" fill="#E8EEF7" stroke="#9CB0CA"/><path d="M6 50h32" stroke="#C3D0E1" stroke-dasharray="3 4"/></svg></div>
+      <h4>テーマを決める</h4>
+      <p>自分の業務から題材を選び、6つの問いに答えます。グループで見せ合って磨きます。</p>
+      <div class="hrs">集合 ／ 1h ＋ 個人 1h</div></div>
+
+    <div class="card step"><div class="wk">WEEK 03</div>
+      <div class="bot"><svg viewBox="0 0 44 54" aria-hidden="true"><rect x="8" y="2" width="28" height="24" rx="7" fill="#E8EEF7" stroke="#6D89AC"/><circle cx="16" cy="14" r="3.4" fill="#1B7FA8"/><circle cx="28" cy="14" r="3.4" fill="#1B7FA8"/><rect x="10" y="28" width="24" height="20" rx="5" fill="#E8EEF7" stroke="#9CB0CA"/><circle cx="22" cy="38" r="5" fill="#C2410C"/><path d="M6 50h32" stroke="#C3D0E1" stroke-dasharray="3 4"/></svg></div>
+      <h4>資料を読ませる</h4>
+      <p>部署の手順書や規程を読ませて、根拠つきで答えられるようにします。</p>
+      <div class="hrs">個人 ／ 2〜3h</div></div>
+
+    <div class="card step"><div class="wk">WEEK 04</div>
+      <div class="bot"><svg viewBox="0 0 44 54" aria-hidden="true"><rect x="8" y="2" width="28" height="24" rx="7" fill="#E8EEF7" stroke="#6D89AC"/><circle cx="16" cy="14" r="3.4" fill="#1B7FA8"/><circle cx="28" cy="14" r="3.4" fill="#1B7FA8"/><rect x="10" y="28" width="24" height="20" rx="5" fill="#E8EEF7" stroke="#9CB0CA"/><circle cx="22" cy="38" r="5" fill="#C2410C"/><rect x="2" y="29" width="6" height="17" rx="3" fill="#E8EEF7" stroke="#9CB0CA"/><rect x="36" y="29" width="6" height="17" rx="3" fill="#E8EEF7" stroke="#9CB0CA"/></svg></div>
+      <h4>試して、直す</h4>
+      <p>同僚に使ってもらって、答えられなかったところを直します。ここがいちばん伸びます。</p>
+      <div class="hrs">個人 ／ 2〜3h</div></div>
+
+    <div class="card step"><div class="wk">WEEK 05</div>
+      <div class="bot"><svg viewBox="0 0 44 54" aria-hidden="true"><rect x="8" y="2" width="28" height="24" rx="7" fill="#E8EEF7" stroke="#6D89AC"/><circle cx="16" cy="14" r="3.4" fill="#1B7FA8"/><circle cx="28" cy="14" r="3.4" fill="#1B7FA8"/><rect x="10" y="28" width="24" height="20" rx="5" fill="#E8EEF7" stroke="#9CB0CA"/><circle cx="22" cy="38" r="5" fill="#C2410C"/><rect x="2" y="29" width="6" height="17" rx="3" fill="#E8EEF7" stroke="#9CB0CA"/><rect x="36" y="29" width="6" height="17" rx="3" fill="#E8EEF7" stroke="#9CB0CA"/><rect x="13" y="48" width="7" height="6" rx="2" fill="#E8EEF7" stroke="#9CB0CA"/><rect x="24" y="48" width="7" height="6" rx="2" fill="#E8EEF7" stroke="#9CB0CA"/></svg></div>
+      <h4>提出する</h4>
+      <p>完成していなくて大丈夫。「いまの状態」で出すのがルールです。</p>
+      <div class="hrs">集合 ／ 1h</div></div>
+
+    <div class="card step"><div class="wk">WEEK 06</div>
+      <div class="bot"><svg viewBox="0 0 44 54" aria-hidden="true"><rect x="8" y="2" width="28" height="24" rx="7" fill="#FBEDE4" stroke="#C2410C"/><circle cx="16" cy="14" r="3.4" fill="#C2410C"/><circle cx="28" cy="14" r="3.4" fill="#C2410C"/><path d="M22 2V-2" stroke="#C2410C" stroke-width="2"/><rect x="10" y="28" width="24" height="20" rx="5" fill="#FBEDE4" stroke="#C2410C"/><circle cx="22" cy="38" r="5" fill="#C2410C"/><rect x="2" y="29" width="6" height="17" rx="3" fill="#FBEDE4" stroke="#C2410C"/><rect x="36" y="29" width="6" height="17" rx="3" fill="#FBEDE4" stroke="#C2410C"/><rect x="13" y="48" width="7" height="6" rx="2" fill="#FBEDE4" stroke="#C2410C"/><rect x="24" y="48" width="7" height="6" rx="2" fill="#FBEDE4" stroke="#C2410C"/></svg></div>
+      <h4>発表・認定</h4>
+      <p>成果を発表して講評を受けます。修了者は社内公認の推進者として認定されます。</p>
+      <div class="hrs">集合 ／ 2h</div></div>
+  </div>
+</section>
+
+<!-- ============ 05 参加条件 ============ -->
+<section class="sec wrap reveal" id="who">
+  <div class="sec-head">
+    <span class="sec-no">05</span>
+    <span class="tag">こんな人に来てほしい</span>
+    <h2>技術の知識は、<em>いりません</em>。</h2>
+    <p class="sec-lead">必要なのは「この作業、毎回めんどうだな」と思っている業務が1つあることだけです。</p>
+  </div>
+  <div class="cond">
+    <div class="card box must">
+      <h3>応募の条件</h3>
+      <div class="h-note">REQUIRED ／ 3つすべて</div>
+      <ul>
+        <li><span class="ck"></span><span>生成AIツール（有償版）を使える環境があること</span></li>
+        <li><span class="ck"></span><span>社内の資料を業務で扱える立場にあること</span></li>
+        <li><span class="ck"></span><span>期間中、集合する日に参加できること（全4回）</span></li>
+      </ul>
+      <p style="margin-top:16px;font-size:13px;color:var(--dim);line-height:1.7">
+        上長には、申込の前に期間と負荷を共有しておいてください。申込フォームに上長のお名前の記入欄があります。</p>
+    </div>
+    <div class="card box want">
+      <h3>あると、もっと伸びる</h3>
+      <div class="h-note">WELCOME ／ 必須ではありません</div>
+      <ul>
+        <li><span class="ck"></span><span>「これを自動化したい」という業務がすでに頭にある</span></li>
+        <li><span class="ck"></span><span>ふだんから生成AIツールをよく使っている</span></li>
+        <li><span class="ck"></span><span>できあがったものを、部署のみんなに配ってみたい</span></li>
+        <li><span class="ck"></span><span>部署に、有償版を使える同僚が何人かいる</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 FAQ ============ -->
+<section class="sec wrap reveal" id="faq">
+  <div class="sec-head">
+    <span class="sec-no">06</span>
+    <span class="tag">よくある質問</span>
+    <h2>よくいただく質問に、先にお答えします。</h2>
+  </div>
+  <div class="faq">
+    <details open><summary><span class="q">Q1</span>プログラミングができません。大丈夫ですか？<span class="pm">＋</span></summary>
+      <div class="a">大丈夫です。コードは1行も書きません。画面の指示に沿って日本語で書いていくだけでつくれます。参加者のほとんどは開発の経験がない方です。</div></details>
+    <details><summary><span class="q">Q2</span>どのくらい時間を取られますか？<span class="pm">＋</span></summary>
+      <div class="a">集合するのは全4回（合計6時間ほど）です。それ以外は週2〜3時間を目安に、自分のペースで進めていただきます。忙しい週があっても、翌週のチェックインで立て直せる設計にしています。</div></details>
+    <details><summary><span class="q">Q3</span>つくるテーマが思いつきません。<span class="pm">＋</span></summary>
+      <div class="a">2週目に、テーマを決めるためのシートとガイドをお配りします。「向いているテーマ／向いていないテーマ」の例も用意していますし、運営が一緒に絞り込みを手伝います。手ぶらで来ていただいて大丈夫です。</div></details>
+    <details><summary><span class="q">Q4</span>途中でついていけなくなったら？<span class="pm">＋</span></summary>
+      <div class="a">毎週15分のチェックインと、いつでも聞ける質問窓口があります。「完成してから相談」ではなく「詰まった時点で相談」がいちばん早く終わります。提出物も、完成版でなく現時点版で構いません。</div></details>
+    <details><summary><span class="q">Q5</span>つくったものは、部署のみんなも使えますか？<span class="pm">＋</span></summary>
+      <div class="a">使う側にも有償版のライセンスが必要です。お手数ですが、申込時に「部署に有償版を使える方が何人いるか」を教えてください。配る先を確保できる部署の方を優先してご案内しています。</div></details>
+    <details><summary><span class="q">Q6</span>定員を超えたらどうなりますか？<span class="pm">＋</span></summary>
+      <div class="a">申込順と、部署のバランスを見て調整します。今回ご案内できなかった方には、次の期のご案内を優先してお送りします。</div></details>
+    <details><summary><span class="q">Q7</span>修了すると何かありますか？<span class="pm">＋</span></summary>
+      <div class="a">社内公認の推進者として認定証を発行します（メールの署名にも使えます）。あわせて推進者コミュニティにご招待し、修了後も相談や情報共有を続けられるようにしています。</div></details>
+  </div>
+</section>
+
+<!-- ============ 応募 ============ -->
+<section class="sec wrap reveal" id="apply" style="padding-top:20px">
+  <div class="card apply">
+    <span class="tag">エントリー</span>
+    <h2>申し込みは、<span style="color:var(--hot2)">3ステップ・15分</span>で終わります。</h2>
+    <div class="flow3">
+      <div class="f3"><div class="n">STEP 01</div><h4>上長に共有する</h4>
+        <p>期間と、週2〜3時間の負荷が発生することを伝えてください。</p></div>
+      <div class="f3"><div class="n">STEP 02</div><h4>フォームに入力する</h4>
+        <p>所属・AIツールの利用状況・改善したい業務を書いていただきます。</p></div>
+      <div class="f3"><div class="n">STEP 03</div><h4>結果を待つ</h4>
+        <p>{{結果通知日}}までに、参加の可否をメールでご連絡します。</p></div>
+    </div>
+    <a class="btn" href="{{申込フォームURL}}">申込フォームを開く <span class="arw">→</span></a>
+    <div class="dates">
+      <div class="date hot"><div class="k">DEADLINE</div><div class="v">{{応募締切}}</div></div>
+      <div class="date"><div class="k">RESULT</div><div class="v">{{結果通知日}}</div></div>
+      <div class="date"><div class="k">KICK OFF</div><div class="v">{{初回研修日}}</div></div>
+      <div class="date"><div class="k">PERIOD</div><div class="v">{{活動期間}}</div></div>
+      <div class="date"><div class="k">BRIEFING</div><div class="v">{{説明会情報}}</div></div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap in">
+  <div>
+    <div style="font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--cy);margin-bottom:8px">CONTACT</div>
+    <b>{{主催部署}}</b><br>{{問い合わせ先}}
+  </div>
+  <div style="text-align:right;font-family:var(--mono);font-size:11px;line-height:1.9">
+    AI活用研修 ／ {{開催回}}<br>
+    <span style="color:#93A2B4">6 QUESTIONS ／ 6 WEEKS ／ 0 LINES OF CODE</span>
+  </div>
+</div></footer>
+</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var bot = document.getElementById('heroBot');
+  if (bot) { if (reduce) { bot.classList.add('built'); }
+    else { setTimeout(function(){ bot.classList.add('built'); }, 260); } }
+  if (!('IntersectionObserver' in window) || reduce) {
+    [].forEach.call(document.querySelectorAll('.reveal'), function(el){ el.classList.add('in-view'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  [].forEach.call(document.querySelectorAll('.reveal'), function(el){ io.observe(el); });
+  // 保険：何らかの理由で監視が働かない環境でも、2秒後には必ず表示する
+  setTimeout(function(){
+    [].forEach.call(document.querySelectorAll('.reveal:not(.in-view)'), function(el){ el.classList.add('in-view'); });
+  }, 2000);
+})();
+</script>
+</body>
+</html>
