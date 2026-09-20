@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Learning Shelf</title>
+<style>
+  :root{
+    --bg:#faf8f5;
+    --panel:#ffffff;
+    --ink:#1f1d1b;
+    --sub:#8b857c;
+    --line:#e8e3db;
+    --accent:#d2703f;
+    --accent-soft:#f6e3d8;
+    --grid-line:#efeae2;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#171614; --panel:#201e1c; --ink:#efece7;
+      --sub:#9a938a; --line:#332f2c; --accent:#e8905e;
+      --accent-soft:#3a2a20; --grid-line:#2a2724;
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic UI",Meiryo,sans-serif;
+    line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px; margin:0 auto; padding:0 24px 100px}
+
+  /* ── HERO ── */
+  .hero{
+    padding:64px 0 40px;
+    background:
+      linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0/100% 34px,
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0/34px 100%;
+    background-clip:padding-box;
+    border-bottom:1px solid var(--line);
+    margin-bottom:40px;
+  }
+  .eyebrow{
+    display:inline-block; font-size:11px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent);
+    background:var(--accent-soft); padding:5px 12px; border-radius:99px;
+    margin-bottom:14px; font-weight:700;
+  }
+  h1{margin:0 0 8px; font-size:clamp(30px,5vw,46px); letter-spacing:-.02em; line-height:1.2}
+  .tagline{margin:0; color:var(--sub); font-size:14px}
+
+  /* ── STATS ── */
+  .stats{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:1px; background:var(--line); border:1px solid var(--line);
+    border-radius:14px; overflow:hidden; margin-top:34px;
+  }
+  .stat{background:var(--panel); padding:20px 22px}
+  .stat .n{
+    font-size:36px; font-weight:800; letter-spacing:-.03em; line-height:1.1;
+    font-variant-numeric:tabular-nums;
+  }
+  .stat .n small{font-size:14px; font-weight:600; color:var(--sub); margin-left:3px}
+  .stat .k{font-size:11px; letter-spacing:.1em; color:var(--sub); text-transform:uppercase; margin-top:4px}
+
+  /* ── BREAKDOWN BARS ── */
+  .section-h{
+    display:flex; align-items:baseline; gap:10px;
+    margin:0 0 16px; font-size:13px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--sub); font-weight:700;
+  }
+  .section-h::after{content:""; flex:1; height:1px; background:var(--line)}
+  .bars{margin-bottom:44px; display:grid; gap:10px}
+  .bar-row{display:grid; grid-template-columns:110px 1fr 38px; align-items:center; gap:12px; font-size:13px}
+  .bar-row .lbl{color:var(--sub); text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .bar-track{height:22px; background:var(--panel); border:1px solid var(--line); border-radius:6px; overflow:hidden}
+  .bar-fill{height:100%; background:var(--accent); opacity:.85; width:0; transition:width .7s cubic-bezier(.2,.8,.2,1)}
+  .bar-row .num{font-variant-numeric:tabular-nums; font-weight:700; font-size:13px}
+
+  /* ── FILTER ── */
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px}
+  .chip{
+    border:1px solid var(--line); background:var(--panel); color:var(--sub);
+    padding:6px 14px; border-radius:99px; font-size:12.5px; cursor:pointer;
+    font-family:inherit; transition:.15s;
+  }
+  .chip:hover{border-color:var(--accent); color:var(--ink)}
+  .chip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600}
+
+  /* ── CARDS ── */
+  .grid{display:grid; gap:24px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+  .card{
+    display:block; text-decoration:none; color:inherit; position:relative;
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:14px; overflow:hidden;
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .card:hover{transform:translateY(-4px); box-shadow:0 14px 34px rgba(0,0,0,.12); border-color:var(--accent)}
+  .idx{
+    position:absolute; top:12px; left:12px; z-index:2;
+    background:rgba(0,0,0,.66); color:#fff; font-size:11px; font-weight:700;
+    padding:3px 8px; border-radius:6px; font-variant-numeric:tabular-nums;
+  }
+  .tag{
+    position:absolute; top:12px; right:12px; z-index:2;
+    background:var(--accent); color:#fff; font-size:10.5px; font-weight:700;
+    letter-spacing:.06em; padding:3px 9px; border-radius:6px; text-transform:uppercase;
+  }
+  .thumb{position:relative; height:200px; overflow:hidden; background:#fff; border-bottom:1px solid var(--line)}
+  .thumb iframe{width:1280px; height:820px; border:0; transform:scale(.30); transform-origin:top left; pointer-events:none}
+  .thumb .veil{position:absolute; inset:0}
+  .meta{padding:15px 17px 17px}
+  .ttl{font-size:15.5px; font-weight:700; margin:0 0 5px; letter-spacing:-.01em;
+       display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+  .file{font-size:11.5px; color:var(--sub); font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+  .msg{border:1px dashed var(--line); border-radius:14px; padding:32px; color:var(--sub); font-size:14px}
+  .msg b{color:var(--ink)}
+  code{background:var(--accent-soft); color:var(--accent); padding:2px 7px; border-radius:5px; font-size:12.5px}
+  footer{margin-top:56px; padding-top:20px; border-top:1px solid var(--line); color:var(--sub); font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap" style="padding-bottom:0">
+    <span class="eyebrow">Personal Archive</span>
+    <h1>Learning Shelf</h1>
+    <p class="tagline">つくったもの・学んだことの置き場</p>
+
+    <div class="stats">
+      <div class="stat"><div class="n" id="s-total">–</div><div class="k">Pages</div></div>
+      <div class="stat"><div class="n" id="s-cat">–</div><div class="k">Categories</div></div>
+      <div class="stat"><div class="n" id="s-size">–</div><div class="k">Total Size</div></div>
+      <div class="stat"><div class="n" id="s-upd" style="font-size:20px;padding-top:10px">–</div><div class="k">Last Update</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="bars-box" style="display:none">
+    <h2 class="section-h">Breakdown</h2>
+    <div class="bars" id="bars"></div>
+  </div>
+
+  <h2 class="section-h">Archive</h2>
+  <div class="chips" id="chips"></div>
+  <div class="grid" id="grid"></div>
+  <div id="msg"></div>
+
+  <footer>
+    <code>pages/</code> にHTMLを追加すると自動で並びます。
+    ファイル名を <code>カテゴリ_名前.html</code> にすると、カテゴリ別に集計されます。
+  </footer>
+</div>
+
+<script>
+/* リポジトリ名は URL から自動判定。ローカルで開くときだけ下を手書きして。 */
+const FALLBACK = { owner:"tbtb-k", repo:"" };
+const DIR = "pages";
+
+function resolveRepo(){
+  const m = location.hostname.match(/^([^.]+)\.github\.io$/);
+  if(m){
+    const seg = location.pathname.split("/").filter(Boolean);
+    return { owner:m[1], repo: seg.length ? seg[0] : m[1]+".github.io" };
+  }
+  return FALLBACK;
+}
+
+const $ = id => document.getElementById(id);
+const note = html => $("msg").innerHTML = '<div class="msg">'+html+'</div>';
+
+function categoryOf(name){
+  const base = name.replace(/\.html?$/i,"");
+  const m = base.match(/^([^_]+)_/);
+  return m ? m[1] : "other";
+}
+function prettyTitle(name){
+  return name.replace(/\.html?$/i,"").replace(/^[^_]+_/,"").replace(/[-_]/g," ");
+}
+function fmtSize(bytes){
+  if(bytes < 1024) return [bytes,"B"];
+  if(bytes < 1024*1024) return [(bytes/1024).toFixed(0),"KB"];
+  return [(bytes/1048576).toFixed(1),"MB"];
+}
+
+async function main(){
+  const {owner, repo} = resolveRepo();
+  if(!repo){ note("リポジトリ名が判定できませんでした。GitHub Pages のURLで開いてください。"); return; }
+
+  let files;
+  try{
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${DIR}`);
+    if(res.status === 404){
+      $("s-total").textContent = "0";
+      note(`<b>${DIR}/ フォルダがまだありません。</b><br>
+            GitHubで <code>Add file → Create new file</code> を開き、
+            ファイル名に <code>${DIR}/sample.html</code> と入力するとフォルダごと作成できます。`);
+      return;
+    }
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    files = (await res.json()).filter(f => f.type==="file" && /\.html?$/i.test(f.name));
+  }catch(e){
+    note(`一覧の取得に失敗しました（${e.message}）。<br>
+          GitHub API の回数制限（1時間60回）か、ネットワーク制限の可能性があります。`);
+    return;
+  }
+
+  /* 最終更新 */
+  fetch(`https://api.github.com/repos/${owner}/${repo}`)
+    .then(r => r.ok ? r.json() : null)
+    .then(d => { if(d?.pushed_at){
+      const dt = new Date(d.pushed_at);
+      $("s-upd").textContent = `${dt.getFullYear()}.${String(dt.getMonth()+1).padStart(2,"0")}.${String(dt.getDate()).padStart(2,"0")}`;
+    }}).catch(()=>{});
+
+  files.sort((a,b) => a.name.localeCompare(b.name,"ja"));
+
+  const cats = {};
+  let totalSize = 0;
+  files.forEach(f => { cats[categoryOf(f.name)] = (cats[categoryOf(f.name)]||0)+1; totalSize += f.size||0; });
+
+  $("s-total").textContent = files.length;
+  $("s-cat").textContent = Object.keys(cats).length;
+  const [sv,su] = fmtSize(totalSize);
+  $("s-size").innerHTML = sv + '<small>'+su+'</small>';
+
+  if(files.length === 0){
+    note(`まだ空です。<code>${DIR}/</code> にHTMLをアップロードすると、ここに並びます。`);
+    return;
+  }
+
+  /* Breakdown バー */
+  const entries = Object.entries(cats).sort((a,b) => b[1]-a[1]);
+  if(entries.length > 1){
+    $("bars-box").style.display = "";
+    const max = entries[0][1];
+    entries.forEach(([k,v]) => {
+      const row = document.createElement("div");
+      row.className = "bar-row";
+      row.innerHTML = `<div class="lbl">${k}</div>
+                       <div class="bar-track"><div class="bar-fill"></div></div>
+                       <div class="num">${v}</div>`;
+      $("bars").appendChild(row);
+      requestAnimationFrame(() => row.querySelector(".bar-fill").style.width = (v/max*100)+"%");
+    });
+  }
+
+  /* フィルタ */
+  const chips = ["すべて", ...entries.map(e=>e[0])];
+  chips.forEach((c,i) => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.textContent = c;
+    b.setAttribute("aria-pressed", i===0 ? "true":"false");
+    b.onclick = () => {
+      [...$("chips").children].forEach(x => x.setAttribute("aria-pressed","false"));
+      b.setAttribute("aria-pressed","true");
+      [...$("grid").children].forEach(card => {
+        card.style.display = (i===0 || card.dataset.cat===c) ? "" : "none";
+      });
+    };
+    $("chips").appendChild(b);
+  });
+
+  /* カード */
+  files.forEach((f,i) => {
+    const url = `${DIR}/${f.name}`;
+    const cat = categoryOf(f.name);
+
+    const card = document.createElement("a");
+    card.className = "card"; card.href = url; card.dataset.cat = cat;
+
+    const ttl = document.createElement("p");
+    ttl.className = "ttl"; ttl.textContent = prettyTitle(f.name);
+
+    const frame = document.createElement("iframe");
+    frame.src = url; frame.loading = "lazy"; frame.setAttribute("scrolling","no");
+    frame.addEventListener("load", () => {
+      try{ const t = frame.contentDocument?.title?.trim(); if(t) ttl.textContent = t; }catch(_){}
+    });
+
+    card.innerHTML = `<span class="idx">${String(i+1).padStart(2,"0")}</span>
+                      <span class="tag">${cat}</span>`;
+    const thumb = document.createElement("div");
+    thumb.className = "thumb";
+    const veil = document.createElement("div"); veil.className = "veil";
+    thumb.append(frame, veil);
+
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    const fn = document.createElement("p");
+    fn.className = "file"; fn.textContent = url;
+    meta.append(ttl, fn);
+
+    card.append(thumb, meta);
+    $("grid").appendChild(card);
+  });
+}
+main();
+</script>
+</body>
+</html>
