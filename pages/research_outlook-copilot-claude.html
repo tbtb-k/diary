@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Outlookの下書き機能でClaudeモデルが使えるかを、機能別の可否と公式リンク付きでまとめた調査メモ（2026-09-22時点）">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Outlookの下書きでClaudeは使える？</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+  :root{
+    --paper:#f2f5f9; --surface:#ffffff; --surface-2:#e9eef5;
+    --ink:#16202c; --muted:#5c6a7d; --line:#d6dee9;
+    --accent:#2f4f80; --accent-soft:#e5ecf7;
+    --ok:#0e6a5e; --ok-soft:#ddefe9;
+    --warn:#8a5810; --warn-soft:#f7ecd6;
+    --no:#963528; --no-soft:#f8e2de;
+    --shadow:0 1px 2px rgba(22,32,44,.06),0 8px 24px rgba(22,32,44,.06);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#0f141b; --surface:#161f29; --surface-2:#1d2734;
+      --ink:#e8eef6; --muted:#98a6b8; --line:#2a3644;
+      --accent:#92b5ea; --accent-soft:#1b2a3f;
+      --ok:#6fd7bd; --ok-soft:#102e28;
+      --warn:#e4b56c; --warn-soft:#32270f;
+      --no:#f09b90; --no-soft:#3a1c19;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0f141b; --surface:#161f29; --surface-2:#1d2734;
+    --ink:#e8eef6; --muted:#98a6b8; --line:#2a3644;
+    --accent:#92b5ea; --accent-soft:#1b2a3f;
+    --ok:#6fd7bd; --ok-soft:#102e28;
+    --warn:#e4b56c; --warn-soft:#32270f;
+    --no:#f09b90; --no-soft:#3a1c19;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+  }
+
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    font-size:15px; line-height:1.85; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding-inline:20px; padding-block:40px 64px;}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace;}
+
+  /* header */
+  header{border-bottom:2px solid var(--ink); padding-bottom:22px; margin-bottom:34px;}
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent); margin:0 0 12px;
+  }
+  h1{
+    font-size:clamp(26px,5.2vw,38px); line-height:1.35; font-weight:900;
+    margin:0 0 14px; text-wrap:balance; letter-spacing:-.01em;
+  }
+  .stamp{
+    display:flex; flex-wrap:wrap; gap:8px 18px; font-size:12px; color:var(--muted);
+    font-family:"IBM Plex Mono",monospace;
+  }
+
+  /* verdict */
+  .verdict{
+    background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--no);
+    border-radius:4px; padding:22px 24px; margin-bottom:38px; box-shadow:var(--shadow);
+  }
+  .verdict .label{
+    font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.12em;
+    color:var(--no); text-transform:uppercase; margin:0 0 8px;
+  }
+  .verdict h2{font-size:clamp(19px,3.6vw,24px); font-weight:700; margin:0 0 10px; line-height:1.5;}
+  .verdict p{margin:0; color:var(--muted); font-size:14px;}
+  .verdict p + p{margin-top:10px;}
+
+  h3{
+    font-size:13px; font-weight:700; letter-spacing:.08em; margin:0 0 4px;
+    display:flex; align-items:baseline; gap:10px;
+  }
+  h3 .num{font-family:"IBM Plex Mono",monospace; color:var(--accent); font-size:12px;}
+  section{margin-bottom:40px;}
+  .lead{color:var(--muted); font-size:13px; margin:0 0 18px; padding-left:28px;}
+
+  /* table */
+  .scroll{overflow-x:auto; border:1px solid var(--line); border-radius:4px; background:var(--surface); box-shadow:var(--shadow);}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:14px;}
+  th,td{text-align:left; padding:12px 16px; border-bottom:1px solid var(--line); vertical-align:top;}
+  thead th{
+    background:var(--surface-2); font-size:11px; letter-spacing:.1em; color:var(--muted);
+    font-family:"IBM Plex Mono",monospace; font-weight:500; text-transform:uppercase;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  td.feat{font-weight:500;}
+  td.note{color:var(--muted); font-size:13px;}
+  tr.spotlight td{background:var(--no-soft);}
+  tr.spotlight td.feat{font-weight:700;}
+
+  .pill{
+    display:inline-block; white-space:nowrap; border-radius:999px; padding:3px 11px;
+    font-size:12px; font-weight:700; line-height:1.6;
+  }
+  .pill.y{background:var(--ok-soft); color:var(--ok);}
+  .pill.n{background:var(--no-soft); color:var(--no);}
+  .pill.m{background:var(--warn-soft); color:var(--warn);}
+
+  /* evidence */
+  .ev{list-style:none; padding:0; margin:0; display:grid; gap:14px;}
+  .ev li{
+    background:var(--surface); border:1px solid var(--line); border-radius:4px;
+    padding:16px 18px; display:grid; grid-template-columns:auto 1fr; gap:4px 14px;
+  }
+  .ev .idx{
+    font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent);
+    grid-row:1/span 3; padding-top:2px;
+  }
+  .ev .src{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:2px;}
+  .ev .src a{color:var(--ink); font-weight:700; font-size:14px; text-decoration:none; border-bottom:1.5px solid var(--accent);}
+  .ev .src a:hover{color:var(--accent);}
+  .tag{
+    font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.08em;
+    padding:2px 7px; border-radius:3px; white-space:nowrap;
+  }
+  .tag.official{background:var(--accent-soft); color:var(--accent);}
+  .tag.third{background:var(--surface-2); color:var(--muted);}
+  .date{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--muted); white-space:nowrap;}
+  .ev .quote{font-size:13px; color:var(--muted); margin:0;}
+  .ev .url{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--muted); word-break:break-all; margin:6px 0 0;}
+
+  /* options */
+  .opts{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+  .opt{background:var(--surface); border:1px solid var(--line); border-top:3px solid var(--accent); border-radius:4px; padding:18px 20px; box-shadow:var(--shadow);}
+  .opt h4{margin:0 0 8px; font-size:15px; font-weight:700;}
+  .opt p{margin:0; font-size:13px; color:var(--muted);}
+  .opt .meta{margin-top:12px; font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent);}
+
+  /* caveats */
+  .caveats{background:var(--surface-2); border-radius:4px; padding:20px 24px; font-size:13.5px;}
+  .caveats ul{margin:0; padding-left:20px; display:grid; gap:10px;}
+  .caveats strong{font-weight:700;}
+  footer{margin-top:48px; padding-top:18px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); font-family:"IBM Plex Mono",monospace;}
+  a{color:var(--accent);}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Microsoft 365 Copilot &times; Anthropic Claude</p>
+  <h1>Outlookの下書き機能で<br>Claudeのモデルは使える？</h1>
+  <div class="stamp">
+    <span>調査日 2026-09-22</span>
+    <span>対象 Copilot in Outlook / Draft with Copilot</span>
+  </div>
+</header>
+
+<div class="verdict">
+  <p class="label">結論</p>
+  <h2>現時点では「できない」と考えるのが安全です</h2>
+  <p>Microsoftの公式ドキュメントでClaude（Anthropicモデル）を選べると明記されているのは Word / Excel / PowerPoint / Copilot Chat / Researcher / Copilot Studio / Copilot Cowork。<strong>Outlookの下書き（Draft with Copilot）は、どの公式ページにも記載がありません。</strong></p>
+  <p>Copilotの見た目は同じでも、中で文章を考えている「モデル」を選べる画面と、選べない画面があります。Outlookの作成ウィンドウは後者です。</p>
+</div>
+
+<section>
+  <h3><span class="num">01</span>機能ごとのClaude選択可否</h3>
+  <p class="lead">2026年9月22日時点。テナント・地域・ライセンス・リリースチャネルで実際の表示は変わります。</p>
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr><th>Copilotの機能・体験</th><th>Claudeの選択</th><th>根拠・補足</th></tr>
+      </thead>
+      <tbody>
+        <tr class="spotlight">
+          <td class="feat">Outlook の下書き<br>（Draft with Copilot）</td>
+          <td><span class="pill n">記載なし</span></td>
+          <td class="note">公式のどの一覧にもOutlookが登場しない。第三者記事は「Copilotでメールを下書きするときに動くのはMicrosoft側のモデル」と明言 <span class="mono">[4]</span></td>
+        </tr>
+        <tr><td class="feat">Copilot in Excel</td><td><span class="pill y">選択可</span></td><td class="note">管理設定の対象アプリとして明記 <span class="mono">[1]</span></td></tr>
+        <tr><td class="feat">Copilot in PowerPoint</td><td><span class="pill y">選択可</span></td><td class="note">同上 <span class="mono">[1]</span></td></tr>
+        <tr><td class="feat">Copilot in Word</td><td><span class="pill y">選択可</span></td><td class="note">同上。リリースノートにも「Wordの編集でAnthropicモデルを選べる」 <span class="mono">[1][3]</span></td></tr>
+        <tr><td class="feat">Copilot Chat</td><td><span class="pill y">選択可</span></td><td class="note">Opus 5のモデルセレクター展開先に含まれる <span class="mono">[3]</span></td></tr>
+        <tr><td class="feat">Researcher エージェント</td><td><span class="pill y">選択可</span></td><td class="note">ユーザーがClaudeを選べる例として公式に記載 <span class="mono">[2]</span></td></tr>
+        <tr><td class="feat">Copilot Studio</td><td><span class="pill y">選択可</span></td><td class="note">エージェント作成時にモデルを選択 <span class="mono">[2][3]</span></td></tr>
+        <tr><td class="feat">Copilot Cowork</td><td><span class="pill y">選択可</span></td><td class="note">Opus 5の展開先に含まれる <span class="mono">[3]</span></td></tr>
+        <tr><td class="feat">Claude for Outlook アドイン<br>（Anthropic純正・Copilotとは別物）</td><td><span class="pill m">ベータ／別契約</span></td><td class="note">2026年5月から公開ベータ。Pro / Max / Team / Enterprise 向け。返信は必ず未送信の下書きで止まる <span class="mono">[5]</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h3><span class="num">02</span>根拠リンク</h3>
+  <p class="lead">[1]〜[3] がMicrosoft公式、[4][5] は補足の第三者情報です。各出典には公開日または最終更新日を併記しています（いずれも本調査日より前の情報です）。</p>
+  <ol class="ev">
+    <li>
+      <span class="idx">[1]</span>
+      <div class="src">
+        <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-anthropic-apps">Copilot in Microsoft 365 apps with Anthropic models</a>
+        <span class="tag official">MS公式 / Learn</span>
+        <span class="date">最終更新 2026-09-03</span>
+      </div>
+      <p class="quote">この設定を有効にするとAnthropicモデルが使えるCopilot体験として <strong>Microsoft Excel・Microsoft PowerPoint・Microsoft Word</strong> の3つのみを列挙。Outlookは含まれない。</p>
+      <p class="url">learn.microsoft.com/en-us/microsoft-365/copilot/copilot-anthropic-apps</p>
+    </li>
+    <li>
+      <span class="idx">[2]</span>
+      <div class="src">
+        <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-subprocessor">Anthropic models in Microsoft Online Services</a>
+        <span class="tag official">MS公式 / Learn</span>
+        <span class="date">最終更新 2026-09-18</span>
+      </div>
+      <p class="quote">ユーザーがClaudeを選べる例として「Microsoft 365アプリのEdit with Copilot」「Researcher」を提示。商用クラウドの大半で既定オン（EU/EFTA・英国を除く）、GCC High・DoD等では利用不可、といった条件もここに記載。</p>
+      <p class="url">learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-subprocessor</p>
+    </li>
+    <li>
+      <span class="idx">[3]</span>
+      <div class="src">
+        <a href="https://techcommunity.microsoft.com/blog/microsoft-copilot-blog/available-today-anthropic-claude-opus-5-in-microsoft-365-copilot/4540524">Available today: Anthropic Claude Opus 5 in Microsoft 365 Copilot</a>
+        <span class="tag official">MS公式 / Blog</span>
+        <span class="date">公開 2026-07-24</span>
+      </div>
+      <p class="quote">Opus 5のモデルセレクターへの展開先を <strong>Word, Excel, PowerPoint, Chat, Copilot Cowork, Copilot Studio</strong> と明記。ここにもOutlookは無い。提供状況は地域・テナント構成で変わるとも記載。</p>
+      <p class="url">techcommunity.microsoft.com/blog/microsoft-copilot-blog/available-today-anthropic-claude-opus-5-in-microsoft-365-copilot/4540524</p>
+    </li>
+    <li>
+      <span class="idx">[4]</span>
+      <div class="src">
+        <a href="https://www.usecarly.com/blog/claude-for-outlook/">Claude for Outlook: What It Does (and Can't) in 2026</a>
+        <span class="tag third">第三者記事</span>
+        <span class="date">公開 2026-07-31</span>
+      </div>
+      <p class="quote">「Anthropicモデルが有効なテナントであっても、Copilotでメールを下書きしているときに使われているのはMicrosoft自身のCopilotであってClaudeではない」と明言。</p>
+      <p class="url">usecarly.com/blog/claude-for-outlook/</p>
+    </li>
+    <li>
+      <span class="idx">[5]</span>
+      <div class="src">
+        <a href="https://www.usecarly.com/blog/can-claude-send-emails-from-outlook/">Can Claude Send Emails From Outlook? (2026)</a>
+        <span class="tag third">第三者記事</span>
+        <span class="date">公開 2026-08-14</span>
+      </div>
+      <p class="quote">Anthropic純正「Claude for Outlook」アドインは2026年5月から公開ベータ。Outlook on the web / Windows（新旧） / Mac に対応し、返信は必ず未送信の下書きで止まる仕様。</p>
+      <p class="url">usecarly.com/blog/can-claude-send-emails-from-outlook/</p>
+    </li>
+  </ol>
+</section>
+
+<section>
+  <h3><span class="num">03</span>どうしてもClaudeでメール文面を書きたい場合</h3>
+  <p class="lead">Outlookの下書きペインが対象外でも、迂回する手はあります。</p>
+  <div class="opts">
+    <div class="opt">
+      <h4>A. Copilot Chatで書いて貼る</h4>
+      <p>Copilot Chatはモデルセレクターの対象なので、Claudeを選んで文面を作り、Outlookの本文に貼り付ける。追加コスト・追加申請なしで今すぐできる現実解です。</p>
+      <p class="meta">難易度：低 ／ 追加ライセンス：不要</p>
+    </div>
+    <div class="opt">
+      <h4>B. Claude for Outlook アドイン</h4>
+      <p>Anthropic純正のアドインをOutlookに入れる方法。Copilotとは別製品で、Claude側の有料プラン（Pro / Max / Team / Enterprise）が必要。公開ベータ段階で、送信はせず下書きまで。</p>
+      <p class="meta">難易度：中 ／ 別途Claude契約が必要</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h3><span class="num">04</span>回答時に添えたい注意点</h3>
+  <p class="lead">お客様に説明するとき、ここを外すと話がズレます。</p>
+  <div class="caveats">
+    <ul>
+      <li><strong>「Microsoft 365 Copilotで利用可能」＝「全機能で選べる」ではありません。</strong>機能ごとに対応状況が違うのが今のCopilotの姿です。</li>
+      <li><strong>日本のテナントは基本オンです。</strong>Anthropicモデルは商用クラウドの大半で既定有効（EU/EFTA・英国は既定オフ）。管理者が明示的に切っていなければWord / Excel / PowerPointでは選べる状態のはずです <span class="mono">[2]</span>。</li>
+      <li><strong>政府向けクラウドは対象外。</strong>GCC High・DoD・その他ソブリンクラウドではAnthropicモデルは利用できません <span class="mono">[2]</span>。</li>
+      <li><strong>「Outlookもベータで同じ方向に進んでいる」とする海外記事はありますが、Microsoft公式の裏付けは見つかりませんでした。</strong>「将来来るかもしれないが、現時点では未確認」という温度感で伝えるのが安全です。</li>
+      <li><strong>展開は段階的です。</strong>最終確認は実機のモデルセレクターで。表示されなければ、そのテナント・その時点では未提供と判断できます。</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  調査日 2026-09-22 ／ 出典 [1] 2026-09-03 更新・[2] 2026-09-18 更新・[3] 2026-07-24 公開（Microsoft公式）／ [4] 2026-07-31・[5] 2026-08-14 公開（第三者記事・参考）
+</footer>
+
+</div>
+</body>
+</html>
