@@ -1,0 +1,1048 @@
+<title>社内AI活用レポート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=IBM+Plex+Sans:wght@500;600&display=swap">
+<style>
+/* ============================================================
+   トークン定義（色はここだけ触れば全体が変わります）
+   ============================================================ */
+:root{
+  color-scheme: light;
+  --plane:#f2f2ee;
+  --surface:#fcfcfb;
+  --surface-2:#f0efec;
+  --ink:#0b0b0b;
+  --ink-2:#52514e;
+  --ink-3:#898781;
+  --rule:#e1e0d9;
+  --rule-strong:#c3c2b7;
+
+  /* カテゴリカル（系列色）: 検証済みの並び順。上から順に使い、循環させない */
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100;
+  --s5:#e87ba4; --s6:#008300; --s7:#4a3aa7; --s8:#e34948;
+
+  /* 連続値（低→高） */
+  --q1:#cde2fb; --q2:#9ec5f4; --q3:#6da7ec; --q4:#3987e5;
+  --q5:#256abf; --q6:#184f95; --q7:#0d366b;
+
+  /* 順序尺度（ファネル等）: 面に溶けない濃さから開始 */
+  --o1:#86b6ef; --o2:#5598e7; --o3:#2a78d6; --o4:#1c5cab; --o5:#104281;
+
+  /* 塗りの内側に置く文字色（各系列色の明度から決定） */
+  --on-s1:#0b0b0b; --on-s2:#0b0b0b; --on-s3:#0b0b0b;
+  --on-s4:#0b0b0b; --on-s5:#0b0b0b; --on-s6:#ffffff;
+  --on-s7:#ffffff; --on-s8:#0b0b0b;
+
+  /* ステータス（系列色とは絶対に共用しない） */
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --critical:#d03b3b;
+  --up:#006300; --down:#d03b3b;
+
+  --shadow: 0 1px 2px rgba(11,11,11,.05);
+  --f-display:"Zen Kaku Gothic New","Noto Sans JP",system-ui,sans-serif;
+  --f-body:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-num:"IBM Plex Sans","Noto Sans JP",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --plane:#0d0d0d; --surface:#1a1a19; --surface-2:#232321;
+    --ink:#ffffff; --ink-2:#c3c2b7; --ink-3:#898781;
+    --rule:#2c2c2a; --rule-strong:#383835;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+    --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
+    --q1:#0d366b; --q2:#104281; --q3:#184f95; --q4:#256abf;
+    --q5:#3987e5; --q6:#6da7ec; --q7:#9ec5f4;
+    --o1:#cde2fb; --o2:#9ec5f4; --o3:#6da7ec; --o4:#3987e5; --o5:#184f95;
+    --up:#0ca30c;
+    --shadow: 0 1px 2px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --plane:#0d0d0d; --surface:#1a1a19; --surface-2:#232321;
+  --ink:#ffffff; --ink-2:#c3c2b7; --ink-3:#898781;
+  --rule:#2c2c2a; --rule-strong:#383835;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+  --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
+  --q1:#0d366b; --q2:#104281; --q3:#184f95; --q4:#256abf;
+  --q5:#3987e5; --q6:#6da7ec; --q7:#9ec5f4;
+  --o1:#cde2fb; --o2:#9ec5f4; --o3:#6da7ec; --o4:#3987e5; --o5:#184f95;
+  --up:#0ca30c;
+  --shadow: 0 1px 2px rgba(0,0,0,.4);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0; background:var(--plane); color:var(--ink);
+  font-family:var(--f-body); font-size:15px; line-height:1.9;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:var(--f-display); text-wrap:balance; margin:0; line-height:1.3}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--s1); outline-offset:3px; border-radius:2px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important; animation:none!important}}
+
+.wrap{max-width:1180px; margin-inline:auto; padding-inline:clamp(16px,4vw,44px)}
+
+/* ---------- ナビ ---------- */
+.nav{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:color-mix(in srgb, var(--plane) 88%, transparent);
+  backdrop-filter:saturate(1.4) blur(10px);
+  border-bottom:1px solid var(--rule);
+}
+.nav-in{display:flex; align-items:center; gap:18px; height:52px; overflow-x:auto; scrollbar-width:none}
+.nav-in::-webkit-scrollbar{display:none}
+.nav-brand{font-family:var(--f-display); font-weight:900; font-size:13px; letter-spacing:.06em; white-space:nowrap; padding-right:4px; border-right:1px solid var(--rule)}
+.nav a{
+  font-size:12px; color:var(--ink-2); text-decoration:none; white-space:nowrap;
+  padding:4px 0; border-bottom:2px solid transparent; transition:color .15s, border-color .15s;
+}
+.nav a:hover{color:var(--ink); border-bottom-color:var(--s1)}
+.nav-spacer{flex:1 0 12px}
+.nav-btn{
+  font-family:var(--f-body); font-size:12px; color:var(--ink-2); background:var(--surface);
+  border:1px solid var(--rule-strong); border-radius:999px; padding:4px 12px; cursor:pointer; white-space:nowrap;
+}
+.nav-btn:hover{color:var(--ink); border-color:var(--s1)}
+
+/* ---------- 表紙 ---------- */
+.cover{padding-block:clamp(40px,7vw,80px) clamp(28px,4vw,48px); border-bottom:2px solid var(--ink)}
+.eyebrow{
+  font-family:var(--f-num); font-size:11px; font-weight:600; letter-spacing:.18em;
+  color:var(--ink-3); text-transform:uppercase;
+}
+.cover h1{font-size:clamp(2rem,6.2vw,3.5rem); font-weight:900; letter-spacing:-.01em; margin-top:14px}
+.cover-sub{margin-top:14px; color:var(--ink-2); font-size:clamp(.95rem,2.4vw,1.05rem); max-width:62ch}
+.cover-meta{
+  margin-top:28px; display:flex; flex-wrap:wrap; gap:0 32px;
+  border-top:1px solid var(--rule); padding-top:14px;
+}
+.cover-meta div{font-size:12px; color:var(--ink-3)}
+.cover-meta b{display:block; font-family:var(--f-num); font-weight:600; font-size:14px; color:var(--ink); font-variant-numeric:tabular-nums}
+
+/* ---------- 章 ---------- */
+.sec{padding-block:clamp(34px,5vw,58px); border-bottom:1px solid var(--rule)}
+.sec-head{display:grid; grid-template-columns:4.75rem 1fr; gap:0 20px; align-items:start; margin-bottom:26px}
+.sec-no{
+  font-family:var(--f-num); font-weight:600; font-size:2.6rem; line-height:.9;
+  color:var(--rule-strong); font-variant-numeric:tabular-nums; letter-spacing:-.03em;
+}
+.sec-head h2{font-size:clamp(1.2rem,3.1vw,1.65rem); font-weight:700; letter-spacing:.01em}
+.sec-head p{margin-top:8px; color:var(--ink-2); font-size:13.5px; max-width:64ch}
+@media (max-width:640px){
+  .sec-head{grid-template-columns:1fr; gap:6px}
+  .sec-no{font-size:1.5rem}
+}
+
+/* ---------- 図の枠 ---------- */
+.fig{background:var(--surface); border:1px solid var(--rule); padding:clamp(14px,2.4vw,22px)}
+.fig-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 14px; margin-bottom:4px}
+.fig-head h3{font-size:14.5px; font-weight:700}
+.fig-note{font-size:12px; color:var(--ink-3); flex:1 1 200px}
+.tbtn{
+  font-family:var(--f-body); font-size:11px; color:var(--ink-2); background:transparent;
+  border:1px solid var(--rule-strong); border-radius:3px; padding:2px 9px; cursor:pointer;
+}
+.tbtn:hover{color:var(--ink); border-color:var(--s1)}
+.chart{margin-top:10px}
+.chart svg{display:block; width:100%; height:auto; overflow:visible}
+.grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(330px,1fr)); gap:16px}
+.grid3{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:16px}
+
+/* ---------- 凡例 ---------- */
+.legend{display:flex; flex-wrap:wrap; gap:6px 18px; margin-top:12px}
+.legend span{display:inline-flex; align-items:center; gap:7px; font-size:12px; color:var(--ink-2)}
+.legend i{width:11px; height:11px; border-radius:2px; flex:none}
+
+/* ---------- ヒーロー数値 ---------- */
+.hero{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:clamp(20px,4vw,48px); align-items:end}
+@media (max-width:760px){.hero{grid-template-columns:1fr; align-items:start}}
+.hero-label{font-size:13px; color:var(--ink-2); font-weight:500}
+.hero-num{
+  font-family:var(--f-num); font-weight:600; font-size:clamp(3.6rem,13vw,6.2rem);
+  line-height:.92; letter-spacing:-.035em; margin-top:6px; display:flex; align-items:baseline; gap:.08em;
+}
+.hero-num small{font-size:.3em; font-weight:500; color:var(--ink-2); letter-spacing:0}
+.hero-delta{margin-top:12px; display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-2)}
+.chip{
+  font-family:var(--f-num); font-weight:600; font-size:12.5px; padding:2px 9px; border-radius:3px;
+  font-variant-numeric:tabular-nums;
+}
+.chip-up{color:var(--up); background:color-mix(in srgb, var(--up) 12%, transparent)}
+.chip-down{color:var(--down); background:color-mix(in srgb, var(--down) 12%, transparent)}
+.hero-note{margin-top:16px; font-size:12px; color:var(--ink-3); border-top:1px solid var(--rule); padding-top:10px}
+
+/* ---------- KPIタイル ---------- */
+.kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:1px; background:var(--rule); border:1px solid var(--rule); margin-top:28px}
+.kpi{background:var(--surface); padding:16px 16px 12px}
+.kpi-l{font-size:12px; color:var(--ink-2); min-height:2.4em}
+.kpi-v{font-family:var(--f-num); font-weight:600; font-size:1.95rem; line-height:1.15; margin-top:6px; letter-spacing:-.02em}
+.kpi-v small{font-size:.46em; font-weight:500; color:var(--ink-2); margin-left:3px}
+.kpi-d{font-size:11.5px; color:var(--ink-3); margin-top:4px; display:flex; align-items:center; gap:7px}
+.kpi-s{margin-top:10px}
+
+/* ---------- メーター ---------- */
+.meters{display:flex; flex-direction:column; gap:14px; margin-top:12px}
+.meter-top{display:flex; justify-content:space-between; align-items:baseline; gap:12px; font-size:12.5px}
+.meter-top b{font-family:var(--f-num); font-weight:600; font-variant-numeric:tabular-nums}
+.track{height:9px; background:var(--surface-2); border-radius:5px; overflow:hidden; margin-top:5px}
+.track i{display:block; height:100%; border-radius:5px}
+
+/* ---------- タイムライン ---------- */
+.tl{position:relative; margin-top:6px; padding-left:26px}
+.tl::before{content:""; position:absolute; left:5px; top:6px; bottom:6px; width:1px; background:var(--rule-strong)}
+.tl-item{position:relative; padding-bottom:20px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{position:absolute; left:-26px; top:5px; width:11px; height:11px; border-radius:50%; border:2px solid var(--surface)}
+.tl-when{font-family:var(--f-num); font-size:11.5px; font-weight:600; color:var(--ink-3); letter-spacing:.04em}
+.tl-t{font-weight:700; font-size:14px; margin-top:1px}
+.tl-d{font-size:12.5px; color:var(--ink-2); margin-top:3px; max-width:58ch}
+
+/* ---------- 表 ---------- */
+.tablewrap{overflow-x:auto; margin-top:12px}
+table{border-collapse:collapse; width:100%; min-width:460px; font-size:12.5px}
+th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--rule); vertical-align:top}
+thead th{font-size:11px; letter-spacing:.06em; color:var(--ink-3); font-weight:600; border-bottom:1px solid var(--rule-strong); white-space:nowrap}
+td.num,th.num{text-align:right; font-family:var(--f-num); font-variant-numeric:tabular-nums}
+tbody tr:hover{background:var(--surface-2)}
+.pill{display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:500; padding:1px 8px; border-radius:999px; white-space:nowrap}
+.pill::before{content:""; width:6px; height:6px; border-radius:50%; background:currentColor; flex:none}
+.p-good{color:var(--good); background:color-mix(in srgb,var(--good) 12%,transparent)}
+.p-warn{color:var(--serious); background:color-mix(in srgb,var(--serious) 16%,transparent)}
+.p-crit{color:var(--critical); background:color-mix(in srgb,var(--critical) 12%,transparent)}
+
+/* ---------- 引用 ---------- */
+.voice{background:var(--surface); border:1px solid var(--rule); border-left:3px solid var(--s1); padding:16px 18px}
+.voice p{font-size:13.5px; line-height:1.85}
+.voice footer{margin-top:10px; font-size:11.5px; color:var(--ink-3)}
+
+/* ---------- ツールチップ ---------- */
+#tip{
+  position:fixed; z-index:90; pointer-events:none; opacity:0; transform:translate(-50%,-115%);
+  background:var(--ink); color:var(--plane); font-size:11.5px; line-height:1.6;
+  padding:7px 10px; border-radius:4px; white-space:nowrap; box-shadow:0 4px 16px rgba(0,0,0,.22);
+  transition:opacity .1s;
+}
+#tip b{font-family:var(--f-num); font-weight:600; font-variant-numeric:tabular-nums}
+#tip .tr{display:flex; justify-content:space-between; gap:14px}
+#tip i{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:6px}
+
+/* ---------- 使い方 ---------- */
+.howto{background:var(--surface-2); border:1px dashed var(--rule-strong); padding:clamp(16px,3vw,26px); margin-top:8px}
+.howto h3{font-size:14px; font-weight:700; margin-bottom:10px}
+.howto ol{margin:0; padding-left:1.3em; font-size:13px; color:var(--ink-2)}
+.howto li{margin-bottom:7px}
+.howto code{font-family:var(--f-num); background:var(--surface); border:1px solid var(--rule); padding:1px 5px; border-radius:3px; font-size:12px; color:var(--ink)}
+
+.foot{padding-block:32px 48px; font-size:12px; color:var(--ink-3)}
+.foot ul{margin:8px 0 0; padding-left:1.2em}
+.foot li{margin-bottom:3px}
+
+@media print{
+  .nav{display:none}
+  body{background:#fff}
+  .sec,.fig{break-inside:avoid}
+}
+</style>
+
+<div id="tip" role="status" aria-live="off"></div>
+
+<nav class="nav">
+  <div class="wrap nav-in">
+    <span class="nav-brand">AI ADOPTION FY26 H1</span>
+    <a href="#s1">サマリー</a>
+    <a href="#s2">推移</a>
+    <a href="#s3">部門別</a>
+    <a href="#s4">用途</a>
+    <a href="#s5">定着</a>
+    <a href="#s6">分布</a>
+    <a href="#s7">計画</a>
+    <a href="#s8">比較</a>
+    <span class="nav-spacer"></span>
+    <button class="nav-btn" id="printBtn" type="button">印刷 / PDF</button>
+  </div>
+</nav>
+
+<header class="wrap cover">
+  <div class="eyebrow" id="cv-eyebrow"></div>
+  <h1 id="cv-title"></h1>
+  <p class="cover-sub" id="cv-sub"></p>
+  <div class="cover-meta" id="cv-meta"></div>
+</header>
+
+<main class="wrap">
+
+  <!-- 01 サマリー -->
+  <section class="sec" id="s1">
+    <div class="sec-head">
+      <div class="sec-no">01</div>
+      <div>
+        <h2>サマリー</h2>
+        <p>上期の到達点を1つの数字で示し、補助指標4点で内訳を確認します。数値はいずれも社内利用ログの集計値です。</p>
+      </div>
+    </div>
+    <div class="hero">
+      <div>
+        <div class="hero-label" id="hero-label"></div>
+        <div class="hero-num" id="hero-num"></div>
+        <div class="hero-delta" id="hero-delta"></div>
+      </div>
+      <div>
+        <div class="fig">
+          <div class="fig-head"><h3>四半期ごとの到達水準</h3></div>
+          <div class="chart" id="c-quarter"></div>
+        </div>
+      </div>
+    </div>
+    <p class="hero-note" id="hero-note"></p>
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <!-- 02 推移 -->
+  <section class="sec" id="s2">
+    <div class="sec-head">
+      <div class="sec-no">02</div>
+      <div>
+        <h2>月次の利用推移</h2>
+        <p>基盤ごとの週次アクティブ利用率を月次で追っています。グラフ上にカーソルを合わせると、その月の全系列の値が表示されます。</p>
+      </div>
+    </div>
+    <div class="fig">
+      <div class="fig-head">
+        <h3>基盤別 週次アクティブ利用率</h3>
+        <span class="fig-note">単位: %／対象母数 4,820名</span>
+        <button class="tbtn" type="button" data-target="t-trend" aria-expanded="false">表で見る</button>
+      </div>
+      <div class="chart" id="c-trend"></div>
+      <div class="legend" id="l-trend"></div>
+      <div class="tablewrap" id="t-trend" hidden></div>
+    </div>
+  </section>
+
+  <!-- 03 部門別 -->
+  <section class="sec" id="s3">
+    <div class="sec-head">
+      <div class="sec-no">03</div>
+      <div>
+        <h2>部門別の広がり</h2>
+        <p>左は部門ごとの利用率、右は1人あたり月間利用回数の上位8部門です。同じ母集団を2つの軸で見ています。</p>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="fig">
+        <div class="fig-head">
+          <h3>部門別 利用率</h3>
+          <span class="fig-note">単位: %</span>
+          <button class="tbtn" type="button" data-target="t-dept" aria-expanded="false">表で見る</button>
+        </div>
+        <div class="chart" id="c-dept"></div>
+        <div class="tablewrap" id="t-dept" hidden></div>
+      </div>
+      <div class="fig">
+        <div class="fig-head">
+          <h3>1人あたり月間利用回数 上位8部門</h3>
+          <span class="fig-note">単位: 回／月</span>
+        </div>
+        <div class="chart" id="c-rank"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 用途 -->
+  <section class="sec" id="s4">
+    <div class="sec-head">
+      <div class="sec-no">04</div>
+      <div>
+        <h2>何に使われているか</h2>
+        <p>四半期ごとの用途構成比と、ライセンスの配布状況です。構成比は各期の合計を100%として算出しています。</p>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="fig">
+        <div class="fig-head">
+          <h3>用途構成比の変化</h3>
+          <span class="fig-note">各期 100% 積み上げ</span>
+          <button class="tbtn" type="button" data-target="t-mix" aria-expanded="false">表で見る</button>
+        </div>
+        <div class="chart" id="c-mix"></div>
+        <div class="legend" id="l-mix"></div>
+        <div class="tablewrap" id="t-mix" hidden></div>
+      </div>
+      <div class="fig">
+        <div class="fig-head">
+          <h3>ライセンス配布状況</h3>
+          <span class="fig-note">全社 4,820ライセンス</span>
+        </div>
+        <div class="chart" id="c-donut"></div>
+        <div class="legend" id="l-donut"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 定着 -->
+  <section class="sec" id="s5">
+    <div class="sec-head">
+      <div class="sec-no">05</div>
+      <div>
+        <h2>配布から定着まで</h2>
+        <p>ライセンスを配っただけでは使われません。5段階でどこに脱落があるかを見ます。右は部門別の上期目標に対する達成率です。</p>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="fig">
+        <div class="fig-head">
+          <h3>定着ファネル</h3>
+          <span class="fig-note">単位: 名／括弧内は前段階からの継続率</span>
+        </div>
+        <div class="chart" id="c-funnel"></div>
+      </div>
+      <div class="fig">
+        <div class="fig-head">
+          <h3>上期目標に対する達成率</h3>
+          <span class="fig-note">100%で目標到達</span>
+        </div>
+        <div class="meters" id="c-meters"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 分布 -->
+  <section class="sec" id="s6">
+    <div class="sec-head">
+      <div class="sec-no">06</div>
+      <div>
+        <h2>使われ方の分布</h2>
+        <p>左は拠点区分ごとの「利用頻度×満足度」、円の大きさは対象人数です。右は問い合わせが集中する曜日と時間帯を示します。</p>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="fig">
+        <div class="fig-head">
+          <h3>利用頻度と満足度の関係</h3>
+          <span class="fig-note">円の面積 = 対象人数</span>
+        </div>
+        <div class="chart" id="c-scatter"></div>
+        <div class="legend" id="l-scatter"></div>
+      </div>
+      <div class="fig">
+        <div class="fig-head">
+          <h3>ヘルプデスク問い合わせの集中時間帯</h3>
+          <span class="fig-note">上期累計 件数</span>
+        </div>
+        <div class="chart" id="c-heat"></div>
+        <div class="legend" id="l-heat"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 計画 -->
+  <section class="sec" id="s7">
+    <div class="sec-head">
+      <div class="sec-no">07</div>
+      <div>
+        <h2>下期の展開計画</h2>
+        <p>上期実績を踏まえた施策の予定です。状態は9月22日時点のものです。</p>
+      </div>
+    </div>
+    <div class="fig">
+      <div class="fig-head"><h3>ロードマップ</h3></div>
+      <div class="tl" id="c-timeline"></div>
+    </div>
+  </section>
+
+  <!-- 08 比較・現場の声 -->
+  <section class="sec" id="s8">
+    <div class="sec-head">
+      <div class="sec-no">08</div>
+      <div>
+        <h2>ツール比較と現場の声</h2>
+        <p>候補となる基盤の比較と、ヒアリングで得られたコメントです。コメントは所属・役割のみ記載しています。</p>
+      </div>
+    </div>
+    <div class="fig">
+      <div class="fig-head"><h3>基盤比較</h3></div>
+      <div class="tablewrap" id="c-compare"></div>
+    </div>
+    <div class="grid3" style="margin-top:16px" id="c-voices"></div>
+  </section>
+
+  <!-- 使い方 -->
+  <section class="sec" id="s9">
+    <div class="sec-head">
+      <div class="sec-no">09</div>
+      <div>
+        <h2>このテンプレートの使い方</h2>
+        <p>差し替え箇所は1か所にまとめてあります。数値を書き換えれば、グラフ・表・凡例はすべて自動で追従します。</p>
+      </div>
+    </div>
+    <div class="howto">
+      <h3>編集の手順</h3>
+      <ol>
+        <li>ソース内の <code>const DATA = { ... }</code> を探します。ページに出る数字・ラベル・出典はすべてここにあります。</li>
+        <li>数値を自分のデータに置き換えます。配列の長さを変えても（月を12件にする、部門を追加するなど）グラフ側が自動で合わせます。</li>
+        <li>色を変えたいときは先頭の <code>:root</code> にある <code>--s1</code>〜<code>--s8</code> を書き換えます。ダークモード用の値も同じ名前で下にあるので、2か所セットで変更してください。</li>
+        <li>不要な章は <code>&lt;section class="sec" id="s6"&gt;</code> ごと削除すればOKです。ナビの該当リンクも一緒に消してください。</li>
+        <li>PDFにするときは右上の「印刷 / PDF」から。章と図は改ページで切れないようにしてあります。</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div id="cv-sources"></div>
+  </footer>
+</main>
+
+<script>
+/* ==================================================================
+   ▼▼▼ 差し替えるのはこの DATA だけ ▼▼▼
+   ページ内の数字・ラベル・出典はすべてここから描画されます。
+   配列の件数を増減してもグラフ側が自動で追従します。
+   ================================================================== */
+const DATA = {
+  meta: {
+    eyebrow: "INTERNAL REPORT / FY2026 H1",
+    title: "社内AI活用状況レポート",
+    sub: "2026年度上期（4月〜9月）の全社利用状況をまとめたものです。対象は全従業員4,820名、集計は各基盤の利用ログとヘルプデスク起票データによります。",
+    meta: [
+      { k: "対象期間", v: "2026.04 – 2026.09" },
+      { k: "対象人数", v: "4,820 名" },
+      { k: "作成", v: "デジタル推進部" },
+      { k: "更新日", v: "2026.09.22" }
+    ],
+    sources: [
+      "各基盤の利用ログ（2026年4月1日〜9月20日集計）",
+      "ヘルプデスク起票データ（社内ITSM）",
+      "利用者アンケート n=1,204（2026年8月実施、回収率25.0%）"
+    ]
+  },
+
+  hero: {
+    label: "全社 週次アクティブ利用率",
+    value: 68.4, unit: "%",
+    delta: 21.6, deltaUnit: "pt", deltaNote: "前年同期比", upIsGood: true,
+    note: "週に1回以上いずれかのAI基盤を利用した人の割合。分母は全従業員4,820名、分子は3,298名。"
+  },
+
+  quarter: {
+    labels: ["25 Q3", "25 Q4", "26 Q1", "26 Q2"],
+    values: [31.5, 38.9, 51.3, 68.4],
+    unit: "%"
+  },
+
+  kpis: [
+    { label: "月間アクティブユーザー", value: 3298, unit: "名", delta: 18.2, upIsGood: true,
+      spark: [2214, 2290, 2388, 2461, 2570, 2688, 2794, 2901, 3012, 3118, 3210, 3298] },
+    { label: "1人あたり平均利用回数", value: 42.7, unit: "回/月", delta: 9.4, upIsGood: true,
+      spark: [33.1, 34.0, 35.2, 35.9, 36.8, 37.9, 38.6, 39.4, 40.2, 41.1, 41.8, 42.7] },
+    { label: "創出工数（推計）", value: 11240, unit: "時間/月", delta: 34.8, upIsGood: true,
+      spark: [6820, 7120, 7540, 7980, 8360, 8820, 9240, 9680, 10120, 10520, 10890, 11240] },
+    { label: "3か月継続率", value: 74.5, unit: "%", delta: 12.1, upIsGood: true,
+      spark: [60.2, 61.4, 62.8, 64.0, 65.7, 67.1, 68.4, 69.8, 71.0, 72.3, 73.4, 74.5] }
+  ],
+
+  trend: {
+    labels: ["4月", "5月", "6月", "7月", "8月", "9月"],
+    unit: "%",
+    series: [
+      { name: "Microsoft 365 Copilot", values: [38.2, 44.6, 51.3, 57.8, 63.1, 68.4] },
+      { name: "Copilot Studio エージェント", values: [8.4, 11.2, 15.6, 19.8, 24.3, 29.7] },
+      { name: "社内GPT基盤", values: [22.1, 24.0, 25.8, 26.4, 27.9, 28.6] }
+    ]
+  },
+
+  dept: {
+    unit: "%",
+    rows: [
+      { name: "開発", v: 81.6 }, { name: "マーケ", v: 76.1 }, { name: "営業", v: 72.4 },
+      { name: "CS", v: 69.3 }, { name: "コーポレート", v: 64.9 }, { name: "保守運用", v: 58.3 },
+      { name: "人事", v: 55.2 }, { name: "経理", v: 47.8 }, { name: "法務", v: 41.5 }
+    ]
+  },
+
+  rank: {
+    unit: "回/月",
+    rows: [
+      { name: "開発", v: 68.2 }, { name: "マーケティング", v: 57.4 }, { name: "営業", v: 51.9 },
+      { name: "カスタマーサポート", v: 46.3 }, { name: "コーポレート", v: 38.7 },
+      { name: "保守運用", v: 34.1 }, { name: "人事", v: 29.5 }, { name: "経理", v: 24.8 }
+    ]
+  },
+
+  mix: {
+    periods: ["25 Q4", "26 Q1", "26 Q2"],
+    cats: ["資料作成", "議事録要約", "メール下書き", "情報検索・要約", "コード生成", "データ分析"],
+    values: [
+      [34, 30, 26],
+      [21, 22, 20],
+      [18, 15, 13],
+      [12, 15, 17],
+      [9, 11, 14],
+      [6, 7, 10]
+    ]
+  },
+
+  donut: {
+    total: 4820, totalLabel: "全社ライセンス",
+    slices: [
+      { name: "利用中（週1回以上）", v: 3298 },
+      { name: "配布済・未利用", v: 862 },
+      { name: "未配布", v: 660 }
+    ]
+  },
+
+  funnel: [
+    { name: "ライセンス配布", v: 4160 },
+    { name: "初回ログイン", v: 3914 },
+    { name: "月1回以上の利用", v: 3602 },
+    { name: "週1回以上の利用", v: 3298 },
+    { name: "社内展開リーダー", v: 412 }
+  ],
+
+  meters: [
+    { name: "開発本部", v: 118, target: 100 },
+    { name: "マーケティング本部", v: 104, target: 100 },
+    { name: "営業本部", v: 96, target: 100 },
+    { name: "コーポレート本部", v: 83, target: 100 },
+    { name: "管理本部", v: 64, target: 100 }
+  ],
+
+  scatter: {
+    xLabel: "月間利用回数（回）", yLabel: "満足度（5点満点）",
+    series: [
+      { name: "本社", points: [
+        { x: 68.2, y: 4.4, r: 340, l: "開発" }, { x: 57.4, y: 4.2, r: 180, l: "マーケ" },
+        { x: 51.9, y: 4.0, r: 620, l: "営業" }, { x: 38.7, y: 3.7, r: 410, l: "コーポレート" },
+        { x: 29.5, y: 3.4, r: 150, l: "人事" }] },
+      { name: "支店", points: [
+        { x: 44.1, y: 3.9, r: 480, l: "西日本支店" }, { x: 36.8, y: 3.6, r: 390, l: "中部支店" },
+        { x: 31.2, y: 3.3, r: 260, l: "北海道支店" }, { x: 26.4, y: 3.1, r: 210, l: "九州支店" }] },
+      { name: "グループ会社", points: [
+        { x: 33.5, y: 3.5, r: 300, l: "A社" }, { x: 24.8, y: 2.9, r: 240, l: "B社" },
+        { x: 19.3, y: 2.7, r: 180, l: "C社" }] }
+    ]
+  },
+
+  heat: {
+    cols: ["8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"],
+    rows: ["月", "火", "水", "木", "金", "土", "日"],
+    unit: "件",
+    values: [
+      [4, 22, 38, 31, 9, 14, 29, 34, 27, 19, 8, 3],
+      [3, 18, 30, 26, 7, 12, 25, 28, 22, 15, 6, 2],
+      [3, 16, 27, 24, 6, 11, 23, 26, 20, 14, 5, 2],
+      [4, 19, 32, 28, 8, 13, 26, 30, 24, 16, 7, 3],
+      [5, 24, 41, 35, 10, 16, 33, 37, 30, 21, 9, 4],
+      [1, 2, 4, 5, 2, 2, 3, 4, 3, 2, 1, 0],
+      [0, 1, 2, 3, 1, 1, 2, 2, 2, 1, 1, 0]
+    ]
+  },
+
+  timeline: [
+    { when: "2026.10", t: "全社向け実践ハンズオン（第2期）", d: "未配布部門を優先に、4会場×2回で実施します。第1期の受講者満足度は4.3でした。", status: "進行中" },
+    { when: "2026.11", t: "Copilot Studio エージェント社内テンプレート公開", d: "問い合わせ一次対応・議事録整形の2種類を、部門がそのまま複製できる形で配布します。", status: "進行中" },
+    { when: "2026.12", t: "部門別ユースケース棚卸し", d: "利用率が50%を下回る4部門を対象に、業務単位でのヒアリングを行います。", status: "予定" },
+    { when: "2027.01", t: "未配布部門へのライセンス拡大", d: "660ライセンス分の追加配布。予算の最終確認が残っています。", status: "検討中" },
+    { when: "2027.02", t: "効果測定ダッシュボードの刷新", d: "現行の月次手集計を廃止し、ログ連携による自動更新に切り替えます。", status: "予定" },
+    { when: "2027.03", t: "下期成果報告会", d: "全社向けに上期・下期の実績と次年度方針を共有します。", status: "予定" }
+  ],
+
+  compare: {
+    head: ["基盤", "主な用途", "カスタマイズ性", "社外へのデータ送信", "現在の利用率", "推奨度"],
+    rows: [
+      ["Microsoft 365 Copilot", "資料作成・議事録・メール", "低（設定のみ）", "テナント内で完結", "68.4%", { pill: "good", text: "全社展開" }],
+      ["Copilot Studio エージェント", "定型問い合わせの自動化", "高（ローコード）", "接続先に依存", "29.7%", { pill: "good", text: "拡大中" }],
+      ["社内GPT基盤", "調査・要約・翻訳", "中（プロンプト設計）", "社内閉域", "28.6%", { pill: "warn", text: "用途を限定" }],
+      ["外部SaaS（個別契約）", "部門固有の専門用途", "中", "要個別審査", "4.2%", { pill: "crit", text: "原則不可" }]
+    ]
+  },
+
+  voices: [
+    { q: "議事録の整形に毎回1時間かけていたのが、10分で下書きまで出るようになりました。清書に集中できます。", who: "営業本部 / 内勤担当" },
+    { q: "最初は何を聞けばいいか分からなかったのですが、部門のテンプレート集が出てから使う回数が一気に増えました。", who: "コーポレート本部 / 総務" },
+    { q: "コード生成は便利な一方、レビューの負荷が上がった実感があります。使いどころの線引きが要ります。", who: "開発本部 / リードエンジニア" }
+  ]
+};
+/* ▲▲▲ 差し替えるのはここまで ▲▲▲ */
+
+
+/* ==================================================================
+   描画ロジック（通常は触る必要はありません）
+   ================================================================== */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const nf = (n, d) => Number(n).toLocaleString("ja-JP", { minimumFractionDigits: d ?? 0, maximumFractionDigits: d ?? 1 });
+const SER = i => `var(--s${(i % 8) + 1})`;
+const niceMax = v => { const p = Math.pow(10, Math.floor(Math.log10(v))); return Math.ceil(v / (p / 2)) * (p / 2); };
+
+/* ツールチップ */
+const tip = $("tip");
+function showTip(e, html) {
+  tip.innerHTML = html;
+  tip.style.left = e.clientX + "px";
+  tip.style.top = e.clientY - 8 + "px";
+  tip.style.opacity = "1";
+}
+function hideTip() { tip.style.opacity = "0"; }
+function bindTip(node, html) {
+  node.addEventListener("mousemove", e => showTip(e, html));
+  node.addEventListener("mouseleave", hideTip);
+}
+
+/* 形状 */
+function barV(x, y, w, h, r) {
+  r = Math.max(0, Math.min(r, w / 2, h));
+  return `M${x},${y + h} L${x},${y + r} Q${x},${y} ${x + r},${y} L${x + w - r},${y} Q${x + w},${y} ${x + w},${y + r} L${x + w},${y + h} Z`;
+}
+function barH(x, y, w, h, r) {
+  r = Math.max(0, Math.min(r, h / 2, w));
+  return `M${x},${y} L${x + w - r},${y} Q${x + w},${y} ${x + w},${y + r} L${x + w},${y + h - r} Q${x + w},${y + h} ${x + w - r},${y + h} L${x},${y + h} Z`;
+}
+function arcPath(cx, cy, r0, r1, a0, a1) {
+  const p = (r, a) => [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+  const big = a1 - a0 > Math.PI ? 1 : 0;
+  const [x1, y1] = p(r1, a0), [x2, y2] = p(r1, a1), [x3, y3] = p(r0, a1), [x4, y4] = p(r0, a0);
+  return `M${x1},${y1} A${r1},${r1} 0 ${big} 1 ${x2},${y2} L${x3},${y3} A${r0},${r0} 0 ${big} 0 ${x4},${y4} Z`;
+}
+function legend(host, items) {
+  $(host).innerHTML = items.map(it => `<span><i style="background:${it.c}"></i>${esc(it.n)}</span>`).join("");
+}
+function table(host, head, rows) {
+  $(host).innerHTML = `<table><thead><tr>${head.map((h, i) => `<th${i ? ' class="num"' : ""}>${esc(h)}</th>`).join("")}</tr></thead><tbody>${rows.map(r => `<tr>${r.map((c, i) => `<td${i ? ' class="num"' : ""}>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
+
+/* ---------- 表紙 ---------- */
+(function cover() {
+  const m = DATA.meta;
+  $("cv-eyebrow").textContent = m.eyebrow;
+  $("cv-title").textContent = m.title;
+  $("cv-sub").textContent = m.sub;
+  $("cv-meta").innerHTML = m.meta.map(x => `<div>${esc(x.k)}<b>${esc(x.v)}</b></div>`).join("");
+  $("cv-sources").innerHTML = `出典・注記<ul>${m.sources.map(s => `<li>${esc(s)}</li>`).join("")}</ul>`;
+})();
+
+/* ---------- ヒーロー数値 ---------- */
+(function hero() {
+  const h = DATA.hero;
+  $("hero-label").textContent = h.label;
+  $("hero-num").innerHTML = `${nf(h.value, 1)}<small>${esc(h.unit)}</small>`;
+  const good = h.delta >= 0 === h.upIsGood;
+  $("hero-delta").innerHTML =
+    `<span class="chip ${good ? "chip-up" : "chip-down"}">${h.delta >= 0 ? "▲" : "▼"} ${nf(Math.abs(h.delta), 1)}${esc(h.deltaUnit)}</span><span>${esc(h.deltaNote)}</span>`;
+  $("hero-note").textContent = h.note;
+})();
+
+/* ---------- 四半期の縦棒 ---------- */
+(function quarter() {
+  const d = DATA.quarter, W = 420, H = 190, m = { t: 26, r: 8, b: 26, l: 30 };
+  const iw = W - m.l - m.r, ih = H - m.t - m.b, max = niceMax(Math.max(...d.values));
+  const band = iw / d.values.length, bw = Math.min(24, band * 0.5);
+  let s = "";
+  for (let i = 0; i <= 4; i++) {
+    const y = m.t + ih - (ih * i) / 4;
+    s += `<line x1="${m.l}" y1="${y}" x2="${W - m.r}" y2="${y}" stroke="var(--rule)" stroke-width="1"/>`;
+    s += `<text x="${m.l - 7}" y="${y + 3.5}" text-anchor="end" font-size="9.5" fill="var(--ink-3)" font-family="var(--f-num)">${(max * i) / 4}</text>`;
+  }
+  d.values.forEach((v, i) => {
+    const h = (v / max) * ih, x = m.l + band * i + (band - bw) / 2, y = m.t + ih - h;
+    s += `<path d="${barV(x, y, bw, h, 4)}" fill="${i === d.values.length - 1 ? "var(--s1)" : "var(--q2)"}"/>`;
+    s += `<text x="${x + bw / 2}" y="${y - 7}" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink)" font-family="var(--f-num)">${nf(v, 1)}</text>`;
+    s += `<text x="${x + bw / 2}" y="${H - 8}" text-anchor="middle" font-size="10" fill="var(--ink-3)" font-family="var(--f-num)">${esc(d.labels[i])}</text>`;
+  });
+  s += `<line x1="${m.l}" y1="${m.t + ih}" x2="${W - m.r}" y2="${m.t + ih}" stroke="var(--rule-strong)" stroke-width="1"/>`;
+  $("c-quarter").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="四半期ごとの週次アクティブ利用率">${s}</svg>`;
+})();
+
+/* ---------- KPIタイル ---------- */
+(function kpis() {
+  $("kpis").innerHTML = DATA.kpis.map(k => {
+    const good = k.delta >= 0 === k.upIsGood;
+    const W = 180, H = 34, mn = Math.min(...k.spark), mx = Math.max(...k.spark), n = k.spark.length;
+    const px = i => (i / (n - 1)) * (W - 6) + 3;
+    const py = v => H - 5 - ((v - mn) / (mx - mn || 1)) * (H - 10);
+    const pts = k.spark.map((v, i) => `${px(i)},${py(v)}`).join(" ");
+    const spark = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true" style="height:34px">
+      <polyline points="${pts}" fill="none" stroke="var(--ink-3)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${px(n - 1)}" cy="${py(k.spark[n - 1])}" r="3.4" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/></svg>`;
+    return `<div class="kpi">
+      <div class="kpi-l">${esc(k.label)}</div>
+      <div class="kpi-v">${nf(k.value, k.value >= 1000 ? 0 : 1)}<small>${esc(k.unit)}</small></div>
+      <div class="kpi-d"><span class="chip ${good ? "chip-up" : "chip-down"}">${k.delta >= 0 ? "＋" : "−"}${nf(Math.abs(k.delta), 1)}%</span><span>前年同期比</span></div>
+      <div class="kpi-s">${spark}</div></div>`;
+  }).join("");
+})();
+
+/* ---------- 推移（折れ線＋クロスヘア） ---------- */
+(function trend() {
+  const d = DATA.trend, W = 900, H = 340, m = { t: 20, r: 74, b: 36, l: 44 };
+  const iw = W - m.l - m.r, ih = H - m.t - m.b, n = d.labels.length;
+  const max = niceMax(Math.max(...d.series.flatMap(s => s.values)));
+  const X = i => m.l + (iw * i) / (n - 1);
+  const Y = v => m.t + ih - (ih * v) / max;
+  let s = "";
+  for (let i = 0; i <= 4; i++) {
+    const y = m.t + ih - (ih * i) / 4;
+    s += `<line x1="${m.l}" y1="${y}" x2="${W - m.r}" y2="${y}" stroke="var(--rule)" stroke-width="1"/>`;
+    s += `<text x="${m.l - 9}" y="${y + 4}" text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="var(--f-num)">${(max * i) / 4}</text>`;
+  }
+  d.labels.forEach((l, i) => s += `<text x="${X(i)}" y="${H - 12}" text-anchor="middle" font-size="11.5" fill="var(--ink-3)">${esc(l)}</text>`);
+  s += `<line x1="${m.l}" y1="${m.t + ih}" x2="${W - m.r}" y2="${m.t + ih}" stroke="var(--rule-strong)" stroke-width="1"/>`;
+  s += `<line id="cross" x1="0" y1="${m.t}" x2="0" y2="${m.t + ih}" stroke="var(--rule-strong)" stroke-width="1" opacity="0"/>`;
+  const topIdx = d.series.reduce((a, s2, i) => s2.values[n - 1] > d.series[a].values[n - 1] ? i : a, 0);
+  d.series.forEach((se, si) => {
+    s += `<polyline points="${se.values.map((v, i) => `${X(i)},${Y(v)}`).join(" ")}" fill="none" stroke="${SER(si)}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    s += `<circle cx="${X(n - 1)}" cy="${Y(se.values[n - 1])}" r="4.5" fill="${SER(si)}" stroke="var(--surface)" stroke-width="2"/>`;
+    if (si === topIdx)
+      s += `<text x="${X(n - 1) + 11}" y="${Y(se.values[n - 1]) + 4}" font-size="12.5" font-weight="600" fill="var(--ink)" font-family="var(--f-num)">${nf(se.values[n - 1], 1)}${esc(d.unit)}</text>`;
+  });
+  d.labels.forEach((_, i) => {
+    const x0 = X(i) - iw / (n - 1) / 2;
+    s += `<rect class="hit" data-i="${i}" x="${x0}" y="${m.t}" width="${iw / (n - 1)}" height="${ih}" fill="transparent" style="cursor:crosshair"/>`;
+  });
+  const svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="基盤別の週次アクティブ利用率の推移">${s}</svg>`;
+  $("c-trend").innerHTML = svg;
+  const cross = $("c-trend").querySelector("#cross");
+  $("c-trend").querySelectorAll(".hit").forEach(r => {
+    const i = +r.dataset.i;
+    r.addEventListener("mousemove", e => {
+      cross.setAttribute("x1", X(i)); cross.setAttribute("x2", X(i)); cross.setAttribute("opacity", "1");
+      showTip(e, `<div style="margin-bottom:3px;opacity:.7">${esc(d.labels[i])}</div>` +
+        d.series.map((se, si) => `<div class="tr"><span><i style="background:${SER(si)}"></i>${esc(se.name)}</span><b>${nf(se.values[i], 1)}${esc(d.unit)}</b></div>`).join(""));
+    });
+    r.addEventListener("mouseleave", () => { cross.setAttribute("opacity", "0"); hideTip(); });
+  });
+  legend("l-trend", d.series.map((se, i) => ({ n: se.name, c: SER(i) })));
+  table("t-trend", ["基盤", ...d.labels], d.series.map(se => [esc(se.name), ...se.values.map(v => nf(v, 1))]));
+})();
+
+/* ---------- 部門別 縦棒 ---------- */
+(function dept() {
+  const d = DATA.dept, W = 520, H = 300, m = { t: 26, r: 8, b: 44, l: 34 };
+  const iw = W - m.l - m.r, ih = H - m.t - m.b, max = niceMax(Math.max(...d.rows.map(r => r.v)));
+  const band = iw / d.rows.length, bw = Math.min(24, band * 0.56);
+  let s = "";
+  for (let i = 0; i <= 4; i++) {
+    const y = m.t + ih - (ih * i) / 4;
+    s += `<line x1="${m.l}" y1="${y}" x2="${W - m.r}" y2="${y}" stroke="var(--rule)" stroke-width="1"/>`;
+    s += `<text x="${m.l - 7}" y="${y + 3.5}" text-anchor="end" font-size="9.5" fill="var(--ink-3)" font-family="var(--f-num)">${(max * i) / 4}</text>`;
+  }
+  d.rows.forEach((r, i) => {
+    const h = (r.v / max) * ih, x = m.l + band * i + (band - bw) / 2, y = m.t + ih - h;
+    s += `<path class="hit" data-i="${i}" d="${barV(x, y, bw, h, 4)}" fill="var(--s1)"/>`;
+    s += `<text x="${x + bw / 2}" y="${y - 6}" text-anchor="middle" font-size="10" font-weight="600" fill="var(--ink)" font-family="var(--f-num)">${nf(r.v, 1)}</text>`;
+    s += `<text x="${x + bw / 2}" y="${m.t + ih + 16}" text-anchor="middle" font-size="10" fill="var(--ink-3)" transform="rotate(-38 ${x + bw / 2} ${m.t + ih + 16})">${esc(r.name)}</text>`;
+  });
+  s += `<line x1="${m.l}" y1="${m.t + ih}" x2="${W - m.r}" y2="${m.t + ih}" stroke="var(--rule-strong)" stroke-width="1"/>`;
+  $("c-dept").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="部門別の利用率">${s}</svg>`;
+  $("c-dept").querySelectorAll(".hit").forEach(p => {
+    const r = d.rows[+p.dataset.i];
+    bindTip(p, `<div class="tr"><span>${esc(r.name)}</span><b>${nf(r.v, 1)}${esc(d.unit)}</b></div>`);
+  });
+  table("t-dept", ["部門", "利用率(%)"], d.rows.map(r => [esc(r.name), nf(r.v, 1)]));
+})();
+
+/* ---------- 上位8部門 横棒 ---------- */
+(function rank() {
+  const d = DATA.rank, rows = d.rows, W = 520, rowH = 30, m = { t: 6, r: 52, b: 6, l: 128 };
+  const H = m.t + m.b + rowH * rows.length, iw = W - m.l - m.r, max = niceMax(Math.max(...rows.map(r => r.v)));
+  const bh = Math.min(24, rowH - 10);
+  let s = "";
+  rows.forEach((r, i) => {
+    const y = m.t + rowH * i + (rowH - bh) / 2, w = (r.v / max) * iw;
+    s += `<rect x="${m.l}" y="${y}" width="${iw}" height="${bh}" fill="var(--surface-2)" rx="3"/>`;
+    s += `<path class="hit" data-i="${i}" d="${barH(m.l, y, w, bh, 4)}" fill="${i === 0 ? "var(--s1)" : "var(--q3)"}"/>`;
+    s += `<text x="${m.l - 10}" y="${y + bh / 2 + 4}" text-anchor="end" font-size="11.5" fill="var(--ink-2)">${esc(r.name)}</text>`;
+    s += `<text x="${m.l + w + 8}" y="${y + bh / 2 + 4}" font-size="11.5" font-weight="600" fill="var(--ink)" font-family="var(--f-num)">${nf(r.v, 1)}</text>`;
+  });
+  $("c-rank").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="1人あたり月間利用回数の上位8部門">${s}</svg>`;
+  $("c-rank").querySelectorAll(".hit").forEach(p => {
+    const r = rows[+p.dataset.i];
+    bindTip(p, `<div class="tr"><span>${esc(r.name)}</span><b>${nf(r.v, 1)}${esc(d.unit)}</b></div>`);
+  });
+})();
+
+/* ---------- 用途構成比 100%積み上げ ---------- */
+(function mix() {
+  const d = DATA.mix, W = 500, H = 320, m = { t: 12, r: 10, b: 30, l: 10 };
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const band = iw / d.periods.length, bw = Math.min(88, band * 0.62);
+  let s = "";
+  d.periods.forEach((p, pi) => {
+    const x = m.l + band * pi + (band - bw) / 2;
+    let acc = 0;
+    d.cats.forEach((c, ci) => {
+      const v = d.values[ci][pi], h = (v / 100) * ih;
+      const y = m.t + (acc / 100) * ih;
+      const gapTop = ci === 0 ? 0 : 1, gapBot = ci === d.cats.length - 1 ? 0 : 1;
+      const hh = Math.max(0, h - gapTop - gapBot);
+      s += `<rect class="hit" data-c="${ci}" data-p="${pi}" x="${x}" y="${y + gapTop}" width="${bw}" height="${hh}" fill="${SER(ci)}"/>`;
+      if (hh >= 20) s += `<text x="${x + bw / 2}" y="${y + gapTop + hh / 2 + 4}" text-anchor="middle" font-size="11" font-weight="600" fill="var(--on-s${(ci % 8) + 1})" font-family="var(--f-num)">${v}</text>`;
+      acc += v;
+    });
+    s += `<text x="${x + bw / 2}" y="${H - 10}" text-anchor="middle" font-size="11.5" fill="var(--ink-3)" font-family="var(--f-num)">${esc(p)}</text>`;
+  });
+  $("c-mix").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="四半期ごとの用途構成比">${s}</svg>`;
+  $("c-mix").querySelectorAll(".hit").forEach(r => {
+    const ci = +r.dataset.c, pi = +r.dataset.p;
+    bindTip(r, `<div style="margin-bottom:3px;opacity:.7">${esc(d.periods[pi])}</div><div class="tr"><span><i style="background:${SER(ci)}"></i>${esc(d.cats[ci])}</span><b>${d.values[ci][pi]}%</b></div>`);
+  });
+  legend("l-mix", d.cats.map((c, i) => ({ n: c, c: SER(i) })));
+  table("t-mix", ["用途", ...d.periods], d.cats.map((c, ci) => [esc(c), ...d.values[ci].map(v => v + "%")]));
+})();
+
+/* ---------- ライセンス ドーナツ ---------- */
+(function donut() {
+  const d = DATA.donut, W = 320, H = 260, cx = W / 2, cy = H / 2 - 4, r1 = 96, r0 = 62;
+  const total = d.slices.reduce((a, b) => a + b.v, 0);
+  const gap = 0.022;
+  let a = -Math.PI / 2, s = "";
+  d.slices.forEach((sl, i) => {
+    const sweep = (sl.v / total) * Math.PI * 2;
+    s += `<path class="hit" data-i="${i}" d="${arcPath(cx, cy, r0, r1, a + gap / 2, a + sweep - gap / 2)}" fill="${SER(i)}"/>`;
+    a += sweep;
+  });
+  s += `<text x="${cx}" y="${cy - 4}" text-anchor="middle" font-size="26" font-weight="600" fill="var(--ink)" font-family="var(--f-num)">${nf(total)}</text>`;
+  s += `<text x="${cx}" y="${cy + 15}" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">${esc(d.totalLabel)}</text>`;
+  $("c-donut").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="ライセンス配布状況">${s}</svg>`;
+  $("c-donut").querySelectorAll(".hit").forEach(p => {
+    const sl = d.slices[+p.dataset.i];
+    bindTip(p, `<div class="tr"><span><i style="background:${SER(+p.dataset.i)}"></i>${esc(sl.name)}</span><b>${nf(sl.v)}件 / ${nf((sl.v / total) * 100, 1)}%</b></div>`);
+  });
+  legend("l-donut", d.slices.map((sl, i) => ({ n: `${sl.name}　${nf((sl.v / total) * 100, 1)}%`, c: SER(i) })));
+})();
+
+/* ---------- 定着ファネル ---------- */
+(function funnel() {
+  const f = DATA.funnel, W = 500, rowH = 52, m = { t: 8, r: 10, b: 8, l: 10 };
+  const H = m.t + m.b + rowH * f.length, iw = W - m.l - m.r, max = f[0].v;
+  let s = "";
+  f.forEach((st, i) => {
+    const w = (st.v / max) * iw, y = m.t + rowH * i + 20, bh = 22;
+    const x = m.l + (iw - w) / 2;
+    s += `<rect class="hit" data-i="${i}" x="${x}" y="${y}" width="${w}" height="${bh}" fill="var(--o${i + 1})" rx="3"/>`;
+    s += `<text x="${m.l}" y="${y - 6}" font-size="11.5" font-weight="700" fill="var(--ink)">${esc(st.name)}</text>`;
+    const rate = i === 0 ? "" : `（前段階比 ${nf((st.v / f[i - 1].v) * 100, 1)}%）`;
+    s += `<text x="${W - m.r}" y="${y - 6}" text-anchor="end" font-size="11.5" fill="var(--ink-2)" font-family="var(--f-num)">${nf(st.v)}名 ${rate}</text>`;
+  });
+  $("c-funnel").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="配布から定着までのファネル">${s}</svg>`;
+  $("c-funnel").querySelectorAll(".hit").forEach(p => {
+    const i = +p.dataset.i, st = f[i];
+    bindTip(p, `<div class="tr"><span>${esc(st.name)}</span><b>${nf(st.v)}名</b></div><div class="tr"><span>配布からの通過率</span><b>${nf((st.v / f[0].v) * 100, 1)}%</b></div>`);
+  });
+})();
+
+/* ---------- 目標達成メーター ---------- */
+(function meters() {
+  const sev = v => v >= 100 ? "var(--good)" : v >= 80 ? "var(--s1)" : v >= 60 ? "var(--warn)" : "var(--critical)";
+  $("c-meters").innerHTML = DATA.meters.map(m => {
+    const c = sev(m.v), w = Math.min(100, (m.v / 120) * 100);
+    return `<div>
+      <div class="meter-top"><span>${esc(m.name)}</span><b style="color:${c}">${nf(m.v, 0)}%</b></div>
+      <div class="track" style="background:color-mix(in srgb, ${c} 16%, transparent)"><i style="width:${w}%;background:${c}"></i></div>
+    </div>`;
+  }).join("");
+})();
+
+/* ---------- 散布図（バブル） ---------- */
+(function scatter() {
+  const d = DATA.scatter, W = 520, H = 340, m = { t: 16, r: 18, b: 44, l: 44 };
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const all = d.series.flatMap(s => s.points);
+  const xMax = niceMax(Math.max(...all.map(p => p.x))), yMin = 2.5, yMax = 5;
+  const rMax = Math.max(...all.map(p => p.r));
+  const X = v => m.l + (v / xMax) * iw;
+  const Y = v => m.t + ih - ((v - yMin) / (yMax - yMin)) * ih;
+  const R = v => 6 + Math.sqrt(v / rMax) * 16;
+  let s = "";
+  for (let i = 0; i <= 5; i++) {
+    const y = m.t + ih - (ih * i) / 5, val = (yMin + ((yMax - yMin) * i) / 5).toFixed(1);
+    s += `<line x1="${m.l}" y1="${y}" x2="${W - m.r}" y2="${y}" stroke="var(--rule)" stroke-width="1"/>`;
+    s += `<text x="${m.l - 8}" y="${y + 4}" text-anchor="end" font-size="10" fill="var(--ink-3)" font-family="var(--f-num)">${val}</text>`;
+  }
+  for (let i = 0; i <= 4; i++) {
+    const x = m.l + (iw * i) / 4;
+    s += `<text x="${x}" y="${m.t + ih + 17}" text-anchor="middle" font-size="10" fill="var(--ink-3)" font-family="var(--f-num)">${(xMax * i) / 4}</text>`;
+  }
+  s += `<line x1="${m.l}" y1="${m.t + ih}" x2="${W - m.r}" y2="${m.t + ih}" stroke="var(--rule-strong)" stroke-width="1"/>`;
+  s += `<text x="${m.l + iw / 2}" y="${H - 8}" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">${esc(d.xLabel)}</text>`;
+  s += `<text x="14" y="${m.t + ih / 2}" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" transform="rotate(-90 14 ${m.t + ih / 2})">${esc(d.yLabel)}</text>`;
+  d.series.forEach((se, si) => se.points.forEach((p, pi) => {
+    s += `<circle class="hit" data-s="${si}" data-p="${pi}" cx="${X(p.x)}" cy="${Y(p.y)}" r="${R(p.r)}" fill="${SER(si)}" fill-opacity="0.72" stroke="var(--surface)" stroke-width="2"/>`;
+  }));
+  $("c-scatter").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="利用頻度と満足度の分布">${s}</svg>`;
+  $("c-scatter").querySelectorAll(".hit").forEach(c => {
+    const se = d.series[+c.dataset.s], p = se.points[+c.dataset.p];
+    bindTip(c, `<div style="margin-bottom:3px;opacity:.7"><i style="background:${SER(+c.dataset.s)}"></i>${esc(se.name)}</div>
+      <div class="tr"><span>${esc(p.l)}</span><b></b></div>
+      <div class="tr"><span>月間利用回数</span><b>${nf(p.x, 1)}回</b></div>
+      <div class="tr"><span>満足度</span><b>${nf(p.y, 1)}</b></div>
+      <div class="tr"><span>対象人数</span><b>${nf(p.r)}名</b></div>`);
+  });
+  legend("l-scatter", d.series.map((se, i) => ({ n: se.name, c: SER(i) })));
+})();
+
+/* ---------- ヒートマップ ---------- */
+(function heat() {
+  const d = DATA.heat, W = 520, cell = 30, m = { t: 22, r: 8, b: 8, l: 30 };
+  const cw = (W - m.l - m.r) / d.cols.length, ch = 26;
+  const H = m.t + m.b + ch * d.rows.length;
+  const max = Math.max(...d.values.flat());
+  const step = v => { const q = Math.ceil((v / max) * 7); return v === 0 ? "var(--surface-2)" : `var(--q${Math.max(1, Math.min(7, q))})`; };
+  let s = "";
+  d.cols.forEach((c, i) => s += `<text x="${m.l + cw * i + cw / 2}" y="${m.t - 8}" text-anchor="middle" font-size="9.5" fill="var(--ink-3)" font-family="var(--f-num)">${esc(c)}</text>`);
+  d.rows.forEach((r, ri) => {
+    s += `<text x="${m.l - 8}" y="${m.t + ch * ri + ch / 2 + 4}" text-anchor="end" font-size="10.5" fill="var(--ink-3)">${esc(r)}</text>`;
+    d.cols.forEach((c, ci) => {
+      const v = d.values[ri][ci];
+      s += `<rect class="hit" data-r="${ri}" data-c="${ci}" x="${m.l + cw * ci + 1}" y="${m.t + ch * ri + 1}" width="${cw - 2}" height="${ch - 2}" fill="${step(v)}" rx="2"/>`;
+    });
+  });
+  $("c-heat").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="曜日と時間帯ごとの問い合わせ件数">${s}</svg>`;
+  $("c-heat").querySelectorAll(".hit").forEach(r => {
+    const ri = +r.dataset.r, ci = +r.dataset.c;
+    bindTip(r, `<div class="tr"><span>${esc(d.rows[ri])}曜 ${esc(d.cols[ci])}時台</span><b>${nf(d.values[ri][ci])}${esc(d.unit)}</b></div>`);
+  });
+  $("l-heat").innerHTML = `<span style="color:var(--ink-3)">少ない</span>` +
+    [1, 2, 3, 4, 5, 6, 7].map(i => `<i style="background:var(--q${i});width:22px;height:11px;border-radius:2px;display:inline-block"></i>`).join("") +
+    `<span style="color:var(--ink-3)">多い（最大 ${max}${esc(d.unit)}）</span>`;
+})();
+
+/* ---------- ロードマップ ---------- */
+(function timeline() {
+  const col = st => st === "進行中" ? "var(--good)" : st === "検討中" ? "var(--warn)" : "var(--s1)";
+  $("c-timeline").innerHTML = DATA.timeline.map(t => `<div class="tl-item">
+    <span class="tl-dot" style="background:${col(t.status)}"></span>
+    <div class="tl-when">${esc(t.when)}　${esc(t.status)}</div>
+    <div class="tl-t">${esc(t.t)}</div>
+    <div class="tl-d">${esc(t.d)}</div></div>`).join("");
+})();
+
+/* ---------- 比較表 ---------- */
+(function compare() {
+  const d = DATA.compare;
+  const cls = { good: "p-good", warn: "p-warn", crit: "p-crit" };
+  $("c-compare").innerHTML = `<table><thead><tr>${d.head.map((h, i) => `<th${i === 4 ? ' class="num"' : ""}>${esc(h)}</th>`).join("")}</tr></thead><tbody>` +
+    d.rows.map(r => `<tr>${r.map((c, i) => {
+      if (typeof c === "object") return `<td><span class="pill ${cls[c.pill]}">${esc(c.text)}</span></td>`;
+      return `<td${i === 4 ? ' class="num"' : ""}${i === 0 ? ' style="font-weight:700"' : ""}>${esc(c)}</td>`;
+    }).join("")}</tr>`).join("") + "</tbody></table>";
+})();
+
+/* ---------- 現場の声 ---------- */
+(function voices() {
+  $("c-voices").innerHTML = DATA.voices.map((v, i) =>
+    `<figure class="voice" style="border-left-color:${SER(i)};margin:0"><p>「${esc(v.q)}」</p><footer>${esc(v.who)}</footer></figure>`).join("");
+})();
+
+/* ---------- 表示切替・印刷 ---------- */
+document.querySelectorAll(".tbtn").forEach(b => {
+  b.addEventListener("click", () => {
+    const t = $(b.dataset.target), open = t.hidden;
+    t.hidden = !open;
+    b.setAttribute("aria-expanded", String(open));
+    b.textContent = open ? "表を閉じる" : "表で見る";
+  });
+});
+$("printBtn").addEventListener("click", () => window.print());
+</script>
