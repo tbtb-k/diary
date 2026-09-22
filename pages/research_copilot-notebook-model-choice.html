@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Copilotノートブック内で思考モード（Think deeper）やモデル（Claude Opusなど）を選べるか、有償ライセンスで変わるかを公式ドキュメントで確認した調査メモ。調査日 2026年9月22日。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Copilotノートブックの思考モード</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F1F3F5;
+  --surface:#FFFFFF;
+  --surface-sunk:#EAEEF1;
+  --ink:#171B21;
+  --muted:#5B6673;
+  --line:#DCE1E6;
+  --line-strong:#C2CBD3;
+  --accent:#1F5C7A;
+  --accent-soft:#E4EEF3;
+  --ok:#2C6B50;
+  --ok-soft:#E1EFE7;
+  --warn:#8A5A15;
+  --warn-soft:#F5EBD9;
+  --none:#8C3B3B;
+  --none-soft:#F4E3E3;
+  --tag-official:#1F5C7A;
+  --tag-third:#6B5B8A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161B;
+    --surface:#1A1F26;
+    --surface-sunk:#141920;
+    --ink:#E6EAEF;
+    --muted:#9BA6B2;
+    --line:#2B323B;
+    --line-strong:#3C4753;
+    --accent:#7CBDDA;
+    --accent-soft:#1B2C36;
+    --ok:#87CBA4;
+    --ok-soft:#18271F;
+    --warn:#E2B36C;
+    --warn-soft:#2A2318;
+    --none:#E59696;
+    --none-soft:#2B1C1C;
+    --tag-official:#7CBDDA;
+    --tag-third:#B7A6D6;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161B;
+  --surface:#1A1F26;
+  --surface-sunk:#141920;
+  --ink:#E6EAEF;
+  --muted:#9BA6B2;
+  --line:#2B323B;
+  --line-strong:#3C4753;
+  --accent:#7CBDDA;
+  --accent-soft:#1B2C36;
+  --ok:#87CBA4;
+  --ok-soft:#18271F;
+  --warn:#E2B36C;
+  --warn-soft:#2A2318;
+  --none:#E59696;
+  --none-soft:#2B1C1C;
+  --tag-official:#7CBDDA;
+  --tag-third:#B7A6D6;
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  font-size:15px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{
+  max-width:780px;
+  margin:0 auto;
+  padding-inline:20px;
+  padding-block:40px 64px;
+}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+
+/* header */
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin:0 0 14px;
+}
+h1{
+  font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;
+  font-weight:700;
+  font-size:clamp(25px,5.4vw,36px);
+  line-height:1.4;
+  letter-spacing:.01em;
+  margin:0 0 20px;
+  text-wrap:balance;
+}
+.meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 24px;
+  padding-block:16px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  font-size:13px;
+  color:var(--muted);
+}
+.meta b{
+  display:block;
+  font-size:10.5px;
+  font-weight:500;
+  letter-spacing:.12em;
+  color:var(--muted);
+  opacity:.8;
+  font-family:"IBM Plex Mono",monospace;
+}
+.meta span{color:var(--ink);font-size:13.5px;line-height:1.6}
+
+/* verdict */
+.verdict{
+  margin-block:32px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-left:5px solid var(--accent);
+  padding:24px 22px;
+}
+.verdict h2{
+  font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;
+  font-size:18px;
+  font-weight:600;
+  line-height:1.65;
+  margin:0 0 12px;
+  text-wrap:balance;
+}
+.verdict p{margin:0 0 10px;font-size:14px;color:var(--muted)}
+.verdict p:last-child{margin-bottom:0}
+.verdict strong{color:var(--ink);font-weight:700}
+
+/* sections */
+section{margin-block:44px}
+h2.sec{
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.1em;
+  margin:0 0 6px;
+  padding-bottom:10px;
+  border-bottom:2px solid var(--ink);
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+}
+h2.sec em{
+  font-style:normal;
+  font-family:"IBM Plex Mono",monospace;
+  font-size:11px;
+  font-weight:400;
+  color:var(--muted);
+  letter-spacing:.04em;
+}
+.lead{font-size:13.5px;color:var(--muted);margin:14px 0 18px}
+
+/* table */
+.scroller{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:600px;font-size:13.5px}
+th,td{padding:13px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{
+  background:var(--surface-sunk);
+  font-size:11px;
+  letter-spacing:.08em;
+  font-weight:700;
+  color:var(--muted);
+  white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+tr.focus td{background:var(--accent-soft)}
+td.q{font-weight:500;line-height:1.6}
+td.note{color:var(--muted);font-size:12.5px;line-height:1.65}
+.pill{
+  display:inline-block;
+  white-space:nowrap;
+  font-size:11.5px;
+  font-weight:700;
+  padding:3px 9px;
+  border-radius:2px;
+  letter-spacing:.02em;
+}
+.p-ok{background:var(--ok-soft);color:var(--ok)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-none{background:var(--none-soft);color:var(--none)}
+.ref{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:11px;
+  color:var(--accent);
+  white-space:nowrap;
+}
+
+/* evidence */
+.ev{
+  display:grid;
+  grid-template-columns:38px 1fr;
+  gap:0 12px;
+  padding-block:18px;
+  border-bottom:1px solid var(--line);
+}
+.ev:last-of-type{border-bottom:none}
+.ev-n{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:12px;
+  color:var(--accent);
+  padding-top:2px;
+}
+.ev-title{margin:0 0 6px;font-size:14.5px;font-weight:700;line-height:1.6}
+.ev-title a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:3px}
+.ev-title a:hover{text-decoration-color:var(--accent)}
+.ev-bar{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-bottom:8px}
+.tag{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px;
+  letter-spacing:.06em;
+  padding:2px 7px;
+  border:1px solid currentColor;
+  border-radius:2px;
+}
+.t-official{color:var(--tag-official)}
+.t-third{color:var(--tag-third)}
+.ev-date{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted)}
+.ev-sum{margin:0 0 8px;font-size:13.5px;color:var(--muted);line-height:1.8}
+.ev-url{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px;
+  color:var(--muted);
+  opacity:.75;
+  word-break:break-all;
+  line-height:1.5;
+}
+
+/* alternatives */
+.alts{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.alt{background:var(--surface);border:1px solid var(--line);padding:20px 18px}
+.alt h3{margin:0 0 10px;font-size:15px;font-weight:700;line-height:1.6}
+.alt p{margin:0 0 14px;font-size:13.5px;color:var(--muted)}
+.alt dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:12.5px;border-top:1px dashed var(--line-strong);padding-top:12px}
+.alt dt{color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;padding-top:3px}
+.alt dd{margin:0;line-height:1.7}
+
+/* caution */
+ul.caution{margin:0;padding:0;list-style:none}
+ul.caution li{
+  position:relative;
+  padding-left:20px;
+  margin-bottom:12px;
+  font-size:13.5px;
+  line-height:1.85;
+}
+ul.caution li::before{
+  content:"";
+  position:absolute;
+  left:2px;
+  top:.72em;
+  width:7px;
+  height:7px;
+  background:var(--accent);
+}
+ul.caution b{font-weight:700}
+
+/* footer */
+footer{
+  margin-top:56px;
+  padding-top:22px;
+  border-top:1px solid var(--line);
+  font-size:12px;
+  color:var(--muted);
+}
+footer h3{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px;
+  letter-spacing:.12em;
+  font-weight:500;
+  margin:0 0 10px;
+}
+footer ol{margin:0 0 16px;padding-left:20px}
+footer li{margin-bottom:3px;line-height:1.7}
+.disclaim{font-size:11.5px;line-height:1.8;opacity:.85;margin:0}
+
+@media (max-width:420px){
+  .wrap{padding-block:28px 48px}
+  .verdict{padding:20px 16px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">調査メモ / Microsoft Copilot</p>
+  <h1>Copilotノートブックで<br>思考モードやモデルは選べるのか</h1>
+  <div class="meta">
+    <div><b>調査日</b><span class="mono">2026-09-22</span></div>
+    <div><b>調査対象</b><span>Copilotノートブック内のモデル選択・思考モード</span></div>
+    <div><b>確認の軸</b><span>無償（Copilot Chat）と有償ライセンスの差</span></div>
+  </div>
+</header>
+
+<div class="verdict">
+  <h2>有償ライセンスにしても、ノートブック内で思考モードやモデルを選べるようになるとは、公式ドキュメントでは確認できませんでした。</h2>
+  <p>「モデル＝回答を考えている頭脳」「思考モード（Think deeper）＝時間をかけてじっくり考えさせる設定」のことですが、この切り替えはあくまで <strong>ノートブックの外にある通常のCopilotチャット</strong> の機能として説明されています。ノートブック側の公式ページには、モデル選択や思考モードの記載が一切ありません。</p>
+  <p>一方で、有償ライセンスにすると確実に変わる点もあります。<strong>チャット側でのモデル選択（Claude Opusを含む）</strong>、<strong>混雑時も遅くなりにくい優先アクセス</strong>、そして <strong>ノートブックに入れられる参照の数と種類</strong> です。ここが実務上の判断材料になります。</p>
+</div>
+
+<section>
+  <h2 class="sec">可否マトリクス <em>Matrix</em></h2>
+  <p class="lead">網かけの行が、今回いただいた質問そのものに対応します。「✕ 記載なし」は「公式に書かれていない＝未確認」という意味で、「絶対にできない」と断定するものではありません。</p>
+  <div class="scroller">
+    <table>
+      <thead>
+        <tr>
+          <th style="min-width:200px">確認したいこと</th>
+          <th>無償（Copilot Chat）</th>
+          <th>有償（Copilotライセンス）</th>
+          <th style="min-width:170px">補足</th>
+          <th>根拠</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="focus">
+          <td class="q">ノートブック内で思考モードを選ぶ</td>
+          <td><span class="pill p-none">✕ 記載なし</span></td>
+          <td><span class="pill p-none">✕ 記載なし</span></td>
+          <td class="note">ノートブックの公式ページ群に、モデル選択・思考モードの記述が存在しません。</td>
+          <td class="ref">[2][4][5][6]</td>
+        </tr>
+        <tr class="focus">
+          <td class="q">ノートブック内でClaude Opusなどのモデルを選ぶ</td>
+          <td><span class="pill p-none">✕ 記載なし</span></td>
+          <td><span class="pill p-none">✕ 記載なし</span></td>
+          <td class="note">Opus 5の提供面としてWord・Excel・PowerPoint・チャット・Cowork・Studioが挙がる一方、ノートブックは挙がっていません。</td>
+          <td class="ref">[6][7]</td>
+        </tr>
+        <tr>
+          <td class="q">通常のチャットで思考モード（Think deeper）を使う</td>
+          <td><span class="pill p-warn">△ 条件付き</span></td>
+          <td><span class="pill p-ok">○ 可</span></td>
+          <td class="note">無償は「標準アクセス」で、混雑時に制限されたり別モデルに一時的に切り替わることがあります。有償は優先アクセス。</td>
+          <td class="ref">[2][3]</td>
+        </tr>
+        <tr>
+          <td class="q">通常のチャットでClaudeを選ぶ</td>
+          <td><span class="pill p-none">✕ 記載なし</span></td>
+          <td><span class="pill p-warn">△ 条件付き</span></td>
+          <td class="note">モデル選択にはCopilotライセンスが必要（デスクトップ／Web版アプリのみ）。さらに管理者がAnthropicモデルを許可する必要があります。</td>
+          <td class="ref">[1][8]</td>
+        </tr>
+        <tr>
+          <td class="q">ノートブックに追加できる参照の数</td>
+          <td><span class="pill p-warn">50件まで</span></td>
+          <td><span class="pill p-ok">300件超</span></td>
+          <td class="note">回答の根拠に使われるのは、無償が全50件、有償が先頭300件。</td>
+          <td class="ref">[5]</td>
+        </tr>
+        <tr>
+          <td class="q">ノートブックに追加できる参照の種類</td>
+          <td><span class="pill p-warn">Web URLのみ</span></td>
+          <td><span class="pill p-ok">○ 広い</span></td>
+          <td class="note">有償ではOutlookメール、Teams会議（文字起こし含む）、SharePointサイト・ページ、フォルダーも参照できます。</td>
+          <td class="ref">[5]</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">根拠 <em>Evidence</em></h2>
+  <p class="lead">公式ドキュメントを一次情報として優先し、第三者情報は補足としてのみ扱っています。日付は各ページに表示されている公開日・最終更新日です。</p>
+
+  <div class="ev">
+    <div class="ev-n">[1]</div>
+    <div>
+      <p class="ev-title"><a href="https://support.microsoft.com/en-us/microsoft-365-copilot/what-copilot-license-do-i-have">What Copilot license do I have</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">最終更新 2026-04（ページ表示: April 2026）</span></div>
+      <p class="ev-sum">ライセンスの見分け方として「Copilot Chat (Basic)／M365 Copilot (Basic)／M365 Copilot (Premium)」の3ラベルを提示。そのうえで「<strong>高度な推論（advanced reasoning）とモデル選択を含むCopilot体験を得るには管理者に連絡を</strong>」と案内しており、これらが有償アドオン側の機能であることを示しています。</p>
+      <p class="ev-url">support.microsoft.com/en-us/microsoft-365-copilot/what-copilot-license-do-i-have</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[2]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/copilot/overview">Overview of Microsoft Copilot Chat</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">最終更新 2026-09-10</span></div>
+      <p class="ev-sum">「Model selection in Copilot Chat」の節で、モデルセレクターが <strong>チャット画面の右上</strong> にあり、Auto／Quick response／Think deeper を選べると説明。Think deeperは「複雑な問いに対して時間をかけて計画・検証する深い推論モデル」と定義されています。<strong>ノートブック内での提供については言及がありません。</strong></p>
+      <p class="ev-url">learn.microsoft.com/en-us/copilot/overview</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[3]</div>
+    <div>
+      <p class="ev-title"><a href="https://support.microsoft.com/en-us/microsoft-365-copilot/standard-versus-priority-access-to-features-in-microsoft-365-copilot-chat">Standard versus priority access to features in Microsoft Copilot Chat</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">更新 2026-04-16 / 掲載更新 2026-08-18</span></div>
+      <p class="ev-sum">優先アクセス（有償）と標準アクセス（無償）の差を定義。対象機能に「<strong>models, and advanced reasoning</strong>」が明記されています。標準アクセスは需要が高い時間帯に一時的に制限されたり、応答が遅くなったり、<strong>別のモデルが一時的に使われることがある</strong>とも書かれています。</p>
+      <p class="ev-url">support.microsoft.com/en-us/microsoft-365-copilot/standard-versus-priority-access-to-features-in-microsoft-365-copilot-chat</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[4]</div>
+    <div>
+      <p class="ev-title"><a href="https://support.microsoft.com/en-us/microsoft-365-copilot/frequently-asked-questions-about-microsoft-365-copilot-notebooks">Frequently asked questions about Microsoft Copilot Notebooks</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">最終更新 2026-06（ページ表示: June 2026）</span></div>
+      <p class="ev-sum">ノートブックの利用にはCopilotまたはCopilot Chatライセンスと、SharePoint／OneDriveのサービスプランが必要と明記。Microsoft 365 Personal・Family・Premium・Proでも使えるとしています。<strong>モデル選択や思考モードに関するQ&amp;Aは含まれていません。</strong></p>
+      <p class="ev-url">support.microsoft.com/en-us/microsoft-365-copilot/frequently-asked-questions-about-microsoft-365-copilot-notebooks</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[5]</div>
+    <div>
+      <p class="ev-title"><a href="https://support.microsoft.com/en-us/microsoft-365-copilot/get-answers-and-insights-about-your-microsoft-365-copilot-notebook">Get answers and insights about your Microsoft Copilot Notebook</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">最終更新 2026-08（ページ表示: August 2026）</span></div>
+      <p class="ev-sum">ノートブックでの質問手順を説明する公式ページ。<strong>「Copilot Chat（無償）」と「Microsoft Copilot（有償）」を比較する表が掲載されており、差分は参照の種類と件数（Web URLのみ／50件 対 メール・Teams会議・SharePoint／300件超）です。</strong>ここでもモデル選択・思考モードには触れられていません。</p>
+      <p class="ev-url">support.microsoft.com/en-us/microsoft-365-copilot/get-answers-and-insights-about-your-microsoft-365-copilot-notebook</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[6]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/answers/questions/5730396/model-selector-within-a-notebook">model selector within a Notebook（Microsoft Q&amp;A）</a></p>
+      <div class="ev-bar"><span class="tag t-third">第三者</span><span class="ev-date">投稿・回答 2026-01-21</span></div>
+      <p class="ev-sum">「ノートブック内の会話でモデルを選べないのはなぜか」という質問に対し、「モデル選択は主にノートブック外の会話で利用でき、将来の実装予定については情報がない」と回答。<strong>ただしこれはAI生成の自動回答で、Microsoft社員による公式回答ではありません。</strong>今回の結論の裏付けとしては補足扱いにしています。</p>
+      <p class="ev-url">learn.microsoft.com/en-us/answers/questions/5730396/model-selector-within-a-notebook</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[7]</div>
+    <div>
+      <p class="ev-title"><a href="https://techcommunity.microsoft.com/blog/microsoft365copilotblog/available-today-anthropic-claude-opus-5-in-microsoft-365-copilot/4540524">Available today: Anthropic Claude Opus 5 in Microsoft 365 Copilot</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">公開 2026-07-24</span></div>
+      <p class="ev-sum">Claude Opus 5がモデルセレクターに追加される対象として、<strong>Word・Excel・PowerPoint・Copilot Chat・Copilot Cowork・Copilot Studio</strong> を列挙。ノートブックはこの一覧に含まれていません。提供状況は地域やテナント構成によって異なるとも明記されています。</p>
+      <p class="ev-url">techcommunity.microsoft.com/blog/microsoft365copilotblog/available-today-anthropic-claude-opus-5-in-microsoft-365-copilot/4540524</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[8]</div>
+    <div>
+      <p class="ev-title"><a href="https://support.microsoft.com/en-us/microsoft-365-copilot/use-claude-with-researcher-in-microsoft-365-copilot">Use Claude with Researcher in Microsoft Copilot</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">更新 2025-10-14 / 掲載更新 2026-08-18</span></div>
+      <p class="ev-sum">Claudeを使うには <strong>管理者がMicrosoft 365管理センターでAnthropicモデルへのアクセスを許可する必要がある</strong> と明記。さらに「<strong>モデル選択を使うにはMicrosoft Copilotライセンスが必要（デスクトップ版・Web版アプリのみ）</strong>」とも書かれています。</p>
+      <p class="ev-url">support.microsoft.com/en-us/microsoft-365-copilot/use-claude-with-researcher-in-microsoft-365-copilot</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">代替手段 <em>Workaround</em></h2>
+  <p class="lead">ノートブック内で直接切り替えられない前提に立った、現実的な進め方です。</p>
+  <div class="alts">
+    <div class="alt">
+      <h3>案A：考える場所と貯める場所を分ける</h3>
+      <p>じっくり考えさせたい問いは、ノートブックの外にある通常のCopilotチャットで、モデルセレクターからThink deeper（またはClaude）を選んで実行します。得られた結果をCopilotページとして保存し、それをノートブックの参照として追加すれば、深い推論の成果をノートブックに取り込めます。</p>
+      <dl>
+        <dt>難易度</dt><dd>低（画面を行き来するだけ）</dd>
+        <dt>追加コスト</dt><dd>Think deeperのみなら不要。Claudeを使うなら有償ライセンス＋管理者許可</dd>
+      </dl>
+    </div>
+    <div class="alt">
+      <h3>案B：Researcherエージェントを使う</h3>
+      <p>複数ステップの調査や深い推論が主目的なら、Copilotアプリの「エージェント」内にあるResearcherを使う方法があります。Researcherではモデルのドロップダウンから直接Claudeを選べることが公式に案内されています。</p>
+      <dl>
+        <dt>難易度</dt><dd>中（前提条件の確認が必要）</dd>
+        <dt>追加コスト</dt><dd>Copilotライセンス必須。加えて管理者によるAnthropicモデルの許可が必要</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">注意点 <em>Caveats</em></h2>
+  <ul class="caution">
+    <li><b>提供状況はテナント・地域・展開時期で変わります。</b>Microsoftの発表自体が「地域やテナント構成によって異なる」と明記しているため、ここでの「記載なし」は現時点の公式文書上の話であり、実機で画面を確認するのが確実です。</li>
+    <li><b>Anthropicのモデルは管理者が許可しないと選択肢に出ません。</b>有償ライセンスを付与しただけでは表示されないため、「課金したのに出てこない」という相談はこの設定が原因のことがあります。</li>
+    <li><b>「無償のCopilot」は2種類あります。</b>職場・学校アカウントのCopilot Chat（Basic）と、個人のMicrosoftアカウントで使うCopilotでは、できることが異なります。どちらの話かで回答が変わるため、最初に切り分けが必要です。</li>
+    <li><b>個人向けプランには機能差があります。</b>Microsoft 365 Personal・Family・Premiumでもノートブックは使えますが、Captureやマインドマップなど一部機能は対象外と明記されています。</li>
+    <li><b>ノートブック自体の制約も併せて説明すると親切です。</b>ノートブック内では画像生成やグラフ作成ができず、削除したノートブックは現時点では元に戻せません。</li>
+    <li><b>自分のライセンス種別はすぐ確認できます。</b>Microsoft 365にサインインし、ホーム画面の下部にある名前の下のラベル（Copilot Chat (Basic) / M365 Copilot (Basic) / M365 Copilot (Premium)）を見れば判別できます。</li>
+  </ul>
+</section>
+
+<footer>
+  <h3>出典日付一覧</h3>
+  <ol>
+    <li>[1] What Copilot license do I have — 最終更新 2026-04（公式）</li>
+    <li>[2] Overview of Microsoft Copilot Chat — 最終更新 2026-09-10（公式）</li>
+    <li>[3] Standard versus priority access — 更新 2026-04-16 / 掲載更新 2026-08-18（公式）</li>
+    <li>[4] Copilot Notebooks FAQ — 最終更新 2026-06（公式）</li>
+    <li>[5] Get answers and insights about your Notebook — 最終更新 2026-08（公式）</li>
+    <li>[6] Microsoft Q&amp;A: model selector within a Notebook — 2026-01-21（第三者・AI生成回答）</li>
+    <li>[7] Claude Opus 5 in Microsoft 365 Copilot — 公開 2026-07-24（公式）</li>
+    <li>[8] Use Claude with Researcher — 更新 2025-10-14 / 掲載更新 2026-08-18（公式）</li>
+  </ol>
+  <p class="disclaim">調査日: 2026年9月22日。本ページは公開情報のみに基づく調査メモです。Copilotの提供機能は頻繁に更新されるため、実際の導入判断の際は必ず最新の公式ドキュメントと実機の画面をご確認ください。</p>
+</footer>
+
+</div>
+</body>
+</html>
