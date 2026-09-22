@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="ピン留めしたCopilotチャットでWork IQがオフ表記に戻る現象について、公式ドキュメントで確認できる範囲と、原因を切り分けるための検証手順をまとめた調査メモ。調査日 2026年9月22日。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Work IQトグルの保持挙動</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F1F3F5;
+  --surface:#FFFFFF;
+  --surface-sunk:#EAEEF1;
+  --ink:#171B21;
+  --muted:#5B6673;
+  --line:#DCE1E6;
+  --line-strong:#C2CBD3;
+  --accent:#1F5C7A;
+  --accent-soft:#E4EEF3;
+  --ok:#2C6B50;
+  --ok-soft:#E1EFE7;
+  --warn:#8A5A15;
+  --warn-soft:#F5EBD9;
+  --none:#8C3B3B;
+  --none-soft:#F4E3E3;
+  --tag-official:#1F5C7A;
+  --tag-third:#6B5B8A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161B;
+    --surface:#1A1F26;
+    --surface-sunk:#141920;
+    --ink:#E6EAEF;
+    --muted:#9BA6B2;
+    --line:#2B323B;
+    --line-strong:#3C4753;
+    --accent:#7CBDDA;
+    --accent-soft:#1B2C36;
+    --ok:#87CBA4;
+    --ok-soft:#18271F;
+    --warn:#E2B36C;
+    --warn-soft:#2A2318;
+    --none:#E59696;
+    --none-soft:#2B1C1C;
+    --tag-official:#7CBDDA;
+    --tag-third:#B7A6D6;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161B;
+  --surface:#1A1F26;
+  --surface-sunk:#141920;
+  --ink:#E6EAEF;
+  --muted:#9BA6B2;
+  --line:#2B323B;
+  --line-strong:#3C4753;
+  --accent:#7CBDDA;
+  --accent-soft:#1B2C36;
+  --ok:#87CBA4;
+  --ok-soft:#18271F;
+  --warn:#E2B36C;
+  --warn-soft:#2A2318;
+  --none:#E59696;
+  --none-soft:#2B1C1C;
+  --tag-official:#7CBDDA;
+  --tag-third:#B7A6D6;
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  font-size:15px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:780px;margin:0 auto;padding-inline:20px;padding-block:40px 64px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 14px;
+}
+h1{
+  font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;
+  font-weight:700;font-size:clamp(25px,5.4vw,36px);line-height:1.4;
+  letter-spacing:.01em;margin:0 0 20px;text-wrap:balance;
+}
+.meta{
+  display:flex;flex-wrap:wrap;gap:8px 24px;padding-block:16px;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  font-size:13px;color:var(--muted);
+}
+.meta b{
+  display:block;font-size:10.5px;font-weight:500;letter-spacing:.12em;
+  color:var(--muted);opacity:.8;font-family:"IBM Plex Mono",monospace;
+}
+.meta span{color:var(--ink);font-size:13.5px;line-height:1.6}
+
+.verdict{
+  margin-block:32px;background:var(--surface);
+  border:1px solid var(--line);border-left:5px solid var(--accent);
+  padding:24px 22px;
+}
+.verdict h2{
+  font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;
+  font-size:18px;font-weight:600;line-height:1.65;margin:0 0 12px;text-wrap:balance;
+}
+.verdict p{margin:0 0 10px;font-size:14px;color:var(--muted)}
+.verdict p:last-child{margin-bottom:0}
+.verdict strong{color:var(--ink);font-weight:700}
+
+.hypo{
+  margin-block:28px;background:var(--surface-sunk);
+  border:1px dashed var(--line-strong);padding:20px 18px;
+}
+.hypo h3{
+  margin:0 0 10px;font-size:11px;letter-spacing:.12em;
+  font-family:"IBM Plex Mono",monospace;font-weight:500;color:var(--muted);
+}
+.hypo p{margin:0;font-size:14px;line-height:1.85}
+.hypo .quote{
+  font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;
+  font-size:15.5px;line-height:1.8;margin-bottom:10px;
+}
+
+section{margin-block:44px}
+h2.sec{
+  font-size:13px;font-weight:700;letter-spacing:.1em;margin:0 0 6px;
+  padding-bottom:10px;border-bottom:2px solid var(--ink);
+  display:flex;align-items:baseline;gap:10px;
+}
+h2.sec em{
+  font-style:normal;font-family:"IBM Plex Mono",monospace;
+  font-size:11px;font-weight:400;color:var(--muted);letter-spacing:.04em;
+}
+.lead{font-size:13.5px;color:var(--muted);margin:14px 0 18px}
+
+.scroller{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:13.5px}
+th,td{padding:13px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{
+  background:var(--surface-sunk);font-size:11px;letter-spacing:.08em;
+  font-weight:700;color:var(--muted);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+tr.focus td{background:var(--accent-soft)}
+td.q{font-weight:500;line-height:1.6}
+td.note{color:var(--muted);font-size:12.5px;line-height:1.65}
+.pill{
+  display:inline-block;white-space:nowrap;font-size:11.5px;font-weight:700;
+  padding:3px 9px;border-radius:2px;letter-spacing:.02em;
+}
+.p-ok{background:var(--ok-soft);color:var(--ok)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-none{background:var(--none-soft);color:var(--none)}
+.ref{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--accent);white-space:nowrap}
+
+/* steps */
+.steps{list-style:none;margin:0;padding:0}
+.steps>li{
+  display:grid;grid-template-columns:44px 1fr;gap:0 14px;
+  padding-block:20px;border-bottom:1px solid var(--line);
+}
+.steps>li:last-child{border-bottom:none}
+.s-n{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;
+  color:var(--accent);padding-top:3px;
+}
+.s-body h3{margin:0 0 8px;font-size:15px;font-weight:700;line-height:1.6}
+.s-body p{margin:0 0 8px;font-size:13.5px;color:var(--muted);line-height:1.85}
+.s-body p:last-child{margin-bottom:0}
+.s-watch{
+  display:inline-block;margin-top:4px;font-size:12.5px;
+  padding:6px 11px;background:var(--surface-sunk);border-left:3px solid var(--accent);
+  color:var(--ink);line-height:1.7;
+}
+.readout{
+  margin-top:20px;background:var(--surface);border:1px solid var(--line);padding:18px;
+}
+.readout h3{margin:0 0 12px;font-size:13px;font-weight:700;letter-spacing:.04em}
+.readout dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:10px 14px;font-size:13.5px}
+.readout dt{white-space:nowrap}
+.readout dd{margin:0;line-height:1.75;color:var(--muted)}
+.readout dd b{color:var(--ink)}
+
+.alts{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.alt{background:var(--surface);border:1px solid var(--line);padding:20px 18px}
+.alt h3{margin:0 0 10px;font-size:15px;font-weight:700;line-height:1.6}
+.alt p{margin:0 0 14px;font-size:13.5px;color:var(--muted)}
+.alt dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:12.5px;border-top:1px dashed var(--line-strong);padding-top:12px}
+.alt dt{color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;padding-top:3px}
+.alt dd{margin:0;line-height:1.7}
+
+.ev{display:grid;grid-template-columns:38px 1fr;gap:0 12px;padding-block:18px;border-bottom:1px solid var(--line)}
+.ev:last-of-type{border-bottom:none}
+.ev-n{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--accent);padding-top:2px}
+.ev-title{margin:0 0 6px;font-size:14.5px;font-weight:700;line-height:1.6}
+.ev-title a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:3px}
+.ev-title a:hover{text-decoration-color:var(--accent)}
+.ev-bar{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-bottom:8px}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;padding:2px 7px;border:1px solid currentColor;border-radius:2px}
+.t-official{color:var(--tag-official)}
+.t-third{color:var(--tag-third)}
+.ev-date{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted)}
+.ev-sum{margin:0 0 8px;font-size:13.5px;color:var(--muted);line-height:1.8}
+.ev-url{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);opacity:.75;word-break:break-all;line-height:1.5}
+
+ul.caution{margin:0;padding:0;list-style:none}
+ul.caution li{position:relative;padding-left:20px;margin-bottom:12px;font-size:13.5px;line-height:1.85}
+ul.caution li::before{content:"";position:absolute;left:2px;top:.72em;width:7px;height:7px;background:var(--accent)}
+ul.caution b{font-weight:700}
+
+footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+footer h3{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;font-weight:500;margin:0 0 10px}
+footer ol{margin:0 0 16px;padding-left:20px}
+footer li{margin-bottom:3px;line-height:1.7}
+.disclaim{font-size:11.5px;line-height:1.8;opacity:.85;margin:0}
+
+@media (max-width:420px){
+  .wrap{padding-block:28px 48px}
+  .verdict{padding:20px 16px}
+  .steps>li{grid-template-columns:34px 1fr;gap:0 10px}
+  .readout dl{grid-template-columns:1fr;gap:4px}
+  .readout dt{padding-top:6px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">調査メモ / Microsoft Copilot</p>
+  <h1>ピン留めしたチャットで<br>Work IQがオフに戻るのはなぜか</h1>
+  <div class="meta">
+    <div><b>調査日</b><span class="mono">2026-09-22</span></div>
+    <div><b>調査対象</b><span>Copilot ChatのWork IQトグルの保持挙動</span></div>
+    <div><b>前提</b><span>有償ライセンス（Microsoft Copilotアドオン）保有</span></div>
+  </div>
+</header>
+
+<div class="verdict">
+  <h2>「チャット開始時のWork IQの状態が、そのチャットに引き継がれている」という仮説は有力ですが、公式ドキュメントに記載はなく、裏付けは取れませんでした。</h2>
+  <p>Microsoftの公式ページには、Work IQのトグルが<strong>チャット単位で保存されるのか、アカウント全体の設定なのか</strong>がどこにも書かれていません。チャット履歴の公式ページにも「過去のチャットを開いて続けられる」とはありますが、<strong>当時の設定が復元されるかどうかは一切触れられていません</strong>。</p>
+  <p>ただし「有償ライセンスならWork IQは既定でオン」と明記されているため、<strong>常にオフで開かれること自体が通常の状態ではありません</strong>。原因の切り分けは、下の検証手順を10分ほど実行すれば自力で確定できます。</p>
+</div>
+
+<div class="hypo">
+  <h3>検証したい仮説</h3>
+  <p class="quote">最初にWork IQをオフのまま会話を始めてピン留めし、その後オンに切り替えた。しかしピン留めしたチャットに戻ると、開始当時のオフの状態で開かれる。</p>
+  <p>つまり「Work IQの状態がチャットごとに記録されていて、開き直すと当時の値が復元される」という説です。これが正しければ不具合ではなく仕様で、対処は「チャットを立て直す」になります。</p>
+</div>
+
+<section>
+  <h2 class="sec">可否マトリクス <em>Matrix</em></h2>
+  <p class="lead">網かけの行が、今回の仮説に直接関わる部分です。「✕ 記載なし」は「公式に書かれていない＝未確認」という意味で、「そうならない」と断定するものではありません。</p>
+  <div class="scroller">
+    <table>
+      <thead>
+        <tr>
+          <th style="min-width:230px">確認したいこと</th>
+          <th>判定</th>
+          <th style="min-width:210px">公式ドキュメントの状況</th>
+          <th>根拠</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="focus">
+          <td class="q">Work IQのオン/オフはチャット単位で保存されるか</td>
+          <td><span class="pill p-none">✕ 記載なし</span></td>
+          <td class="note">チャット単位か、アカウント全体の設定かを述べた記述が見つかりませんでした。</td>
+          <td class="ref">[1][2][3]</td>
+        </tr>
+        <tr class="focus">
+          <td class="q">ピン留め・履歴のチャットを開くと当時の状態が復元されるか</td>
+          <td><span class="pill p-none">✕ 記載なし</span></td>
+          <td class="note">チャット履歴の公式ページは「開いて続けられる」とのみ説明し、設定の復元には触れていません。</td>
+          <td class="ref">[3]</td>
+        </tr>
+        <tr>
+          <td class="q">有償ライセンスでWork IQは既定でオンか</td>
+          <td><span class="pill p-ok">○ 既定でオン</span></td>
+          <td class="note">「Work IQはMicrosoft Copilotアドオンライセンス保有者が利用でき、既定でオン」と明記されています。</td>
+          <td class="ref">[1]</td>
+        </tr>
+        <tr>
+          <td class="q">会話の途中でWork IQを切り替えられるか</td>
+          <td><span class="pill p-ok">○ 可</span></td>
+          <td class="note">「タスクに応じていつでもオン/オフを切り替えられる」と明記。トグルはチャット画面の左上にあります。</td>
+          <td class="ref">[1]</td>
+        </tr>
+        <tr>
+          <td class="q">オフのときに何が参照されるか</td>
+          <td><span class="pill p-ok">○ 明記あり</span></td>
+          <td class="note">オン＝社内データ＋Web、オフ＝Webと添付ファイルのみ。パーソナライズはどちらでも継続します。</td>
+          <td class="ref">[2]</td>
+        </tr>
+        <tr>
+          <td class="q">開発者向けAPIに会話ごとのグラウンディング設定があるか</td>
+          <td><span class="pill p-none">✕ 記載なし</span></td>
+          <td class="note">会話作成時のリクエストボディは空のJSONで、参照範囲を指定するパラメーターは見当たりません。※API側の話で、画面のトグルとは別系統の可能性あり。</td>
+          <td class="ref">[4]</td>
+        </tr>
+        <tr>
+          <td class="q">Work IQ オフ＝旧「Webモード」相当か</td>
+          <td><span class="pill p-warn">△ 未確認</span></td>
+          <td class="note">第三者のAI生成回答でそう説明されていますが、公式の明言は見つかりませんでした。</td>
+          <td class="ref">[5][6]</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">検証手順 <em>Verification</em></h2>
+  <p class="lead">仮説が正しいかどうかは、公式情報を待たなくても自分で確定できます。順番に意味があるので、この順で実施してください。所要10分程度です。</p>
+  <ol class="steps">
+    <li>
+      <div class="s-n">STEP 1</div>
+      <div class="s-body">
+        <h3>オフで始めたチャットを作る</h3>
+        <p>新規チャットを開き、Work IQを<b>オフにしたまま</b>何か1つ質問します。そのままピン留めして、いったん別の画面に移動してから戻ってきてください。</p>
+        <span class="s-watch">見るポイント：オフのままか（ここはオフで正常）</span>
+      </div>
+    </li>
+    <li>
+      <div class="s-n">STEP 2</div>
+      <div class="s-body">
+        <h3>同じチャットの途中でオンに切り替える</h3>
+        <p>STEP 1で作ったチャットの中で、Work IQを<b>オンに切り替えて</b>もう1つ質問します。そのあとチャットを閉じて、ピン留めから開き直します。</p>
+        <p>ここが今回の本丸です。開始当時の状態が復元されるなら、オンにしたはずなのにオフで開かれます。</p>
+        <span class="s-watch">見るポイント：オンが保たれるか、オフに戻るか</span>
+      </div>
+    </li>
+    <li>
+      <div class="s-n">STEP 3</div>
+      <div class="s-body">
+        <h3>最初からオンで始めたチャットを作る</h3>
+        <p>今度は新規チャットを<b>最初からWork IQオンの状態で</b>開始し、質問してからピン留め。閉じて開き直します。STEP 2との違いが答えになります。</p>
+        <span class="s-watch">見るポイント：オンのままで開かれるか</span>
+      </div>
+    </li>
+  </ol>
+
+  <div class="readout">
+    <h3>結果の読み方</h3>
+    <dl>
+      <dt><span class="pill p-warn">2でオフ / 3でオン</span></dt>
+      <dd><b>仮説どおり。</b>チャット開始時の状態が固定される仕様と考えられます。対処は「チャットの立て直し」になります（下の案A）。</dd>
+      <dt><span class="pill p-none">2でオフ / 3でもオフ</span></dt>
+      <dd><b>別の原因。</b>開始時の状態に関係なくオフになるので、ライセンスやサービスプラン、あるいはUI側の不具合を疑います。管理者に <span class="mono">M365_COPILOT_BUSINESS_CHAT</span> サービスプランの状態を確認してもらってください。</dd>
+      <dt><span class="pill p-ok">2でオンが保持</span></dt>
+      <dd><b>再現条件が別にあります。</b>特定のスレッドだけで起きるなら、そのスレッドの作成時期（UI移行期に作られたものか）やクライアントの違い（Web版・デスクトップ版・Teams内）を比べてみてください。</dd>
+    </dl>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">対処法 <em>Workaround</em></h2>
+  <p class="lead">検証結果を待たずに今すぐ取れる現実解です。</p>
+  <div class="alts">
+    <div class="alt">
+      <h3>案A：用途別にチャットを立て直す</h3>
+      <p>社内データを使う前提のスレッドは、<b>最初からWork IQをオンにした状態で新規作成</b>し、ピン留めし直します。既存スレッドの内容は、Copilotページに保存するかノートブックに移せば失われません。仮説が正しければこれで恒久的に解決します。</p>
+      <dl>
+        <dt>難易度</dt><dd>低（作り直すだけ）</dd>
+        <dt>副作用</dt><dd>ピン留めの並びが変わる／過去の文脈は引き継がれない</dd>
+      </dl>
+    </div>
+    <div class="alt">
+      <h3>案B：作業をノートブックに寄せる</h3>
+      <p>継続的に使う資料があるなら、ノートブックに参照として明示的に追加する運用に切り替えます。参照を自分で指定する方式なので、<b>Work IQのオン/オフに左右されにくい</b>のが利点です。</p>
+      <dl>
+        <dt>難易度</dt><dd>中（運用の切り替えが必要）</dd>
+        <dt>副作用</dt><dd>ノートブック側の制約（画像・グラフ生成不可など）を受ける</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">根拠 <em>Evidence</em></h2>
+  <p class="lead">公式ドキュメントを一次情報として優先しています。日付は各ページに表示されている公開日・最終更新日です。</p>
+
+  <div class="ev">
+    <div class="ev-n">[1]</div>
+    <div>
+      <p class="ev-title"><a href="https://support.microsoft.com/en-us/microsoft-365-copilot/what-information-does-copilot-use-to-answer-my-prompt">What information does Copilot use to answer my prompt?</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">最終更新 2026-09-15</span></div>
+      <p class="ev-sum">Work IQは「Microsoft Copilotアドオンライセンスを持つユーザーが利用できる」機能で、<strong>既定でオン</strong>と明記。トグルはチャット画面の左上にあり、<strong>タスクに応じていつでも切り替えられる</strong>とも書かれています。ただし<strong>その状態がどこに保存されるかの記述はありません。</strong></p>
+      <p class="ev-url">support.microsoft.com/en-us/microsoft-365-copilot/what-information-does-copilot-use-to-answer-my-prompt</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[2]</div>
+    <div>
+      <p class="ev-title"><a href="https://support.microsoft.com/en-us/microsoft-365-copilot/frequently-asked-questions-about-microsoft-365-copilot-chat">Frequently asked questions about Microsoft Copilot Chat</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">更新 2026-07-08</span></div>
+      <p class="ev-sum">Work IQトグルの意味を定義。「オンのときCopilotはMicrosoft 365の業務データとWebデータの両方を使い、オフのときはWebデータと添付ファイルのみに基づいて回答する」。<strong>保持の挙動や既定値、ピン留めチャットへの言及はありません。</strong></p>
+      <p class="ev-url">support.microsoft.com/en-us/microsoft-365-copilot/frequently-asked-questions-about-microsoft-365-copilot-chat</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[3]</div>
+    <div>
+      <p class="ev-title"><a href="https://support.microsoft.com/ja-jp/microsoft-365-copilot/how-microsoft-365-copilot-chat-history-works">Microsoft Copilot Chat履歴のしくみ</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">更新 2026-07-08</span></div>
+      <p class="ev-sum">チャット履歴は左側ナビの「チャット」に保持され、選択すれば読み返しも続きの会話もできると説明。名前の変更、ノートブックへの移動、削除も可能。<strong>ただし過去のチャットを開いたときに当時の設定が復元されるかどうかは、この公式ページでも触れられていません。</strong></p>
+      <p class="ev-url">support.microsoft.com/ja-jp/microsoft-365-copilot/how-microsoft-365-copilot-chat-history-works</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[4]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/work-iq/rest/copilotroot-post-conversations">Work IQ Chat API: 会話の作成</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">最終更新 2026-06-24</span></div>
+      <p class="ev-sum">開発者向けAPIで会話を作成する際、リクエストボディは空のJSONであり、<strong>参照範囲（グラウンディング）を会話ごとに指定するパラメーターは存在しません</strong>。参照制御は組織・権限レベルで扱われている様子です。ただしこれはAPIの話で、画面上のトグルが同じ仕組みとは限らないため、補足として扱っています。</p>
+      <p class="ev-url">learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/work-iq/rest/copilotroot-post-conversations</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[5]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-au/answers/questions/5953787/copilot-new-design-as-of-2026-05-28-work-mode-and">Copilot "New design" — "Work mode" and "Web mode" covered by "Work IQ"?（Microsoft Q&amp;A）</a></p>
+      <div class="ev-bar"><span class="tag t-third">第三者</span><span class="ev-date">投稿 2026-07-22</span></div>
+      <p class="ev-sum">「Work IQ オン＝旧・職場モード、オフ＝旧・Webモードに相当する」と説明され、質問者に受理されています。<strong>ただしAI生成の回答であり、Microsoft社員による公式回答ではありません。</strong>なお同じページには「新デザインではどこで切り替えるのか」という未回答のコメントも残っており、UIの分かりにくさが他ユーザーにも共有されている状況がうかがえます。</p>
+      <p class="ev-url">learn.microsoft.com/en-au/answers/questions/5953787/copilot-new-design-as-of-2026-05-28-work-mode-and</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[6]</div>
+    <div>
+      <p class="ev-title"><a href="https://chrismenardtraining.com/post/copilot-chat-how-to-toggle-between-work-iq-and-the-work-and-web-view/">Copilot Chat: How to Toggle Between Work IQ and the Work and Web View</a></p>
+      <div class="ev-bar"><span class="tag t-third">第三者</span><span class="ev-date">公開 2026-06-28 / 更新 2026-07-02</span></div>
+      <p class="ev-sum">Copilot Chatが旧「職場／Web」表示からWork IQレイアウトへ移行中であることを解説。切り替えは即座に反映され再起動は不要だが、<strong>いずれ旧表示は廃止されてWork IQに一本化される</strong>としています。<strong>この移行期にあるという事実自体が、古いスレッドが当時の表示状態を引きずる可能性の傍証になります。</strong></p>
+      <p class="ev-url">chrismenardtraining.com/post/copilot-chat-how-to-toggle-between-work-iq-and-the-work-and-web-view/</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">注意点 <em>Caveats</em></h2>
+  <ul class="caution">
+    <li><b>今回の結論は「仮説として有力だが、公式の裏付けは見つからなかった」です。</b>お客様に説明する際は、仕様と断定せず「検証で切り分けられる」という形で伝えるのが安全です。</li>
+    <li><b>有償ライセンスでも管理者設定で参照範囲が変わります。</b><span class="mono">M365_COPILOT_BUSINESS_CHAT</span>（Microsoft Copilot with Graph-grounded chat）というサービスプランが無効化されていると、Web中心のチャットになり、社内データの参照が弱まります。</li>
+    <li><b>UIが移行期です。</b>旧「職場／Webモード」からWork IQへの切り替えが段階的に進んでいるため、スレッドの作成時期によって挙動が異なる可能性があります。提供状況はテナント・地域・時期で変わります。</li>
+    <li><b>オンとオフでは保護の前提が変わる可能性があります。</b>第三者情報ではオフ＝Webモード相当とされ、エンタープライズデータ保護の扱いが異なりうると指摘されています。機微な情報を扱うスレッドでは、オフのまま会話を続けていないか確認したほうが安心です。</li>
+    <li><b>確定させる最短ルートはMicrosoftサポートへの報告です。</b>上の検証手順の結果と画面キャプチャを添えて問い合わせれば、仕様か不具合かの公式見解が得られます。検証結果があるだけで一次切り分けの往復を省けます。</li>
+  </ul>
+</section>
+
+<footer>
+  <h3>出典日付一覧</h3>
+  <ol>
+    <li>[1] What information does Copilot use to answer my prompt? — 最終更新 2026-09-15（公式）</li>
+    <li>[2] Frequently asked questions about Microsoft Copilot Chat — 更新 2026-07-08（公式）</li>
+    <li>[3] Microsoft Copilot Chat履歴のしくみ — 更新 2026-07-08（公式）</li>
+    <li>[4] Work IQ Chat API: 会話の作成 — 最終更新 2026-06-24（公式）</li>
+    <li>[5] Microsoft Q&amp;A: Work mode / Web mode covered by Work IQ? — 2026-07-22（第三者・AI生成回答）</li>
+    <li>[6] Copilot Chat: How to Toggle Between Work IQ and the Work and Web View — 2026-06-28公開 / 2026-07-02更新（第三者）</li>
+  </ol>
+  <p class="disclaim">調査日: 2026年9月22日。本ページは公開情報のみに基づく調査メモです。Copilotの提供機能とUIは頻繁に更新されるため、実際の判断の際は最新の公式ドキュメントと実機の画面をご確認ください。</p>
+</footer>
+
+</div>
+</body>
+</html>
