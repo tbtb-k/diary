@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copilot Studio 第1回講義</title>
+<style>
+:root{
+  --bg:#FAF9F5; --ink:#1F1E1C; --muted:#6E6A62; --faint:#9A958C;
+  --accent:#C2410C; --accent2:#8C6A9E; --soft:#FCEBDF; --soft2:#EFEAF3;
+  --line:#E3DED4; --ok:#3F7D58; --okbg:#E9F1EB; --warn:#A9721F; --warnbg:#F7EFDF;
+  --ink-inv:#F7F5F0; --slate:#2A2926;
+  --mono:"SFMono-Regular",Menlo,Consolas,"Courier New",monospace;
+  --sans:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Yu Gothic",Meiryo,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#141311;font-family:var(--sans);color:var(--ink);overflow:hidden;
+  -webkit-font-smoothing:antialiased;font-feature-settings:"palt" 1;}
+
+#viewport{position:fixed;inset:0;}
+#stage{width:1280px;height:720px;position:absolute;left:0;top:0;transform-origin:0 0;
+  background:var(--bg);box-shadow:0 24px 80px rgba(0,0,0,.55);border-radius:6px;overflow:hidden;}
+
+.slide{position:absolute;inset:0;padding:56px 72px 72px;display:none;flex-direction:column;background:var(--bg);}
+.slide.active{display:flex;animation:fade .32s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- typography ---------- */
+.kicker{font-size:14px;letter-spacing:.14em;color:var(--accent);font-weight:700;margin-bottom:12px;text-transform:uppercase}
+h1{font-size:52px;line-height:1.22;letter-spacing:-.02em;font-weight:800}
+h2{font-size:36px;line-height:1.3;letter-spacing:-.01em;font-weight:800;margin-bottom:6px}
+h3{font-size:20px;font-weight:800;letter-spacing:-.005em}
+.sub{font-size:19px;color:var(--muted);line-height:1.65;margin-top:10px}
+.lead{font-size:22px;line-height:1.75;color:var(--slate)}
+p{line-height:1.7}
+.hr{height:4px;width:56px;background:var(--accent);border-radius:2px;margin:14px 0 26px}
+.body{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;justify-content:safe center;gap:20px}
+.body.top{justify-content:flex-start}
+.body > *{flex:0 0 auto}
+em{font-style:normal;background:linear-gradient(transparent 62%, var(--soft) 62%);font-weight:700}
+strong{font-weight:800}
+.mono{font-family:var(--mono)}
+
+/* ---------- title slide ---------- */
+.slide.title{background:linear-gradient(155deg,#1F1E1C 0%,#332F2B 55%,#4A3A32 100%);color:var(--ink-inv);justify-content:center}
+.slide.title h1{font-size:62px;color:#fff}
+.slide.title .sub{color:#C9C3B8;font-size:21px}
+.slide.title .kicker{color:#F4A77E}
+.slide.title .meta{margin-top:44px;display:flex;gap:12px;flex-wrap:wrap}
+.slide.title .meta span{border:1px solid rgba(255,255,255,.28);color:#E4DED4;padding:8px 16px;border-radius:999px;font-size:14px}
+
+/* ---------- section divider ---------- */
+.slide.sec{background:var(--slate);color:var(--ink-inv);justify-content:center}
+.slide.sec .num{font-size:15px;letter-spacing:.2em;color:#F4A77E;font-weight:700;margin-bottom:14px}
+.slide.sec h1{font-size:48px;color:#fff}
+.slide.sec .sub{color:#B8B2A7;font-size:18px;margin-top:16px}
+.slide.sec .time{margin-top:26px;font-size:14px;color:#8C867B;font-family:var(--mono)}
+
+/* ---------- layout helpers ---------- */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.cols4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.c-2-3{display:grid;grid-template-columns:1fr 1.4fr;gap:26px}
+.stack{display:flex;flex-direction:column;gap:14px}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 22px;
+  box-shadow:0 1px 0 rgba(0,0,0,.02)}
+.card h3{margin-bottom:8px}
+.card p{font-size:15.5px;color:var(--muted);line-height:1.68}
+.card .ico{font-size:13px;font-weight:800;letter-spacing:.1em;color:var(--accent);margin-bottom:10px}
+.card.tint{background:var(--soft);border-color:#EBD7CC}
+.card.tint2{background:var(--soft2);border-color:#E0D6E8}
+.card.dark{background:var(--slate);border-color:#3B3934;color:var(--ink-inv)}
+.card.dark p{color:#B5AFA4}
+.card.dark h3{color:#fff}
+
+.big{font-size:40px;font-weight:800;line-height:1.4;letter-spacing:-.02em}
+.big .ac{color:var(--accent)}
+
+.steps{counter-reset:s;display:flex;flex-direction:column;gap:12px}
+.steps li{list-style:none;counter-increment:s;position:relative;padding:14px 18px 14px 60px;
+  background:#fff;border:1px solid var(--line);border-radius:12px;font-size:16px;line-height:1.6}
+.steps li::before{content:counter(s);position:absolute;left:16px;top:13px;width:28px;height:28px;
+  background:var(--accent);color:#fff;border-radius:8px;display:grid;place-items:center;font-size:14px;font-weight:800;font-family:var(--mono)}
+.steps li > b{display:block;font-size:16.5px;margin-bottom:2px}
+.steps li span{color:var(--muted);font-size:14.5px}
+
+.bul{display:flex;flex-direction:column;gap:11px;font-size:17.5px;line-height:1.6}
+.bul li{list-style:none;padding-left:26px;position:relative}
+.bul li::before{content:"";position:absolute;left:4px;top:11px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.bul.sm{font-size:15.5px;gap:8px}
+.bul.sm li::before{width:6px;height:6px;top:10px;left:6px}
+
+pre{background:var(--slate);color:#EDE7DC;border-radius:12px;padding:20px 22px;font-family:var(--mono);
+  font-size:14.5px;line-height:1.72;overflow:auto;border:1px solid #3A3833}
+pre.light{background:#fff;color:var(--ink);border:1px solid var(--line)}
+pre .k{color:#F4A77E}
+pre .c{color:#8C867B}
+pre .s{color:#9FC7A9}
+code.inl{font-family:var(--mono);font-size:.9em;background:#EFEBE2;border:1px solid var(--line);
+  padding:2px 7px;border-radius:6px}
+
+table.tbl{width:100%;border-collapse:collapse;font-size:15.5px;background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+table.tbl th{background:var(--slate);color:#fff;text-align:left;padding:12px 16px;font-size:14px;font-weight:700;letter-spacing:.02em}
+table.tbl td{padding:12px 16px;border-top:1px solid var(--line);line-height:1.55;vertical-align:top}
+table.tbl tr:nth-child(even) td{background:#FCFBF8}
+table.tbl td.hl{font-weight:700}
+table.tbl.cmp td:last-child{background:#F7F0EA}
+table.tbl.cmp tr:nth-child(even) td:last-child{background:#F3EBE3}
+table.tbl.cmp th:last-child{background:#3A322D}
+
+.note{border-left:4px solid var(--accent);background:var(--soft);padding:14px 18px;border-radius:0 10px 10px 0;font-size:15.5px;line-height:1.65}
+.note.ok{border-color:var(--ok);background:var(--okbg)}
+.note.warn{border-color:var(--warn);background:var(--warnbg)}
+.note > b:first-child{display:block;margin-bottom:3px}
+
+.gb{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.gb .box{border-radius:14px;padding:20px;border:1px solid}
+.gb .bad{background:#FBEEEC;border-color:#EFD3CD}
+.gb .good{background:var(--okbg);border-color:#CFE2D5}
+.gb .tag{font-size:13px;font-weight:800;letter-spacing:.06em;margin-bottom:10px;display:inline-block;padding:3px 10px;border-radius:6px}
+.gb .bad .tag{background:#C0503C;color:#fff}
+.gb .good .tag{background:var(--ok);color:#fff}
+.gb p{font-size:15.5px;line-height:1.65}
+.gb .q{font-family:var(--mono);font-size:14px;background:rgba(255,255,255,.75);padding:10px 12px;border-radius:8px;margin-top:10px;line-height:1.6}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:13.5px;padding:6px 13px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--muted)}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}
+
+.flow{display:flex;align-items:stretch;gap:0}
+.flow .st{flex:1;background:#fff;border:1px solid var(--line);padding:18px 16px;position:relative}
+.flow .st:first-child{border-radius:12px 0 0 12px}
+.flow .st:last-child{border-radius:0 12px 12px 0}
+.flow .st + .st{border-left:none}
+.flow .st .n{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:800;letter-spacing:.1em}
+.flow .st h3{font-size:17px;margin:6px 0 6px}
+.flow .st p{font-size:14px;color:var(--muted);line-height:1.6}
+
+.layers{display:flex;flex-direction:column;gap:10px}
+.layer{display:grid;grid-template-columns:130px 1fr 150px;gap:18px;align-items:center;
+  background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 20px}
+.layer .lv{font-family:var(--mono);font-size:13px;font-weight:800;color:#fff;background:var(--accent);
+  padding:6px 10px;border-radius:8px;text-align:center}
+.layer .lv.l2{background:#B9714C}.layer .lv.l3{background:#96836E}
+.layer .d h3{font-size:16.5px}.layer .d p{font-size:14.5px;color:var(--muted);margin-top:3px}
+.layer .cost{font-family:var(--mono);font-size:13.5px;color:var(--muted);text-align:right}
+
+.tree{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px 16px;color:var(--slate);align-self:start}
+.tree .root{display:flex;align-items:baseline;gap:12px;padding-bottom:13px;border-bottom:1px solid var(--line)}
+.tree .root .fn{font-family:var(--mono);font-size:16.5px;font-weight:800;color:var(--accent)}
+.tree .root .rn{font-size:13px;color:var(--faint);line-height:1.4}
+.tree ul{list-style:none;margin-top:6px}
+.tree li{position:relative;display:grid;grid-template-columns:150px 42px 1fr;align-items:center;
+  gap:12px;padding:8px 0 8px 26px}
+.tree li::before{content:"";position:absolute;left:8px;top:0;bottom:0;width:1px;background:#CBC2B3}
+.tree li:last-child::before{bottom:50%}
+.tree li::after{content:"";position:absolute;left:8px;top:50%;width:13px;height:1px;background:#CBC2B3}
+.tree .tn{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--slate);letter-spacing:-.01em}
+.tree .tn .dir{color:var(--accent2)}
+.tree .tb{font-size:11px;font-weight:800;text-align:center;padding:3px 0;border-radius:5px;
+  background:#EDE8DE;color:#7C766C;letter-spacing:.06em}
+.tree .tb.req{background:var(--accent);color:#fff}
+.tree .td{font-size:14px;color:var(--muted);line-height:1.5}
+.tree .foot{margin-top:10px;padding-top:11px;border-top:1px dashed var(--line);
+  font-size:13px;color:var(--faint);line-height:1.5}
+
+.kv{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;font-size:16px;align-items:baseline}
+.kv dt{font-family:var(--mono);font-size:14px;color:var(--accent);font-weight:700;white-space:nowrap}
+.kv dd{color:var(--slate);line-height:1.6}
+
+.checkl{display:flex;flex-direction:column;gap:9px}
+.checkl li{list-style:none;padding:12px 16px 12px 44px;background:#fff;border:1px solid var(--line);
+  border-radius:10px;position:relative;font-size:15.5px;line-height:1.55}
+.checkl li::before{content:"";position:absolute;left:15px;top:14px;width:16px;height:16px;
+  border:2px solid var(--accent);border-radius:4px}
+
+.timer{position:absolute;top:24px;right:32px;font-family:var(--mono);font-size:12px;color:var(--faint);
+  border:1px solid var(--line);padding:5px 12px;border-radius:999px;background:#fff}
+.slide.sec .timer,.slide.title .timer{display:none}
+
+
+/* theme vars */
+:root{--panel:#F4F1EB;--frame:#D9D2C6;--mockbar:#EFEBE4;--mocknav:#FBFAF7;--gray:#ECE6DC;--acc2:#F4A77E;--dksub:#C9C3B8;--ng:#B2432F;--ngbg:#FBEEEC;--ngline:#EFD3CD;--rowalt:#FCFBF8;--cmp:#F7F0EA;--cmp2:#F3EBE3;--cmpth:#3A322D;--titlebg:linear-gradient(155deg,#1F1E1C,#332F2B 55%,#4A3A32)}
+body.theme-navy{--bg:#F6F8FA;--ink:#1D2733;--muted:#5B6878;--faint:#7D8996;--slate:#14263A;--line:#D5DDE6;--soft:#FDE8DC;--soft2:#E7ECF3;--panel:#EDF1F5;--frame:#CBD5E0;--mockbar:#E6EBF1;--mocknav:#F8FAFC;--gray:#E3E9EF;--dksub:#C8D3DF;--rowalt:#F8FAFC;--cmp:#FDF1EA;--cmp2:#FBE9DE;--cmpth:#1E3650;--titlebg:linear-gradient(155deg,#0E1C2B,#14263A 55%,#1F3A57)}
+body.theme-white{--bg:#FFFFFF;--ink:#1F2328;--muted:#59636E;--faint:#7C8691;--slate:#2B2F36;--line:#E3E6EA;--soft:#FDE8DC;--soft2:#EEF0F4;--panel:#F5F6F8;--frame:#D8DCE1;--mockbar:#EEF0F3;--mocknav:#FAFBFC;--gray:#E9ECEF;--dksub:#C5CBD3;--rowalt:#FAFBFC;--cmp:#FDF1EA;--cmp2:#FBE9DE;--cmpth:#3A3F47;--titlebg:linear-gradient(155deg,#1F2328,#2B2F36)}
+.slide.title{background:var(--titlebg)}
+table.tbl tr:nth-child(even) td{background:var(--rowalt)}
+table.tbl.cmp td:last-child{background:var(--cmp)}
+table.tbl.cmp tr:nth-child(even) td:last-child{background:var(--cmp2)}
+table.tbl.cmp th:last-child{background:var(--cmpth)}
+code.inl{background:var(--panel)}
+/* fixes */
+.note > b:first-child{display:block;margin-bottom:3px}
+.timer{top:18px;right:auto;left:72px}
+.steps li{padding:12px 18px 12px 60px}.steps li::before{top:12px}
+table.tbl td.hl{word-break:keep-all}
+a{color:var(--accent);text-underline-offset:3px}.slide.title a,.slide.sec a{color:var(--acc2)}
+.src{font-size:12.5px;color:var(--faint)}.muted{color:var(--muted)}
+.ui{display:inline-block;font-weight:700;font-size:.9em;background:#fff;border:1px solid var(--frame);border-radius:6px;padding:0 7px;line-height:1.55;color:var(--ink);white-space:nowrap}
+.split{display:grid;grid-template-columns:1.25fr 1fr;gap:26px;align-items:center}.split.even{grid-template-columns:1fr 1fr}.split.wide{grid-template-columns:1.6fr 1fr}
+/* icons */
+.ic{display:inline-block;width:1em;height:1em;vertical-align:-.14em;flex:none}.ic svg{width:100%;height:100%;display:block}
+.icc{display:inline-grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--slate);color:#fff;flex:none}.icc .ic{font-size:26px}
+.icc.ac{background:var(--accent)}.icc.ok{background:var(--ok)}.icc.lt{background:var(--soft);color:var(--accent)}
+.icc.sm{width:38px;height:38px}.icc.sm .ic{font-size:19px}.icc.lg{width:72px;height:72px}.icc.lg .ic{font-size:36px}
+.irow{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}.irow h3{font-size:17px}.irow p{font-size:14px;color:var(--muted);margin-top:2px}
+/* section path / progress */
+.path{display:flex;margin-top:34px;align-items:center}
+.path .p{display:flex;flex-direction:column;align-items:center;gap:8px;width:120px}
+.path .p i{width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,.3);display:grid;place-items:center;font-style:normal;font-family:var(--mono);font-size:13px;color:rgba(255,255,255,.55);font-weight:800}
+.path .p span{font-size:12.5px;color:rgba(255,255,255,.55);white-space:nowrap}
+.path .p.done i{background:rgba(255,255,255,.28);color:#fff}
+.path .p.now i{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 6px rgba(194,65,12,.3)}
+.path .p.now span{color:var(--acc2);font-weight:800}
+.path .ln{height:2px;width:40px;background:rgba(255,255,255,.3);margin-top:-26px}
+.prog{display:flex;gap:6px;align-items:center;font-size:12.5px;font-weight:800;color:var(--muted)}.prog i{width:34px;height:8px;border-radius:99px;background:var(--line)}.prog i.on{background:var(--accent)}
+/* mock (screen image) */
+.pin{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:800;font-family:var(--mono);vertical-align:middle;flex:none;line-height:1}.pin.s{width:16px;height:16px;font-size:10px}
+.hot{outline:2.5px solid var(--accent);outline-offset:2px;box-shadow:0 0 0 7px rgba(194,65,12,.14)}
+.pinlist{display:flex;flex-direction:column;gap:10px}
+.pinlist li{list-style:none;display:grid;grid-template-columns:24px 1fr;gap:12px;align-items:start;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.pinlist li .pin{margin-top:2px}.pinlist li>div>b{display:block;font-size:16px;line-height:1.45}.pinlist li>div>span{display:block;font-size:14px;color:var(--muted);line-height:1.55;margin-top:2px}
+.mock{background:#fff;border:1px solid var(--frame);border-radius:12px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.08);font-size:13px;color:var(--ink);line-height:1.5}
+.split>.mock{zoom:1.14}
+.mock .mbar{height:28px;background:var(--mockbar);display:flex;align-items:center;gap:6px;padding:0 12px;border-bottom:1px solid var(--frame)}
+.mock .mbar i{width:9px;height:9px;border-radius:50%;background:var(--frame);flex:none}
+.mock .mbar .url{margin-left:8px;background:#fff;border-radius:6px;padding:1px 10px;font-size:11px;color:var(--muted);font-family:var(--mono);flex:1}
+.mock .mnav{display:flex;align-items:center;gap:2px;padding:7px 12px;border-bottom:1px solid var(--line);background:var(--mocknav);font-size:12.5px}
+.mock .mnav .brand{font-weight:800;margin-right:10px;white-space:nowrap}.mock .mnav .t{padding:3px 8px;border-radius:6px;color:var(--muted);white-space:nowrap}.mock .mnav .t.on{background:var(--gray);color:var(--ink);font-weight:800}.mock .mnav .sp{flex:1}
+.mock .mbody{padding:14px 16px}.mock .mh{font-weight:800;font-size:14px;margin:4px 0 8px}.mock .mrow{display:flex;align-items:center;gap:8px;margin:8px 0}
+.mock .cap{font-size:10.5px;color:var(--faint);text-align:right;padding:0 12px 8px}
+.mbtn{display:inline-block;padding:4px 11px;border-radius:7px;border:1px solid var(--frame);background:#fff;font-weight:700;font-size:12px;white-space:nowrap}.mbtn.pri{background:var(--slate);color:#fff;border-color:var(--slate)}
+.fld{border:1px solid var(--frame);border-radius:8px;padding:6px 10px;background:#fff;margin-bottom:8px}.fld .lbl{font-size:10.5px;color:var(--faint);font-weight:800;letter-spacing:.04em}.fld .val{font-size:12.5px}
+.tgl{display:inline-block;width:34px;height:19px;border-radius:99px;background:var(--frame);position:relative;vertical-align:middle;flex:none}.tgl::after{content:"";position:absolute;left:2px;top:2px;width:15px;height:15px;border-radius:50%;background:#fff}.tgl.on{background:var(--ok)}.tgl.on::after{left:17px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tile{border:1px solid var(--frame);border-radius:9px;padding:8px 10px;background:var(--mocknav);font-weight:700;font-size:12px;text-align:center}
+.gbar{height:7px;border-radius:4px;background:var(--gray);margin:6px 0}
+.chk{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:4px;background:var(--accent);color:#fff;font-size:11px;font-weight:800;flex:none}
+.menu{background:#fff;border:1px solid var(--frame);border-radius:10px;box-shadow:0 12px 26px rgba(0,0,0,.12);padding:6px;font-size:13px}.menu div{padding:6px 10px;border-radius:6px}.menu div.on{background:var(--soft);font-weight:800}
+/* chat */
+.chat{display:flex;flex-direction:column;gap:9px}
+.msg{max-width:86%;padding:9px 13px;border-radius:14px;font-size:14px;line-height:1.6}
+.msg.u{align-self:flex-end;background:var(--slate);color:#fff;border-bottom-right-radius:4px}
+.msg.a{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg .who{display:block;font-size:10.5px;font-weight:800;letter-spacing:.06em;color:var(--accent)}.msg.u .who{color:var(--acc2)}
+.cite{display:inline-block;margin-top:5px;font-size:11px;background:var(--soft);border-radius:6px;padding:0 8px;color:var(--accent);font-weight:700}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+.panel .ph{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+/* flow nodes */
+.rowf{display:flex;align-items:stretch}.colf{display:flex;flex-direction:column}
+.nd{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;flex:1}
+.nd.l{text-align:left;align-items:flex-start}
+.nd h3{font-size:16.5px;line-height:1.4}.nd p{font-size:13.5px;color:var(--muted);line-height:1.55;margin-top:4px}
+.nd .lab{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--accent);margin-bottom:4px;font-family:var(--mono)}
+.nd .icc{margin-bottom:8px}
+.nd.dk{background:var(--slate);border-color:var(--slate);color:#fff}.nd.dk p{color:var(--dksub)}.nd.dk .lab{color:var(--acc2)}
+.nd.ac{background:var(--soft);border-color:var(--soft)}
+.nd.okk{background:var(--okbg);border-color:var(--okbg)}.nd.okk h3{color:var(--ok)}
+.nd.ng{background:var(--ngbg);border-color:var(--ngline)}.nd.ng h3{color:var(--ng)}
+.nd.pu{background:var(--soft2);border-color:var(--soft2)}
+.ar{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 8px;color:var(--accent);font-weight:800;font-size:22px;flex:none;min-width:40px}
+.ar small,.ard small{font-size:11px;color:var(--muted);font-weight:700}
+.ard{text-align:center;color:var(--accent);font-weight:800;font-size:20px;line-height:1.2}.ard small{display:block}
+/* decision flow (4 questions) */
+.dec{display:grid;grid-template-columns:1fr 44px 1fr 44px 1fr 44px 1fr 44px 1fr;row-gap:6px;align-items:stretch}
+.dec .q{background:#fff;border:2px solid var(--slate);border-radius:14px;padding:14px 10px;text-align:center;font-size:14.5px;font-weight:700;line-height:1.5;display:flex;flex-direction:column;justify-content:center}
+.dec .q small{display:block;font-size:11px;color:var(--accent);font-family:var(--mono);letter-spacing:.1em;margin-bottom:4px}
+.dec .res{background:var(--ok);color:#fff;border-radius:14px;padding:14px 10px;text-align:center;display:flex;flex-direction:column;justify-content:center}.dec .res b{font-size:22px}.dec .res span{font-size:12.5px;margin-top:4px}
+.dec .dn{text-align:center;color:var(--ng);font-weight:800;font-size:18px;line-height:1.1}.dec .dn small{display:block;font-size:11px}
+.dec .ngbar{grid-column:1/8;background:var(--ngbg);border:1.5px solid var(--ngline);border-radius:12px;padding:12px 16px;text-align:center;color:var(--ng);font-weight:800;font-size:15px}.dec .ngbar span{font-weight:500;color:var(--ink);font-size:13.5px;margin-left:8px}
+/* time */
+.gantt{display:grid;grid-template-columns:190px repeat(8,1fr);row-gap:10px;align-items:center}
+.gantt .gh{font-size:12.5px;font-weight:800;color:var(--muted);text-align:center;border-bottom:2px solid var(--line);padding-bottom:6px}
+.gantt .gl{font-weight:800;font-size:15px}.gantt .gl small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+.gantt .bar{height:40px;border-radius:10px;background:var(--accent);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;padding:0 12px;white-space:nowrap;margin:0 2px}
+.b1,.s1{background:#EDA37E!important}.b2,.s2{background:#E2875A!important}.b3,.s3{background:#D2692F!important}.b4,.s4{background:#C2410C!important}.b5,.s5{background:#9A3412!important}.sg{background:var(--slate)!important}
+.seg{display:flex;height:58px;border-radius:12px;overflow:hidden}
+.seg>div{display:flex;flex-direction:column;justify-content:center;padding:0 12px;color:#fff;font-size:13px;font-weight:700;line-height:1.35;border-right:2px solid var(--bg)}.seg>div:last-child{border-right:none}.seg>div small{font-family:var(--mono);font-size:11px;opacity:.85}
+.cyc{display:grid;grid-template-columns:1fr 50px 1fr;grid-template-rows:auto 44px auto;align-items:center}.cyc .nd{flex:none}.cyc .ar{padding:0}
+.cyc .mid{text-align:center;font-size:12.5px;font-weight:800;color:var(--accent);letter-spacing:.08em}
+/* scope / containers */
+.ten{border:2px dashed var(--frame);border-radius:16px;padding:12px 14px 14px}.ten .tl{font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.06em;margin-bottom:8px}
+.nest{border-radius:12px;padding:10px 12px;border:1.5px dashed var(--frame);background:var(--mocknav)}.nest .nl{font-weight:800;font-size:14px;margin-right:8px}
+.nest.n1{margin-top:10px;background:var(--panel)}.nest.n2{flex:1.3;background:var(--soft);border:2px solid var(--accent)}.nest.n3{background:#fff;border:1.5px solid var(--soft);margin-top:8px}.nest.n2g{flex:.7}
+.tree.w li{grid-template-columns:190px 48px 1fr}
+/* tags / cards / people / docs */
+.tg{display:inline-block;font-size:11.5px;font-weight:800;padding:2px 9px;border-radius:6px;letter-spacing:.04em;background:var(--gray);color:var(--muted)}
+.tg.ok{background:var(--okbg);color:var(--ok)}.tg.ng{background:var(--ngbg);color:var(--ng)}.tg.md{background:var(--warnbg);color:var(--warn)}.tg.ac{background:var(--soft);color:var(--accent)}
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:12px}.qa>div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.qa .q{font-weight:800;font-size:15px;display:flex;gap:8px;align-items:center}
+.qa .q::before{content:"Q";display:inline-grid;place-items:center;width:22px;height:22px;border-radius:6px;background:var(--slate);color:#fff;font-size:12px;font-family:var(--mono);flex:none}
+.qa .a{font-size:13.5px;color:var(--muted);line-height:1.6;margin-top:6px;padding-left:30px}
+.fixhead,.fixrow{display:grid;grid-template-columns:1fr 44px 1.35fr}.fixhead{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+.fixrow+.fixrow{margin-top:8px}.fixrow .nd{text-align:left;align-items:flex-start;padding:10px 14px}.fixrow .nd h3{font-size:15px}.fixrow .nd p{font-size:13px;margin-top:2px}
+.doc{background:#fff;border:1px solid var(--frame);border-radius:6px;padding:16px 18px;box-shadow:0 8px 20px rgba(0,0,0,.06);font-size:12.5px;line-height:1.6}
+.doc .dt{font-weight:800;font-size:15px;margin-bottom:6px}.doc .dh{font-weight:800;margin-top:8px}.hl2{background:#FFF1B8;font-weight:700;padding:0 3px}
+.anno{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:14.5px;line-height:1.95}.anno span{padding:2px 4px;border-radius:5px}.anno sup{font-size:11px;font-weight:800;font-family:var(--mono)}
+.k1{background:#FCE3D3}.k2{background:#E9E0F1}.k3{background:#DCEEE2}.k4{background:#FBEFC9}.k5{background:#DDE8F3}
+.legend{display:flex;flex-direction:column;gap:9px}.legend>div{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center}
+.legend i{font-style:normal;font-weight:800;font-family:var(--mono);text-align:center;border-radius:7px;padding:3px 0;font-size:13px}.legend b{display:block;font-size:14.5px}.legend span{font-size:12.5px;color:var(--muted)}
+/* ---- custom for this deck ---- */
+.fill{display:inline-block;border:1.5px dashed var(--accent);color:var(--accent);background:#fff;border-radius:6px;padding:0 8px;font-weight:700;font-size:.9em;line-height:1.6;white-space:nowrap}
+.slide.title .fill,.slide.sec .fill{background:transparent;color:var(--acc2);border-color:var(--acc2)}
+.mx{display:grid;grid-template-columns:70px repeat(3,1fr);grid-template-rows:repeat(3,92px) 34px;gap:8px}
+.mx .yl{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--muted)}
+.mx .xl{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--muted)}
+.mx .c{border-radius:12px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8px;font-weight:800;font-size:15px;line-height:1.35}
+.mx .c small{display:block;font-weight:500;font-size:12px;opacity:.85;margin-top:2px}
+.mx .m1{background:var(--accent);color:#fff}.mx .m2{background:#F4B38F;color:#5A2308}.mx .m3{background:var(--soft);color:var(--accent)}.mx .m4{background:var(--gray);color:var(--muted)}
+.axis{font-size:12.5px;color:var(--faint);font-weight:700;text-align:center}
+.grp{border-radius:14px;padding:14px 16px;background:#fff;border:1px solid var(--line);border-top:5px solid var(--slate)}
+.grp h3{font-size:16.5px;display:flex;gap:8px;align-items:center}.grp .gt{font-size:11.5px;font-weight:800;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
+.grp ul{margin-top:8px;display:flex;flex-direction:column;gap:5px}.grp li{list-style:none;font-size:13.5px;background:var(--panel);border-radius:7px;padding:4px 10px}
+.grp.a{border-top-color:#9AA7B6}.grp.b{border-top-color:var(--slate)}.grp.c{border-top-color:#D2692F}.grp.d{border-top-color:var(--accent)}
+.grp li.k{background:var(--soft);font-weight:700;color:var(--accent)}
+.bigtime{font-size:120px;font-weight:800;color:#fff;line-height:1;letter-spacing:-.03em}
+/* ==== v2: projection sizing ==== */
+.card{padding:24px 24px}.card h3{font-size:21px}.card p{font-size:16.5px}
+.nd{padding:16px 14px}.nd h3{font-size:18.5px}.nd p{font-size:14.5px}
+.irow h3{font-size:18.5px}.irow p{font-size:15px}
+.pinlist{gap:12px}.pinlist li{padding:14px 18px}.pinlist li>div>b{font-size:17.5px}.pinlist li>div>span{font-size:15px}
+.checkl li{font-size:17px}
+.note{font-size:16.5px;padding:15px 20px}
+table.tbl{font-size:16.5px}table.tbl th{font-size:14.5px;padding:13px 18px}table.tbl td{padding:13px 18px}
+.msg{font-size:15px}
+.qa{gap:14px}.qa>div{padding:16px 18px}.qa .q{font-size:17px}.qa .a{font-size:15px}
+.fixrow .nd h3{font-size:16.5px}.fixrow .nd p{font-size:13.5px}
+.split>.mock{zoom:1.3}
+.seg>div{font-size:15px}.seg>div small{font-size:12.5px}
+.layers{gap:12px}.layer{padding:18px 22px}.layer .d h3{font-size:19.5px}.layer .d p{font-size:15.5px}.layer .cost{font-size:14px}
+.gantt{row-gap:12px}.gantt .gl{font-size:16px}.gantt .bar{height:44px;font-size:14px}.gantt .gh{font-size:13.5px}
+.bul.sm{font-size:16.5px;gap:10px}
+.gb .box{padding:22px 24px}
+.panel{padding:16px 18px}.panel .ph{font-size:12.5px}
+.muted{font-size:inherit}
+/* ==== v2: title / section decoration ==== */
+.hero{position:absolute;right:84px;top:50%;width:420px;height:420px;margin-top:-210px}
+.hero .ring{position:absolute;border-radius:50%;border:1.5px solid rgba(255,255,255,.13)}
+.hero .r1{inset:0}.hero .r2{inset:62px;border-style:dashed;border-color:rgba(255,255,255,.18)}.hero .r3{inset:124px;border-color:rgba(244,167,126,.45);background:rgba(194,65,12,.12)}
+.hero .core{position:absolute;inset:124px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.hero .core b{font-family:var(--mono);font-size:12px;letter-spacing:.24em;color:var(--acc2)}
+.hero .orb{position:absolute;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);padding:6px 16px 6px 6px;border-radius:999px;color:#fff;font-weight:800;font-size:15px;white-space:nowrap}
+.hero .orb small{font-weight:500;color:var(--dksub);font-size:12px;margin-left:2px}
+.hero .o1{left:120px;top:-8px}.hero .o2{left:-40px;top:268px}.hero .o3{left:262px;top:290px}
+.hero .dot{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.slide.title h1,.slide.title .sub,.slide.title .meta,.slide.title .kicker{max-width:640px;position:relative}
+.bgnum{position:absolute;right:56px;bottom:-54px;font-size:360px;font-weight:800;line-height:1;color:rgba(255,255,255,.045);letter-spacing:-.04em;font-family:var(--sans);pointer-events:none}
+.slide.sec::before{content:"";position:absolute;left:0;top:0;bottom:0;width:10px;background:var(--accent)}
+.slide.sec .secic{position:absolute;right:120px;top:50%;margin-top:-70px;opacity:.9}
+/* ==== v2: layout helpers ==== */
+.cflow{display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;align-items:stretch}.cflow .ar{padding:0;min-width:0}
+.eq{display:grid;grid-template-columns:190px 46px 1fr 40px 1fr 40px 1fr;align-items:stretch}
+.eq .op{display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;color:var(--accent)}
+.eq .agent{background:var(--slate);color:#fff;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:16px}
+.eq .agent h3{font-size:21px;color:#fff}.eq .agent p{font-size:13.5px;color:var(--dksub);line-height:1.5}
+.eq .card{padding:20px 20px}.eq .card p{font-size:15.5px}
+.icard{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.icard h3{font-size:19px;line-height:1.4}.icard p{font-size:15.5px;color:var(--muted);line-height:1.6;margin-top:4px}
+.icard.tint{background:var(--soft);border-color:#F3D3BF}.icard .no{font-family:var(--mono);font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.1em;display:block;margin-bottom:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ticks{display:flex;font-family:var(--mono);font-size:13px;color:var(--muted);font-weight:700;margin-top:-10px}
+.ticks span{position:relative;white-space:nowrap}.ticks i{position:absolute;right:0;top:0;font-style:normal}
+.prow{display:flex;align-items:center;gap:8px;margin-bottom:9px}.prow>.fld{flex:1;margin:0}.prow>.pin{flex:none}
+.fcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px 16px;display:flex;flex-direction:column;gap:12px;position:relative;box-shadow:0 8px 20px rgba(20,38,58,.05)}
+.fcard::after{content:"";position:absolute;right:0;top:0;width:30px;height:30px;border-radius:0 14px 0 8px;background:linear-gradient(225deg,var(--bg) 50%,var(--frame) 50%)}
+.fcard .fh{display:flex;align-items:center;gap:12px}.fcard .fh b{font-size:17px;line-height:1.35}
+.ftype{font-family:var(--mono);font-size:11px;font-weight:800;color:#fff;background:var(--slate);border-radius:6px;padding:4px 7px;letter-spacing:.06em;flex:none}.ftype.pdf{background:var(--accent)}
+.fcard ul{display:flex;flex-direction:column;gap:6px;flex:1}.fcard li{list-style:none;font-size:15px;line-height:1.5;padding-left:16px;position:relative}.fcard li::before{content:"";position:absolute;left:2px;top:9px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.fq{background:var(--soft);border-radius:10px;padding:9px 12px;font-size:15px;font-weight:700}.fq small{display:block;font-size:11px;color:var(--accent);letter-spacing:.08em;font-weight:800}
+.grp4{display:grid;grid-template-columns:1fr 18px 1fr 34px 1fr 34px 1fr;align-items:stretch}.grp4 .ar{padding:0;min-width:0}
+.grp h3{font-size:18px}.grp li{font-size:14.5px;padding:5px 10px}
+.mx{grid-template-rows:repeat(3,100px) 34px}.mx .c{font-size:16.5px}.mx .c small{font-size:12.5px}
+.yax{writing-mode:vertical-rl}
+.secic .ic{font-size:64px!important}
+.bgnum{bottom:6px;line-height:.78;font-size:320px}
+.fixrow .nd{padding:9px 14px}
+.bgnum{bottom:0;height:250px;overflow:hidden;line-height:250px;font-size:300px}
+svg.bgnum{position:absolute;right:56px;bottom:20px;width:420px;height:260px;overflow:visible;line-height:normal}
+svg.bgnum text{font-size:300px;font-weight:800;fill:rgba(255,255,255,.05);letter-spacing:-12px;font-family:var(--sans)}
+/* v2 tweaks round 2 */
+.rowf .nd{padding:24px 14px;min-height:196px}
+.rowf .nd .icc{margin-bottom:10px}
+.path .p{width:132px}.path .p i{width:34px;height:34px;font-size:14px}.path .p span{font-size:14px}.path .ln{margin-top:-30px}
+.chip{font-size:15px;padding:7px 14px;display:inline-flex;align-items:center;gap:6px}
+.nest .nl{font-size:15.5px}.nest .tg{font-size:12.5px}
+.nest.n2,.nest.n2g{padding:14px 14px}.nest.n3{padding:14px 12px;margin-top:12px}
+.envt{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.envt > span{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;font-weight:700}
+.envt span .ic{color:var(--muted);font-size:18px}
+.envt.on > span{border-color:#F3C9AE}.envt.on span .ic{color:var(--accent)}
+.nest .nl .ic{color:var(--muted);margin-right:4px}
+
+/* ---------- dense variant ---------- */
+.slide.dense{padding:44px 68px 46px}
+.slide.dense .hr{margin:12px 0 18px}
+.slide.dense .body{gap:14px}
+.slide.dense .card{padding:16px 18px}
+.slide.dense .card h3{font-size:17.5px}
+.slide.dense .card p{font-size:14.6px;line-height:1.6}
+.slide.dense .card .ico{margin-bottom:7px}
+.slide.dense .steps{gap:9px}
+.slide.dense .steps li{padding:11px 16px 11px 54px;font-size:15px}
+.slide.dense .steps li::before{top:11px;left:14px}
+.slide.dense .steps li > b{font-size:15.5px;margin-bottom:1px}
+.slide.dense .steps li span{font-size:13.9px;line-height:1.55}
+.slide.dense .note{font-size:14.4px;padding:12px 16px;line-height:1.6}
+.slide.dense .lead{font-size:19px;line-height:1.65}
+.slide.dense .bul{font-size:16px;gap:9px}
+.slide.dense pre{font-size:12.8px;line-height:1.62;padding:16px 18px}
+.slide.dense pre.light{font-size:13.6px;line-height:1.72;padding:18px 22px}
+.slide.dense .cols,.slide.dense .cols3{gap:16px}
+.slide.dense .stack{gap:11px}
+
+
+/* ---------- editor ---------- */
+.nt{display:none}
+#ehud{position:fixed;top:12px;right:14px;z-index:66;display:flex;gap:5px;align-items:center;
+  background:rgba(18,17,15,.78);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.16);
+  border-radius:10px;padding:5px 7px;opacity:.34;transition:opacity .18s ease}
+#ehud:hover,#ehud.on{opacity:1}
+#ehud button{background:transparent;border:1px solid rgba(255,255,255,.14);color:#CFC9BE;
+  height:27px;padding:0 10px;border-radius:7px;cursor:pointer;font-size:12px;line-height:1;
+  font-family:var(--sans);white-space:nowrap}
+#ehud button:hover{background:rgba(255,255,255,.16);color:#fff}
+#ehud button.act{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+#ehud button:disabled{opacity:.35;cursor:default}
+#ehud .sep{width:1px;height:18px;background:rgba(255,255,255,.18);margin:0 2px}
+
+.slide.edit{outline:2px dashed var(--accent);outline-offset:-8px}
+.slide.edit:focus{outline-color:#E08A63}
+#ebadge{position:fixed;top:14px;left:14px;z-index:66;background:var(--accent);color:#fff;
+  font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:6px;display:none;letter-spacing:.05em}
+#ebadge.on{display:block}
+
+#src{position:fixed;top:0;right:0;bottom:0;width:46vw;min-width:400px;max-width:760px;
+  background:#131211;border-left:2px solid var(--accent);z-index:65;display:none;
+  flex-direction:column;padding:56px 16px 16px}
+#src.on{display:flex}
+#src .hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px}
+#src h4{color:#F4A77E;font-size:11.5px;letter-spacing:.14em;font-family:var(--mono);white-space:nowrap}
+#src .btns{display:flex;gap:6px}
+#src .btns button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#CFC9BE;
+  padding:6px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-family:var(--sans)}
+#src .btns button:hover{background:rgba(255,255,255,.18);color:#fff}
+#src .btns button.pri{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+#srcta{flex:1;width:100%;background:#0A0908;color:#D8D2C7;border:1px solid #2C2A27;border-radius:8px;
+  padding:14px;font-family:var(--mono);font-size:12.5px;line-height:1.6;resize:none;outline:none;
+  white-space:pre-wrap;overflow:auto;tab-size:2}
+#srcta:focus{border-color:var(--accent)}
+#srcmsg{color:#8A857C;font-size:11.5px;font-family:var(--mono);margin-top:8px;min-height:16px}
+#srcmsg.err{color:#E08A63}
+#srcmsg.ok{color:#8FBF9F}
+
+/* ---------- chrome ---------- */
+#bar{position:fixed;left:0;bottom:0;height:3px;background:var(--accent);width:0;transition:width .3s ease;z-index:50}
+#hud{position:fixed;bottom:14px;right:18px;display:flex;gap:8px;align-items:center;z-index:50;
+  font-family:var(--mono);font-size:12px;color:#8A857C}
+#hud button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#C9C3B8;
+  width:30px;height:28px;border-radius:7px;cursor:pointer;font-size:13px;line-height:1}
+#hud button:hover{background:rgba(255,255,255,.18);color:#fff}
+#pos{padding:0 6px}
+
+#notes{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;background:#0E0D0C;
+  color:#D8D2C7;padding:20px 28px 30px;border-top:2px solid var(--accent);z-index:60;display:none;
+  font-size:14.5px;line-height:1.75}
+#notes.on{display:block}
+#notes h4{color:#F4A77E;font-size:12px;letter-spacing:.16em;margin-bottom:8px;font-family:var(--mono)}
+#notes ul{margin-left:18px}#notes li{margin:4px 0}
+
+#toc{position:fixed;inset:0;background:#0E0D0C;z-index:70;display:none;padding:40px 6vw;overflow:auto}
+#toc.on{display:block}
+#toc h3{color:#F4A77E;font-size:13px;letter-spacing:.18em;margin-bottom:20px;font-family:var(--mono)}
+#toc ol{columns:3;column-gap:36px;list-style:none}
+#toc li{color:#B5AFA4;font-size:14px;padding:6px 10px;border-radius:6px;cursor:pointer;
+  break-inside:avoid;display:flex;gap:10px;line-height:1.4}
+#toc li:hover{background:rgba(255,255,255,.09);color:#fff}
+#toc li .i{font-family:var(--mono);color:#6E6A62;min-width:22px;text-align:right}
+#toc li.div{color:#F4A77E;font-weight:700;margin-top:10px}
+
+#help{position:fixed;left:18px;bottom:14px;color:#6E6A62;font-family:var(--mono);font-size:11.5px;z-index:50}
+
+@media print{
+  body{overflow:visible;background:#fff}
+  #viewport{position:static;display:block}
+  #stage{width:100%;height:auto;position:static!important;transform:none!important;box-shadow:none}
+  .slide{display:flex!important;position:relative;page-break-after:always;height:720px;inset:auto}
+  #hud,#bar,#help,#notes,#toc,#ehud,#ebadge,#src{display:none!important}
+  .slide.edit{outline:none!important}
+}
+</style>
+</head>
+<body class="theme-navy">
+<div id="viewport"><div id="stage">
+
+<!-- ============ OPENING ============ -->
+<section class="slide title">
+  <div class="kicker">Agent Builder Program ／ Day 1</div>
+  <h1>Copilot Studioで<br>自分の業務を変える</h1>
+  <p class="sub">第1回　エージェントの基礎と、はじめての1体</p>
+  <div class="meta"><span>対象：プログラム参加者</span><span>約120分</span><span>開催日 <span class="fill">【記入】</span></span></div>
+  <div class="hero">
+    <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+    <div class="core"><span class="icc lg ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 8V4H8"></path><rect width="16" height="12" x="4" y="8" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path></svg></span></span><b>AGENT</b></div>
+    <div class="orb o1"><span class="icc sm lt"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M12 11h4"></path><path d="M12 16h4"></path><path d="M8 11h.01"></path><path d="M8 16h.01"></path></svg></span></span>指示<small>Instructions</small></div>
+    <div class="orb o2"><span class="icc sm lt"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg></span></span>知識<small>Knowledge</small></div>
+    <div class="orb o3"><span class="icc sm lt"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></span></span>ツール<small>Tools</small></div>
+  </div>
+  <aside class="nt"><ul>
+    <li>あいさつ・講師紹介（1分以内）</li>
+    <li>「今日は2時間で、エージェントを1体作って、自分の業務で作るものの目星までつけます」と最初に言い切る</li>
+    <li>Copilot Studioを初めて触る方がいる前提で進めるので、分からないところはその場で聞いてOKと伝える</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:00 – 0:10</div>
+  <div class="kicker">Today's Goal</div>
+  <h2>今日のゴールは「知る・作る・考える」の3つ</h2><div class="hr"></div>
+  <div class="body">
+    <div class="cflow">
+      <div class="card"><span class="icc"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg></span></span><h3 style="margin-top:16px">① 知る</h3><p>エージェントとは何か、Copilot Studioで何ができるかを自分の言葉で説明できる</p></div>
+      <div class="ar">→</div>
+      <div class="card tint"><span class="icc ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></span></span><h3 style="margin-top:16px">② 作る</h3><p>社内規程に答えるエージェントを、自分の手で1体作って動かしてみる</p></div>
+      <div class="ar">→</div>
+      <div class="card"><span class="icc"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><path d="M9 18h6"></path><path d="M10 22h4"></path></svg></span></span><h3 style="margin-top:16px">③ 考える</h3><p>構想シートをもとに、自分の業務で作るエージェントの目星をつける</p></div>
+    </div>
+    <div class="note ok"><b>今日のゴール地点</b>「作り方がわかった」「何を作るか決まった」と言えればOK。</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>3つのうち「作る」が今日のメイン。まずは1体完成させる体験を大事にする</li>
+    <li>「考える」は後半45分。事前課題の構想シートを使うので、手元に用意しておいてもらう</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:00 – 0:10</div>
+  <div class="kicker">Timetable</div>
+  <h2>今日の2時間はこう進む</h2><div class="hr"></div>
+  <div class="body">
+    <div class="seg" style="height:96px">
+      <div class="sg" style="flex:10">概要<small>10分</small></div>
+      <div class="s3" style="flex:20">座学<small>20分</small></div>
+      <div class="s2" style="flex:5;padding:0 4px;align-items:center">環境<small>5分</small></div>
+      <div class="s4" style="flex:30">ハンズオン<small>30分</small></div>
+      <div style="flex:10;background:#9AA7B6">休憩<small>10分</small></div>
+      <div class="s5" style="flex:45">構想シート議論<small>45分</small></div>
+    </div>
+    <div class="ticks"><span style="flex:10">0:00</span><span style="flex:20">0:10</span><span style="flex:5">0:30</span><span style="flex:30">0:35</span><span style="flex:10">1:05</span><span style="flex:45">1:15<i>2:00</i></span></div>
+    <div class="cols3" style="margin-top:12px">
+      <div class="irow"><span class="icc sm lt"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg></span></span><div><h3>聞く 35分</h3><p>概要・座学・環境の説明</p></div></div>
+      <div class="irow"><span class="icc sm ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M14 4.1 12 6"></path><path d="m5.1 8-2.9-.8"></path><path d="m6 12-1.9 2"></path><path d="M7.2 2.2 8 5.1"></path><path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z"></path></svg></span></span><div><h3>手を動かす 30分</h3><p>エージェントを1体作る</p></div></div>
+      <div class="irow"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span></span><div><h3>話し合う 45分</h3><p>チームで構想を具体化する</p></div></div>
+    </div>
+  </div>
+  <aside class="nt"><ul>
+    <li>後半になるほど手を動かす・話す時間が増える構成だと伝える</li>
+    <li>ハンズオンで遅れた人は休憩中にフォローする旨をここで伝えておくと安心してもらえる</li>
+  </ul></aside>
+</section>
+
+<!-- ============ PART 1 ============ -->
+<section class="slide sec">
+  <div class="num">PART 1 — 10 min</div>
+  <h1>このプログラムについて</h1>
+  <p class="sub">1.5か月で目指すゴールと、進め方を共有します</p>
+  <div class="path">
+    <div class="p now"><i>1</i><span>概要</span></div><div class="ln"></div>
+    <div class="p"><i>2</i><span>座学</span></div><div class="ln"></div>
+    <div class="p"><i>3</i><span>環境</span></div><div class="ln"></div>
+    <div class="p"><i>4</i><span>ハンズオン</span></div><div class="ln"></div>
+    <div class="p"><i>5</i><span>構想議論</span></div>
+  </div>
+  <svg class="bgnum" viewBox="0 0 420 260" aria-hidden="true"><text x="420" y="250" text-anchor="end">01</text></svg>
+  <aside class="nt"><ul><li>ここから10分で、プログラム全体の目的と期待する役割を共有する</li></ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:00 – 0:10</div>
+  <div class="kicker">Program Goal</div>
+  <h2>ゴールは「作れる人」から「広める人」へ</h2><div class="hr"></div>
+  <div class="body">
+    <div class="layers">
+      <div class="layer"><div class="lv l3">LEVEL 1</div><div class="d"><h3>知る</h3><p>エージェントの仕組みと、Copilot Studioでできることがわかる</p></div><div class="cost">第1回（今日）</div></div>
+      <div class="layer"><div class="lv l2">LEVEL 2</div><div class="d"><h3>作る</h3><p>自分の業務を改善するエージェントを、自分の手で作って使える</p></div><div class="cost">プログラム期間中</div></div>
+      <div class="layer"><div class="lv">LEVEL 3</div><div class="d"><h3>広める</h3><p>部の推進者として、周りのメンバーの「作りたい」を支援できる</p></div><div class="cost">修了後</div></div>
+    </div>
+    <div class="note"><b>このプログラムのゴール</b>Copilot Studioで自分の業務を改善できるようになり、部の推進者になること。</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>上から順に積み上がるイメージ。いきなりLEVEL 3は求めていない</li>
+    <li>「自分が困っていたことを自分で解決した経験」が、周りに広めるときの一番の説得材料になると伝える</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:00 – 0:10</div>
+  <div class="kicker">Schedule</div>
+  <h2>1.5か月の全体スケジュール</h2><div class="hr"></div>
+  <div class="body">
+    <div class="gantt" style="grid-template-columns:190px repeat(6,1fr)">
+      <div class="gh" style="grid-row:1;grid-column:2/3">1週目</div><div class="gh" style="grid-row:1;grid-column:3/4">2週目</div><div class="gh" style="grid-row:1;grid-column:4/5">3週目</div><div class="gh" style="grid-row:1;grid-column:5/6">4週目</div><div class="gh" style="grid-row:1;grid-column:6/7">5週目</div><div class="gh" style="grid-row:1;grid-column:7/8">6週目</div>
+      <div class="gl" style="grid-row:2;grid-column:1">第1回講義<small>今日</small></div><div class="bar b4" style="grid-row:2;grid-column:2/3">キックオフ</div>
+      <div class="gl" style="grid-row:3;grid-column:1">作成期間<small>各自で作る</small></div><div class="bar b2" style="grid-row:3;grid-column:3/7">作る → 試す → 直す</div>
+      <div class="gl" style="grid-row:4;grid-column:1">講義・相談会<small>日程は記入</small></div><div class="bar b1" style="grid-row:4;grid-column:3/4">【記入】</div><div class="bar b1" style="grid-row:4;grid-column:5/6">【記入】</div>
+      <div class="gl" style="grid-row:5;grid-column:1">成果共有<small>最終回</small></div><div class="bar b5" style="grid-row:5;grid-column:7/8">【記入】</div>
+    </div>
+    <div class="note warn"><b>日程の詳細</b>各回の日時・内容は <span class="fill">【記入】</span> を参照してください。</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>【運営メモ】バーの位置と「【記入】」は実際の日程に合わせて差し替える（画面上の編集ボタンから直せる）</li>
+    <li>作成期間中に困ったら相談できる場所（チャット・相談会）があることを必ず伝える</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:00 – 0:10</div>
+  <div class="kicker">Journey</div>
+  <h2>修了時には、部で使えるエージェントが1本ある</h2><div class="hr"></div>
+  <div class="body">
+    <div class="rowf">
+      <div class="nd"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M12 11h4"></path><path d="M12 16h4"></path><path d="M8 11h.01"></path><path d="M8 16h.01"></path></svg></span></span><div class="lab">BEFORE</div><h3>構想シート</h3><p>事前課題で<br>困りごとを書き出す</p></div>
+      <div class="ar">→</div>
+      <div class="nd ac"><span class="icc sm ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span></span><div class="lab">TODAY</div><h3>チームで絞る</h3><p>最初に作る1本と<br>作り方を決める</p></div>
+      <div class="ar">→</div>
+      <div class="nd"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></span></span><div class="lab">PROGRAM</div><h3>作る・試す</h3><p>小さく作って<br>使いながら直す</p></div>
+      <div class="ar">→</div>
+      <div class="nd dk"><span class="icc sm ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg></span></span><div class="lab">GOAL</div><h3>部で使い始める</h3><p>自分の部署で<br>実際に使われている</p></div>
+    </div>
+    <div class="note ok"><b>ポイント</b>最初から完璧は目指さず、「小さく作って、使いながら育てる」で進めます。</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>今日はこの流れの2つ目まで進む、と現在地を示す</li>
+    <li>「部で使える」は大げさなものでなくてよい。チーム5人が毎週使う、でも立派な成果</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:00 – 0:10</div>
+  <div class="kicker">Your Role</div>
+  <h2>推進者に期待する3つの役割</h2><div class="hr"></div>
+  <div class="body">
+    <div class="cols3">
+      <div class="card"><span class="icc"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></span></span><h3 style="margin-top:14px">見つける</h3><p>身の回りの業務から「AIに任せると楽になる所」を見つける</p></div>
+      <div class="card"><span class="icc"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></span></span><h3 style="margin-top:14px">作る・直す</h3><p>小さく作って試し、使う人の声を聞きながら改善する</p></div>
+      <div class="card tint"><span class="icc ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="m11 17 2 2a1 1 0 1 0 3-3"></path><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"></path><path d="m21 3 1 11h-2"></path><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"></path><path d="M3 4h8"></path></svg></span></span><h3 style="margin-top:14px">広める</h3><p>作り方・使い方を部内に共有し、次に作る人の相談役になる</p></div>
+    </div>
+    <div class="note"><b>専門家になる必要はありません</b>「一度自分で作ったことがある人」が近くにいることが、部にとって一番の後押しになります。</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>「広める」がこのプログラム独自の役割。作って終わりにしないことを強調</li>
+    <li>技術に詳しくなくても大丈夫、という安心感をここで渡す</li>
+  </ul></aside>
+</section>
+
+<!-- ============ PART 2 座学 ============ -->
+<section class="slide sec">
+  <div class="num">PART 2 — 20 min</div>
+  <h1>エージェントの基礎</h1>
+  <p class="sub">エージェントとは何か、Copilot Studioで何ができるかを押さえます</p>
+  <div class="path">
+    <div class="p done"><i>1</i><span>概要</span></div><div class="ln"></div>
+    <div class="p now"><i>2</i><span>座学</span></div><div class="ln"></div>
+    <div class="p"><i>3</i><span>環境</span></div><div class="ln"></div>
+    <div class="p"><i>4</i><span>ハンズオン</span></div><div class="ln"></div>
+    <div class="p"><i>5</i><span>構想議論</span></div>
+  </div>
+  <svg class="bgnum" viewBox="0 0 420 260" aria-hidden="true"><text x="420" y="250" text-anchor="end">02</text></svg>
+  <aside class="nt"><ul><li>ここからの20分は、ハンズオンで迷わないための最低限の用語をそろえる時間</li></ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:10 – 0:30</div>
+  <div class="kicker">Chat vs Agent</div>
+  <h2>チャットAIは「答える」、エージェントは「任せられる」</h2><div class="hr"></div>
+  <div class="body">
+    <div class="split even">
+      <div class="panel"><div class="ph"><span class="tg">CHAT AI</span>毎回、自分で説明と資料を渡す</div>
+        <div class="chat">
+          <div class="msg u">（旅費規程のPDFを添付）<br>これを読んで、出張の日当を教えて</div>
+          <div class="msg a"><span class="who">チャットAI</span>添付の規程によると、日当は…</div>
+          <div class="msg u">（次の人も、また同じ説明と添付から）</div>
+        </div></div>
+      <div class="panel" style="background:var(--soft);border-color:#F3D3BF"><div class="ph"><span class="tg ac">AGENT</span>役割と資料を最初に教えておく</div>
+        <div class="chat">
+          <div class="msg u">出張の日当はいくら？</div>
+          <div class="msg a"><span class="who">規程エージェント</span>国内出張の日当は○○円です。<br><span class="cite">参照：旅費規程 第5条</span></div>
+          <div class="msg u">（誰が聞いても、同じ資料をもとに答える）</div>
+        </div></div>
+    </div>
+    <p class="muted" style="text-align:center">たとえるなら <b>「仕事の進め方と資料を覚えたアシスタント」</b> を用意しておくイメージ</p>
+  </div>
+  <aside class="nt"><ul>
+    <li>普段のCopilotチャットは「毎回ゼロから説明する」。エージェントは「説明済みの状態」を作っておける</li>
+    <li>だから部署のみんなが同じ品質で使える＝部で広める価値がある、とつなげる</li>
+    <li>数字は架空のサンプル。後のハンズオンで実際に作る題材と同じ</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:10 – 0:30</div>
+  <div class="kicker">Anatomy</div>
+  <h2>エージェントは「指示・知識・ツール」でできている</h2><div class="hr"></div>
+  <div class="body">
+    <div class="eq">
+      <div class="agent"><span class="icc lg ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 8V4H8"></path><rect width="16" height="12" x="4" y="8" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path></svg></span></span><h3>エージェント</h3><p>仕事を覚えた<br>アシスタント</p></div>
+      <div class="op">=</div>
+      <div class="card tint"><span class="icc ac sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M12 11h4"></path><path d="M12 16h4"></path><path d="M8 11h.01"></path><path d="M8 16h.01"></path></svg></span></span><h3 style="margin-top:12px">指示</h3><p class="muted" style="font-size:13px;margin-top:-2px">Instructions</p><p>役割・口調・やってはいけないこと</p><p style="margin-top:8px"><b style="color:var(--accent)">＝業務マニュアル</b></p></div>
+      <div class="op">+</div>
+      <div class="card tint"><span class="icc ac sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg></span></span><h3 style="margin-top:12px">知識</h3><p class="muted" style="font-size:13px;margin-top:-2px">Knowledge</p><p>回答の根拠にする資料やサイト</p><p style="margin-top:8px"><b style="color:var(--accent)">＝参考資料の棚</b></p></div>
+      <div class="op">+</div>
+      <div class="card"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></span></span><h3 style="margin-top:12px">ツール</h3><p class="muted" style="font-size:13px;margin-top:-2px">Tools</p><p>メール送信・申請登録などの行動</p><p style="margin-top:8px"><b style="color:var(--ink)">＝使える道具</b></p></div>
+    </div>
+    <div class="note"><b>今日のハンズオンは「指示」と「知識」だけで作ります（オレンジの2つ）</b></div>
+  </div>
+  <aside class="nt"><ul>
+    <li>新人アシスタントのたとえで説明：マニュアル（指示）を渡し、資料棚（知識）を用意し、使ってよい道具（ツール）を決める</li>
+    <li>ツールはプログラム後半で扱う。今日は名前だけ覚えればOK</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:10 – 0:30</div>
+  <div class="kicker">Copilot Studio</div>
+  <h2>Copilot Studioは、エージェントをノーコードで作る場所</h2><div class="hr"></div>
+  <div class="body">
+    <div class="rowf">
+      <div class="nd"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 20h9"></path><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"></path><path d="m15 5 3 3"></path></svg></span></span><h3>① 作る</h3><p>指示や知識を<br>画面で設定</p></div>
+      <div class="ar">→</div>
+      <div class="nd"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span></span><h3>② 試す</h3><p>テスト用チャットで<br>すぐ動作確認</p></div>
+      <div class="ar">→</div>
+      <div class="nd"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path><path d="m21.854 2.147-10.94 10.939"></path></svg></span></span><h3>③ 公開する</h3><p>Teamsなど<br>使う場所に届ける</p></div>
+      <div class="ar">→</div>
+      <div class="nd dk"><span class="icc sm ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg></span></span><h3>④ 育てる</h3><p>使われ方を見て<br>改善を続ける</p></div>
+    </div>
+    <div class="note ok"><b>プログラミングは不要</b>画面の入力欄と日本語の指示文で作れます。今日は ① と ② を体験します。</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>Microsoftのローコード製品群「Power Platform」の仲間。Power AutomateやPower Appsと同じ基盤の上で動く</li>
+    <li>③公開・④育てるは、プログラム期間中に扱う</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:10 – 0:30</div>
+  <div class="kicker">Which Tool</div>
+  <h2>M365 Copilot・Agent Builder・Copilot Studioの使い分け</h2><div class="hr"></div>
+  <div class="body">
+    <table class="tbl cmp">
+      <tr><th style="width:17%">観点</th><th>M365 Copilot Chat</th><th>Agent Builder</th><th>Copilot Studio</th></tr>
+      <tr><td class="hl">ひとことで</td><td>その場で頼む</td><td>かんたんに作る</td><td>しっかり作る</td></tr>
+      <tr><td class="hl">作れるもの</td><td>—（毎回指示と添付）</td><td>指示＋知識のエージェント</td><td>知識・トピック・ツールを組み合わせたエージェント</td></tr>
+      <tr><td class="hl">作る場所</td><td>Copilotのチャット画面</td><td>M365 Copilotの中</td><td>専用の作成画面</td></tr>
+      <tr><td class="hl">向いている用途</td><td>個人の都度の作業</td><td>自分や少人数向けの補助</td><td>部署で使う・会話の流れや業務連携が要る</td></tr>
+    </table>
+    <div class="note"><b>このプログラムでは Copilot Studio を使います</b>部署で使い続けるエージェントを作り、広げていくことが目的だからです。</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>「普段のCopilotと何が違うの？」は必ず出る質問なので先に答えておく</li>
+    <li>Agent Builderで十分なケースもある。どちらが偉いではなく、目的で選ぶ</li>
+    <li>利用条件（ライセンス等）は組織の契約で異なるため、ここでは触れない</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:10 – 0:30</div>
+  <div class="kicker">Harness</div>
+  <h2>今回は「スタンダードハーネス」で作る</h2><div class="hr"></div>
+  <div class="body">
+    <table class="tbl cmp">
+      <tr><th style="width:17%">観点</th><th>GitHub Copilot ハーネス</th><th>Copilot chat ハーネス</th><th>スタンダードハーネス（今回）</th></tr>
+      <tr><td class="hl">向いている</td><td>推論が必要な、複数ステップの業務</td><td>M365 Copilot Chatの拡張</td><td>ルールが決まった問い合わせ・定型の会話</td></tr>
+      <tr><td class="hl">動き方</td><td>目的から自分で手順を考えて進める</td><td>組織の知識をCopilot Chatにつなぐ</td><td>作り手が決めたトピックや指示に沿って答える</td></tr>
+      <tr><td class="hl">作るとき</td><td>ホームの新しい画面</td><td>—</td><td>ホームの <span class="ui">New experience</span> をオフ</td></tr>
+    </table>
+    <div class="note warn"><b>ハーネス＝エージェントの「動き方のエンジン」</b>作った後に別のハーネスへ移すことはできません。作り始める前に確認します。</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>2026年時点のCopilot Studioには3種類のハーネスがある（Microsoft Learn「Harnesses in Copilot Studio」2026-09-22更新）</li>
+    <li>スタンダードハーネスは予測しやすく安定した動作が得意。最初の1本や問い合わせ対応に向いている</li>
+    <li>GitHub Copilot ハーネスとGitHub Copilot（開発者向けサービス）は別物。データがGitHub Copilotサービスに送られるわけではない</li>
+    <li>ハンズオンSTEP1で必ず「New experience オフ」を確認する、とここで予告</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:10 – 0:30</div>
+  <div class="kicker">Knowledge</div>
+  <h2>ナレッジ＝エージェントが読む「参考資料の棚」</h2><div class="hr"></div>
+  <div class="body">
+    <div class="cols4">
+      <div class="card tint"><span class="icc ac sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" x2="12" y1="3" y2="15"></line></svg></span></span><h3 style="margin-top:12px;font-size:17px">ファイル</h3><p style="font-size:14px">WordやPDFを直接アップロード。<b>今日はこれ</b></p></div>
+      <div class="card"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path></svg></span></span><h3 style="margin-top:12px;font-size:17px">SharePoint</h3><p style="font-size:14px">サイトやフォルダを指定。実運用の本命</p></div>
+      <div class="card"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></span></span><h3 style="margin-top:12px;font-size:17px">公開Webサイト</h3><p style="font-size:14px">公開ページのURLを指定</p></div>
+      <div class="card"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg></span></span><h3 style="margin-top:12px;font-size:17px">その他のデータ</h3><p style="font-size:14px">Dataverseや各種サービスと接続</p></div>
+    </div>
+    <div class="note"><b>資料の「説明」を具体的に書くのがコツ</b>「どんな質問で読む資料か」を書くと、正しい資料を選びやすくなります。</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>Microsoftのドキュメントでも「説明はできるだけ詳しく。生成オーケストレーションの手がかりになる」とされている</li>
+    <li>SharePointは実運用で本命。資料を更新するとエージェントの答えも変わる。今日は準備が簡単なファイルで体験する</li>
+    <li>アップロードしたファイルは環境内（Dataverse）に保存され、検索用に処理される。そのため反映まで少し時間がかかる</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:10 – 0:30</div>
+  <div class="kicker">How it answers</div>
+  <h2>回答は「探す → 読む → 根拠つきで答える」の順</h2><div class="hr"></div>
+  <div class="body">
+    <div class="rowf">
+      <div class="nd"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span></span><div class="lab">STEP 1</div><h3>質問を受ける</h3><p>「有給は何日前に<br>申請？」</p></div>
+      <div class="ar">→</div>
+      <div class="nd"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></span></span><div class="lab">STEP 2</div><h3>資料を探す</h3><p>ナレッジから<br>関係する箇所を検索</p></div>
+      <div class="ar">→</div>
+      <div class="nd"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg></span></span><div class="lab">STEP 3</div><h3>該当部分を読む</h3><p>見つかった文章を<br>もとに答えを作る</p></div>
+      <div class="ar">→</div>
+      <div class="nd dk"><span class="icc sm ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg></span></span><div class="lab">STEP 4</div><h3>根拠つきで回答</h3><p>どの資料から答えたか<br>を一緒に示す</p></div>
+    </div>
+    <div class="note warn"><b>資料に無いことまで答えないように</b>業務で使うなら「資料に無い＝分からないと答える」設定が安心です。ハンズオンで設定します。</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>AIが「知っていること」ではなく「渡した資料」から答えるのがポイント。だから資料の質が答えの質になる</li>
+    <li>初期設定ではAIの一般知識でも答えるようになっている。社内規程のような用途ではオフにするのが基本</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:10 – 0:30</div>
+  <div class="kicker">Topics</div>
+  <h2>トピック＝決まった会話の流れを作る部品</h2><div class="hr"></div>
+  <div class="body">
+    <div class="split even" style="align-items:stretch">
+      <div class="panel"><div class="ph"><span class="tg ac">KNOWLEDGE</span>自由な質問に、資料から答える</div>
+        <div class="chat">
+          <div class="msg u">慶弔休暇って何日もらえる？</div>
+          <div class="msg a"><span class="who">エージェント</span>本人の結婚の場合は○日です。<br><span class="cite">参照：就業規則 第20条</span></div>
+        </div></div>
+      <div class="panel"><div class="ph"><span class="tg ok">TOPIC</span>決めた手順どおりに案内する</div>
+        <div class="chat">
+          <div class="msg u">備品を申請したい</div>
+          <div class="msg a"><span class="who">エージェント</span>申請する備品を選んでください。<br>［文具］［PC周辺機器］［その他］</div>
+          <div class="msg u">PC周辺機器</div>
+          <div class="msg a"><span class="who">エージェント</span>申請フォームはこちらです。承認者は課長です。</div>
+        </div></div>
+    </div>
+    <p class="muted" style="text-align:center">まずは<b>ナレッジだけ</b>で作り、「毎回この順で聞きたい」ものが出てきたらトピックを足します</p>
+  </div>
+  <aside class="nt"><ul>
+    <li>トピック＝「こう聞かれたら、この順番で案内する」というシナリオ。スタンダードハーネスの得意分野</li>
+    <li>今日は触らないが、構想シートの議論で「これはトピック向きだね」と言えるように紹介しておく</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:10 – 0:30</div>
+  <div class="kicker">Good Fit</div>
+  <h2>「資料があって、よく聞かれる」業務から始める</h2><div class="hr"></div>
+  <div class="body">
+    <div class="gb">
+      <div class="box good"><span class="tag"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg></span> 向いている</span>
+        <ul class="bul sm"><li>規程・マニュアルへの問い合わせ</li><li>システムの操作手順の案内</li><li>よくある質問への一次対応</li><li>決まった形式の文章のたたき台づくり</li></ul></div>
+      <div class="box bad"><span class="tag"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></span> 最初は避けたい</span>
+        <ul class="bul sm"><li>答えが資料に書かれていない判断</li><li>間違いが許されない最終判断・承認</li><li>公開範囲が整理されていない機密資料</li><li>毎回やり方が変わる一度きりの作業</li></ul></div>
+    </div>
+    <div class="note"><b>判断に迷ったら</b>「同じ質問を月に何回受けているか」「答えは資料に書いてあるか」の2つで考えます。</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>後半の構想シート議論で使う観点なので、ここでしっかり押さえてもらう</li>
+    <li>「最初は避けたい」は永遠にダメではなく、慣れてから段階的に挑戦すればよい</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:10 – 0:30</div>
+  <div class="kicker">Before You Build</div>
+  <h2>作る前に知っておきたい4つの注意点</h2><div class="hr"></div>
+  <div class="body">
+    <div class="grid2">
+      <div class="icard tint"><span class="icc ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span></span><div><h3>載せる資料の公開範囲</h3><p>使える人は資料の中身を聞き出せる前提で、載せる資料を選ぶ</p></div></div>
+      <div class="icard"><span class="icc"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></span></span><div><h3>回答は間違えることがある</h3><p>根拠の資料名を出させ、大事な判断は原文で確認する</p></div></div>
+      <div class="icard"><span class="icc"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></span></span><div><h3>使うほど利用量を消費する</h3><p>作成・テスト・利用で消費。ルールは <span class="fill">【記入】</span></p></div></div>
+      <div class="icard"><span class="icc"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg></span></span><div><h3>社内のルールに従う</h3><p>公開や共有は <span class="fill">【記入】</span> のガイドラインに沿う</p></div></div>
+    </div>
+  </div>
+  <aside class="nt"><ul>
+    <li>1つ目が一番大事。ファイルをアップロードした場合、エージェントを使える人は誰でもその中身に基づく回答を受け取れる</li>
+    <li>【運営メモ】利用量（クレジット）の扱いと社内ガイドラインの名称を記入する</li>
+  </ul></aside>
+</section>
+
+<!-- ============ PART 3 環境 ============ -->
+<section class="slide sec">
+  <div class="num">PART 3 — 5 min</div>
+  <h1>今日使う環境</h1>
+  <p class="sub">作ったエージェントを置く「Power Platform 環境」を確認します</p>
+  <div class="path">
+    <div class="p done"><i>1</i><span>概要</span></div><div class="ln"></div>
+    <div class="p done"><i>2</i><span>座学</span></div><div class="ln"></div>
+    <div class="p now"><i>3</i><span>環境</span></div><div class="ln"></div>
+    <div class="p"><i>4</i><span>ハンズオン</span></div><div class="ln"></div>
+    <div class="p"><i>5</i><span>構想議論</span></div>
+  </div>
+  <svg class="bgnum" viewBox="0 0 420 260" aria-hidden="true"><text x="420" y="250" text-anchor="end">03</text></svg>
+  <aside class="nt"><ul><li>5分で「どこに作るか」だけ押さえる。細かい管理の話はしない</li></ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:30 – 0:35</div>
+  <div class="kicker">Environment</div>
+  <h2>Power Platform 環境＝作ったものを置く「部屋」</h2><div class="hr"></div>
+  <div class="body">
+    <div class="nest" style="padding:16px 18px"><span class="nl" style="font-size:16px"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"></path><path d="M10 6h4"></path><path d="M10 10h4"></path><path d="M10 14h4"></path><path d="M10 18h4"></path></svg></span> 会社全体（テナント）</span><span class="tg">Microsoft 365 の契約単位</span>
+      <div style="display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:14px;margin-top:14px">
+        <div class="nest n2g"><span class="nl">既定の環境</span><div class="muted" style="font-size:13.5px;margin-top:4px">全員が入れる共用の部屋</div>
+          <div class="envt"><span><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><rect width="8" height="8" x="3" y="3" rx="2"></rect><path d="M7 11v4a2 2 0 0 0 2 2h4"></path><rect width="8" height="8" x="13" y="13" rx="2"></rect></svg></span>個人のフロー</span><span><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" x="2" y="3" rx="2"></rect><line x1="8" x2="16" y1="21" y2="21"></line><line x1="12" x2="12" y1="17" y2="21"></line></svg></span>小さなアプリ</span></div></div>
+        <div class="nest n2"><span class="nl">今回の研修用の環境</span><span class="tg ac">今日はここに作る</span><div class="muted" style="font-size:13.5px;margin-top:4px">プログラム参加者の作業場所</div>
+          <div class="envt on"><span><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 8V4H8"></path><rect width="16" height="12" x="4" y="8" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path></svg></span>エージェント</span><span><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><rect width="8" height="8" x="3" y="3" rx="2"></rect><path d="M7 11v4a2 2 0 0 0 2 2h4"></path><rect width="8" height="8" x="13" y="13" rx="2"></rect></svg></span>フロー</span><span><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg></span>データ</span></div></div>
+        <div class="nest n2g"><span class="nl">部署・本番用の環境</span><div class="muted" style="font-size:13.5px;margin-top:4px">用途ごとに分けた部屋</div>
+          <div class="envt"><span><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" x="2" y="3" rx="2"></rect><line x1="8" x2="16" y1="21" y2="21"></line><line x1="12" x2="12" y1="17" y2="21"></line></svg></span>業務アプリ</span><span><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg></span>管理された運用</span></div></div>
+      </div>
+    </div>
+    <div class="note"><b>Power Platform 環境とは</b>アプリ・エージェント・フロー・データを保存、管理、共有する場所。用途や利用者ごとに分ける「入れ物」です。</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>定義はMicrosoft Learn「Power Platform 環境の概要」より：組織のビジネスデータ、アプリ、チャットボット、フローを保存・管理・共有する場所で、アプリを分離するコンテナーとしても機能する</li>
+    <li>「部屋を間違えると、作ったものが見つからない・他の人に見えてしまう」ので、最初に環境を確認する習慣をつけてもらう</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:30 – 0:35</div>
+  <div class="kicker">Today's Environment</div>
+  <h2>今日の環境とアクセス方法</h2><div class="hr"></div>
+  <div class="body">
+    <div class="split">
+      <table class="tbl">
+        <tr><th style="width:36%">項目</th><th>内容</th></tr>
+        <tr><td class="hl">環境名</td><td><span class="fill">【記入】</span></td></tr>
+        <tr><td class="hl">アクセス先</td><td><span class="fill">【記入】URL</span></td></tr>
+        <tr><td class="hl">権限・ライセンス</td><td><span class="fill">【記入】</span></td></tr>
+        <tr><td class="hl">利用量の扱い</td><td><span class="fill">【記入】</span></td></tr>
+        <tr><td class="hl">作ったものの扱い</td><td><span class="fill">【記入】期間後の保存・削除</span></td></tr>
+      </table>
+      <div class="mock">
+        <div class="mbar"><i></i><i></i><i></i><span class="url">copilotstudio.microsoft.com</span></div>
+        <div class="mnav"><span class="brand">Copilot Studio</span><span class="sp"></span><span class="mbtn hot">環境：研修用</span> <b class="pin">1</b></div>
+        <div class="mbody">
+          <div class="menu"><div>既定の環境</div><div class="on">研修用の環境 ✓</div><div>その他の環境</div></div>
+          <div class="gbar" style="width:80%;margin-top:12px"></div><div class="gbar" style="width:55%"></div>
+        </div>
+        <div class="cap">※ 画面はイメージ</div>
+      </div>
+    </div>
+    <div class="note warn"><b>作業を始める前に必ず確認</b>画面右上 <b class="pin s">1</b> の環境名が、研修用の環境になっていること。</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>【運営メモ】表の【記入】欄を実際の情報に差し替える</li>
+    <li>ここで全員にアクセスしてもらい、環境名が合っているか隣の人と確認してもらうと、ハンズオンの立ち上がりがスムーズ</li>
+  </ul></aside>
+</section>
+
+<!-- ============ PART 4 ハンズオン ============ -->
+<section class="slide sec">
+  <div class="num">PART 4 — 30 min</div>
+  <h1>ハンズオン<br>規程に答えるエージェントを作る</h1>
+  <p class="sub">5つのステップで、はじめての1体を完成させます</p>
+  <div class="path">
+    <div class="p done"><i>1</i><span>概要</span></div><div class="ln"></div>
+    <div class="p done"><i>2</i><span>座学</span></div><div class="ln"></div>
+    <div class="p done"><i>3</i><span>環境</span></div><div class="ln"></div>
+    <div class="p now"><i>4</i><span>ハンズオン</span></div><div class="ln"></div>
+    <div class="p"><i>5</i><span>構想議論</span></div>
+  </div>
+  <svg class="bgnum" viewBox="0 0 420 260" aria-hidden="true"><text x="420" y="250" text-anchor="end">04</text></svg>
+  <aside class="nt"><ul><li>画面を投影しながら、講師と同じペースで進める。遅れた人はサポート役が個別フォロー</li></ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:35 – 1:05</div>
+  <div class="kicker">Goal Image</div>
+  <h2>完成イメージ：規程の質問に、根拠つきで答える</h2><div class="hr"></div>
+  <div class="body">
+    <div class="split">
+      <div class="panel"><div class="ph"><span class="tg ac">完成形</span>社内規程アシスタント</div>
+        <div class="chat">
+          <div class="msg u">有給休暇は何日前までに申請すればいい？</div>
+          <div class="msg a"><span class="who">社内規程アシスタント</span>原則として取得日の○営業日前までに申請します。<br><span class="cite">参照：01_就業規則 第○条</span></div>
+          <div class="msg u">来年の社員旅行はどこ？</div>
+          <div class="msg a"><span class="who">社内規程アシスタント</span>規程に記載がないため、総務部に確認してください。</div>
+        </div></div>
+      <div class="stack">
+        <div class="irow"><span class="icc sm lt"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg></span></span><div><h3>資料から答える</h3><p>アップロードした規程だけを根拠にする</p></div></div>
+        <div class="irow"><span class="icc sm lt"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg></span></span><div><h3>根拠を示す</h3><p>どの資料の何条かを一緒に出す</p></div></div>
+        <div class="irow"><span class="icc sm ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="m4.9 4.9 14.2 14.2"></path></svg></span></span><div><h3>資料外は答えない</h3><p>推測せず、問い合わせ先を案内する</p></div></div>
+      </div>
+    </div>
+  </div>
+  <aside class="nt"><ul>
+    <li>ゴールを先に見せてから作り始める。「30分後にこれが自分の画面で動きます」</li>
+    <li>2つ目のやりとり（資料外の質問）が業務で使うときの安心ポイント</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:35 – 1:05</div>
+  <div class="kicker">Sample Files</div>
+  <h2>使うサンプル資料は3つ</h2><div class="hr"></div>
+  <div class="body">
+    <div class="cols3">
+      <div class="fcard"><div class="fh"><span class="ftype">DOCX</span><b>01_就業規則.docx</b></div>
+        <ul><li>勤務時間・休日</li><li>年次有給休暇（付与日数・申請期限）</li><li>慶弔休暇</li></ul>
+        <div class="fq"><small>テストで聞く質問</small>有給は何日前までに申請？</div></div>
+      <div class="fcard"><div class="fh"><span class="ftype">DOCX</span><b>02_旅費規程.docx</b></div>
+        <ul><li>出張の定義</li><li>日当・宿泊費の上限（国内／海外）</li><li>精算の期限</li></ul>
+        <div class="fq"><small>テストで聞く質問</small>国内出張の日当はいくら？</div></div>
+      <div class="fcard"><div class="fh"><span class="ftype pdf">PDF</span><b>03_経費精算マニュアル.pdf</b></div>
+        <ul><li>精算の手順</li><li>必要な領収書</li><li>締め日・支払日</li></ul>
+        <div class="fq"><small>テストで聞く質問</small>経費精算の締め日はいつ？</div></div>
+    </div>
+    <div class="note"><b>資料の共通条件</b>架空の会社名で作成／各2〜3ページ／見出しと条番号を付ける／PDFは文字を選択できる形式に。配布場所は <span class="fill">【記入】</span></div>
+  </div>
+  <aside class="nt"><ul>
+    <li>【運営メモ】ファイルは事前に作成し、参加者がダウンロードできる場所に置いておく</li>
+    <li>条番号があると「第○条」と根拠を示してくれるので、効果が伝わりやすい</li>
+    <li>WordとPDFを混ぜているのは「どちらでも読める」ことを体験してもらうため</li>
+    <li>画像だけのPDF（スキャンしたもの）は文字を読み取れないことがあるので避ける</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:35 – 1:05</div>
+  <div class="kicker">5 Steps</div>
+  <h2>5つのステップで完成する</h2><div class="hr"></div>
+  <div class="body">
+    <div class="rowf">
+      <div class="nd"><div class="lab">STEP 1</div><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg></span></span><h3>作成を始める</h3><p>スタンダード<br>ハーネスで</p></div>
+      <div class="ar">→</div>
+      <div class="nd"><div class="lab">STEP 2</div><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 20h9"></path><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"></path><path d="m15 5 3 3"></path></svg></span></span><h3>指示を書く</h3><p>名前と<br>ふるまいを決める</p></div>
+      <div class="ar">→</div>
+      <div class="nd ac"><div class="lab">STEP 3</div><span class="icc sm ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" x2="12" y1="3" y2="15"></line></svg></span></span><h3>資料を入れる</h3><p>3つのファイルを<br>ナレッジに追加</p></div>
+      <div class="ar">→</div>
+      <div class="nd"><div class="lab">STEP 4</div><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg></span></span><h3>範囲を絞る</h3><p>一般知識を<br>オフにする</p></div>
+      <div class="ar">→</div>
+      <div class="nd dk"><div class="lab">STEP 5</div><span class="icc sm ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span></span><h3>試す</h3><p>テストチャットで<br>質問する</p></div>
+    </div>
+    <div class="seg" style="height:44px">
+      <div class="s2" style="flex:5">5分</div><div class="s3" style="flex:5">5分</div><div class="s4" style="flex:5">5分</div><div class="s3" style="flex:3">3分</div><div class="s5" style="flex:7">7分＋予備5分</div>
+    </div>
+  </div>
+  <aside class="nt"><ul>
+    <li>全体の地図を先に見せる。各ステップの画面は次のスライドから</li>
+    <li>STEP3のファイル取り込みには数分かかるので、待っている間にSTEP4へ進む</li>
+    <li>時間配分の目安：合計25分＋予備5分</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:35 – 1:05</div>
+  <div class="kicker">Step 1 ／ 5</div>
+  <h2>STEP1：スタンダードハーネスで作成を始める</h2><div class="hr"></div>
+  <div class="body">
+    <div class="split">
+      <div class="mock">
+        <div class="mbar"><i></i><i></i><i></i><span class="url">copilotstudio.microsoft.com</span></div>
+        <div class="mnav"><span class="brand">Copilot Studio</span><span class="t on">Home</span><span class="t">Agents</span><span class="sp"></span><span class="mbtn">環境：研修用</span>&nbsp;<b class="pin">1</b></div>
+        <div class="mbody">
+          <div class="prow"><div class="mrow hot" style="margin:0;padding:3px 10px;border-radius:6px"><span class="tgl"></span>New experience</div><b class="pin">2</b></div>
+          <div class="mh" style="margin-top:12px">Describe your agent to create it</div>
+          <div class="prow"><div class="fld hot"><div class="lbl">DESCRIPTION</div><div class="val">社内規程についての質問に、規程資料をもとに答えるエージェント</div></div><b class="pin">3</b></div>
+        </div>
+        <div class="cap">※ 画面はイメージ</div>
+      </div>
+      <ul class="pinlist">
+        <li><b class="pin">1</b><div><b>環境名を確認</b><span>右上が研修用の環境になっているか</span></div></li>
+        <li><b class="pin">2</b><div><b><span class="ui">New experience</span> をオフ</b><span>スタンダードハーネスのホームに切り替わる</span></div></li>
+        <li><b class="pin">3</b><div><b>作りたいものを一文で入力して送信</b><span>名前・説明・指示の案をAIが作ってくれる</span></div></li>
+      </ul>
+    </div>
+    <div class="note warn"><b>オフにし忘れると、別のハーネスで作られて後から移せません</b></div>
+  </div>
+  <aside class="nt"><ul>
+    <li>Microsoft Learn「Quickstart: Create and deploy an agent with the standard harness」（2026-08-31更新）の手順に沿っている</li>
+    <li>2のトグルを忘れるとGitHub Copilot ハーネスで作られてしまい、後から移せない。全員がオフにしたか必ず確認</li>
+    <li>フィードバック欄が出たら閉じてOK（Submitで閉じる）</li>
+    <li>説明の入力欄が表示されない場合は、講師・サポートに声をかけてもらう</li>
+    <li>入力例：「社内規程（就業規則・旅費規程・経費精算マニュアル）についての社員からの質問に、規程資料をもとに答えるエージェント」</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:35 – 1:05</div>
+  <div class="kicker">Step 2 ／ 5</div>
+  <h2>STEP2：名前と「指示」を整える</h2><div class="hr"></div>
+  <div class="body">
+    <div class="split even" style="align-items:stretch">
+      <div class="mock">
+        <div class="mbar"><i></i><i></i><i></i><span class="url">copilotstudio.microsoft.com</span></div>
+        <div class="mnav"><span class="brand">社内規程アシスタント</span><span class="t on">Overview</span><span class="t">Knowledge</span><span class="t">Topics</span></div>
+        <div class="mbody">
+          <div class="prow"><div class="fld hot"><div class="lbl">NAME</div><div class="val">社内規程アシスタント</div></div><b class="pin">1</b></div>
+          <div class="prow"><div class="fld hot"><div class="lbl">INSTRUCTIONS</div><div class="gbar" style="width:90%"></div><div class="gbar" style="width:75%"></div><div class="gbar" style="width:60%"></div><div class="gbar" style="width:70%"></div></div><b class="pin">2</b></div>
+          <div class="prow" style="justify-content:flex-end"><span class="mbtn pri hot">Save</span><b class="pin">3</b></div>
+        </div>
+        <div class="cap">※ 画面はイメージ</div>
+      </div>
+      <div class="stack" style="justify-content:center">
+        <div class="chips"><span class="chip"><b class="pin s">1</b> 名前を変更</span><span class="chip on"><b class="pin s" style="background:#fff;color:var(--accent)">2</b> 指示を貼り付け</span><span class="chip"><b class="pin s">3</b> 保存</span></div>
+<pre class="light" style="white-space:pre-wrap;font-size:14.5px;line-height:1.75;padding:16px 18px;border-left:4px solid var(--accent)">あなたは社内規程の問い合わせ窓口です。
+・ナレッジにある規程資料だけを根拠に答えてください。
+・回答の最後に、根拠の資料名と条番号を示してください。
+・資料に書かれていないことは推測せず、「規程に記載がないため、総務部に確認してください」と答えてください。
+・丁寧語で、結論から簡潔に答えてください。</pre>
+        <p class="src">コピー用の指示文は <span class="fill">【記入】</span> にも置いてあります</p>
+      </div>
+    </div>
+  </div>
+  <aside class="nt"><ul>
+    <li>STEP1で送信するとOverviewページが開き、AIが作った名前・説明・指示の案が入っている。それを整える作業</li>
+    <li>指示文はチャットや共有フォルダでも配っておき、コピー＆ペーストしてもらう</li>
+    <li>「指示＝業務マニュアル」。ここで書いた内容どおりに振る舞うことを、STEP5で確かめる</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:35 – 1:05</div>
+  <div class="kicker">Step 3 ／ 5</div>
+  <h2>STEP3：規程ファイルをナレッジに追加する</h2><div class="hr"></div>
+  <div class="body">
+    <div class="split">
+      <div class="mock">
+        <div class="mbar"><i></i><i></i><i></i><span class="url">copilotstudio.microsoft.com</span></div>
+        <div class="mnav"><span class="brand">社内規程アシスタント</span><span class="t">Overview</span><span class="t on">Knowledge</span><span class="sp"></span><span class="mbtn pri hot">+ Add knowledge</span>&nbsp;<b class="pin">1</b></div>
+        <div class="mbody">
+          <div class="prow"><div class="fld hot" style="text-align:center;padding:14px;border-style:dashed"><div class="val">ここにファイルをドラッグ＆ドロップ</div><div class="lbl">01_就業規則 ／ 02_旅費規程 ／ 03_経費精算マニュアル</div></div><b class="pin">2</b></div>
+          <div class="tiles" style="margin-bottom:10px"><div class="tile">Public websites</div><div class="tile">SharePoint</div></div>
+          <div class="prow" style="justify-content:flex-end"><span class="mbtn pri hot">Add to agent</span><b class="pin">3</b></div>
+        </div>
+        <div class="cap">※ 画面はイメージ</div>
+      </div>
+      <ul class="pinlist">
+        <li><b class="pin">1</b><div><b><span class="ui">Add knowledge</span> を押す</b><span>Overview の Knowledge 欄からでもOK</span></div></li>
+        <li><b class="pin">2</b><div><b>3つのファイルをドラッグ＆ドロップ</b><span>名前と説明は必要に応じて具体的に</span></div></li>
+        <li><b class="pin">3</b><div><b><span class="ui">Add to agent</span> で追加</b><span>取り込みに数分かかる</span></div></li>
+      </ul>
+    </div>
+    <div class="note"><b>取り込みを待つ間に、STEP4へ進みます</b></div>
+  </div>
+  <aside class="nt"><ul>
+    <li>Microsoft Learn「Upload files as a knowledge source」（2026-08-19更新）の手順：Add knowledge → ファイルをアップロード → 名前・説明 → Add to agent</li>
+    <li>説明の例：「就業規則。勤務時間、休日、有給休暇、慶弔休暇に関する質問のときに参照する」</li>
+    <li>取り込み中は答えられないことがある。状態表示が完了になるまで待つ</li>
+    <li>アップロードできない場合は環境側の設定（Dataverse検索など）の可能性があるので運営に連絡</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:35 – 1:05</div>
+  <div class="kicker">Step 4 ／ 5</div>
+  <h2>STEP4：資料以外の知識で答えないようにする</h2><div class="hr"></div>
+  <div class="body">
+    <div class="split">
+      <div class="mock">
+        <div class="mbar"><i></i><i></i><i></i><span class="url">copilotstudio.microsoft.com</span></div>
+        <div class="mnav"><span class="brand">社内規程アシスタント</span><span class="t on">Overview</span><span class="t">Knowledge</span><span class="t">Topics</span></div>
+        <div class="mbody">
+          <div class="mh">Knowledge</div>
+          <div class="mrow"><span class="chk">✓</span>01_就業規則.docx</div>
+          <div class="mrow"><span class="chk">✓</span>02_旅費規程.docx ／ 03_経費精算マニュアル.pdf</div>
+          <div class="prow" style="margin-top:10px"><div class="mrow hot" style="margin:0;padding:4px 10px;border-radius:6px;flex:1"><span class="tgl"></span>Allow the AI to use its own general knowledge</div><b class="pin">1</b></div>
+          <div class="prow" style="justify-content:flex-end"><span class="mbtn pri hot">Continue</span><b class="pin">2</b></div>
+        </div>
+        <div class="cap">※ 画面はイメージ</div>
+      </div>
+      <ul class="pinlist">
+        <li><b class="pin">1</b><div><b>一般知識のスイッチをオフ</b><span>Overview の Knowledge 欄にある</span></div></li>
+        <li><b class="pin">2</b><div><b>確認画面で <span class="ui">Continue</span></b><span>資料に無い質問には答えなくなる</span></div></li>
+        <li><b class="pin">+</b><div><b>Web検索のスイッチもあればオフ</b><span>社外の情報で答えるのを防ぐ</span></div></li>
+      </ul>
+    </div>
+  </div>
+  <aside class="nt"><ul>
+    <li>初期設定ではオン。オンのままだとAIが持っている一般知識でも答えてしまい、「規程に書いていないのにそれらしく答える」ことが起きる</li>
+    <li>Microsoft Learnの研修モジュールの手順：Overview → Knowledge 欄のスイッチ → 確認画面で Continue</li>
+    <li>スイッチの場所は画面更新で変わることがある（Settings の生成AI設定にある場合も）。当日の画面で事前に確認しておく</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:35 – 1:05</div>
+  <div class="kicker">Step 5 ／ 5</div>
+  <h2>STEP5：テストチャットで質問してみる</h2><div class="hr"></div>
+  <div class="body">
+    <div class="split even" style="align-items:stretch">
+      <div class="mock">
+        <div class="mbar"><i></i><i></i><i></i><span class="url">copilotstudio.microsoft.com</span></div>
+        <div class="mnav"><span class="brand">Test your agent</span><span class="sp"></span><span class="mbtn hot">↻</span>&nbsp;<b class="pin">1</b></div>
+        <div class="mbody">
+          <div class="chat">
+            <div class="msg u">国内出張の日当はいくら？</div>
+            <div class="msg a">国内出張の日当は○○円です。<br><span class="cite">02_旅費規程.docx</span></div>
+          </div>
+          <div class="prow" style="margin-top:12px"><div class="fld hot"><div class="val">質問を入力…</div></div><b class="pin">2</b></div>
+        </div>
+        <div class="cap">※ 画面はイメージ</div>
+      </div>
+      <div class="stack" style="justify-content:center">
+        <table class="tbl">
+          <tr><th><b class="pin s">2</b>&nbsp; 聞く質問</th><th style="width:40%">期待する結果</th></tr>
+          <tr><td>有給は何日前までに申請すればいい？</td><td>就業規則から回答</td></tr>
+          <tr><td>国内出張の日当はいくら？</td><td>旅費規程から回答</td></tr>
+          <tr><td>経費精算の締め日はいつ？</td><td>マニュアルから回答</td></tr>
+          <tr><td>来年の社員旅行はどこ？</td><td class="hl" style="color:var(--ok)">「記載がない」でOK</td></tr>
+        </table>
+        <p class="muted" style="font-size:15px"><b class="pin s">1</b> 設定を変えたら、新しいテストセッションで試す</p>
+      </div>
+    </div>
+  </div>
+  <aside class="nt"><ul>
+    <li>テスト用チャットは画面右側（出ていなければ上部の Test ボタン）</li>
+    <li>4つ目の「資料に無い質問」でちゃんと断れたら、STEP4が効いている証拠。ここで拍手でもOK</li>
+    <li>回答の根拠（参照元）が表示されることも確認してもらう</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:35 – 1:05</div>
+  <div class="kicker">Troubleshooting</div>
+  <h2>うまく答えないときは、この順で確認</h2><div class="hr"></div>
+  <div class="body">
+    <div class="fixhead"><span>起きること</span><span></span><span>確認・対処</span></div>
+    <div class="fixrow"><div class="nd ng"><h3>「分からない」ばかり返る</h3><p>資料の取り込みがまだ終わっていない</p></div><div class="ar">→</div><div class="nd okk"><h3>数分待って、新しいテストセッションで再質問</h3></div></div>
+    <div class="fixrow"><div class="nd ng"><h3>資料に無いことまで答える</h3><p>一般知識がオンのまま</p></div><div class="ar">→</div><div class="nd okk"><h3>STEP4のスイッチがオフか確認</h3></div></div>
+    <div class="fixrow"><div class="nd ng"><h3>根拠の資料名が出ない</h3><p>指示に書いていない</p></div><div class="ar">→</div><div class="nd okk"><h3>STEP2の指示文が保存されているか確認</h3></div></div>
+    <div class="fixrow"><div class="nd ng"><h3>違う資料から答える</h3><p>資料の説明があいまい</p></div><div class="ar">→</div><div class="nd okk"><h3>ナレッジの説明に「どんな質問で使うか」を書く</h3></div></div>
+    <div class="fixrow"><div class="nd ng"><h3>変更が反映されない</h3></div><div class="ar">→</div><div class="nd okk"><h3>保存してから、新しいテストセッションで試す</h3></div></div>
+  </div>
+  <aside class="nt"><ul>
+    <li>上から順に、よく起きる順に並べている</li>
+    <li>どれにも当てはまらない場合は手を挙げてもらい、サポート役が画面を一緒に見る</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:35 – 1:05</div>
+  <div class="kicker">Challenge</div>
+  <h2>早く終わった人は、ここまで挑戦</h2><div class="hr"></div>
+  <div class="body">
+    <div class="cols3">
+      <div class="card"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span></span><div class="ico" style="margin-top:14px">CHALLENGE 1</div><h3>最初のあいさつを変える</h3><p>あいさつ文をクリックし、できることと質問例を書いて保存</p></div>
+      <div class="card"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 20h9"></path><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"></path><path d="m15 5 3 3"></path></svg></span></span><div class="ico" style="margin-top:14px">CHALLENGE 2</div><h3>口調を変えて比べる</h3><p>指示に「箇条書きで」などを足し、回答の違いを見る</p></div>
+      <div class="card tint"><span class="icc sm ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></span></span><div class="ico" style="margin-top:14px">CHALLENGE 3</div><h3>意地悪な質問をする</h3><p>言い換えやあいまいな聞き方で、弱点を探す</p></div>
+    </div>
+    <div class="note ok"><b>見つけた弱点は、指示や資料の説明を直すと改善できることが多いです</b></div>
+  </div>
+  <aside class="nt"><ul>
+    <li>CHALLENGE 1：あいさつ文を選ぶと「Conversation Start」トピックが開き、メッセージを編集できる（Microsoft Learn クイックスタートより）</li>
+    <li>CHALLENGE 3が一番おすすめ。自分の業務でエージェントを作るときの「テストの視点」が身につく</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">0:35 – 1:05</div>
+  <div class="kicker">Keep Improving</div>
+  <h2>作る→試す→直すを回すほど、答えは良くなる</h2><div class="hr"></div>
+  <div class="body">
+    <div class="split" style="grid-template-columns:1.15fr 1fr;gap:40px">
+      <div class="cyc" style="grid-template-columns:1fr 56px 1fr;grid-template-rows:auto 60px auto">
+        <div class="nd" style="padding:22px 14px"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 20h9"></path><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"></path><path d="m15 5 3 3"></path></svg></span></span><h3>① 作る</h3><p>指示・資料を設定</p></div><div class="ar">→</div><div class="nd" style="padding:22px 14px"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span></span><h3>② 試す</h3><p>いろいろ質問する</p></div>
+        <div class="ard">↑</div><div class="mid">LOOP</div><div class="ard">↓</div>
+        <div class="nd ac" style="padding:22px 14px"><span class="icc sm ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></span></span><h3>④ 直す</h3><p>指示・説明を修正</p></div><div class="ar">←</div><div class="nd" style="padding:22px 14px"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></span></span><h3>③ 気づく</h3><p>ズレを見つける</p></div>
+      </div>
+      <div class="stack" style="gap:18px">
+        <p class="big" style="font-size:36px">完璧な1回より、<br><span class="ac">早い10回</span>の改善</p>
+        <p class="muted" style="font-size:17px;line-height:1.75">今日作ったエージェントも、このループで何度でも直せます。自分の業務のエージェントも同じ進め方で作っていきます。</p>
+      </div>
+    </div>
+  </div>
+  <aside class="nt"><ul>
+    <li>ハンズオンのまとめ。うまくいかなかった人にも「それが普通、直せばいい」と伝える</li>
+    <li>このあと休憩→構想シート議論。「次はこの作り方を自分の業務に当てはめます」とつなぐ</li>
+  </ul></aside>
+</section>
+
+<!-- ============ BREAK ============ -->
+<section class="slide sec">
+  <div class="num">BREAK — 10 min</div>
+  <div class="bigtime">休憩 <span style="font-size:60px;color:var(--acc2);vertical-align:middle">10分</span></div>
+  <p class="sub">再開は <span class="fill">【記入】</span> です。<br>再開までに、事前課題の<b style="color:#fff">エージェント構想シート</b>を手元に開いておいてください。</p>
+  <div class="time">1:05 → 1:15</div>
+  <div class="secic"><span class="icc lg" style="width:140px;height:140px;background:rgba(255,255,255,.08);color:var(--acc2)"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M10 2v2"></path><path d="M14 2v2"></path><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"></path><path d="M6 2v2"></path></svg></span></span></div>
+  <aside class="nt"><ul>
+    <li>ハンズオンが終わっていない人は休憩中に個別フォロー</li>
+    <li>休憩中にチーム分けの表示（座席・オンラインのルームなど）を準備しておく</li>
+  </ul></aside>
+</section>
+
+<!-- ============ PART 5 構想シート議論 ============ -->
+<section class="slide sec">
+  <div class="num">PART 5 — 45 min</div>
+  <h1>エージェント構想を形にする</h1>
+  <p class="sub">事前に書いてきた構想シートをチームで見せ合い、何を・どう作るかを決めます</p>
+  <div class="path">
+    <div class="p done"><i>1</i><span>概要</span></div><div class="ln"></div>
+    <div class="p done"><i>2</i><span>座学</span></div><div class="ln"></div>
+    <div class="p done"><i>3</i><span>環境</span></div><div class="ln"></div>
+    <div class="p done"><i>4</i><span>ハンズオン</span></div><div class="ln"></div>
+    <div class="p now"><i>5</i><span>構想議論</span></div>
+  </div>
+  <svg class="bgnum" viewBox="0 0 420 260" aria-hidden="true"><text x="420" y="250" text-anchor="end">05</text></svg>
+  <aside class="nt"><ul><li>チーム（5〜8人）に分かれて着席してもらう。構想シートを全員が開けているか確認</li></ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">1:15 – 2:00</div>
+  <div class="kicker">Discussion Goal</div>
+  <h2>45分後、チームで持ち帰るもの</h2><div class="hr"></div>
+  <div class="body">
+    <div class="grid2">
+      <div class="icard tint"><span class="icc ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></span></span><div><span class="no">GOAL 1</span><h3>一人ひとりの「最初に作る1本」</h3><p>似た案はチームで1本にまとめてもOK</p></div></div>
+      <div class="icard"><span class="icc"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span></span><div><span class="no">GOAL 2</span><h3>そのエージェントを一文で言える</h3><p>「〇〇な人が、△△を聞くと、□□をもとに答える」</p></div></div>
+      <div class="icard"><span class="icc"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></span></span><div><span class="no">GOAL 3</span><h3>作り方の見当がついている</h3><p>ナレッジ／トピック／ツールのどれを使うか</p></div></div>
+      <div class="icard"><span class="icc"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="m9 16 2 2 4-4"></path></svg></span></span><div><span class="no">GOAL 4</span><h3>次回までにやることが決まっている</h3><p>集める資料、確認する相手など</p></div></div>
+    </div>
+    <div class="note ok"><b>目指すのは「正解」ではなく、着手できる「最初の一歩」</b></div>
+  </div>
+  <aside class="nt"><ul>
+    <li>議論のゴールを先に示しておくと、話が広がりすぎない</li>
+    <li>一文のテンプレートは、構想シートの「使う人」「エージェントにやってほしいこと」「参照する情報」をつなげると作れる</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">1:15 – 2:00</div>
+  <div class="kicker">Concept Sheet</div>
+  <h2>構想シートは「困りごと→やること→効果」で読む</h2><div class="hr"></div>
+  <div class="body">
+    <div class="grp4">
+      <div class="grp a"><div class="gt">GROUP A</div><h3>だれの</h3><ul><li>お名前</li><li>部署名</li><li>部門カテゴリ</li></ul></div>
+      <div></div>
+      <div class="grp b"><div class="gt">GROUP B</div><h3>何に困っている</h3><ul><li>対象業務</li><li>使う人</li><li class="k">現状の困りごと</li></ul></div>
+      <div class="ar">→</div>
+      <div class="grp c"><div class="gt">GROUP C</div><h3>何をさせる</h3><ul><li class="k">エージェントにやってほしいこと</li><li>参照する情報・データ</li></ul></div>
+      <div class="ar">→</div>
+      <div class="grp d"><div class="gt">GROUP D</div><h3>どれだけ効く</h3><ul><li>効果① 時間短縮（内訳）</li><li>効果② 時間以外</li><li class="k">効果の大きさ</li><li class="k">実現の難しさ</li></ul></div>
+    </div>
+    <div class="note"><b>B → C → D の順に読むと話がつながります</b>オレンジの項目が議論の中心。自由記入欄は最後に補足として。</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>オレンジの項目が議論の中心。特に「効果の大きさ／実現の難しさ」はこの後のマッピングでそのまま使う</li>
+    <li>「参照する情報・データ」は作り方を決めるカギ（資料があればナレッジで作れる）</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">1:15 – 2:00</div>
+  <div class="kicker">How to Proceed</div>
+  <h2>45分はこの5ステップで進める</h2><div class="hr"></div>
+  <div class="body">
+    <div class="seg" style="height:92px">
+      <div class="s2" style="flex:16">① 共有<small>16分・1人2分</small></div>
+      <div class="s3" style="flex:12">② 深掘り<small>12分</small></div>
+      <div class="s4" style="flex:7">③ 絞り込み<small>7分</small></div>
+      <div class="s5" style="flex:7">④ 作り方<small>7分</small></div>
+      <div class="sg" style="flex:3;padding:0 6px">⑤<small>3分</small></div>
+    </div>
+    <div class="ticks"><span style="flex:16">1:15</span><span style="flex:12">1:31</span><span style="flex:7">1:43</span><span style="flex:7">1:50</span><span style="flex:3">1:57<i style="right:-34px">2:00</i></span></div>
+    <div class="cols3" style="margin-top:14px">
+      <div class="irow"><span class="icc sm lt"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span></span><div><h3>進行役</h3><p>順番を回し、話を次へ進める</p></div></div>
+      <div class="irow"><span class="icc sm lt"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span></span><div><h3>タイムキーパー</h3><p>1人2分・各ステップの時間を守る</p></div></div>
+      <div class="irow"><span class="icc sm lt"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 20h9"></path><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"></path><path d="m15 5 3 3"></path></svg></span></span><div><h3>書記</h3><p>決まったことを1か所にメモ</p></div></div>
+    </div>
+    <p class="muted" style="font-size:14.5px">⑤ まとめ：決まった「最初の1本」と次回までにやることを、各自の構想シートに書き足す</p>
+  </div>
+  <aside class="nt"><ul>
+    <li>最初に役割を1分で決めてもらう（決まらなければ、部署名の五十音順の最初の人が進行役など）</li>
+    <li>共有は1人2分厳守。8人チームだと16分になる。5人チームなら余った時間は深掘りへ</li>
+    <li>書記のメモ先（Teamsのチャット、共有ファイルなど）は運営で指定しておくと後で回収しやすい</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">1:15 – 2:00</div>
+  <div class="kicker">Step ② Deep Dive</div>
+  <h2>深掘りは「6つの質問」で具体化する</h2><div class="hr"></div>
+  <div class="body">
+    <div class="qa">
+      <div><div class="q">その困りごと、週に何回・何分？</div><div class="a">回数×時間で効果の大きさが見える</div></div>
+      <div><div class="q">答えは資料に書いてある？</div><div class="a">書いてあればナレッジで作れる</div></div>
+      <div><div class="q">その資料は今どこにある？最新？</div><div class="a">保管場所と更新する人を確認する</div></div>
+      <div><div class="q">使う人は誰？何人くらい？</div><div class="a">自分だけか、部全体かで作り方が変わる</div></div>
+      <div><div class="q">間違えたら、どれくらい困る？</div><div class="a">影響が大きいなら人の確認を残す</div></div>
+      <div><div class="q">もっと小さく始めるなら？</div><div class="a">対象を1業務・1資料に絞れないか</div></div>
+    </div>
+  </div>
+  <aside class="nt"><ul>
+    <li>聞く側は、この6問から1〜2個を選んで質問するだけでOK、と伝えるとハードルが下がる</li>
+    <li>最後の「もっと小さく」が一番大事。最初の1本は小さいほど完成しやすい</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">1:15 – 2:00</div>
+  <div class="kicker">Step ③ Prioritize</div>
+  <h2>「効果×難しさ」で最初の1本を選ぶ</h2><div class="hr"></div>
+  <div class="body">
+    <div class="split" style="grid-template-columns:1.35fr 1fr">
+      <div>
+        <div class="mx">
+          <div class="yl">効果<br>高</div><div class="c m1">最初の1本<small>ここから作る</small></div><div class="c m2">次の候補</div><div class="c m3">小さく分けて<small>段階的に</small></div>
+          <div class="yl">効果<br>中</div><div class="c m2">次の候補</div><div class="c m3">相談して判断</div><div class="c m4">今回は見送り</div>
+          <div class="yl">効果<br>低</div><div class="c m3">練習に最適</div><div class="c m4">今回は見送り</div><div class="c m4">今回は見送り</div>
+          <div></div><div class="xl">難しさ 低</div><div class="xl">難しさ 中</div><div class="xl">難しさ 高</div>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="irow"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M12 11h4"></path><path d="M12 16h4"></path><path d="M8 11h.01"></path><path d="M8 16h.01"></path></svg></span></span><div><h3>シートの評価をそのまま置く</h3><p>効果の大きさ・実現の難しさ</p></div></div>
+        <div class="irow"><span class="icc sm"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span></span><div><h3>チームで位置を見直す</h3><p>深掘りの結果で動かす</p></div></div>
+        <div class="irow"><span class="icc sm ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></span></span><div><h3>左上に近いものを選ぶ</h3><p>効果高・難しさ低の案から</p></div></div>
+      </div>
+    </div>
+  </div>
+  <aside class="nt"><ul>
+    <li>ホワイトボードや付箋、Teamsのホワイトボードなどに9マスを書いて、各自の案を置いてもらう</li>
+    <li>自己評価は難しさを低く見積もりがち。深掘りで「資料が無い」「判断が必要」と分かったら右へ動かす</li>
+    <li>右上（効果高・難しさ高）の案は捨てずに「小さく分ける」。例：全部門対応→まず自部署の1規程だけ</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">1:15 – 2:00</div>
+  <div class="kicker">Step ④ How to Build</div>
+  <h2>「どう作るか」は3つの問いで決める</h2><div class="hr"></div>
+  <div class="body">
+    <div class="fixhead"><span>エージェントにやってほしいことは…</span><span></span><span>使う部品</span></div>
+    <div class="fixrow"><div class="nd"><h3>Q1　資料を見て答えればよい？</h3><p>規程・マニュアル・FAQへの問い合わせ</p></div><div class="ar">→</div><div class="nd ac"><h3>ナレッジ（今日の作り方）</h3><p>資料を集めて、指示を書けば作れる</p></div></div>
+    <div class="fixrow"><div class="nd"><h3>Q2　決まった順番で聞き取り・案内する？</h3><p>申請の受付、手順の案内、診断</p></div><div class="ar">→</div><div class="nd pu"><h3>トピック</h3><p>会話の流れを画面で組み立てる</p></div></div>
+    <div class="fixrow"><div class="nd"><h3>Q3　メール送信や登録など「行動」が要る？</h3><p>通知、転記、申請の登録</p></div><div class="ar">→</div><div class="nd"><h3>ツール（コネクタ・フロー）</h3><p>他のサービスとつなぐ。後半の回で扱う</p></div></div>
+    <div class="note ok"><b>多くの「最初の1本」はQ1だけで作れます</b>Q2・Q3が必要な案は、まずQ1の部分だけで作り、あとから足していきましょう。</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>構想シートの「エージェントにやってほしいこと」をこの3問に当てはめてもらう</li>
+    <li>「参照する情報・データ」の保管場所も確認：ファイルか、SharePointか、システムの中か</li>
+    <li>迷ったらQ1で作れる範囲に切り出す。今日のハンズオンの作り方がそのまま使える</li>
+  </ul></aside>
+</section>
+
+<!-- ============ CLOSING ============ -->
+<section class="slide">
+  <div class="timer">1:15 – 2:00</div>
+  <div class="kicker">Next Steps</div>
+  <h2>次回までにやること</h2><div class="hr"></div>
+  <div class="body">
+    <div class="grid2">
+      <div class="icard tint"><span class="icc ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M12 11h4"></path><path d="M12 16h4"></path><path d="M8 11h.01"></path><path d="M8 16h.01"></path></svg></span></span><div><span class="no">TODO 1</span><h3>構想シートを更新する</h3><p>今日決まった「最初の1本」と作り方を書き足す</p></div></div>
+      <div class="icard"><span class="icc"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M10.7 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v4.1"></path><path d="m21 21-1.9-1.9"></path><circle cx="17" cy="17" r="3"></circle></svg></span></span><div><span class="no">TODO 2</span><h3>参照する資料を集める</h3><p>最新版か、載せてよい公開範囲かを確認</p></div></div>
+      <div class="icard"><span class="icc"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span></span><div><span class="no">TODO 3</span><h3>今日のエージェントを触る</h3><p>指示を変えて、回答がどう変わるか試す</p></div></div>
+      <div class="icard"><span class="icc"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="m11 17 2 2a1 1 0 1 0 3-3"></path><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"></path><path d="m21 3 1 11h-2"></path><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"></path><path d="M3 4h8"></path></svg></span></span><div><span class="no">TODO 4</span><h3>困ったら相談する</h3><p>相談先：<span class="fill">【記入】</span>　次回：<span class="fill">【記入】</span></p></div></div>
+    </div>
+  </div>
+  <aside class="nt"><ul>
+    <li>【運営メモ】相談先（チャット・相談会）と次回日程を記入する</li>
+    <li>資料集めは意外と時間がかかるので、早めに着手してもらうよう強調</li>
+  </ul></aside>
+</section>
+
+<section class="slide">
+  <div class="timer">1:15 – 2:00</div>
+  <div class="kicker">References</div>
+  <h2>参考：公式ドキュメント</h2><div class="hr"></div>
+  <div class="body">
+    <table class="tbl">
+      <tr><th>ページ（Microsoft Learn）</th><th style="width:30%">この資料での使いどころ</th><th style="width:15%">更新日</th></tr>
+      <tr><td>Power Platform 環境の概要</td><td>環境の説明</td><td>確認時点の最新</td></tr>
+      <tr><td>Harnesses in Copilot Studio</td><td>ハーネスの違い</td><td>2026-09-22</td></tr>
+      <tr><td>Access standard harness agents and agent flows</td><td>New experience の切り替え</td><td>2026-09-09</td></tr>
+      <tr><td>Quickstart: Create and deploy an agent with the standard harness</td><td>STEP1・2・5の手順</td><td>2026-08-31</td></tr>
+      <tr><td>Upload files as a knowledge source</td><td>STEP3の手順</td><td>2026-08-19</td></tr>
+    </table>
+    <p class="src">Copilot Studioの画面や機能は頻繁に更新されます。講義前に最新の画面と手順を確認してください。</p>
+  </div>
+  <aside class="nt"><ul>
+    <li>URL：learn.microsoft.com/ja-jp/power-platform/admin/environments-overview</li>
+    <li>URL：learn.microsoft.com/microsoft-copilot-studio/harnesses-overview</li>
+    <li>URL：learn.microsoft.com/microsoft-copilot-studio/agents-experience/switch-experiences</li>
+    <li>URL：learn.microsoft.com/microsoft-copilot-studio/fundamentals-get-started</li>
+    <li>URL：learn.microsoft.com/microsoft-copilot-studio/knowledge-add-file-upload</li>
+    <li>一般知識スイッチの手順：Microsoft Learn 研修モジュール「Create copilots with Copilot Studio」の Generative Answers ユニット</li>
+  </ul></aside>
+</section>
+
+<section class="slide title">
+  <div class="kicker">Thank you</div>
+  <h1>小さく作って、<br>使いながら育てよう</h1>
+  <p class="sub">質問・相談はいつでもどうぞ</p>
+  <div class="meta"><span>Q&amp;A</span><span>次回 <span class="fill">【記入】</span></span></div>
+  <div class="hero">
+    <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+    <div class="core"><span class="icc lg ac"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg></span></span><b>LOOP</b></div>
+    <div class="orb o1"><span class="icc sm lt"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 20h9"></path><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"></path><path d="m15 5 3 3"></path></svg></span></span>作る</div>
+    <div class="orb o2"><span class="icc sm lt"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span></span>試す</div>
+    <div class="orb o3"><span class="icc sm lt"><span class="ic"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></span></span>直す</div>
+  </div>
+  <aside class="nt"><ul>
+    <li>残り時間でQ&amp;A。出た質問は次回の冒頭で共有すると、全体の学びになる</li>
+    <li>アンケートがあればここで案内する</li>
+  </ul></aside>
+</section>
+
+</div></div>
+
+<div id="bar"></div>
+<div id="help">← → 移動 ／ N ノート ／ O 目次 ／ F 全画面 ／ Ctrl+E 編集 ／ Ctrl+S 保存</div>
+<div id="hud">
+  <button id="pv" title="前へ">‹</button><span id="pos">1 / 45</span><button id="nx" title="次へ">›</button>
+  <button id="bn" title="講師ノート (N)">N</button><button id="bo" title="目次 (O)">O</button><button id="bf" title="全画面 (F)">⛶</button>
+</div>
+<div id="ehud">
+  <button id="bEdit" title="このスライドを画面上で直接編集 (Ctrl+E)">編集</button>
+  <button id="bSrc" title="このスライドのHTMLソースを開く">HTML</button>
+  <span class="sep"></span>
+  <button id="bDup" title="このスライドを複製して次に挿入">複製</button>
+  <button id="bDel" title="このスライドを削除">削除</button>
+  <button id="bUndo" title="直前の編集を取り消す" disabled>戻す</button>
+  <span class="sep"></span>
+  <button id="bSave" title="編集を反映したHTMLをダウンロード (Ctrl+S)">保存</button>
+</div>
+<div id="ebadge">EDIT MODE</div>
+<div id="src">
+  <div class="hd">
+    <h4>SLIDE HTML &mdash; <span id="srcnum">1</span></h4>
+    <div class="btns">
+      <button class="pri" id="srcApply" title="Ctrl+Enter">適用</button>
+      <button id="srcReload">読み直す</button>
+      <button id="srcClose">閉じる</button>
+    </div>
+  </div>
+  <textarea id="srcta" spellcheck="false"></textarea>
+  <div id="srcmsg">&lt;section class="slide"&gt; ごと書き換えられます。Ctrl+Enter で適用。</div>
+</div>
+
+<div id="notes"><h4>PRESENTER NOTES</h4><div id="ncontent"></div></div>
+<div id="toc"><h3>SLIDES — クリックで移動</h3><ol id="toclist"></ol></div>
+
+<script>
+(function(){
+  var stage=document.getElementById('stage');
+  var slides=[], i=0, notesOn=false, editOn=false, undo=[];
+
+  function qs(s){return document.querySelector(s);}
+  function all(s,r){return [].slice.call((r||document).querySelectorAll(s));}
+
+  /* ---------- layout ---------- */
+  function fit(){
+    var srcOpen=qs('#src').classList.contains('on');
+    var panel=srcOpen?Math.min(760,Math.max(400,window.innerWidth*0.46)):0;
+    var w=window.innerWidth-40-panel;
+    var hh=window.innerHeight*(notesOn?0.62:1)-40;
+    var s=Math.max(0.15,Math.min(w/1280,hh/720));
+    /* ステージは position:absolute + transform-origin:0 0 で、中央位置を自分で計算する。
+       grid の place-items:center に任せると、ウィンドウが原寸(1280x720)より小さいとき
+       ブラウザが中央寄せを打ち切って左上に寄せ、そこに scale がかかって右下にずれる。 */
+    var left=Math.max(0,(window.innerWidth-panel-1280*s)/2);
+    var top=notesOn?20:Math.max(0,(window.innerHeight-720*s)/2);
+    stage.style.transformOrigin='0 0';
+    stage.style.transform='translate('+left+'px,'+top+'px) scale('+s+')';
+  }
+
+  /* ---------- navigation ---------- */
+  function title(el){
+    var t=el.querySelector('h1,h2')||el.querySelector('.big');
+    var s=t?t.textContent.replace(/\s+/g,' ').trim():'—';
+    return s.length>28?s.slice(0,28)+'…':s;
+  }
+
+  function buildToc(){
+    var tl=qs('#toclist'); tl.innerHTML='';
+    slides.forEach(function(sl,k){
+      var li=document.createElement('li');
+      if(sl.classList.contains('sec')||sl.classList.contains('title')) li.className='div';
+      var a=document.createElement('span'); a.className='i'; a.textContent=k+1;
+      var b=document.createElement('span'); b.textContent=title(sl);
+      li.appendChild(a); li.appendChild(b);
+      li.onclick=function(){show(k);qs('#toc').classList.remove('on');};
+      tl.appendChild(li);
+    });
+  }
+
+  function show(n){
+    if(!slides.length) return;
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach(function(s,k){s.classList.toggle('active',k===i);});
+    qs('#pos').textContent=(i+1)+' / '+slides.length;
+    qs('#bar').style.width=((i+1)/slides.length*100)+'%';
+    var nt=slides[i].querySelector('.nt');
+    qs('#ncontent').innerHTML=nt?nt.innerHTML:'<p style="color:#6E6A62">（このスライドのノートはありません）</p>';
+    qs('#srcnum').textContent=(i+1)+' / '+slides.length;
+    if(qs('#src').classList.contains('on')) loadSrc();
+    applyEdit();
+    try{location.hash='s'+(i+1);}catch(e){}
+  }
+
+  function refresh(keep){
+    slides=all('.slide',stage);
+    buildToc();
+    show(typeof keep==='number'?keep:i);
+  }
+
+  /* ---------- editing ---------- */
+  function snapshot(){
+    undo.push({html:stage.innerHTML,idx:i});
+    if(undo.length>40) undo.shift();
+    qs('#bUndo').disabled=false;
+  }
+
+  function applyEdit(){
+    slides.forEach(function(s){
+      s.classList.remove('edit');
+      s.removeAttribute('contenteditable');
+      s.removeAttribute('spellcheck');
+    });
+    if(editOn && slides[i]){
+      slides[i].setAttribute('contenteditable','true');
+      slides[i].setAttribute('spellcheck','false');
+      slides[i].classList.add('edit');
+    }
+    qs('#ehud').classList.toggle('on',editOn);
+    qs('#ebadge').classList.toggle('on',editOn);
+    qs('#bEdit').classList.toggle('act',editOn);
+    var nc=qs('#ncontent');
+    if(editOn){nc.setAttribute('contenteditable','true');nc.setAttribute('spellcheck','false');}
+    else{nc.removeAttribute('contenteditable');nc.removeAttribute('spellcheck');}
+  }
+
+  function toggleEdit(){
+    if(!editOn) snapshot();
+    editOn=!editOn;
+    applyEdit();
+    if(editOn && slides[i]){ try{slides[i].focus();}catch(e){} }
+  }
+
+  /* notes panel edits write back into the slide's hidden <aside class="nt"> */
+  qs('#ncontent').addEventListener('input',function(){
+    if(!editOn||!slides[i]) return;
+    var nt=slides[i].querySelector('.nt');
+    if(!nt){ nt=document.createElement('aside'); nt.className='nt'; slides[i].appendChild(nt); }
+    nt.innerHTML=qs('#ncontent').innerHTML;
+  });
+
+  /* ---------- source panel ---------- */
+  function loadSrc(){
+    var s=slides[i]; if(!s) return;
+    var c=s.cloneNode(true);
+    c.classList.remove('active','edit');
+    c.removeAttribute('contenteditable'); c.removeAttribute('spellcheck');
+    if(c.getAttribute('style')==='') c.removeAttribute('style');
+    if(c.getAttribute('class')==='') c.removeAttribute('class');
+    qs('#srcta').value=c.outerHTML;
+    msg('&lt;section class="slide"&gt; ごと書き換えられます。Ctrl+Enter で適用。','');
+  }
+  function msg(t,cls){var m=qs('#srcmsg');m.innerHTML=t;m.className=cls||'';}
+
+  function openSrc(){qs('#src').classList.add('on');loadSrc();fit();qs('#srcta').focus();}
+  function closeSrc(){qs('#src').classList.remove('on');fit();}
+
+  function applySrc(){
+    var txt=qs('#srcta').value.trim();
+    if(!txt){msg('空です。','err');return;}
+    var tmp=document.createElement('div');
+    tmp.innerHTML=txt;
+    var nw=tmp.querySelector('section.slide')||tmp.firstElementChild;
+    if(!nw){msg('section.slide が見つかりません。','err');return;}
+    if(!nw.classList.contains('slide')) nw.classList.add('slide');
+    snapshot();
+    slides[i].parentNode.replaceChild(nw,slides[i]);
+    refresh(i);
+    msg('適用しました。','ok');
+  }
+
+  /* ---------- export ---------- */
+  function exportHTML(){
+    var doc=document.documentElement.cloneNode(true);
+    all('[contenteditable]',doc).forEach(function(e){e.removeAttribute('contenteditable');e.removeAttribute('spellcheck');});
+    all('.slide',doc).forEach(function(e){e.classList.remove('active','edit');e.removeAttribute('style');});
+    var g=function(s){return doc.querySelector(s);};
+    ['#stage','#viewport','#bar'].forEach(function(s){if(g(s))g(s).removeAttribute('style');});
+    if(g('#toclist')) g('#toclist').innerHTML='';
+    if(g('#ncontent')) g('#ncontent').innerHTML='';
+    if(g('#srcta')) g('#srcta').textContent='';
+    if(g('#srcmsg')) g('#srcmsg').textContent='';
+    ['#notes','#toc','#src','#ehud','#ebadge'].forEach(function(s){if(g(s))g(s).classList.remove('on');});
+    if(g('#bEdit')) g('#bEdit').classList.remove('act');
+    if(g('#bUndo')) g('#bUndo').setAttribute('disabled','');
+    if(g('#pos')) g('#pos').textContent='1 / '+doc.querySelectorAll('.slide').length;
+    if(g('#srcnum')) g('#srcnum').textContent='1';
+    var out='<!DOCTYPE html>\n'+doc.outerHTML;
+    var blob=new Blob([out],{type:'text/html;charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var d=new Date(), z=function(n){return(n<10?'0':'')+n;};
+    var stamp=d.getFullYear()+z(d.getMonth()+1)+z(d.getDate())+'-'+z(d.getHours())+z(d.getMinutes());
+    var a=document.createElement('a');
+    a.href=url; a.download='agent-day1-'+stamp+'.html';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(url);},2000);
+    flash(qs('#bSave'));
+  }
+  function flash(btn){
+    if(!btn) return;
+    var t=btn.textContent; btn.textContent='✓'; btn.classList.add('act');
+    setTimeout(function(){btn.textContent=t;btn.classList.remove('act');},900);
+  }
+
+  /* ---------- slide ops ---------- */
+  function dupSlide(){
+    snapshot();
+    var c=slides[i].cloneNode(true);
+    c.classList.remove('active','edit');
+    c.removeAttribute('contenteditable'); c.removeAttribute('spellcheck');
+    slides[i].parentNode.insertBefore(c,slides[i].nextSibling);
+    refresh(i+1);
+  }
+  function delSlide(){
+    if(slides.length<=1) return;
+    snapshot();
+    var idx=i;
+    slides[idx].parentNode.removeChild(slides[idx]);
+    refresh(Math.min(idx,slides.length-2));
+  }
+  function doUndo(){
+    if(!undo.length) return;
+    var st=undo.pop();
+    stage.innerHTML=st.html;
+    refresh(st.idx);
+    qs('#bUndo').disabled=!undo.length;
+  }
+
+  /* ---------- panels ---------- */
+  function toggleNotes(){notesOn=!notesOn;qs('#notes').classList.toggle('on',notesOn);fit();}
+  function toggleToc(){qs('#toc').classList.toggle('on');}
+  function toggleFull(){
+    if(!document.fullscreenElement){document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();}
+    else{document.exitFullscreen();}
+  }
+
+  /* ---------- keys ---------- */
+  document.addEventListener('keydown',function(e){
+    var t=e.target, mod=e.ctrlKey||e.metaKey;
+    var typing=!!(t&&(t.isContentEditable||t.tagName==='TEXTAREA'||t.tagName==='INPUT'));
+    if(mod&&(e.key==='s'||e.key==='S')){e.preventDefault();exportHTML();return;}
+    if(mod&&(e.key==='e'||e.key==='E')){e.preventDefault();toggleEdit();return;}
+    if(mod&&e.key==='Enter'){if(t&&t.id==='srcta'){e.preventDefault();applySrc();}return;}
+    if(mod&&(e.key==='z'||e.key==='Z')&&!typing){e.preventDefault();doUndo();return;}
+    if(e.key==='Escape'){qs('#toc').classList.remove('on');if(qs('#src').classList.contains('on'))closeSrc();return;}
+    if(typing) return;
+    var k=e.key;
+    if(k==='ArrowRight'||k===' '||k==='PageDown'){e.preventDefault();show(i+1);}
+    else if(k==='ArrowLeft'||k==='PageUp'){e.preventDefault();show(i-1);}
+    else if(k==='Home'){show(0);}
+    else if(k==='End'){show(slides.length-1);}
+    else if(k==='n'||k==='N'){toggleNotes();}
+    else if(k==='o'||k==='O'){toggleToc();}
+    else if(k==='f'||k==='F'){toggleFull();}
+  });
+
+  /* ---------- wiring ---------- */
+  qs('#nx').onclick=function(){show(i+1);};
+  qs('#pv').onclick=function(){show(i-1);};
+  qs('#bn').onclick=toggleNotes;
+  qs('#bo').onclick=toggleToc;
+  qs('#bf').onclick=toggleFull;
+  qs('#bEdit').onclick=toggleEdit;
+  qs('#bSrc').onclick=function(){qs('#src').classList.contains('on')?closeSrc():openSrc();};
+  qs('#bDup').onclick=dupSlide;
+  qs('#bDel').onclick=delSlide;
+  qs('#bUndo').onclick=doUndo;
+  qs('#bSave').onclick=exportHTML;
+  qs('#srcApply').onclick=applySrc;
+  qs('#srcReload').onclick=loadSrc;
+  qs('#srcClose').onclick=closeSrc;
+
+  window.addEventListener('resize',fit);
+  window.addEventListener('beforeunload',function(e){
+    if(undo.length){e.preventDefault();e.returnValue='';}
+  });
+
+  var m=(location.hash||'').match(/^#s(\d+)$/);
+  slides=all('.slide',stage);
+  buildToc();
+  fit();
+  show(m?parseInt(m[1],10)-1:0);
+})();
+</script>
+</body>
+</html>
