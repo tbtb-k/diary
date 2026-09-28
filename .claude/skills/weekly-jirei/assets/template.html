@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<!--
+  週次の AI 活用事例テンプレート（weekly-jirei）
+  使い方: {{ }} の箇所を差し替えます。<style> と構造は変更しないでください。
+  8ブロック（タイトル／リード／01〜06）はすべて、この順番で埋めます。
+  見本: pages/jirei_20260928-agent-builder.html と pages/jirei_20260928-copilot-studio.html
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="{{ツール名}} の活用事例（{{組織名}}）。{{YYYY年M月D日}}作成。公開情報（{{出典の媒体名}}）をもとにまとめています。">
+<title>{{タイトル}}</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">{{Agent Builder または Copilot Studio}}</span>{{YYYY年M月D日}}／{{業種（組織名）}}・{{業務領域}}</p>
+
+  <!-- 1. タイトル：何がどう変わったかが分かる形にします（ツール名だけのタイトルは避けます） -->
+  <h1>{{タイトル}}</h1>
+
+  <!-- 2. リード：3文で「誰が何に困っていて、何をして、どうなったか」 -->
+  <div class="lead">
+    <p>{{誰が、どんな業務で困っていたか}}</p>
+    <p>{{何をしたか（ツール名を含める）}}</p>
+    <p>{{どうなったか（出典の数字があれば入れる）}}</p>
+  </div>
+
+  <!-- 3. 課題 -->
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>{{読み手が「あるある」と思える具体的な場面}}</p>
+  <p>{{この組織での困りごと。出典の表現にそって書く}}</p>
+
+  <!-- 4. やってみたこと（図解を1つ入れます） -->
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>{{使ったツールの一言説明と、全体の流れ}}</p>
+  <p>{{参照した資料・つないだデータ・誰が作ったか}}</p>
+
+  <figure class="figure">
+    <!-- 流れ図：ボックスは3〜5個。各ボックスは短い日本語ラベル（<br>で2行まで）。 -->
+    <ol class="flow" aria-label="{{図の説明}}">
+      <li><div class="box">{{ステップA}}</div></li>
+      <li><div class="box">{{ステップB}}</div></li>
+      <li><div class="box">{{ステップC}}</div></li>
+      <li><div class="box">{{ステップD}}</div></li>
+    </ol>
+    <figcaption>{{図の説明}}（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>{{手順1}}</li>
+    <li>{{手順2}}</li>
+    <li>{{手順3}}</li>
+  </ol>
+  <!-- 出典にない手順を一般的な作り方で補った場合だけ、下の注記を残します -->
+  <p class="src-note">※ {{補った手順の番号}}は、{{ツール名}} の一般的な作り方で補っています。{{組織名}}が実際に使った設定は公開されていません。</p>
+
+  <!-- 5. 変化 -->
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>{{before}}</p></div>
+    <div class="after"><h3>いま</h3><p>{{after}}</p></div>
+  </div>
+  <p>{{数字の補足。「〇〇が公表した数字です」と出どころを必ず書く。数字がない場合は「公表されていません」と書く}}</p>
+
+  <!-- 6. 最初の一歩 -->
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>{{最初のステップ}}</li>
+    <li>{{2番目のステップ}}</li>
+    <li>{{3番目のステップ}}</li>
+  </ol>
+  <p>{{準備物と、ライセンス・社内設定で変わる点の一言}}</p>
+
+  <!-- 7. 注意点 -->
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>{{注意点の見出し}}</strong>
+    <p>{{出典にある苦労・注意点}}</p>
+  </div>
+  <p>{{権限・機密情報・AIの間違いなど、社内で真似するときの注意}}</p>
+
+  <!-- 8. おわりに（「自分の職場に置き換えると」の段落を必ず入れる） -->
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>{{ひとこと締め。感想で終わらせず、他の業務にも応用できる形に一段だけ広げる}}</p>
+  <p>自分の職場に置き換えると、{{読み手の職場での置き換え}}</p>
+
+  <footer>
+    <p>出典：{{媒体名}}「{{記事タイトル}}」（{{YYYY年M月D日}}公開）<br>
+    <a href="{{URL}}">{{URL}}</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（{{YYYY年M月D日}}作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
