@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（カナダ公務員委員会）。2026年9月28日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>出張規程への問い合わせメールが9割減りました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年9月28日／公的機関（カナダ公務員委員会）・財務部門の問い合わせ対応</p>
+
+  <!-- 1. タイトル -->
+  <h1>出張規程への問い合わせメールが9割減りました</h1>
+
+  <!-- 2. リード -->
+  <div class="lead">
+    <p>カナダ公務員委員会の財務チームは、出張規程についての決まった質問に日々対応し、本来の仕事がたびたび止まっていました。</p>
+    <p>そこで、規程や手順書をもとに答えるエージェントを Copilot Studio で作り、いつもの Copilot の画面から質問できるようにしました。</p>
+    <p>出張用の問い合わせメールは9割減り、最大5日かかっていた複雑な質問への回答も、約30秒で返るようになりました。</p>
+  </div>
+
+  <!-- 3. 課題 -->
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>「この出張は事前申請が必要ですか」「この場合、宿泊費の上限はいくらですか」。規程を読めば分かる質問のメールが、経理や総務の担当者に毎日のように届く職場は多いのではないでしょうか。</p>
+  <p>カナダ公務員委員会（Public Service Commission of Canada、以下 PSC）の財務チームもそうでした。財務の専門家が、規程を確認して答えるために、価値の高い仕事の手をたびたび止めていました。CFO（最高財務責任者）は「私のチームは、実質的に規程の検索エンジンになっていた」と振り返っています。複雑な質問は解決まで1〜5日かかり、その間に出張の予約が遅れて、直前の割高な予約になることもありました。</p>
+
+  <!-- 4. やってみたこと -->
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>PSC の財務チームは、すでに持っていたライセンスを使い、4か月かけて出張規程に答えるエージェントを組織の中で作りました。使ったのは Copilot Studio です。Copilot Studio は、社内のデータとつないだ本格的なエージェントを、プログラムをほとんど書かずに作れるマイクロソフトのツールです。職員は、ふだん使っている Microsoft 365 Copilot Chat の画面から、このエージェントに質問します。</p>
+  <p>エージェントは、SharePoint（社内の共有ファイル置き場）にある規程と手順書（SOP：標準作業手順書）を参照し、根拠となる引用元をつけて答えます。英語とフランス語の両方に対応しています。範囲外の質問や複雑な質問には無理に答えず、担当の専門家に回すように作られています。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="エージェントが質問に答えるまでの流れ">
+      <li><div class="box">職員が Copilot Chat<br>で質問する</div></li>
+      <li><div class="box">エージェントが<br>質問の意図を読み取る</div></li>
+      <li><div class="box">規程・手順書から<br>根拠を探す</div></li>
+      <li><div class="box">引用元つきで回答<br>（範囲外は専門家へ）</div></li>
+    </ol>
+    <figcaption>PSC の出張規程エージェントが答えるまでの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>答えのもとになる規程と手順書を SharePoint にまとめました。規程が更新されると、エージェントの回答にもすぐ反映されるしくみです。</li>
+    <li>Copilot Studio でエージェントを作り、答えてよい範囲を出張規程に絞りました。範囲外や複雑な質問は、専門家に回すようにしています。</li>
+    <li>全体に公開する前に、経理部門の中だけで3か月使い、専門家が回答を確かめました。</li>
+    <li>確認が済んでから、組織全体に公開しました。</li>
+  </ol>
+
+  <!-- 5. 変化 -->
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>出張規程の質問は、メールで財務チームに届いていました。複雑な質問は解決まで1〜5日かかり、専門家がそのたびに作業を止めていました。</p></div>
+    <div class="after"><h3>いま</h3><p>職員が Copilot Chat で直接質問し、引用元つきの答えをその場で受け取れます。複雑な質問でも約30秒で答えが返り、出張用の問い合わせメールは9割減りました。</p></div>
+  </div>
+  <p>PSC は、年間約12万カナダドル（職員1人分の人件費に相当）のコストを避けられたとしています。予約が早くなったことで、出張1回あたり数百〜数千ドルの節約にもつながっているそうです。いずれも PSC とマイクロソフトが公表した数字です。</p>
+
+  <!-- 6. 最初の一歩 -->
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>自分の部署に届く問い合わせを1週間分ふり返り、「規程を読めば分かる質問」がどれくらいあるか数えてみます。</li>
+    <li>その答えのもとになる規程や手順書を1か所に集め、古い版を片づけます。エージェントの答えの質は、参照する資料の質で決まります。</li>
+    <li>その資料だけを参照するエージェントを試作し、まずは部署の中だけで使ってみます。Copilot Studio が使えない場合は、Agent Builder で自分用の小さな版から始めるのもおすすめです。</li>
+  </ol>
+  <p>準備するのは、問い合わせの記録と、答えのもとになる資料です。Copilot Studio を使えるかどうかは、ライセンスや社内の設定によって変わります。社内の IT 担当に確認してみてください。</p>
+
+  <!-- 7. 注意点 -->
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>いきなり全員に公開しないこと</strong>
+    <p>PSC は、組織全体に公開する前に、経理部門の中で3か月かけて回答を確かめました。公開したあとも、専門家が最初の回答を確認する「人による確認」の工程を残しています。</p>
+  </div>
+  <p>AI は、分からないことでも、もっともらしく答えてしまうことがあります（ハルシネーションと呼ばれます）。PSC は、答えてよい範囲をはっきり決め、範囲外や複雑な質問は専門家に回す設計にして、これを防いでいます。</p>
+  <p>CFO は、このしくみを「デジタルの柵」と表現しています。データがどこに保管され、どう守られているかを、常に把握できる状態にしているということです。社内で作る場合も、参照させる資料に機密情報が含まれていないか、誰が見てよい資料かを先に確認してください。</p>
+
+  <!-- 8. おわりに -->
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>ポイントは、AI に答えさせたことそのものではありません。「正しい資料を1か所に置く」「答えてよい範囲を決める」「人が最後に確かめる」の3つを、先に決めたことです。PSC はこれを3本柱の手順書（プレイブック）にまとめ、人事や調達の規程にも広げようとしています。40を超える省庁や機関が、同じしくみに関心を寄せているそうです。</p>
+  <p>自分の職場に置き換えると、経費精算や勤怠、情報セキュリティのルールなど、「規程を読めば分かるのに、毎回人に聞かれる」質問は多くの職場にあります。まずは問い合わせがいちばん多いテーマ1つに絞って試すのがおすすめです。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「Transforming comptrollership: PSC cuts travel email inquiries by 90% using M365 Copilot agent」（2026年7月8日公開）<br>
+    <a href="https://www.microsoft.com/en/customers/story/26864-public-service-commission-of-canada-microsoft-365-copilot">https://www.microsoft.com/en/customers/story/26864-public-service-commission-of-canada-microsoft-365-copilot</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年9月28日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

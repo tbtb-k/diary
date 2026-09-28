@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Agent Builder の活用事例（東京建物）。2026年9月28日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>マニュアル探しを、現場が自作したエージェントに任せられるようになりました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Agent Builder</span>2026年9月28日／不動産（東京建物）・現場部門の資料検索</p>
+
+  <!-- 1. タイトル -->
+  <h1>マニュアル探しを、現場が自作したエージェントに任せられるようになりました</h1>
+
+  <!-- 2. リード -->
+  <div class="lead">
+    <p>東京建物では、担当物件のフォルダを探して資料や契約条項を確かめる作業が多く、必要な情報にたどり着くまで時間がかかっていました。</p>
+    <p>そこで、プログラムを書かずにエージェントを作れる「Agent Builder」だけを、あえて社内に広めました。</p>
+    <p>賃貸マンション部門ではマニュアルを高速に検索できるエージェントが生まれ、全社では1年弱で約500体が現場から作られています。</p>
+  </div>
+
+  <!-- 3. 課題 -->
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>「あの手続き、マニュアルのどこに書いてあったかな」と、共有フォルダを何階層もたどった経験はありませんか。案件や物件ごとにフォルダが分かれていると、目当ての資料を開くまでに時間がかかります。やっと見つけても、分厚いマニュアルの中から該当箇所を探す作業が残っています。</p>
+  <p>東京建物でも、部署や案件ごとに業務の流れやデータの置き方が違い、「その人にしか分からない」状態（属人化）が進んでいました。担当する物件のフォルダを探しに行き、資料や契約条項を確認する作業が頻繁に発生していたそうです。異動のときの引き継ぎも、スムーズにはいっていませんでした。</p>
+
+  <!-- 4. やってみたこと -->
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>使ったのは、Microsoft 365 Copilot に組み込まれている「Agent Builder（エージェント ビルダー）」です。エージェントとは、特定の仕事のために、役割と参照する資料をあらかじめ決めておいた専用の Copilot のことです。Agent Builder では、作りたいものを日本語で説明するだけで、プログラムを書かずにエージェントを作れます。</p>
+  <p>東京建物には、より高度なエージェントを作れる Copilot Studio もありました。それでも社内には、あえて簡単な Agent Builder だけを周知しました。「難しそう」という現場の抵抗感を下げるためです。賃貸マンションの開発・運営を担う部門は、これまで蓄積・整理してきたマニュアルや資料を読み込ませました。質問すると、該当箇所を探して答えてくれるエージェントです。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="エージェントができるまでの流れ">
+      <li><div class="box">マニュアル・資料を<br>用意する</div></li>
+      <li><div class="box">Agent Builder で<br>役割を書く</div></li>
+      <li><div class="box">資料を<br>読み込ませる</div></li>
+      <li><div class="box">質問すると<br>該当箇所を答える</div></li>
+    </ol>
+    <figcaption>賃貸マンション部門のエージェントができるまでの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>部門でこれまで蓄積・整理してきたマニュアルや資料を用意します。</li>
+    <li>Copilot の画面から Agent Builder を開き、「このマニュアルをもとに質問に答える」といった役割を日本語で伝えます。</li>
+    <li>参照先としてマニュアル・資料を指定し、試しに質問して答え方を確かめます。</li>
+    <li>できたエージェントは、社内イントラネット（SharePoint 上）の業務掲示板で部署ごとに公表し、ほかの人も使えるようにしました。</li>
+  </ol>
+  <p class="src-note">※ 手順2・3は、Agent Builder の一般的な作り方で補っています。東京建物が実際に使った指示文は公開されていません。</p>
+
+  <!-- 5. 変化 -->
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>担当物件のフォルダを探しに行き、資料や契約条項を自分で確認していました。必要な情報にたどり着くまでに、案外時間がかかっていました。</p></div>
+    <div class="after"><h3>いま</h3><p>フォルダをたどる代わりに、まずエージェントに質問するところから始められます。読み込ませたマニュアル・資料から、該当しそうな箇所を探して答えてくれます。</p></div>
+  </div>
+  <p>同じ形のエージェントは、ほかの部署にも広がりました。ビル開発技術部門は、特定の会議の過去の議事録を読み込ませ、長く続くプロジェクトの経緯を追えるエージェントを作りました。人事部は、寄せられる問い合わせに担当者が関連規程をすぐ参照できるエージェントを作っています。</p>
+  <p>全社では、全社展開から1年弱で約500体のエージェントが現場部門から生まれました。Copilot の利用率は月間アクティブで平均約80％です。全社アンケートでは、7割以上が「業務効率化に寄与している」と回答しています。これらは東京建物が公表した、Copilot 全体についての数字です。マニュアル検索エージェント単体での時間短縮の数字は、記事では公表されていません。</p>
+
+  <!-- 6. 最初の一歩 -->
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>「よく探しに行く資料」を1つ決めます。部署の手順書や規程集など、何度も同じところを開いているものがおすすめです。</li>
+    <li>Microsoft 365 Copilot を開き、「エージェントの作成」から Agent Builder を起動します。「この手順書をもとに、手続きの質問に答えてください」と役割を書き、その資料を参照先に指定します。</li>
+    <li>自分がよく聞かれる質問を3つ投げて、答えと根拠の箇所が合っているか確かめます。合っていれば、まずは自分用として使い始めます。</li>
+  </ol>
+  <p>準備するのは、参照させたい資料だけです。画面の表記や使える機能は、ライセンスや社内の設定、時期によって変わります。見当たらない場合は、社内の IT 担当に確認してみてください。</p>
+
+  <!-- 7. 注意点 -->
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>最初から精度を追いすぎないこと</strong>
+    <p>東京建物は、精度を求めて独自のツールを作り込むのではなく、まず標準の機能を使う方針にしました。独自ツールは、参照するデータや AI モデル（中で文章を考えている頭脳）が変わるたびに調整が必要で、運用が重くなるためです。社員への周知も「確実に業務で使われる機能」に絞り、「教えすぎない」ようにしています。</p>
+  </div>
+  <p>エージェントが増えるほど、「誰が何を見られるか」の管理が大切になります。東京建物は、Microsoft Entra ID（社員のアカウントと権限を管理するしくみ）にもとづくアクセス権限で情報を管理し、内部統制を保っています。エージェントを人と共有するときは、参照させた資料を相手が見てもよいか、先に確認してください。</p>
+  <p>また、エージェントの答えには間違いが混ざることがあります。規程や契約に関わる判断は、答えに出てきた元の資料で確認してから使うようにしてください。</p>
+
+  <!-- 8. おわりに -->
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>ポイントは、高機能なツールを使ったことではありません。いちばん簡単な道具だけを見せて、あとは現場に任せたことです。教えることを絞ったからこそ、自分の仕事の困りごとを一番よく知っている人が、自分でエージェントを作り始めました。この「まず簡単な型を1つだけ渡す」考え方は、新しいツールを社内に広めるときにも応用できます。</p>
+  <p>自分の職場に置き換えると、部署ごとの手順書や規程集がある職場なら、同じ形のエージェントをすぐに作れます。まずは自分用の1体から始め、便利だったら部署の掲示板などで共有する流れがおすすめです。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「Microsoft 365 Copilot を全社導入し、市民開発で約 500 体の AI エージェントを展開――東京建物が取り組んだ、“教えすぎない”、“作り込みすぎない”AI 活用」（2026年5月28日公開）<br>
+    <a href="https://www.microsoft.com/ja-jp/customers/story/26555-tokyo-tatemono-microsoft-365">https://www.microsoft.com/ja-jp/customers/story/26555-tokyo-tatemono-microsoft-365</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年9月28日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
