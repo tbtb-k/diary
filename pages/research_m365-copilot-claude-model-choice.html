@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Microsoft 365 CopilotでClaude（Opusなど）を選べるようになって、何が新しくできるようになったのかを、公式情報と出典日付つきで整理した調査メモ。調査日 2026年9月28日。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>M365 CopilotでClaudeを選ぶと何が変わる？</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F1F3F5;
+  --surface:#FFFFFF;
+  --surface-sunk:#EAEEF1;
+  --ink:#171B21;
+  --muted:#5B6673;
+  --line:#DCE1E6;
+  --line-strong:#C2CBD3;
+  --accent:#1F5C7A;
+  --accent-soft:#E4EEF3;
+  --clay:#A4552F;
+  --clay-soft:#F6E8E0;
+  --ok:#2C6B50;
+  --ok-soft:#E1EFE7;
+  --warn:#8A5A15;
+  --warn-soft:#F5EBD9;
+  --none:#8C3B3B;
+  --none-soft:#F4E3E3;
+  --tag-official:#1F5C7A;
+  --tag-third:#6B5B8A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161B;
+    --surface:#1A1F26;
+    --surface-sunk:#141920;
+    --ink:#E6EAEF;
+    --muted:#9BA6B2;
+    --line:#2B323B;
+    --line-strong:#3C4753;
+    --accent:#7CBDDA;
+    --accent-soft:#1B2C36;
+    --clay:#E3A07E;
+    --clay-soft:#2E2019;
+    --ok:#87CBA4;
+    --ok-soft:#18271F;
+    --warn:#E2B36C;
+    --warn-soft:#2A2318;
+    --none:#E59696;
+    --none-soft:#2B1C1C;
+    --tag-official:#7CBDDA;
+    --tag-third:#B7A6D6;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161B;
+  --surface:#1A1F26;
+  --surface-sunk:#141920;
+  --ink:#E6EAEF;
+  --muted:#9BA6B2;
+  --line:#2B323B;
+  --line-strong:#3C4753;
+  --accent:#7CBDDA;
+  --accent-soft:#1B2C36;
+  --clay:#E3A07E;
+  --clay-soft:#2E2019;
+  --ok:#87CBA4;
+  --ok-soft:#18271F;
+  --warn:#E2B36C;
+  --warn-soft:#2A2318;
+  --none:#E59696;
+  --none-soft:#2B1C1C;
+  --tag-official:#7CBDDA;
+  --tag-third:#B7A6D6;
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  font-size:15px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{
+  max-width:800px;
+  margin:0 auto;
+  padding-inline:20px;
+  padding-block:40px 64px;
+}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+
+/* header */
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin:0 0 14px;
+}
+h1{
+  font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;
+  font-weight:700;
+  font-size:clamp(25px,5.4vw,36px);
+  line-height:1.4;
+  letter-spacing:.01em;
+  margin:0 0 20px;
+  text-wrap:balance;
+}
+.meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 24px;
+  padding-block:16px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  font-size:13px;
+  color:var(--muted);
+}
+.meta b{
+  display:block;
+  font-size:10.5px;
+  font-weight:500;
+  letter-spacing:.12em;
+  color:var(--muted);
+  opacity:.8;
+  font-family:"IBM Plex Mono",monospace;
+}
+.meta span{color:var(--ink);font-size:13.5px;line-height:1.6}
+
+/* verdict */
+.verdict{
+  margin-block:32px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-left:5px solid var(--accent);
+  padding:24px 22px;
+}
+.verdict h2{
+  font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;
+  font-size:18px;
+  font-weight:600;
+  line-height:1.65;
+  margin:0 0 12px;
+  text-wrap:balance;
+}
+.verdict p{margin:0 0 10px;font-size:14px;color:var(--muted)}
+.verdict p:last-child{margin-bottom:0}
+.verdict strong{color:var(--ink);font-weight:700}
+
+/* sections */
+section{margin-block:44px}
+h2.sec{
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.1em;
+  margin:0 0 6px;
+  padding-bottom:10px;
+  border-bottom:2px solid var(--ink);
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+}
+h2.sec em{
+  font-style:normal;
+  font-family:"IBM Plex Mono",monospace;
+  font-size:11px;
+  font-weight:400;
+  color:var(--muted);
+  letter-spacing:.04em;
+}
+.lead{font-size:13.5px;color:var(--muted);margin:14px 0 18px}
+
+/* brain / body diagram */
+.model{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+  margin-top:16px;
+}
+.layer{
+  background:var(--surface);
+  border:1px solid var(--line);
+  padding:16px 18px;
+}
+.layer h3{
+  margin:0 0 4px;
+  font-size:14.5px;
+  font-weight:700;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  gap:4px 10px;
+}
+.layer h3 small{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px;
+  font-weight:400;
+  letter-spacing:.08em;
+  color:var(--muted);
+}
+.layer p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.75}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{
+  font-size:12px;
+  padding:3px 10px;
+  border:1px solid var(--line-strong);
+  background:var(--surface-sunk);
+  line-height:1.6;
+}
+.chip.claude{border-color:var(--clay);color:var(--clay);background:var(--clay-soft);font-weight:700}
+.layer.brain{border-left:4px solid var(--clay)}
+.layer.body{border-left:4px solid var(--accent)}
+.layer.combo{border-left:4px solid var(--ok);background:var(--ok-soft)}
+.layer.combo p{color:var(--ink)}
+.joint{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:11px;
+  color:var(--muted);
+  text-align:center;
+  letter-spacing:.08em;
+}
+
+/* table */
+.scroller{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:13.5px}
+th,td{padding:13px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{
+  background:var(--surface-sunk);
+  font-size:11px;
+  letter-spacing:.08em;
+  font-weight:700;
+  color:var(--muted);
+  white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+tr.focus td{background:var(--accent-soft)}
+td.q{font-weight:500;line-height:1.6}
+td.note{color:var(--muted);font-size:12.5px;line-height:1.65}
+tr.group td{
+  background:var(--surface-sunk);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.08em;
+  color:var(--muted);
+  padding-block:8px;
+}
+.pill{
+  display:inline-block;
+  white-space:nowrap;
+  font-size:11.5px;
+  font-weight:700;
+  padding:3px 9px;
+  border-radius:2px;
+  letter-spacing:.02em;
+}
+.p-ok{background:var(--ok-soft);color:var(--ok)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-none{background:var(--none-soft);color:var(--none)}
+.ref{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:11px;
+  color:var(--accent);
+  white-space:nowrap;
+}
+
+/* timeline */
+ol.tl{list-style:none;margin:0;padding:0;border-left:2px solid var(--line-strong);margin-left:6px}
+ol.tl li{position:relative;padding:0 0 16px 20px}
+ol.tl li:last-child{padding-bottom:0}
+ol.tl li::before{
+  content:"";
+  position:absolute;
+  left:-6px;
+  top:.55em;
+  width:10px;
+  height:10px;
+  background:var(--surface);
+  border:2px solid var(--accent);
+  border-radius:50%;
+}
+ol.tl li.key::before{background:var(--clay);border-color:var(--clay)}
+.tl-date{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--accent);display:block;line-height:1.5}
+.tl-body{font-size:13.5px;line-height:1.75}
+.tl-body .ref{margin-left:4px}
+
+/* evidence */
+.ev{
+  display:grid;
+  grid-template-columns:38px 1fr;
+  gap:0 12px;
+  padding-block:18px;
+  border-bottom:1px solid var(--line);
+}
+.ev:last-of-type{border-bottom:none}
+.ev-n{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:12px;
+  color:var(--accent);
+  padding-top:2px;
+}
+.ev-title{margin:0 0 6px;font-size:14.5px;font-weight:700;line-height:1.6}
+.ev-title a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:3px}
+.ev-title a:hover{text-decoration-color:var(--accent)}
+.ev-bar{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-bottom:8px}
+.tag{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px;
+  letter-spacing:.06em;
+  padding:2px 7px;
+  border:1px solid currentColor;
+  border-radius:2px;
+}
+.t-official{color:var(--tag-official)}
+.t-third{color:var(--tag-third)}
+.t-how{color:var(--muted)}
+.ev-date{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted)}
+.ev-sum{margin:0 0 8px;font-size:13.5px;color:var(--muted);line-height:1.8}
+.ev-url{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px;
+  color:var(--muted);
+  opacity:.75;
+  word-break:break-all;
+  line-height:1.5;
+}
+
+/* alternatives */
+.alts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.alt{background:var(--surface);border:1px solid var(--line);padding:20px 18px}
+.alt h3{margin:0 0 10px;font-size:15px;font-weight:700;line-height:1.6}
+.alt p{margin:0 0 14px;font-size:13.5px;color:var(--muted)}
+.alt dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:12.5px;border-top:1px dashed var(--line-strong);padding-top:12px}
+.alt dt{color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;padding-top:3px}
+.alt dd{margin:0;line-height:1.7}
+
+/* caution */
+ul.caution{margin:0;padding:0;list-style:none}
+ul.caution li{
+  position:relative;
+  padding-left:20px;
+  margin-bottom:12px;
+  font-size:13.5px;
+  line-height:1.85;
+}
+ul.caution li::before{
+  content:"";
+  position:absolute;
+  left:2px;
+  top:.72em;
+  width:7px;
+  height:7px;
+  background:var(--accent);
+}
+ul.caution b{font-weight:700}
+
+/* footer */
+footer{
+  margin-top:56px;
+  padding-top:22px;
+  border-top:1px solid var(--line);
+  font-size:12px;
+  color:var(--muted);
+}
+footer h3{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px;
+  letter-spacing:.12em;
+  font-weight:500;
+  margin:0 0 10px;
+}
+footer ol{margin:0 0 16px;padding-left:20px}
+footer li{margin-bottom:3px;line-height:1.7}
+.disclaim{font-size:11.5px;line-height:1.8;opacity:.85;margin:0}
+
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+@media (min-width:640px){
+  .model{grid-template-columns:1fr 1fr}
+  .model .joint{grid-column:1 / -1}
+  .model .combo{grid-column:1 / -1}
+}
+@media (max-width:420px){
+  .wrap{padding-inline:16px;padding-block:28px 48px}
+  .verdict{padding:20px 16px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">調査メモ / Microsoft 365 Copilot × Claude</p>
+  <h1>M365 CopilotでClaudeを選ぶと、<br>今までできなかったことができるのか</h1>
+  <div class="meta">
+    <div><b>調査日</b><span class="mono">2026-09-28</span></div>
+    <div><b>調査対象</b><span>M365 Copilotのモデル選択（Claude Opus など）</span></div>
+    <div><b>用途</b><span>社内勉強会の最新機能紹介</span></div>
+  </div>
+</header>
+
+<div class="verdict">
+  <h2>モデル選択でClaudeに切り替えても、Copilotに新しい「機能」や「操作」が増えるわけではありません。変わるのは仕上がりの質と得意分野です。一方で、Claudeが加わったことで初めて成り立った新機能はあります。</h2>
+  <p>モデルは「中で文章を考えている頭脳」のことです。Claudeを選ぶと頭脳が入れ替わりますが、メール・会議・ファイルを参照する仕組みや、Word・Excel・PowerPointを直接編集する機能は同じものを使います。<strong>「Claudeにしたら○○ボタンが出る」「Claudeにしたら△△にアクセスできる」といった変化は、公式情報では確認できませんでした。</strong></p>
+  <p>ただし、長い資料の読み込みや何段階もある分析・資料作成では、Microsoft自身が「Claudeが強い」と説明しており、<strong>今まで実用レベルに届かなかった作業が届くようになる</strong>ことはあります。さらに、<strong>GPTが書いたものをClaudeが査読する「Critique」</strong>、<strong>同じ質問をGPTとClaudeに同時に投げて比べる「Model Council」</strong>、<strong>Claude Coworkの技術を取り込んだ「Copilot Cowork」</strong>は、Claudeが入ったからこそ生まれた「今までなかったこと」と言えます。</p>
+</div>
+
+<section>
+  <h2 class="sec">仕組みを一枚で <em>How it works</em></h2>
+  <p class="lead">勉強会では「頭脳」と「手足」に分けて説明すると伝わりやすいです。</p>
+  <div class="model">
+    <div class="layer brain">
+      <h3>頭脳 ＝ モデル <small>選べる部分</small></h3>
+      <p>問いを理解して、文章・分析・構成を考える部分。ここを入れ替えるのがモデル選択です。</p>
+      <div class="chips"><span class="chip">Auto（既定）</span><span class="chip">GPT系</span><span class="chip claude">Claude系</span></div>
+    </div>
+    <div class="layer body">
+      <h3>手足 ＝ Copilotの機能 <small>共通の部分</small></h3>
+      <p>社内のメール・会議・ファイルを探す、アプリを操作する、権限やセキュリティを守る部分。どのモデルを選んでも同じです。</p>
+      <div class="chips"><span class="chip">Work IQ（社内データ参照）</span><span class="chip">Word／Excel／PPTの編集</span><span class="chip">権限・監査</span></div>
+    </div>
+    <p class="joint">＋ 頭脳を2つ組み合わせると ↓</p>
+    <div class="layer combo">
+      <h3>複数の頭脳の組み合わせ <small>ここが本当の新機能</small></h3>
+      <p>1つのモデルでは原理的にできない「別会社のAI同士でのダブルチェック」や「同じ質問の出し比べ」が、Researcher（調査エージェント）の機能として用意されました。</p>
+      <div class="chips"><span class="chip">Critique：GPTが下書き → Claudeが査読</span><span class="chip">Model Council：GPTとClaudeの並列比較</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">何が変わるかマトリクス <em>Matrix</em></h2>
+  <p class="lead">網かけの行が、今回の問いそのものに対応します。「✕ 記載なし」は「公式に書かれていない＝未確認」という意味で、「絶対にできない」と断定するものではありません。</p>
+  <div class="scroller">
+    <table>
+      <thead>
+        <tr>
+          <th style="min-width:210px">確認したいこと</th>
+          <th>判定</th>
+          <th style="min-width:230px">補足</th>
+          <th>根拠</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="group"><td colspan="4">問いへの答え</td></tr>
+        <tr class="focus">
+          <td class="q">Claudeを選ぶと、新しい機能・操作が増える</td>
+          <td><span class="pill p-none">✕ 記載なし</span></td>
+          <td class="note">公式は一貫して「作業に合った頭脳を選べる」という説明。社内データの参照やアプリ操作はモデルと関係なくCopilot側の仕組みです。</td>
+          <td class="ref">[2][4][7]</td>
+        </tr>
+        <tr class="focus">
+          <td class="q">Claudeを選ぶと、難しい仕事の仕上がりが良くなる</td>
+          <td><span class="pill p-warn">△ 作業次第</span></td>
+          <td class="note">Microsoftは「文書・表計算・プレゼン・長時間の作業での推論力」を強みと説明。簡単な依頼ではモデルの差はほぼ出ないという評価もあります。</td>
+          <td class="ref">[7][8][12]</td>
+        </tr>
+        <tr class="focus">
+          <td class="q">Claudeがいるから成り立った新機能がある</td>
+          <td><span class="pill p-ok">○ ある</span></td>
+          <td class="note">Researcher の Critique と Model Council、そして Copilot Cowork。いずれも下の行で詳しく。</td>
+          <td class="ref">[2][3][6]</td>
+        </tr>
+        <tr class="group"><td colspan="4">Claudeが関わる新機能</td></tr>
+        <tr>
+          <td class="q">Critique：GPTの下書きをClaudeが査読してから出す</td>
+          <td><span class="pill p-warn">△ Frontier</span></td>
+          <td class="note">出典の信頼性・網羅性・引用の正確さを別モデルがチェック。早期アクセス制度（Frontierプログラム）と有償ライセンスが前提。</td>
+          <td class="ref">[3]</td>
+        </tr>
+        <tr>
+          <td class="q">Model Council：同じ質問をGPTとClaudeに同時に調べさせて比べる</td>
+          <td><span class="pill p-warn">△ Frontier</span></td>
+          <td class="note">2本のレポートをそのまま残し、「一致点・相違点・それぞれ独自の指摘」をまとめた要約を付けてくれます。</td>
+          <td class="ref">[3][6]</td>
+        </tr>
+        <tr>
+          <td class="q">Copilot Cowork：長く何段階もある仕事をまとめて任せる</td>
+          <td><span class="pill p-warn">△ 従量課金へ</span></td>
+          <td class="note">AnthropicのClaude Coworkの技術を統合したもの。9月25日の発表で、今後はCopilot Credits（使った分だけ払う仕組み）での課金対象とされています。</td>
+          <td class="ref">[2][10][11]</td>
+        </tr>
+        <tr class="group"><td colspan="4">どこでClaudeを選べるか</td></tr>
+        <tr>
+          <td class="q">Word・Excel・PowerPoint・Copilot Chat でモデルを選ぶ</td>
+          <td><span class="pill p-ok">○ 可</span></td>
+          <td class="note">有償のCopilotライセンスが必要。管理者がAnthropicを許可している必要あり（日本を含む大半の商用テナントは既定で許可）。Excelでは閉じると既定モデルに戻ります。</td>
+          <td class="ref">[5][7][8][9]</td>
+        </tr>
+        <tr>
+          <td class="q">Researcher・Copilot Studio でモデルを選ぶ</td>
+          <td><span class="pill p-ok">○ 可</span></td>
+          <td class="note">2025年9月から最初に対応した場所。Copilot Studioではエージェントの手順ごとにモデルを使い分けられます。</td>
+          <td class="ref">[1][8]</td>
+        </tr>
+        <tr>
+          <td class="q">Outlookの下書き・Copilotノートブック内でClaudeを選ぶ</td>
+          <td><span class="pill p-none">✕ 記載なし</span></td>
+          <td class="note">公式の提供先一覧に登場しません（別の調査メモで確認済み）。</td>
+          <td class="ref">[7][8]</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">ここ1年の流れ <em>Timeline</em></h2>
+  <p class="lead">モデル名は数か月単位で入れ替わっています。勉強会では「Claude Opus 5.5」のような版の名前より、「Claude系を選べる」という構造で覚えてもらうのがおすすめです。色付きの点が今回の話の山場です。</p>
+  <ol class="tl">
+    <li><span class="tl-date">2025-09-24</span><span class="tl-body">ResearcherとCopilot StudioでClaude（Opus 4.1 / Sonnet 4）が選べるように。最初の一歩。<span class="ref">[1]</span></span></li>
+    <li class="key"><span class="tl-date">2026-03-09</span><span class="tl-body">Copilot Cowork発表。Claude Coworkの技術をM365に統合。<span class="ref">[2]</span></span></li>
+    <li class="key"><span class="tl-date">2026-03-30</span><span class="tl-body">ResearcherにCritique・Model Councilが登場（Frontier）。GPTとClaudeを「組み合わせる」段階へ。<span class="ref">[3]</span></span></li>
+    <li><span class="tl-date">2026-04〜05</span><span class="tl-body">Opus 4.7、4.8 が順次追加。Copilot Chatでも Claude を直接選べるように。<span class="ref">[13]</span></span></li>
+    <li><span class="tl-date">2026-07-24</span><span class="tl-body">Claude Opus 5 が Word・Excel・PowerPoint・Chat・Cowork・Studio のモデル選択に。<span class="ref">[7]</span></span></li>
+    <li><span class="tl-date">2026-09-22</span><span class="tl-body">Claude Opus 5.5 と GPT-6 Sol を同じ6か所に展開開始。<span class="ref">[8]</span></span></li>
+    <li class="key"><span class="tl-date">2026-09-25</span><span class="tl-body">新しいCopilot（Home・Code・Autopilot）と料金体系の見直しを発表。上位モデルやCoworkは従量課金へ。<span class="ref">[10][11]</span></span></li>
+  </ol>
+</section>
+
+<section>
+  <h2 class="sec">根拠 <em>Evidence</em></h2>
+  <p class="lead">公式情報を一次ソースとして優先し、第三者情報は補足として扱っています。今回の調査環境では一部の公式サイトの本文を直接開けなかったため、各出典に「本文確認」か「検索要約で確認」かを明記しています。後者は勉強会の前に一度リンク先を開いて確かめることをおすすめします。</p>
+
+  <div class="ev">
+    <div class="ev-n">[1]</div>
+    <div>
+      <p class="ev-title"><a href="https://www.microsoft.com/en-us/microsoft-365/blog/2025/09/24/expanding-model-choice-in-microsoft-365-copilot/">Expanding model choice in Microsoft 365 Copilot</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="tag t-how">本文確認</span><span class="ev-date">公開 2025-09-24</span></div>
+      <p class="ev-sum">ResearcherでOpenAIとAnthropicのモデルを切り替えられること、Copilot StudioでClaude Sonnet 4・Opus 4.1を選べることを発表。利用には管理者がMicrosoft 365管理センターで有効化する必要があると明記。</p>
+      <p class="ev-url">microsoft.com/en-us/microsoft-365/blog/2025/09/24/expanding-model-choice-in-microsoft-365-copilot/</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[2]</div>
+    <div>
+      <p class="ev-title"><a href="https://www.microsoft.com/en-us/microsoft-365/blog/2026/03/09/copilot-cowork-a-new-way-of-getting-work-done/">Copilot Cowork: A new way of getting work done</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="tag t-how">本文確認</span><span class="ev-date">公開 2026-03-09（2026年6月に一般提供の追記あり）</span></div>
+      <p class="ev-sum">「Anthropicと緊密に協力し、Claude Coworkの技術をMicrosoft 365 Copilotに統合した」と明記。あわせて「作った会社に関係なく、仕事に合ったモデルを選ぶ」という方針を説明しており、モデルは頭脳として差し替える位置づけであることが読み取れます。</p>
+      <p class="ev-url">microsoft.com/en-us/microsoft-365/blog/2026/03/09/copilot-cowork-a-new-way-of-getting-work-done/</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[3]</div>
+    <div>
+      <p class="ev-title"><a href="https://www.microsoft.com/en-us/microsoft-365/blog/2026/03/30/copilot-cowork-now-available-in-frontier/">Copilot Cowork: Now available in Frontier</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="tag t-how">本文確認</span><span class="ev-date">公開 2026-03-30</span></div>
+      <p class="ev-sum">ResearcherのCritiqueについて「一方のモデルが計画と下書きを行い、もう一方のモデルが専門の査読者として仕上げる」と説明。モデルはAnthropicとOpenAIを含む各社のもの。Model Councilは異なるモデルの回答を並べて、一致点と相違点を見られる機能として紹介されています。</p>
+      <p class="ev-url">microsoft.com/en-us/microsoft-365/blog/2026/03/30/copilot-cowork-now-available-in-frontier/</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[4]</div>
+    <div>
+      <p class="ev-title"><a href="https://www.microsoft.com/en-us/copilot/blog/2026/04/22/copilots-agentic-capabilities-in-word-excel-and-powerpoint-are-generally-available/">Copilot's agentic capabilities in Word, Excel, and PowerPoint are generally available</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="tag t-how">本文確認</span><span class="ev-date">公開 2026-04-22</span></div>
+      <p class="ev-sum">Word・Excel・PowerPointで、Copilotがファイル内で複数ステップの操作を直接行う機能が一般提供に。「モデルごとに異なる価値がある。作った会社に関係なく仕事に合ったモデルを選べる」と説明しています。操作する機能そのものはモデル共通です。</p>
+      <p class="ev-url">microsoft.com/en-us/copilot/blog/2026/04/22/copilots-agentic-capabilities-in-word-excel-and-powerpoint-are-generally-available/</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[5]</div>
+    <div>
+      <p class="ev-title"><a href="https://support.microsoft.com/en-US/Excel/choose-your-model-when-editing-with-copilot-in-excel">Choose your model when editing with Copilot in Excel</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="tag t-how">検索要約で確認</span><span class="ev-date">日付不明</span></div>
+      <p class="ev-sum">ExcelのCopilotでClaude・GPT・Autoから選べると説明。利用には商用のMicrosoft 365 CopilotまたはMicrosoft 365 Premiumが必要で、法人では管理者がAnthropicをサブプロセッサー（処理を委託する先）として有効にする必要があります。選んだモデルはそのセッション限りで、Excelを閉じると既定に戻ります。</p>
+      <p class="ev-url">support.microsoft.com/en-US/Excel/choose-your-model-when-editing-with-copilot-in-excel</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[6]</div>
+    <div>
+      <p class="ev-title"><a href="https://support.microsoft.com/en-us/topic/use-model-council-with-researcher-in-microsoft-365-copilot-32e84232-3c62-4144-9ccd-00bb9d9e4ec2">Use Model Council with Researcher in Microsoft 365 Copilot</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="tag t-how">検索要約で確認</span><span class="ev-date">日付不明</span></div>
+      <p class="ev-sum">Model Councilは同じ質問をGPTとClaudeの調査エージェントに同時に実行させ、それぞれのレポートを残したうえで、一致点・相違点・各モデル独自の貢献をまとめた要約を追加する機能と説明。利用にはFrontierプログラムへの参加が必要です。</p>
+      <p class="ev-url">support.microsoft.com/en-us/topic/use-model-council-with-researcher-in-microsoft-365-copilot-32e84232-3c62-4144-9ccd-00bb9d9e4ec2</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[7]</div>
+    <div>
+      <p class="ev-title"><a href="https://techcommunity.microsoft.com/blog/microsoft365copilotblog/available-today-anthropic-claude-opus-5-in-microsoft-365-copilot/4540524">Available today: Anthropic Claude Opus 5 in Microsoft 365 Copilot</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="tag t-how">検索要約で確認（9/22の別調査では本文確認）</span><span class="ev-date">公開 2026-07-24</span></div>
+      <p class="ev-sum">Opus 5がWord・Excel・PowerPoint・Chat・Copilot Cowork・Copilot Studioのモデル選択に展開。Microsoft公式アカウントの告知では「複雑で多段階の仕事向けに、文書・表計算・プレゼン・長時間の作業で強い推論力を発揮」「Work IQと組み合わせ、組織の文脈に基づいた結果を出す」と説明。社内データを参照する部分はCopilot側（Work IQ）の仕組みであることが分かります。</p>
+      <p class="ev-url">techcommunity.microsoft.com/blog/microsoft365copilotblog/available-today-anthropic-claude-opus-5-in-microsoft-365-copilot/4540524</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[8]</div>
+    <div>
+      <p class="ev-title"><a href="https://techcommunity.microsoft.com/blog/microsoft-copilot-blog/more-models-one-copilot/4559035">More Models, One Copilot</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="tag t-how">検索要約で確認</span><span class="ev-date">公開 2026-09-22</span></div>
+      <p class="ev-sum">Claude Opus 5.5とGPT-6 SolをWord・Excel・PowerPoint・Chat・Cowork・Copilot Studioに展開開始と発表。Opus 5.5は「高度な推論と長い文脈の理解」が強みと説明。「あらゆる作業に最適な単一のモデルはない」ため複数モデルを用意しているという立場で、提供状況はライセンス・アクセス・地域によって異なると明記。</p>
+      <p class="ev-url">techcommunity.microsoft.com/blog/microsoft-copilot-blog/more-models-one-copilot/4559035</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[9]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-subprocessor">Anthropic models in Microsoft Online Services</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="tag t-how">9/22の別調査で本文確認（今回は取得不可）</span><span class="ev-date">最終更新 2026-09-18</span></div>
+      <p class="ev-sum">Anthropicモデルは商用クラウドの大半で既定オン、EU/EFTA・英国は既定オフ、EUデータ境界（EU内でデータを処理する約束）の対象外、GCC High・DoDなど政府向けクラウドでは利用不可、といった前提条件がまとまっている管理者向けページ。</p>
+      <p class="ev-url">learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-subprocessor</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[10]</div>
+    <div>
+      <p class="ev-title"><a href="https://blogs.microsoft.com/blog/2026/09/25/introducing-the-new-copilot-with-home-code-and-autopilot/">Introducing the new Copilot with Home, Code and Autopilot</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="tag t-how">検索要約で確認</span><span class="ev-date">公開 2026-09-25</span></div>
+      <p class="ev-sum">ChatとCoworkを1つにまとめた「Home」、アプリを作る「Code」、常駐型エージェント「Autopilot」を発表。Cowork・Code・Autopilotと上位のフロンティアモデルは、Copilot Credits による従量課金で動き、管理者が支出ポリシーを有効にするまで課金されないと報じられています。</p>
+      <p class="ev-url">blogs.microsoft.com/blog/2026/09/25/introducing-the-new-copilot-with-home-code-and-autopilot/</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[11]</div>
+    <div>
+      <p class="ev-title"><a href="https://techcommunity.microsoft.com/blog/microsoft-copilot-blog/evolution-of-the-copilot-pricing-model/4559416">Evolution of the Copilot pricing model</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="tag t-how">検索要約で確認</span><span class="ev-date">公開 2026-09（9/25前後）</span></div>
+      <p class="ev-sum">日常的な利用（モデルと推論の深さを自動で選ぶAutoを含む）はユーザー単位のライセンスに含まれたまま。Cowork・Code・Autopilotなどの高度な機能と、より高性能なフロンティアモデルはCopilot Creditsでの従量課金に移る、という方針。<strong>どのClaudeモデルが「ライセンス内」か「従量」かは、本文を確認できていません。</strong></p>
+      <p class="ev-url">techcommunity.microsoft.com/blog/microsoft-copilot-blog/evolution-of-the-copilot-pricing-model/4559416</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[12]</div>
+    <div>
+      <p class="ev-title"><a href="https://office-watch.com/2026/how-to-choose-copilot-model/">Copilot Model Choices Explained: Which One to Pick and Why</a></p>
+      <div class="ev-bar"><span class="tag t-third">第三者</span><span class="tag t-how">検索要約で確認</span><span class="ev-date">2026年（日付不明）</span></div>
+      <p class="ev-sum">簡単な作業ならAutoで十分でどのモデルも大差ない、一方でAutoは速くて安いモデルに寄りがちと指摘。重要な場面では意図的に選び、スクリプト・VBA・数式はGPT、分析・財務モデル・ミス探し・文章の多いデータはClaude、という使い分けを提案。公式の見解ではなく、執筆者の検証に基づく意見です。</p>
+      <p class="ev-url">office-watch.com/2026/how-to-choose-copilot-model/</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[13]</div>
+    <div>
+      <p class="ev-title"><a href="https://techcommunity.microsoft.com/blog/microsoft365copilotblog/available-today-anthropic-claude-opus-4-8-in-microsoft-365-copilot/4523405">Available today: Anthropic Claude Opus 4.8 in Microsoft 365 Copilot</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="tag t-how">検索要約で確認</span><span class="ev-date">公開 2026-05</span></div>
+      <p class="ev-sum">Opus 4.8をCopilot Coworkで提供開始し、Copilot Chat・Excel・PowerPoint・Copilot Studioへ順次展開と発表。「文書の下書き、データ分析、プレゼン作成に強くなった」と説明。前月（4月）にはOpus 4.7がCoworkとCopilot Studioに追加されています。</p>
+      <p class="ev-url">techcommunity.microsoft.com/blog/microsoft365copilotblog/available-today-anthropic-claude-opus-4-8-in-microsoft-365-copilot/4523405</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">勉強会で「違い」を見せるなら <em>Demo ideas</em></h2>
+  <p class="lead">モデルの差は、簡単な依頼ではほとんど見えません。差が出やすい題材を選ぶのがコツです。</p>
+  <div class="alts">
+    <div class="alt">
+      <h3>案A：同じ依頼を Auto／GPT／Claude で出し比べ</h3>
+      <p>複数の資料を読ませて提案書の骨子を作る、長い議事録から論点と未決事項を洗い出す、など「長くて込み入った依頼」を同じ文面で3回実行し、結果を並べて見せます。</p>
+      <dl>
+        <dt>難易度</dt><dd>低（モデル選択を切り替えるだけ）</dd>
+        <dt>追加コスト</dt><dd>有償Copilotライセンス。料金改定後は上位モデルが従量になる可能性あり</dd>
+      </dl>
+    </div>
+    <div class="alt">
+      <h3>案B：Model Council で「AI同士の意見の違い」を見せる</h3>
+      <p>Researcherで同じ調査テーマを実行し、GPTとClaudeのレポートと「一致点・相違点」の要約を並べます。「1つのAIの答えを鵜呑みにしない」という話にもつなげられます。</p>
+      <dl>
+        <dt>難易度</dt><dd>中（Frontier参加の確認が必要）</dd>
+        <dt>追加コスト</dt><dd>有償ライセンス＋管理者によるFrontierの有効化</dd>
+      </dl>
+    </div>
+    <div class="alt">
+      <h3>案C：Excelで分析のミス探しをさせる</h3>
+      <p>わざと集計ミスや外れ値を仕込んだ表で、「このシートの数字におかしな点がないか確認して、理由も書いて」と依頼。分析やミス探しはClaudeの得意分野と評価されています。</p>
+      <dl>
+        <dt>難易度</dt><dd>低〜中（題材づくりに一手間）</dd>
+        <dt>追加コスト</dt><dd>有償Copilotライセンス</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">注意点 <em>Caveats</em></h2>
+  <ul class="caution">
+    <li><b>既定は「Auto」で、Autoが中でClaudeを使うこともあります。</b>Autoは依頼ごとに合うモデルを自動で選ぶ仕組みです。「Claudeを選ばない限りClaudeは使われない」わけではないので、比較デモでは明示的に選び分けてください。</li>
+    <li><b>料金体系が変わり始めています。</b>9月25日の発表で、Coworkや上位のフロンティアモデルはCopilot Credits（使った分だけ払う仕組み）へ移る方針が示されました。管理者が支出ポリシーを有効にするまで課金はされないとされていますが、「Claudeを選ぶと追加料金がかかるのか」は勉強会で必ず聞かれるので、当日までに公式ブログ [11] の本文を確認しておくのが安全です。</li>
+    <li><b>管理者設定と地域で出る・出ないが変わります。</b>日本を含む大半の商用テナントでは既定でオンですが、管理者がオフにしていれば選択肢に出ません。EU/EFTA・英国は既定オフ、政府向けクラウドは対象外です。</li>
+    <li><b>データの扱いが他モデルと異なります。</b>AnthropicはMicrosoftのサブプロセッサー（処理の委託先）として扱われ、EUデータ境界の対象外です。機密度の高い情報を扱う部署向けに説明する場合は、情報システム部門の判断を先に確認してください。</li>
+    <li><b>名前が似た別製品と混同しないように。</b>Anthropicが自社で提供する「Claude for Microsoft 365」（Word・Excel・PowerPoint・Outlook用アドイン）はClaude側の契約が必要な別製品です。また「Copilot Cowork」（Microsoft）と「Claude Cowork」（Anthropic）も別物です。今回の話はあくまで「M365 Copilotの中でClaudeを選ぶ」ことです。</li>
+    <li><b>モデルの版名はすぐ古くなります。</b>この1年で Opus 4.1 → 4.7 → 4.8 → 5 → 5.5 と入れ替わっています。資料に版名を書く場合は「2026年9月時点」と添え、当日は実機のモデル選択画面で確認してください。</li>
+    <li><b>AIの回答は毎回少しずつ変わります。</b>デモで狙った差が出ないこともあるため、事前に何度か試し、うまくいった結果のスクリーンショットを予備として用意しておくと安心です。</li>
+  </ul>
+</section>
+
+<footer>
+  <h3>出典日付一覧</h3>
+  <ol>
+    <li>[1] Expanding model choice in Microsoft 365 Copilot — 公開 2025-09-24（公式・本文確認）</li>
+    <li>[2] Copilot Cowork: A new way of getting work done — 公開 2026-03-09（公式・本文確認）</li>
+    <li>[3] Copilot Cowork: Now available in Frontier — 公開 2026-03-30（公式・本文確認）</li>
+    <li>[4] Copilot's agentic capabilities … generally available — 公開 2026-04-22（公式・本文確認）</li>
+    <li>[5] Choose your model when editing with Copilot in Excel — 日付不明（公式・検索要約）</li>
+    <li>[6] Use Model Council with Researcher — 日付不明（公式・検索要約）</li>
+    <li>[7] Claude Opus 5 in Microsoft 365 Copilot — 公開 2026-07-24（公式・検索要約）</li>
+    <li>[8] More Models, One Copilot — 公開 2026-09-22（公式・検索要約）</li>
+    <li>[9] Anthropic models in Microsoft Online Services — 最終更新 2026-09-18（公式・前回調査で本文確認）</li>
+    <li>[10] Introducing the new Copilot with Home, Code and Autopilot — 公開 2026-09-25（公式・検索要約）</li>
+    <li>[11] Evolution of the Copilot pricing model — 公開 2026-09（公式・検索要約）</li>
+    <li>[12] Office Watch: Copilot Model Choices Explained — 2026年・日付不明（第三者）</li>
+    <li>[13] Claude Opus 4.8 in Microsoft 365 Copilot — 公開 2026-05（公式・検索要約）</li>
+  </ol>
+  <p class="disclaim">調査日: 2026年9月28日。本ページは公開情報のみに基づく調査メモです。Copilotの提供機能・料金は頻繁に更新されるため、実際の導入判断や説明の際は、必ず最新の公式ドキュメントと実機の画面をご確認ください。</p>
+</footer>
+
+</div>
+</body>
+</html>
