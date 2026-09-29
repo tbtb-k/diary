@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Copilot Studioのエージェントをソリューションで同一テナントの別環境へ移管したあとに動かないときの、考えられる原因・切り分けの手順・解決策を、公式ドキュメントの出典と日付つきでまとめた調査メモ。調査日 2026年9月29日。">
+<meta name="description" content="Copilot Studioのエージェントをソリューションで同一テナントの別環境へ移管したあとに動かないときの、考えられる原因・切り分けの手順・解決策を、公式ドキュメントの出典と日付つきでまとめた調査メモ。無償ユーザーに共有すると「権限がない」と言われるときの見分け方も追記。調査日 2026年9月29日。">
 <style>
   *{box-sizing:border-box}
   html{color-scheme:light dark}
@@ -189,6 +189,11 @@ h2.sec em{
 .branch .if{font-family:var(--f-mono);font-size:11px;font-weight:500;white-space:nowrap}
 .branch .yes .if{color:var(--ok)}
 .branch .no .if{color:var(--none)}
+.qbox{background:var(--surface);border:1px solid var(--line);padding:16px 18px;margin-bottom:14px}
+.qbox h3{margin:0 0 8px;font-size:14px;font-weight:700;line-height:1.6}
+.qs{margin:0;padding-left:1.2em;display:grid;gap:8px;font-size:13.5px;line-height:1.75}
+.qs b{font-weight:700}
+.qs span{display:block;color:var(--muted);font-size:12.5px}
 .sym{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .sym span{font-size:12px;padding:3px 10px;border:1px solid var(--line-strong);background:var(--surface);line-height:1.6}
 
@@ -282,6 +287,8 @@ footer ul{margin:8px 0 0;padding-left:1.1em}
   .wrap{padding-inline:16px}
   .steps>li{grid-template-columns:1fr;gap:4px 0}
   .ev{grid-template-columns:1fr;gap:4px 0}
+  .branch div{grid-template-columns:1fr}
+  .branch .if{white-space:normal}
 }
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
 </style>
@@ -296,6 +303,7 @@ footer ul{margin:8px 0 0;padding-left:1.1em}
     <div><b>調査日</b><span class="mono">2026-09-29</span></div>
     <div><b>対象</b><span>Copilot Studio のエージェント（ソリューションで移管）</span></div>
     <div><b>前提</b><span>同一テナント内の別環境へ移管し、インポート後に動かない</span></div>
+    <div><b>追記</b><span><a href="#free-users">無償ユーザーに共有すると「権限がない」</a></span></div>
   </div>
 </header>
 
@@ -551,6 +559,72 @@ footer ul{margin:8px 0 0;padding-left:1.1em}
   </div>
 </section>
 
+<section id="free-users">
+  <h2 class="sec">無償ユーザーに共有すると「権限がない」と言われるとき <em>追記 2026-09-29</em></h2>
+  <p class="lead">ここでの無償ユーザーは、Microsoft 365 Copilot の有償ライセンスを持たず、無料の Copilot Chat だけを使える人を指します。<strong>「有償ライセンスの人は使えるのに、無償の人だけ使えない」</strong>なら、原因はライセンスと利用枠の側にかなり絞れます。</p>
+
+  <div class="qbox">
+    <h3>最初に聞く3つのこと</h3>
+    <ul class="qs">
+      <li><b>どこでエラーが出たか</b><span>Copilot Studio の画面か、Teams や Microsoft 365 Copilot か。メッセージの原文も控えます（例：「You don't have permissions to add this agent」）。</span></li>
+      <li><b>有償ライセンスの人は、同じやり方で使えるか</b><span>ここで原因の系統が分かれます。</span></li>
+      <li><b>エージェントが社内のデータを参照しているか</b><span>SharePoint や Copilot コネクタなどのナレッジがあるかどうかで、無償ユーザーに必要な条件が変わります。</span></li>
+    </ul>
+  </div>
+
+  <div class="branch">
+    <div class="yes"><span class="if">有償は使える・無償だけ不可 →</span><span>下の表の ① と ④ を先に確認します。ライセンス・利用枠・アクセス設定の問題の可能性が高いです。</span></div>
+    <div class="no"><span class="if">有償の人も不可 →</span><span>② の共有のやり直しを先に疑います。上の早見表 D もあわせて確認してください。</span></div>
+  </div>
+
+  <div class="scroller" style="margin-top:16px">
+    <table>
+      <thead>
+        <tr><th>考えられる原因</th><th>詳しく</th><th>対処</th><th>確度・根拠</th></tr>
+      </thead>
+      <tbody>
+        <tr class="focus">
+          <td class="q">① 新しい環境で、無償ユーザーの利用分を払う枠がない</td>
+          <td class="c">共有された人がエージェントを追加できるのは、エージェントの機能に必要なライセンスを持つ場合に限られる。有償の Microsoft 365 Copilot ライセンスの人は Teams などでの利用が課金対象外だが、無償の人は Copilot クレジットで払う。社内データを参照するエージェントは、従量課金がないと無償の人は使えない。クレジットの割り当てや従量課金のリンクは環境ごとの設定なので、旧環境にだけあって新環境にない、ということが起きる</td>
+          <td class="fix">管理者に、新環境へのクレジットの割り当てと、従量課金プランへのリンクを確認してもらう</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev19">[12][19][20][21]</a></td>
+        </tr>
+        <tr>
+          <td class="q">② 新しい環境のエージェントで共有し直していない</td>
+          <td class="c">共有の設定は移管で運ばれず、公開前は共有できない。旧環境のエージェントのリンクを渡している場合も「権限がない」になる</td>
+          <td class="fix">新環境で公開してから、閲覧者（チャットできる人）として共有し直す。渡すリンクも新しいものにする</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev14">[14][19]</a></td>
+        </tr>
+        <tr>
+          <td class="q">③ Copilot Studio の画面のリンクを渡している、または「編集者」として共有している</td>
+          <td class="c">一緒に編集する人（編集者）には Copilot Studio のライセンスと、環境の「Environment Maker（作成者）」ロールが必要。環境にセキュリティグループが付いていると、対象のライセンスを持つメンバーしか環境のユーザーにならない</td>
+          <td class="fix">使ってもらうだけの人は閲覧者として共有し、Teams や Microsoft 365 Copilot から開いてもらう</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev19">[19][24]</a></td>
+        </tr>
+        <tr>
+          <td class="q">④ Microsoft 365 側のエージェント利用設定で対象外になっている</td>
+          <td class="c">Microsoft 365 管理センターのエージェント設定「ユーザーアクセス」が「特定のユーザーまたはグループ」になっていて、無償ユーザーが含まれていない</td>
+          <td class="fix">管理者に「すべてのユーザー」になっているか、対象のグループに入っているかを確認してもらう</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev23">[23]</a></td>
+        </tr>
+        <tr>
+          <td class="q">⑤ Teams で社内アプリの利用が止められている</td>
+          <td class="c">Teams 管理センターの組織全体のアプリ設定で、カスタムアプリ（社内で作ったアプリ）の利用が許可されていない</td>
+          <td class="fix">管理者に Teams 管理センターのカスタムアプリ設定と、アプリのアクセス許可ポリシーを確認してもらう</td>
+          <td class="v"><span class="pill p-warn">コミュニティ情報</span><a class="ref" href="#ev25">[25]</a></td>
+        </tr>
+        <tr>
+          <td class="q">⑥ 作成者が共有しようとした時点で止められる</td>
+          <td class="c">新環境がマネージド環境で、「閲覧者として共有」や「セキュリティグループへの共有」がルールで禁止されている</td>
+          <td class="fix">管理者に環境の共有ルールを確認してもらう。個人単位の共有なら許可されている場合がある</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev22">[22]</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="lead" style="margin-top:12px">① の「必要なライセンスがないと追加できない」と ④ は、公式ページの本文を直接開けず、検索結果の要約で確認した内容です。画面のメッセージとあわせて確かめてください。⑤ は Microsoft Q&amp;A のコミュニティ回答で、公式ドキュメントでは確認できていません。</p>
+</section>
+
 <section>
   <h2 class="sec">解決策 <em>立て直すときの順番</em></h2>
   <p class="lead">原因が一つに絞れないときは、次の順で上から潰すと手戻りが少なくなります。手順そのものは、同じ棚の<a href="https://tbtb-k.github.io/diary/pages/slide_copilot-studio-kankyou-ikan.html.html">「Copilot Studio エージェントの環境移管ガイド」</a>のスライドにまとめています。</p>
@@ -560,7 +634,7 @@ footer ul{margin:8px 0 0;padding-left:1.1em}
     <li><div><b>環境変数の値を新環境用にする</b><span class="m">SharePoint のサイト URL や宛先アドレスが旧環境のままになっていないか、一つずつ確認する <a class="mono" href="#ev11">[11]</a></span></div></li>
     <li><div><b>ユーザー認証を設定し直す</b><span class="m">Teams で SSO を使う場合は、新しいエージェントの ID でアプリ登録を更新する <a class="mono" href="#ev14">[14]</a><a class="mono" href="#ev15">[15]</a></span></div></li>
     <li><div><b>新環境で公開する</b><span class="m">インポート経由の公開で不調なら、もう一度公開する <a class="mono" href="#ev3">[3]</a></span></div></li>
-    <li><div><b>チャネルを差し替え、共有し直す</b><span class="m">Teams アプリや Web の埋め込みを新しいエージェントのものに入れ替え、利用者に共有する <a class="mono" href="#ev14">[14]</a></span></div></li>
+    <li><div><b>チャネルを差し替え、共有し直す</b><span class="m">Teams アプリや Web の埋め込みを新しいエージェントのものに入れ替え、利用者に共有する。無償ユーザーにも使ってもらうなら、新環境のクレジットや従量課金も確認する <a class="mono" href="#ev14">[14]</a><a class="mono" href="#free-users">[追記]</a></span></div></li>
     <li><div><b>環境の設定を管理者と照合する</b><span class="m">データポリシー、生成 AI 機能、Copilot クレジットを移行元とそろえる <a class="mono" href="#ev5">[5]</a><a class="mono" href="#ev6">[6]</a><a class="mono" href="#ev12">[12]</a></span></div></li>
   </ol>
 
@@ -582,7 +656,7 @@ footer ul{margin:8px 0 0;padding-left:1.1em}
 
 <section>
   <h2 class="sec">管理者に確認してもらう設定 <em>移行元と移行先で比べる</em></h2>
-  <p class="lead">すべて Power Platform 管理センター（<span class="mono">admin.powerplatform.microsoft.com</span>）で確認できます。画面の名前は更新で変わることがあります。</p>
+  <p class="lead">最後の行以外は Power Platform 管理センター（<span class="mono">admin.powerplatform.microsoft.com</span>）で確認できます。最後の行は Microsoft 365 管理センターです。画面の名前は更新で変わることがあります。</p>
   <div class="scroller">
     <table>
       <thead>
@@ -604,8 +678,8 @@ footer ul{margin:8px 0 0;padding-left:1.1em}
         <tr>
           <td class="q">Copilot クレジット</td>
           <td class="c">ライセンス &gt; Copilot Studio。環境への割り当てと、使い切ったときの扱い（テナントの残りから使う／従量課金へ）</td>
-          <td class="fix">「使用上限に達しました」の表示。エージェントフローの停止</td>
-          <td class="v"><a class="ref" href="#ev12">[12]</a></td>
+          <td class="fix">「使用上限に達しました」の表示。エージェントフローの停止。無償ユーザーだけが使えない</td>
+          <td class="v"><a class="ref" href="#ev12">[12][20]</a></td>
         </tr>
         <tr>
           <td class="q">従量課金プラン</td>
@@ -619,6 +693,18 @@ footer ul{margin:8px 0 0;padding-left:1.1em}
           <td class="fix">ファイルのナレッジの準備に失敗する</td>
           <td class="v"><a class="ref" href="#ev17">[17]</a></td>
         </tr>
+        <tr>
+          <td class="q">共有のルール（マネージド環境）</td>
+          <td class="c">「閲覧者として共有」「セキュリティグループへの共有」を許可しているか</td>
+          <td class="fix">作成者が共有しようとした時点で止められる</td>
+          <td class="v"><a class="ref" href="#ev22">[22]</a></td>
+        </tr>
+        <tr>
+          <td class="q">Microsoft 365 のエージェント設定</td>
+          <td class="c">Microsoft 365 管理センターのエージェント設定の「ユーザーアクセス」。こちらは環境ではなくテナント全体の設定</td>
+          <td class="fix">対象外のユーザーはエージェントを追加・利用できない</td>
+          <td class="v"><a class="ref" href="#ev23">[23]</a></td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -630,7 +716,8 @@ footer ul{margin:8px 0 0;padding-left:1.1em}
     <li><span>このメモは<strong>同一テナント内</strong>の移管が前提です。テナントをまたぐ場合は、アプリ登録やナレッジの参照先まで作り直しになり、範囲が大きく広がります。</span></li>
     <li><span>早見表の「推論」の行（Teams の SSO、旧チャネルが旧エージェントを指す件）は、公式の仕様から導いた見立てです。公式にこの症状として書かれているわけではないので、実機で確かめてから結論にしてください。</span></li>
     <li><span>画面のボタン名、ライセンスの条件、生成 AI の提供地域は更新が早い領域です。作業の前に根拠のページで最新の記載を確認してください。</span></li>
-    <li><span>Copilot Studio 本体のドキュメントのうち [7][8][14][15] は、この調査の環境から本文を直接開けず、検索結果の要約で内容を確認しました。そのため最終更新日を載せていません。</span></li>
+    <li><span>[7][8][14][15][19][20][21][23] は、この調査の環境から本文を直接開けず、検索結果の要約で内容を確認しました。そのため最終更新日を載せていません。</span></li>
+    <li><span>無償ユーザーが使える範囲（どの機能が課金対象になるか）は、ライセンス体系の変更で動きやすい部分です。説明の前に [20][21] で最新の条件を確認してください。</span></li>
   </ul>
 </section>
 
@@ -817,6 +904,76 @@ footer ul{margin:8px 0 0;padding-left:1.1em}
       <p class="url">learn.microsoft.com/ja-jp/troubleshoot/power-platform/copilot-studio/licensing/publish-license-error</p>
     </div>
   </div>
+
+  <div class="ev" id="ev19">
+    <div class="ev-n">[19]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/admin-share-bots">Share agents with other users</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date unk">最終更新日 未取得（検索結果の要約で確認）</span></div>
+      <p>チャットだけの共有は、個人、セキュリティグループ、組織全体に対してできる。一緒に編集する人は Environment Maker のセキュリティロールが必要で、編集者は個人単位でしか付けられない。Teams と Microsoft 365 Copilot では、共有された人がエージェントを追加できるのは、エージェントの機能に必要な種類の Microsoft 365 Copilot ライセンスを持つ場合に限られる。</p>
+      <p class="url">learn.microsoft.com/ja-jp/microsoft-copilot-studio/admin-share-bots</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev20">
+    <div class="ev-n">[20]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/billing-licensing">Copilot Studio licensing</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date unk">最終更新日 未取得（検索結果の要約で確認）</span></div>
+      <p>Microsoft 365 Copilot ライセンスを持つ人が Copilot Chat、Teams、SharePoint でエージェントを使う場合、通常の回答・生成回答・Microsoft Graph のテナントデータ参照は Copilot Studio のメッセージパックや従量課金にカウントされない。支払い方法は前払いのクレジットか、Azure サブスクリプションによる従量課金。</p>
+      <p class="url">learn.microsoft.com/ja-jp/microsoft-copilot-studio/billing-licensing</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev21">
+    <div class="ev-n">[21]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/copilot/agents">Agents for Microsoft Copilot Chat</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date unk">最終更新日 未取得（検索結果の要約で確認）</span></div>
+      <p>ライセンスのないユーザーがテナントのデータ（SharePoint、Copilot コネクタなど）を参照するエージェントを使うには、Microsoft 365 Copilot のライセンスか、テナントで従量課金が有効になっていることが必要。従量課金は既定では無効で、管理者が有効にする。</p>
+      <p class="url">learn.microsoft.com/ja-jp/copilot/agents</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev22">
+    <div class="ev-n">[22]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/power-platform/admin/managed-environment-sharing-limits">Limit sharing（マネージド環境）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-03-02</span></div>
+      <p>マネージド環境では、エージェントを「編集者」「閲覧者」として共有できるか、セキュリティグループと共有できるか、閲覧者の人数の上限を管理者が決められる。ルールは共有しようとした時点で適用され、違反すると作成者にエラーが表示される。</p>
+      <p class="url">learn.microsoft.com/ja-jp/power-platform/admin/managed-environment-sharing-limits</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev23">
+    <div class="ev-n">[23]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-365/admin/manage/agent-settings">Agent settings in Microsoft 365 admin center</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date unk">最終更新日 未取得（検索結果の要約で確認）</span></div>
+      <p>エージェントの「ユーザーアクセス」で、エージェントを使える人を「すべてのユーザー」「特定のユーザーまたはグループ」「なし」から選べる。画面の場所は版によって「エージェント &gt; 設定」または「Copilot &gt; 設定 &gt; データアクセス &gt; エージェント」と案内されている。</p>
+      <p class="url">learn.microsoft.com/ja-jp/microsoft-365/admin/manage/agent-settings</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev24">
+    <div class="ev-n">[24]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/power-platform/admin/control-user-access">Control user access to environments with security groups and licenses</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-08-26</span></div>
+      <p>環境にセキュリティグループを関連付けると、対象の Power Platform や Dynamics 365 のライセンスを持つそのグループのメンバーだけが環境のユーザーになる。ユーザーは少なくとも1つのセキュリティロールがないと環境にアクセスできない。</p>
+      <p class="url">learn.microsoft.com/ja-jp/power-platform/admin/control-user-access</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev25">
+    <div class="ev-n">[25]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/answers/questions/5965007/users-can-see-copilot-agent-in-built-by-your-org-b">Users can see Copilot agent in "Built by your org" but cannot add it unless explicitly granted Viewer access（Microsoft Q&amp;A）</a></p>
+      <div class="ev-bar"><span class="tag third">第三者・コミュニティ</span><span class="date unk">日付不明</span></div>
+      <p>「組織全体」への共有だけでは「You don't have permissions to add this agent」が出て、個別に閲覧者として追加すると使えたという報告。回答では Microsoft 365 管理センターのユーザーアクセス設定の確認が勧められている。Teams のカスタムアプリ設定の確認は、同種の Q&amp;A で案内されている対処。</p>
+      <p class="url">learn.microsoft.com/en-us/answers/questions/5965007</p>
+    </div>
+  </div>
 </section>
 
 <footer>
@@ -827,7 +984,9 @@ footer ul{margin:8px 0 0;padding-left:1.1em}
     <li>[5] 2026-05-21　[6] 2025-11-19　[7] 未取得　[8] 未取得</li>
     <li>[9] 2024-10-09　[10] 2026-01-09　[11] 2026-01-09　[12] 2026-09-18</li>
     <li>[13] 2025-09-30　[14] 未取得　[15] 未取得　[16] 2026-08-05</li>
-    <li>[17] 2026-08-25　[18] 2026-07-15</li>
+    <li>[17] 2026-08-25　[18] 2026-07-15　[19] 未取得　[20] 未取得</li>
+    <li>[21] 未取得　[22] 2026-03-02　[23] 未取得　[24] 2026-08-26</li>
+    <li>[25] 日付不明（コミュニティ）</li>
   </ul>
 </footer>
 
