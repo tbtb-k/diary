@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Copilot Studioのエージェントをソリューションで同一テナントの別環境へ移管したあとに動かないときの、考えられる原因・切り分けの手順・解決策を、公式ドキュメントの出典と日付つきでまとめた調査メモ。無償ユーザーに共有すると「権限がない」と言われるときの見分け方も追記。調査日 2026年9月29日。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>移管したエージェントが動かないとき</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* layout: 1カラムの調査メモ。上から「結論 → 仕組み → 切り分け手順 → 症状別の早見表 → 解決策 → 管理者確認 → 根拠」 */
+:root{
+  --bg:#F1F3F5;
+  --surface:#FFFFFF;
+  --surface-sunk:#EAEEF1;
+  --ink:#171B21;
+  --muted:#5B6673;
+  --line:#DCE1E6;
+  --line-strong:#C2CBD3;
+  --accent:#1F5C7A;
+  --accent-soft:#E4EEF3;
+  --ok:#2C6B50;
+  --ok-soft:#E1EFE7;
+  --warn:#8A5A15;
+  --warn-soft:#F5EBD9;
+  --none:#8C3B3B;
+  --none-soft:#F4E3E3;
+  --tag-official:#1F5C7A;
+  --tag-third:#6B5B8A;
+  --f-display:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161B;
+    --surface:#1A1F26;
+    --surface-sunk:#141920;
+    --ink:#E6EAEF;
+    --muted:#9BA6B2;
+    --line:#2B323B;
+    --line-strong:#3C4753;
+    --accent:#7CBDDA;
+    --accent-soft:#1B2C36;
+    --ok:#87CBA4;
+    --ok-soft:#18271F;
+    --warn:#E2B36C;
+    --warn-soft:#2A2318;
+    --none:#E59696;
+    --none-soft:#2B1C1C;
+    --tag-official:#7CBDDA;
+    --tag-third:#B7A6D6;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161B;
+  --surface:#1A1F26;
+  --surface-sunk:#141920;
+  --ink:#E6EAEF;
+  --muted:#9BA6B2;
+  --line:#2B323B;
+  --line-strong:#3C4753;
+  --accent:#7CBDDA;
+  --accent-soft:#1B2C36;
+  --ok:#87CBA4;
+  --ok-soft:#18271F;
+  --warn:#E2B36C;
+  --warn-soft:#2A2318;
+  --none:#E59696;
+  --none-soft:#2B1C1C;
+  --tag-official:#7CBDDA;
+  --tag-third:#B7A6D6;
+  color-scheme:dark;
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:15px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:840px;margin:0 auto;padding-inline:20px;padding-block:40px 64px}
+.mono,code{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+code{
+  font-size:.86em;
+  background:var(--surface-sunk);
+  border:1px solid var(--line);
+  padding:0 5px;
+  border-radius:2px;
+  word-break:break-all;
+}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* header */
+.eyebrow{
+  font-family:var(--f-mono);
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 14px;
+}
+h1{
+  font-family:var(--f-display);
+  font-weight:700;font-size:clamp(25px,5.4vw,36px);line-height:1.4;
+  letter-spacing:.01em;margin:0 0 20px;text-wrap:balance;
+}
+.meta{
+  display:flex;flex-wrap:wrap;gap:8px 24px;padding-block:16px;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  font-size:13px;color:var(--muted);
+}
+.meta b{
+  display:block;font-size:10.5px;font-weight:500;letter-spacing:.12em;
+  color:var(--muted);opacity:.8;font-family:var(--f-mono);
+}
+.meta span{color:var(--ink);font-size:13.5px;line-height:1.6}
+
+/* verdict */
+.verdict{
+  margin-block:32px;background:var(--surface);
+  border:1px solid var(--line);border-left:5px solid var(--accent);
+  padding:24px 22px;
+}
+.verdict h2{
+  font-family:var(--f-display);
+  font-size:18px;font-weight:600;line-height:1.65;margin:0 0 12px;text-wrap:balance;
+}
+.verdict p{margin:0 0 10px;font-size:14px;color:var(--muted)}
+.verdict p:last-child{margin-bottom:0}
+.verdict strong{color:var(--ink);font-weight:700}
+
+/* sections */
+section{margin-block:44px}
+h2.sec{
+  font-size:13px;font-weight:700;letter-spacing:.1em;margin:0 0 6px;
+  padding-bottom:10px;border-bottom:2px solid var(--ink);
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;
+}
+h2.sec em{
+  font-style:normal;font-family:var(--f-mono);
+  font-size:11px;font-weight:400;color:var(--muted);letter-spacing:.04em;
+}
+.lead{font-size:13.5px;color:var(--muted);margin:14px 0 18px}
+.lead strong{color:var(--ink)}
+
+/* 仕組み：3つの置き場 */
+.bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:16px}
+.bin{background:var(--surface);border:1px solid var(--line);padding:16px 18px;min-width:0}
+.bin h3{margin:0 0 2px;font-size:14.5px;font-weight:700;line-height:1.6}
+.bin .sub{margin:0 0 10px;font-size:12px;color:var(--muted);line-height:1.6}
+.bin ul{margin:0;padding-left:1.1em;font-size:13px;line-height:1.75}
+.bin li{margin-bottom:4px}
+.bin li:last-child{margin-bottom:0}
+.bin.carry{border-top:4px solid var(--ok)}
+.bin.redo{border-top:4px solid var(--warn)}
+.bin.env{border-top:4px solid var(--accent)}
+.note-box{
+  margin-top:14px;background:var(--surface-sunk);border:1px dashed var(--line-strong);
+  padding:14px 16px;font-size:13.5px;line-height:1.8;
+}
+.note-box b{font-weight:700}
+.note-box p{margin:0 0 8px}
+.note-box p:last-child{margin-bottom:0}
+
+/* 切り分けの手順 */
+.steps{list-style:none;margin:0;padding:0}
+.steps>li{
+  display:grid;grid-template-columns:52px minmax(0,1fr);gap:0 14px;
+  padding-block:20px;border-bottom:1px solid var(--line);
+}
+.steps>li:last-child{border-bottom:none}
+.s-n{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;color:var(--accent);padding-top:3px}
+.s-body h3{margin:0 0 8px;font-size:15px;font-weight:700;line-height:1.6}
+.s-body p{margin:0 0 8px;font-size:13.5px;color:var(--muted);line-height:1.85}
+.s-body p:last-child{margin-bottom:0}
+.s-body strong{color:var(--ink)}
+.branch{display:grid;gap:8px;margin-top:10px}
+.branch div{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 10px;align-items:baseline;
+  background:var(--surface);border:1px solid var(--line);padding:9px 12px;font-size:13px;line-height:1.7;
+}
+.branch .if{font-family:var(--f-mono);font-size:11px;font-weight:500;white-space:nowrap}
+.branch .yes .if{color:var(--ok)}
+.branch .no .if{color:var(--none)}
+.qbox{background:var(--surface);border:1px solid var(--line);padding:16px 18px;margin-bottom:14px}
+.qbox h3{margin:0 0 8px;font-size:14px;font-weight:700;line-height:1.6}
+.qs{margin:0;padding-left:1.2em;display:grid;gap:8px;font-size:13.5px;line-height:1.75}
+.qs b{font-weight:700}
+.qs span{display:block;color:var(--muted);font-size:12.5px}
+.sym{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.sym span{font-size:12px;padding:3px 10px;border:1px solid var(--line-strong);background:var(--surface);line-height:1.6}
+
+/* 早見表 */
+.scroller{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13px}
+th,td{padding:12px 13px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{
+  background:var(--surface-sunk);font-size:11px;letter-spacing:.08em;
+  font-weight:700;color:var(--muted);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+tr.grp td{
+  background:var(--surface-sunk);font-size:11.5px;font-weight:700;letter-spacing:.08em;
+  color:var(--accent);padding-block:8px;
+}
+tr.focus td{background:var(--accent-soft)}
+td.q{font-weight:500;line-height:1.6;width:26%}
+td.q code{font-weight:400}
+td.c{line-height:1.7;width:30%}
+td.fix{color:var(--muted);font-size:12.5px;line-height:1.7}
+td.v{white-space:nowrap;width:1%}
+.pill{
+  display:inline-block;white-space:nowrap;font-size:11px;font-weight:700;
+  padding:2px 8px;border-radius:2px;letter-spacing:.02em;
+}
+.p-ok{background:var(--ok-soft);color:var(--ok)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-none{background:var(--none-soft);color:var(--none)}
+.ref{display:block;margin-top:5px;font-family:var(--f-mono);font-size:11px;color:var(--accent);white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 0 12px;font-size:12.5px;color:var(--muted);align-items:center}
+.legend .swatch{display:inline-block;width:12px;height:12px;background:var(--accent-soft);border:1px solid var(--line-strong);vertical-align:-1px;margin-right:6px}
+
+/* 解決策 */
+.fixlist{list-style:none;margin:0;padding:0;counter-reset:fx}
+.fixlist li{
+  counter-increment:fx;display:grid;grid-template-columns:34px minmax(0,1fr);gap:0 12px;
+  padding-block:13px;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.8;
+}
+.fixlist li:last-child{border-bottom:none}
+.fixlist li::before{
+  content:counter(fx,decimal-leading-zero);font-family:var(--f-mono);font-size:11px;
+  color:var(--accent);padding-top:3px;
+}
+.fixlist b{font-weight:700}
+.fixlist span.m{display:block;color:var(--muted);font-size:12.5px}
+.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:18px}
+.tip{background:var(--surface);border:1px solid var(--line);padding:14px 16px;min-width:0}
+.tip h3{margin:0 0 6px;font-size:14px;font-weight:700;line-height:1.6}
+.tip p{margin:0;font-size:13px;color:var(--muted);line-height:1.75}
+
+/* evidence */
+.ev{
+  display:grid;grid-template-columns:38px minmax(0,1fr);gap:0 12px;
+  padding-block:18px;border-bottom:1px solid var(--line);
+}
+.ev:last-of-type{border-bottom:none}
+.ev-n{font-family:var(--f-mono);font-size:12px;color:var(--accent);padding-top:2px}
+.ev-title{margin:0 0 6px;font-size:14.5px;font-weight:700;line-height:1.6}
+.ev-title a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:3px}
+.ev-title a:hover{text-decoration-color:var(--accent)}
+.ev-bar{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-bottom:8px}
+.tag{
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;
+  padding:2px 7px;border:1px solid currentColor;
+}
+.tag.official{color:var(--tag-official)}
+.tag.third{color:var(--tag-third)}
+.date{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.date.unk{color:var(--warn)}
+.ev p{margin:0 0 6px;font-size:13.5px;color:var(--muted);line-height:1.8}
+.ev .url{font-family:var(--f-mono);font-size:11px;color:var(--muted);word-break:break-all;opacity:.85}
+
+/* caveats */
+.caveats{list-style:none;margin:0;padding:0}
+.caveats li{
+  display:grid;grid-template-columns:18px minmax(0,1fr);gap:0 10px;
+  padding-block:10px;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.8;
+}
+.caveats li:last-child{border-bottom:none}
+.caveats li::before{content:"—";color:var(--muted)}
+
+footer{
+  margin-top:56px;padding-top:18px;border-top:2px solid var(--ink);
+  font-size:12px;color:var(--muted);line-height:1.8;
+}
+footer .mono{font-size:11.5px}
+footer ul{margin:8px 0 0;padding-left:1.1em}
+
+@media (max-width:520px){
+  .wrap{padding-inline:16px}
+  .steps>li{grid-template-columns:1fr;gap:4px 0}
+  .ev{grid-template-columns:1fr;gap:4px 0}
+  .branch div{grid-template-columns:1fr}
+  .branch .if{white-space:normal}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Research memo / Copilot Studio</p>
+  <h1>移管したエージェントが動かないとき</h1>
+  <div class="meta">
+    <div><b>調査日</b><span class="mono">2026-09-29</span></div>
+    <div><b>対象</b><span>Copilot Studio のエージェント（ソリューションで移管）</span></div>
+    <div><b>前提</b><span>同一テナント内の別環境へ移管し、インポート後に動かない</span></div>
+    <div><b>追記</b><span><a href="#free-users">無償ユーザーに共有すると「権限がない」</a></span></div>
+  </div>
+</header>
+
+<div class="verdict">
+  <h2>動かなくなる原因のほとんどは、「箱に入らない設定」か「環境ごとに違う設定」のどちらかです。</h2>
+  <p>ソリューション（引っ越し用の箱）で運ばれるのは、指示やトピック、フローの定義といった<strong>エージェントの中身</strong>までです。<strong>接続（外部サービスへのログイン情報）、ユーザー認証、チャネル、公開状態、共有は運ばれない</strong>ので、移行先で設定し直す必要があります。</p>
+  <p>もう一つの落とし穴は、同じテナント（同じ会社の Microsoft 365）の中でも、<strong>データポリシー、生成AIの地域設定、利用枠（Copilot クレジット）は環境ごとに別々</strong>だという点です。移行元で許可されていたことが、移行先では止められていることがあります。</p>
+  <p>切り分けは<strong>「新環境で公開したか」→「新環境のテスト画面で動くか」</strong>の2問から始めるのが近道です。テスト画面で動くなら入口（チャネル・認証・共有）、動かないなら中身・つなぎ・環境設定の問題、と半分に絞れます。</p>
+</div>
+
+<section>
+  <h2 class="sec">まず押さえる仕組み <em>何が運ばれて、何が運ばれないか</em></h2>
+  <p class="lead">移管後の不具合は、下の3つの置き場のうち<strong>右の2つ</strong>で起きます。ここを先に頭に入れておくと、原因の当たりが付けやすくなります。</p>
+  <div class="bins">
+    <div class="bin carry">
+      <h3>箱に入って運ばれる</h3>
+      <p class="sub">ソリューションに入れておけば移行先に届く</p>
+      <ul>
+        <li>エージェント本体（指示、トピック、ナレッジの設定、ツール）</li>
+        <li>ソリューションに入れた Power Automate フロー、カスタムコネクタの定義</li>
+        <li>接続参照・環境変数の「定義」</li>
+        <li>Dataverse テーブルの「形」（データの中身は別の道具で移す）<a class="mono" href="#ev11">[11]</a></li>
+      </ul>
+    </div>
+    <div class="bin redo">
+      <h3>箱に入らない</h3>
+      <p class="sub">移行先で設定し直す</p>
+      <ul>
+        <li>接続そのもの（Outlook や SharePoint へのログイン情報）<a class="mono" href="#ev10">[10]</a></li>
+        <li>ユーザー認証の設定 <a class="mono" href="#ev14">[14]</a></li>
+        <li>チャネル（Teams、Web サイトなど）の設定 <a class="mono" href="#ev14">[14]</a></li>
+        <li>公開状態と共有。公開するまで共有もできない <a class="mono" href="#ev14">[14]</a></li>
+        <li>アイコン（反映まで最大24時間）、トピックのコメント <a class="mono" href="#ev14">[14]</a></li>
+      </ul>
+    </div>
+    <div class="bin env">
+      <h3>環境ごとに持っている</h3>
+      <p class="sub">管理者が環境単位で決めている設定</p>
+      <ul>
+        <li>データポリシー（DLP：使ってよいコネクタのルール）<a class="mono" href="#ev6">[6]</a></li>
+        <li>生成AI機能の「リージョン間でのデータ移動」「Bing 検索」<a class="mono" href="#ev5">[5]</a></li>
+        <li>Copilot クレジットの割り当て、従量課金プランへのリンク <a class="mono" href="#ev12">[12]</a><a class="mono" href="#ev13">[13]</a></li>
+        <li>マネージド環境のポリシー（アンマネージドのカスタマイズをブロック など）<a class="mono" href="#ev17">[17]</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="note-box">
+    <p><b>新環境のエージェントは「中身が同じ別のエージェント」です。</b>インポートすると、新しい環境に新しいエージェントが作られます。そのため、旧環境で作った Teams アプリや Web サイトの埋め込みコードは、旧環境のエージェントを指したままです（仕組みからの推論）。「Teams から話しかけたら古いほうが答えていた」という取り違えは、まずここを疑ってください。</p>
+    <p><b>同一テナントなら、テナント全体の設定は原因候補から外しやすいです。</b>作成者のセキュリティグループや「AI 機能つきエージェントの公開」の許可はテナント単位の設定なので、移行元で公開できていたなら同じはずです<a class="mono" href="#ev18">[18]</a>。ただし、移行先で作業する人が変わった場合は、その人のライセンスを確認してください。</p>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">切り分けの手順 <em>上から順に進める</em></h2>
+  <p class="lead">順番に意味があります。前の問いで原因が見つかれば、そこで止めて直してから再確認してください。</p>
+  <ol class="steps">
+    <li>
+      <div class="s-n">STEP 1</div>
+      <div class="s-body">
+        <h3>症状を4つのどれかに当てはめる</h3>
+        <p>「動かない」のままだと原因が絞れません。どこで、何が起きたかを1文にします。画面に出たメッセージと<strong>エラーコード</strong>（不具合の種類を表す英単語の名札。例：<code>FlowActionException</code>）は必ず控えてください。</p>
+        <div class="sym"><span>公開ボタンでエラー</span><span>テスト画面でもエラー</span><span>テスト画面では動くが Teams / Web で動かない</span><span>一部の質問だけ失敗する</span></div>
+      </div>
+    </li>
+    <li>
+      <div class="s-n">STEP 2</div>
+      <div class="s-body">
+        <h3>新環境で「公開」したかを確認する</h3>
+        <p>インポートしただけでは、利用者向けの最新版がありません。<code>LatestPublishedVersionNotFound</code> は公開で解消します。「Sorry, the bot can't talk for a while」と出る <code>AIPluginOperationNotFound</code> は、<strong>インポートやソリューション展開の経由で公開されたときに起こりうる</strong>と公式に書かれており、対処は再公開です<a class="mono" href="#ev3">[3]</a>。</p>
+        <p>公開ボタンでエラーが出る場合は、ソリューションに部品が足りない可能性が高いです。下の早見表の A を見てください<a class="mono" href="#ev1">[1]</a>。</p>
+      </div>
+    </li>
+    <li>
+      <div class="s-n">STEP 3</div>
+      <div class="s-body">
+        <h3>新環境のテスト画面で同じ質問を試す</h3>
+        <p>Copilot Studio の「エージェントをテスト」の画面です。作成者がテストすると、エラーコードと詳しい説明が表示されます<a class="mono" href="#ev3">[3]</a>。ここで結果が分かれます。</p>
+        <div class="branch">
+          <div class="yes"><span class="if">動く →</span><span>中身は無事です。STEP 5（入口の確認）へ進んでください。</span></div>
+          <div class="no"><span class="if">動かない →</span><span>中身・つなぎ・環境設定のどこかです。STEP 4 へ進んでください。</span></div>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="s-n">STEP 4</div>
+      <div class="s-body">
+        <h3>エラーコードから原因を引く</h3>
+        <p>控えたエラーコードを下の<strong>症状別の早見表</strong>で探します。あわせて「トピックチェッカー」でエラーの出ているトピックがないかも確認します<a class="mono" href="#ev3">[3]</a>。フローを呼ぶ場面だけ失敗するなら、Power Automate 側でフローがオンになっているか、実行履歴に失敗が出ていないかを見ます。</p>
+      </div>
+    </li>
+    <li>
+      <div class="s-n">STEP 5</div>
+      <div class="s-body">
+        <h3>入口（認証・チャネル・共有）を確認する</h3>
+        <p>① 設定 &gt; セキュリティ &gt; 認証 が空や既定のままになっていないか<a class="mono" href="#ev14">[14]</a>。② 利用者が使っている Teams アプリや Web の埋め込みが、<strong>新しいエージェントのもの</strong>か。③ 公開後に共有をやり直したか<a class="mono" href="#ev14">[14]</a>。</p>
+      </div>
+    </li>
+    <li>
+      <div class="s-n">STEP 6</div>
+      <div class="s-body">
+        <h3>移行元と移行先の環境設定を並べて比べる</h3>
+        <p>ここまでで見つからなければ、環境ごとの設定の差を疑います。多くは管理者しか見られない画面なので、下の<strong>「管理者に確認してもらう設定」</strong>の表をそのまま渡して、移行元と移行先で違いがないかを見てもらってください。</p>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<section>
+  <h2 class="sec">症状別の早見表 <em>原因と対処</em></h2>
+  <p class="lead">表示されたメッセージやエラーコードで引いてください。スマホでは表を横にスクロールできます。</p>
+  <div class="legend">
+    <span><span class="pill p-ok">公式に記載</span> 公式ドキュメントに原因と対処の記載あり</span>
+    <span><span class="pill p-warn">推論</span> 公式の仕様から導いた見立て（要確認）</span>
+    <span><span class="swatch"></span>同一テナント移管でまず疑う行</span>
+  </div>
+  <div class="scroller">
+    <table>
+      <thead>
+        <tr><th>症状・表示</th><th>考えられる原因</th><th>対処</th><th>確度・根拠</th></tr>
+      </thead>
+      <tbody>
+        <tr class="grp"><td colspan="4">A　公開・中身</td></tr>
+        <tr class="focus">
+          <td class="q">公開時に <code>IdentifierNotRecognized</code> などの式エラー、「要素が無効または見つからない」</td>
+          <td class="c">フロー・環境変数・接続参照がソリューションに入っていない</td>
+          <td class="fix">移行元で、エラーの出た部品とエージェント本体に「詳細」→「必要なオブジェクトを追加」→ 再エクスポート → 再インポート</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev1">[1]</a></td>
+        </tr>
+        <tr class="focus">
+          <td class="q">「Sorry, the bot can't talk for a while」（<code>AIPluginOperationNotFound</code>）</td>
+          <td class="c">インポートやソリューション展開の経由で公開されたときに起こりうる</td>
+          <td class="fix">新環境でエージェントを公開し直す</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev3">[3]</a></td>
+        </tr>
+        <tr>
+          <td class="q"><code>LatestPublishedVersionNotFound</code></td>
+          <td class="c">新環境でまだ公開していない</td>
+          <td class="fix">公開する</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev3">[3]</a></td>
+        </tr>
+        <tr>
+          <td class="q">移行元で後から足したトピックやツールが、移行先にない</td>
+          <td class="c">移行先に届くのは、エクスポートした時点の状態だけ</td>
+          <td class="fix">「必要なオブジェクトを追加」→ 再エクスポート → 再インポート。今後は優先ソリューションを設定しておく</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev2">[2]</a></td>
+        </tr>
+        <tr>
+          <td class="q"><code>RedirectToNonExistentDialog</code></td>
+          <td class="c">移動先のトピックが存在しない</td>
+          <td class="fix">移動先のトピックを用意するか、移動（リダイレクト）の部品を外す</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev3">[3]</a></td>
+        </tr>
+
+        <tr class="grp"><td colspan="4">B　フロー・接続・環境変数</td></tr>
+        <tr class="focus">
+          <td class="q">フローを呼ぶ場面だけ失敗する（<code>FlowActionException</code> など）、フローがオフのまま</td>
+          <td class="c">接続参照に新環境の接続が入っていない。または、インポートした人が接続を使う権限を持たず、フローがオンにならなかった</td>
+          <td class="fix">接続参照に新環境の接続を設定し、フローをオンにする。接続の持ち主がオンにするか、接続をその人に共有する</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev9">[9][10]</a></td>
+        </tr>
+        <tr>
+          <td class="q"><code>FlowMakerConnectionBlocked</code></td>
+          <td class="c">作成者の接続でフローを実行することを、管理者が禁止している</td>
+          <td class="fix">Power Automate でフローを「実行専用ユーザー」として共有する</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev3">[3]</a></td>
+        </tr>
+        <tr class="focus">
+          <td class="q">エラーは出ないが、旧環境のデータ（SharePoint リストなど）を見ている。または値が空で失敗する</td>
+          <td class="c">環境変数の「現在の値」がソリューションに同梱され、旧環境の値のまま運ばれた。または値が未設定</td>
+          <td class="fix">移行先で環境変数の値を新環境用に入れ直す。次回は「現在の値」をソリューションから外してからエクスポートする</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev11">[11]</a></td>
+        </tr>
+        <tr>
+          <td class="q">ツール呼び出しで <code>HTTP401</code> / <code>403</code> / <code>404</code></td>
+          <td class="c">接続の資格情報切れ、権限不足、ID や URL の誤り（環境の選び間違いを含む）</td>
+          <td class="fix">接続を作り直す、権限を確認する、手入力の ID ではなく一覧から選ぶ形にする</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev3">[3]</a></td>
+        </tr>
+
+        <tr class="grp"><td colspan="4">C　環境の設定</td></tr>
+        <tr class="focus">
+          <td class="q">公開できない、または <code>DataLossPreventionViolation</code></td>
+          <td class="c">新環境にかかるデータポリシーが、使っているコネクタやチャネルをブロックしている。ポリシーはテナント全体だけでなく環境単位でも作れるため、環境ごとに内容が違うことがある</td>
+          <td class="fix">管理者にポリシーを確認してもらう。違反の詳細は Excel で取得できる。「サインイン必須」のポリシーなら認証を設定する</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev6">[3][6][7][8]</a></td>
+        </tr>
+        <tr>
+          <td class="q">生成AIの回答や生成オーケストレーションが動かない（<code>GenerativeAINotAvailable</code>）</td>
+          <td class="c">新環境で「リージョン間でのデータ移動」がオフ。環境の地域によっては、これがないと生成AI機能が使えない</td>
+          <td class="fix">管理センターで対象環境の「生成 AI 機能」を編集し、「リージョン間でのデータ移動」をオン。できなければ生成AI機能を使わない設計にする</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev4">[4][5]</a></td>
+        </tr>
+        <tr>
+          <td class="q">「This agent is currently unavailable. It has reached its usage limit」（<code>EnforcementMessageC2</code>）</td>
+          <td class="c">新環境で使える Copilot クレジット（利用枠）がない。または従量課金プランにリンクされていない</td>
+          <td class="fix">容量を割り当てるか、従量課金プランに環境をリンクする。対応後5分ほどで復旧する</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev3">[3][12][13]</a></td>
+        </tr>
+        <tr>
+          <td class="q">エージェントは答えるが、エージェントフローだけ動かない</td>
+          <td class="c">環境の前払い容量を使い切ると、新しいエージェントフローの実行が止められる</td>
+          <td class="fix">容量の再割り当て、追加購入、または従量課金の有効化</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev12">[12]</a></td>
+        </tr>
+        <tr>
+          <td class="q">アップロードしたファイルのナレッジで <code>0x80072042</code> / <code>0x80048d0b</code></td>
+          <td class="c">マネージドで移管し、移行先で「アンマネージドのカスタマイズをブロック」のポリシーが有効</td>
+          <td class="fix">移行元のソリューションに DVFileSearch の <code>UnstructuredFileSearchSkill</code> を追加し、マネージドで再エクスポート</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev17">[17]</a></td>
+        </tr>
+
+        <tr class="grp"><td colspan="4">D　認証・チャネル・共有</td></tr>
+        <tr class="focus">
+          <td class="q">サインインを求められる、<code>AuthenticationNotConfigured</code></td>
+          <td class="c">ユーザー認証の設定は移管で引き継がれない</td>
+          <td class="fix">設定 &gt; セキュリティ &gt; 認証 を設定し直す。手動認証なら、クライアント ID やシークレットなどを入れ直す</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev14">[3][14]</a></td>
+        </tr>
+        <tr>
+          <td class="q">Teams でだけ自動サインイン（SSO）が失敗する</td>
+          <td class="c">Teams の SSO は、アプリ登録の「アプリケーション ID URI」に Teams 側のアプリ ID を入れる仕様（<code>api://botid-{ID}</code>）。新しいエージェントは ID が変わるため、旧 ID のままだと合わない</td>
+          <td class="fix">新しいエージェントの Teams アプリ ID で、アプリ登録と Teams チャネルの SSO 設定を更新する</td>
+          <td class="v"><span class="pill p-warn">推論</span><a class="ref" href="#ev15">[15]</a></td>
+        </tr>
+        <tr>
+          <td class="q">Teams や Web から話しかけると旧エージェントが答える、または反応がない</td>
+          <td class="c">チャネルの設定は移管されず、旧 Teams アプリや旧埋め込みコードは旧環境のエージェントを指したまま</td>
+          <td class="fix">新しいエージェントでチャネルを設定し直し、Teams アプリや埋め込みコードを差し替える</td>
+          <td class="v"><span class="pill p-warn">推論</span><a class="ref" href="#ev14">[14]</a></td>
+        </tr>
+        <tr>
+          <td class="q">共有したはずの人が使えない</td>
+          <td class="c">共有の設定は運ばれない。公開前は共有できない</td>
+          <td class="fix">公開してから共有し直す</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev14">[14]</a></td>
+        </tr>
+
+        <tr class="grp"><td colspan="4">E　ナレッジ・複数エージェント</td></tr>
+        <tr>
+          <td class="q">SharePoint のナレッジから答えが返らない（エラーも出ない）</td>
+          <td class="c">利用者に閲覧権限がないと、エラーを出さずに「見つからない」扱いになる。認証のスコープ（許可の範囲）不足も原因になる</td>
+          <td class="fix">利用者がそのファイルを直接開けるか確認する。手動認証なら <code>Sites.Read.All</code> と <code>Files.Read.All</code> を設定する</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev16">[16]</a></td>
+        </tr>
+        <tr>
+          <td class="q"><code>ConnectedAgentBotNotFound</code> / <code>ConnectedAgentBotNotPublished</code></td>
+          <td class="c">呼び出す子エージェントが同じ環境にない、または未公開</td>
+          <td class="fix">子エージェントも同じ環境に移して公開する</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev3">[3]</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="free-users">
+  <h2 class="sec">無償ユーザーに共有すると「権限がない」と言われるとき <em>追記 2026-09-29</em></h2>
+  <p class="lead">ここでの無償ユーザーは、Microsoft 365 Copilot の有償ライセンスを持たず、無料の Copilot Chat だけを使える人を指します。<strong>「有償ライセンスの人は使えるのに、無償の人だけ使えない」</strong>なら、原因はライセンスと利用枠の側にかなり絞れます。</p>
+
+  <div class="qbox">
+    <h3>最初に聞く3つのこと</h3>
+    <ul class="qs">
+      <li><b>どこでエラーが出たか</b><span>Copilot Studio の画面か、Teams や Microsoft 365 Copilot か。メッセージの原文も控えます（例：「You don't have permissions to add this agent」）。</span></li>
+      <li><b>有償ライセンスの人は、同じやり方で使えるか</b><span>ここで原因の系統が分かれます。</span></li>
+      <li><b>エージェントが社内のデータを参照しているか</b><span>SharePoint や Copilot コネクタなどのナレッジがあるかどうかで、無償ユーザーに必要な条件が変わります。</span></li>
+    </ul>
+  </div>
+
+  <div class="branch">
+    <div class="yes"><span class="if">有償は使える・無償だけ不可 →</span><span>下の表の ① と ④ を先に確認します。ライセンス・利用枠・アクセス設定の問題の可能性が高いです。</span></div>
+    <div class="no"><span class="if">有償の人も不可 →</span><span>② の共有のやり直しを先に疑います。上の早見表 D もあわせて確認してください。</span></div>
+  </div>
+
+  <div class="scroller" style="margin-top:16px">
+    <table>
+      <thead>
+        <tr><th>考えられる原因</th><th>詳しく</th><th>対処</th><th>確度・根拠</th></tr>
+      </thead>
+      <tbody>
+        <tr class="focus">
+          <td class="q">① 新しい環境で、無償ユーザーの利用分を払う枠がない</td>
+          <td class="c">共有された人がエージェントを追加できるのは、エージェントの機能に必要なライセンスを持つ場合に限られる。有償の Microsoft 365 Copilot ライセンスの人は Teams などでの利用が課金対象外だが、無償の人は Copilot クレジットで払う。社内データを参照するエージェントは、従量課金がないと無償の人は使えない。クレジットの割り当てや従量課金のリンクは環境ごとの設定なので、旧環境にだけあって新環境にない、ということが起きる</td>
+          <td class="fix">管理者に、新環境へのクレジットの割り当てと、従量課金プランへのリンクを確認してもらう</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev19">[12][19][20][21]</a></td>
+        </tr>
+        <tr>
+          <td class="q">② 新しい環境のエージェントで共有し直していない</td>
+          <td class="c">共有の設定は移管で運ばれず、公開前は共有できない。旧環境のエージェントのリンクを渡している場合も「権限がない」になる</td>
+          <td class="fix">新環境で公開してから、閲覧者（チャットできる人）として共有し直す。渡すリンクも新しいものにする</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev14">[14][19]</a></td>
+        </tr>
+        <tr>
+          <td class="q">③ Copilot Studio の画面のリンクを渡している、または「編集者」として共有している</td>
+          <td class="c">一緒に編集する人（編集者）には Copilot Studio のライセンスと、環境の「Environment Maker（作成者）」ロールが必要。環境にセキュリティグループが付いていると、対象のライセンスを持つメンバーしか環境のユーザーにならない</td>
+          <td class="fix">使ってもらうだけの人は閲覧者として共有し、Teams や Microsoft 365 Copilot から開いてもらう</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev19">[19][24]</a></td>
+        </tr>
+        <tr>
+          <td class="q">④ Microsoft 365 側のエージェント利用設定で対象外になっている</td>
+          <td class="c">Microsoft 365 管理センターのエージェント設定「ユーザーアクセス」が「特定のユーザーまたはグループ」になっていて、無償ユーザーが含まれていない</td>
+          <td class="fix">管理者に「すべてのユーザー」になっているか、対象のグループに入っているかを確認してもらう</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev23">[23]</a></td>
+        </tr>
+        <tr>
+          <td class="q">⑤ Teams で社内アプリの利用が止められている</td>
+          <td class="c">Teams 管理センターの組織全体のアプリ設定で、カスタムアプリ（社内で作ったアプリ）の利用が許可されていない</td>
+          <td class="fix">管理者に Teams 管理センターのカスタムアプリ設定と、アプリのアクセス許可ポリシーを確認してもらう</td>
+          <td class="v"><span class="pill p-warn">コミュニティ情報</span><a class="ref" href="#ev25">[25]</a></td>
+        </tr>
+        <tr>
+          <td class="q">⑥ 作成者が共有しようとした時点で止められる</td>
+          <td class="c">新環境がマネージド環境で、「閲覧者として共有」や「セキュリティグループへの共有」がルールで禁止されている</td>
+          <td class="fix">管理者に環境の共有ルールを確認してもらう。個人単位の共有なら許可されている場合がある</td>
+          <td class="v"><span class="pill p-ok">公式に記載</span><a class="ref" href="#ev22">[22]</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="lead" style="margin-top:12px">① の「必要なライセンスがないと追加できない」と ④ は、公式ページの本文を直接開けず、検索結果の要約で確認した内容です。画面のメッセージとあわせて確かめてください。⑤ は Microsoft Q&amp;A のコミュニティ回答で、公式ドキュメントでは確認できていません。</p>
+</section>
+
+<section>
+  <h2 class="sec">解決策 <em>立て直すときの順番</em></h2>
+  <p class="lead">原因が一つに絞れないときは、次の順で上から潰すと手戻りが少なくなります。手順そのものは、同じ棚の<a href="https://tbtb-k.github.io/diary/pages/slide_copilot-studio-kankyou-ikan.html.html">「Copilot Studio エージェントの環境移管ガイド」</a>のスライドにまとめています。</p>
+  <ol class="fixlist">
+    <li><div><b>部品の不足を埋める</b><span class="m">移行元でエージェント本体に「必要なオブジェクトを追加」し、フロー・接続参照・環境変数が入っているか確認してから再エクスポートする <a class="mono" href="#ev1">[1]</a><a class="mono" href="#ev2">[2]</a></span></div></li>
+    <li><div><b>接続をつなぎ直し、フローをオンにする</b><span class="m">ソリューション内の接続参照を開いて新環境の接続を選ぶ。フローがオフなら、接続の持ち主がオンにする <a class="mono" href="#ev9">[9]</a><a class="mono" href="#ev10">[10]</a></span></div></li>
+    <li><div><b>環境変数の値を新環境用にする</b><span class="m">SharePoint のサイト URL や宛先アドレスが旧環境のままになっていないか、一つずつ確認する <a class="mono" href="#ev11">[11]</a></span></div></li>
+    <li><div><b>ユーザー認証を設定し直す</b><span class="m">Teams で SSO を使う場合は、新しいエージェントの ID でアプリ登録を更新する <a class="mono" href="#ev14">[14]</a><a class="mono" href="#ev15">[15]</a></span></div></li>
+    <li><div><b>新環境で公開する</b><span class="m">インポート経由の公開で不調なら、もう一度公開する <a class="mono" href="#ev3">[3]</a></span></div></li>
+    <li><div><b>チャネルを差し替え、共有し直す</b><span class="m">Teams アプリや Web の埋め込みを新しいエージェントのものに入れ替え、利用者に共有する。無償ユーザーにも使ってもらうなら、新環境のクレジットや従量課金も確認する <a class="mono" href="#ev14">[14]</a><a class="mono" href="#free-users">[追記]</a></span></div></li>
+    <li><div><b>環境の設定を管理者と照合する</b><span class="m">データポリシー、生成 AI 機能、Copilot クレジットを移行元とそろえる <a class="mono" href="#ev5">[5]</a><a class="mono" href="#ev6">[6]</a><a class="mono" href="#ev12">[12]</a></span></div></li>
+  </ol>
+
+  <div class="tips">
+    <div class="tip">
+      <h3>次回は環境変数の値を外して書き出す</h3>
+      <p>「現在の値」をソリューションから外してエクスポートすると、インポート時に新しい値の入力を求められます。旧環境の値が紛れ込む事故を防げます<a class="mono" href="#ev11">[11]</a>。</p>
+    </div>
+    <div class="tip">
+      <h3>移行先の管理設定を先にそろえる</h3>
+      <p>データポリシー、生成 AI 機能、クレジットの割り当ては、インポートより前に管理者と確認しておくと当日に止まりません。</p>
+    </div>
+    <div class="tip">
+      <h3>最初からソリューションの中で作る</h3>
+      <p>優先ソリューションを設定しておくと、後から足したトピックやツールも自動で箱に入ります<a class="mono" href="#ev2">[2]</a>。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">管理者に確認してもらう設定 <em>移行元と移行先で比べる</em></h2>
+  <p class="lead">最後の行以外は Power Platform 管理センター（<span class="mono">admin.powerplatform.microsoft.com</span>）で確認できます。最後の行は Microsoft 365 管理センターです。画面の名前は更新で変わることがあります。</p>
+  <div class="scroller">
+    <table>
+      <thead>
+        <tr><th>設定</th><th>見る場所</th><th>違うと起きること</th><th>根拠</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="q">データポリシー</td>
+          <td class="c">セキュリティ &gt; データとプライバシー &gt; データ ポリシー。テナント全体のものと、環境単位のものの両方を見る</td>
+          <td class="fix">コネクタやチャネルがブロックされ、公開できない。サインイン必須になる</td>
+          <td class="v"><a class="ref" href="#ev6">[6][7][8]</a></td>
+        </tr>
+        <tr>
+          <td class="q">生成 AI 機能</td>
+          <td class="c">管理 &gt; 環境 &gt; 対象の環境 &gt;「生成 AI 機能」の編集。「リージョン間でのデータ移動」「Bing 検索」</td>
+          <td class="fix">生成 AI の回答や生成オーケストレーションが使えない</td>
+          <td class="v"><a class="ref" href="#ev4">[4][5]</a></td>
+        </tr>
+        <tr>
+          <td class="q">Copilot クレジット</td>
+          <td class="c">ライセンス &gt; Copilot Studio。環境への割り当てと、使い切ったときの扱い（テナントの残りから使う／従量課金へ）</td>
+          <td class="fix">「使用上限に達しました」の表示。エージェントフローの停止。無償ユーザーだけが使えない</td>
+          <td class="v"><a class="ref" href="#ev12">[12][20]</a></td>
+        </tr>
+        <tr>
+          <td class="q">従量課金プラン</td>
+          <td class="c">課金プランに新環境がリンクされているか。従量課金は運用環境とサンドボックス環境が対象</td>
+          <td class="fix">従量課金のつもりが課金されず、利用枠切れで止まる</td>
+          <td class="v"><a class="ref" href="#ev13">[13]</a></td>
+        </tr>
+        <tr>
+          <td class="q">マネージド環境のポリシー</td>
+          <td class="c">「アンマネージドのカスタマイズをブロック」が有効か</td>
+          <td class="fix">ファイルのナレッジの準備に失敗する</td>
+          <td class="v"><a class="ref" href="#ev17">[17]</a></td>
+        </tr>
+        <tr>
+          <td class="q">共有のルール（マネージド環境）</td>
+          <td class="c">「閲覧者として共有」「セキュリティグループへの共有」を許可しているか</td>
+          <td class="fix">作成者が共有しようとした時点で止められる</td>
+          <td class="v"><a class="ref" href="#ev22">[22]</a></td>
+        </tr>
+        <tr>
+          <td class="q">Microsoft 365 のエージェント設定</td>
+          <td class="c">Microsoft 365 管理センターのエージェント設定の「ユーザーアクセス」。こちらは環境ではなくテナント全体の設定</td>
+          <td class="fix">対象外のユーザーはエージェントを追加・利用できない</td>
+          <td class="v"><a class="ref" href="#ev23">[23]</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">注意点 <em>説明するときに外さないこと</em></h2>
+  <ul class="caveats">
+    <li><span>このメモは<strong>同一テナント内</strong>の移管が前提です。テナントをまたぐ場合は、アプリ登録やナレッジの参照先まで作り直しになり、範囲が大きく広がります。</span></li>
+    <li><span>早見表の「推論」の行（Teams の SSO、旧チャネルが旧エージェントを指す件）は、公式の仕様から導いた見立てです。公式にこの症状として書かれているわけではないので、実機で確かめてから結論にしてください。</span></li>
+    <li><span>画面のボタン名、ライセンスの条件、生成 AI の提供地域は更新が早い領域です。作業の前に根拠のページで最新の記載を確認してください。</span></li>
+    <li><span>[7][8][14][15][19][20][21][23] は、この調査の環境から本文を直接開けず、検索結果の要約で内容を確認しました。そのため最終更新日を載せていません。</span></li>
+    <li><span>無償ユーザーが使える範囲（どの機能が課金対象になるか）は、ライセンス体系の変更で動きやすい部分です。説明の前に [20][21] で最新の条件を確認してください。</span></li>
+  </ul>
+</section>
+
+<section>
+  <h2 class="sec">根拠 <em>出典と日付</em></h2>
+  <p class="lead">日付は英語版原文の最終更新日（ms.date）です。リンク先は日本語版ですが、翻訳の反映が遅れている場合があります。</p>
+
+  <div class="ev" id="ev1">
+    <div class="ev-n">[1]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/troubleshoot/power-platform/copilot-studio/lifecycle-management/agent-publish-missing-dependencies">Expression or reference errors when publishing an agent</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-03-20</span></div>
+      <p>公開時の <code>IdentifierNotRecognized</code> などの式エラーや「要素が無効または見つからない」は、ソリューションの依存コンポーネント不足が原因。フロー・環境変数・接続参照を確認し、「必要なオブジェクトを追加」してから再エクスポートする。</p>
+      <p class="url">learn.microsoft.com/ja-jp/troubleshoot/power-platform/copilot-studio/lifecycle-management/agent-publish-missing-dependencies</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev2">
+    <div class="ev-n">[2]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/troubleshoot/power-platform/copilot-studio/lifecycle-management/agents-solution-mapping">Agents missing components in a solution</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-03-10</span></div>
+      <p>インポート先に届くのはエクスポート時点の状態だけで、あとから移行元に足したトピック・ナレッジ・環境変数・ツールは自動では反映されない。「必要なオブジェクトを追加」→ 再エクスポート → 再インポートで同期し、優先ソリューションで再発を防ぐ。</p>
+      <p class="url">learn.microsoft.com/ja-jp/troubleshoot/power-platform/copilot-studio/lifecycle-management/agents-solution-mapping</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev3">
+    <div class="ev-n">[3]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/troubleshoot/power-platform/copilot-studio/authoring/error-codes">Understand error codes（Copilot Studio のエラーコード）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-06-04</span></div>
+      <p>エラーコードごとの原因と対処の一覧。<code>AIPluginOperationNotFound</code> は「インポートやソリューション展開経由で公開されたときに起こりうる」とされ、対処は再公開。ほかに <code>AuthenticationNotConfigured</code>、<code>DataLossPreventionViolation</code>、<code>EnforcementMessageC2</code>、<code>FlowMakerConnectionBlocked</code>、<code>ConnectedAgentBotNotFound</code> などを掲載。</p>
+      <p class="url">learn.microsoft.com/ja-jp/troubleshoot/power-platform/copilot-studio/authoring/error-codes</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev4">
+    <div class="ev-n">[4]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/troubleshoot/power-platform/copilot-studio/generative-answers/generative-ai-not-available">"Generative AI not available" error message</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2025-09-09</span></div>
+      <p>生成AI機能は地域や言語によって使えないことがあり、データ移動が必要な環境で「リージョン間でのデータ移動」がオフだと <code>GenerativeAINotAvailable</code> になる。管理センターの環境設定でオンにするか、生成AI機能を使わない設計にする。</p>
+      <p class="url">learn.microsoft.com/ja-jp/troubleshoot/power-platform/copilot-studio/generative-answers/generative-ai-not-available</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev5">
+    <div class="ev-n">[5]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/power-platform/admin/geographical-availability-copilot">Move data across regions for Copilots, AI agents, and generative AI features</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-05-21</span></div>
+      <p>「リージョン間でのデータ移動」「Bing 検索」は環境ごとに、管理 &gt; 環境 &gt; 環境名 &gt;「生成 AI 機能」の編集から設定する。米国リージョンではこのチェックボックスは表示されない。Copilot Studio の生成AIはこの設定に依存する機能として挙げられている。</p>
+      <p class="url">learn.microsoft.com/ja-jp/power-platform/admin/geographical-availability-copilot</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev6">
+    <div class="ev-n">[6]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/power-platform/admin/dlp-policy-scope">View data policies（ポリシーの範囲）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2025-11-19</span></div>
+      <p>データポリシーはテナント単位と環境単位の両方で作れる。テナント単位のものも「すべての環境」「一部の環境」「特定の環境を除く全部」を選べるため、同じテナントでも環境によって適用されるポリシーが違う。</p>
+      <p class="url">learn.microsoft.com/ja-jp/power-platform/admin/dlp-policy-scope</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev7">
+    <div class="ev-n">[7]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/admin-data-loss-prevention">Configure data policies for agents</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date unk">最終更新日 未取得（検索結果の要約で確認）</span></div>
+      <p>「Chat without Microsoft Entra ID authentication in Copilot Studio」などのコネクタをブロックすると、認証なしのエージェントは公開できなくなる。後から追加されたコネクタは既定で「非ビジネス」グループに入ることが多く、組織によっては自動でブロックされる。</p>
+      <p class="url">learn.microsoft.com/ja-jp/microsoft-copilot-studio/admin-data-loss-prevention</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev8">
+    <div class="ev-n">[8]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/admin-dlp-troubleshooting">Troubleshoot data policy enforcement</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date unk">最終更新日 未取得（検索結果の要約で確認）</span></div>
+      <p>エージェントのチャネルがすべてデータポリシーでブロックされていると公開できない。違反の詳細（ポリシー名、ID、ブロックされたコネクタ）は Excel ブックで取得できる。</p>
+      <p class="url">learn.microsoft.com/ja-jp/microsoft-copilot-studio/admin-dlp-troubleshooting</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev9">
+    <div class="ev-n">[9]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/power-automate/import-flow-solution">Import a solution（Power Automate）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2024-10-09</span></div>
+      <p>インポートでは、エクスポート時の状態にフローを戻そうとする。エクスポート時にオンで、接続参照に接続が入ればオンになる。インポートした人がすべての接続を使う権限を持たない場合は、接続を共有してもらう必要がある。</p>
+      <p class="url">learn.microsoft.com/ja-jp/power-automate/import-flow-solution</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev10">
+    <div class="ev-n">[10]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/power-apps/maker/data-platform/create-connection-reference">Use a connection reference in a solution with Microsoft Dataverse</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-01-09</span></div>
+      <p>接続は保存された資格情報、接続参照はそれを指す部品。フローをオンにする人は、フロー内のすべての接続を所有しているか、使う権限を持っている必要がある。<code>ConnectionAuthorizationFailed</code> はこの条件を満たさないときに起きる。</p>
+      <p class="url">learn.microsoft.com/ja-jp/power-apps/maker/data-platform/create-connection-reference</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev11">
+    <div class="ev-n">[11]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/power-apps/maker/data-platform/environmentvariables">Use environment variables in Power Platform solutions</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-01-09</span></div>
+      <p>「現在の値」は既定値より優先され、ソリューションに含めたまま書き出すと次の環境でも使われる。使いたくなければ、エクスポート前に「このソリューションから削除」する。テーブルの関連データのような設定データの移動には、構成移行ツールのほうが向いている。</p>
+      <p class="url">learn.microsoft.com/ja-jp/power-apps/maker/data-platform/environmentvariables</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev12">
+    <div class="ev-n">[12]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/power-platform/admin/manage-copilot-studio-copilot-credits-capacity">Manage Copilot Credits and capacity for Copilot Studio</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-09-18</span></div>
+      <p>購入したクレジットはテナントで共有され、環境に割り当てて使う。割り当てのない環境は既定で「テナントの残りから使う」。超過時の扱いが設定されていないと、割り当て分を使い切った時点で止まる。前払い容量が尽きると、新しいエージェントフローの実行はブロックされる。</p>
+      <p class="url">learn.microsoft.com/ja-jp/power-platform/admin/manage-copilot-studio-copilot-credits-capacity</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev13">
+    <div class="ev-n">[13]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/power-platform/admin/pay-as-you-go-set-up">Set up a pay-as-you-go plan</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2025-09-30</span></div>
+      <p>従量課金は、課金プランに環境をリンクして使う。対象は運用環境とサンドボックス環境。</p>
+      <p class="url">learn.microsoft.com/ja-jp/power-platform/admin/pay-as-you-go-set-up</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev14">
+    <div class="ev-n">[14]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/authoring-solutions-import-export">Export and import agents using solutions</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date unk">最終更新日 未取得（検索結果の要約で確認）</span></div>
+      <p>インポート後はユーザー認証を設定し直す必要がある。インポートしたエージェントはアイコンやチャネルの詳細が空になることがあり、アイコンの反映には最大24時間かかる。共有する前に公開が必要。トピックのコメントはエクスポートされず、トピック名にピリオドがあるとエクスポートできない。</p>
+      <p class="url">learn.microsoft.com/ja-jp/microsoft-copilot-studio/authoring-solutions-import-export</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev15">
+    <div class="ev-n">[15]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/configure-sso-teams">Configure single sign-on with Microsoft Entra ID for agents in Teams</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date unk">最終更新日 未取得（検索結果の要約で確認）</span></div>
+      <p>Teams の SSO では、アプリ登録の「API の公開」でアプリケーション ID URI を <code>api://botid-{teamsbotid}</code>（Teams チャネルのアプリ ID）に設定し、Teams チャネルの詳細設定にクライアント ID とリソース URI を入れる。</p>
+      <p class="url">learn.microsoft.com/ja-jp/microsoft-copilot-studio/configure-sso-teams</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev16">
+    <div class="ev-n">[16]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/troubleshoot/power-platform/copilot-studio/knowledge/sharepoint-no-response">SharePoint knowledge sources don't return results in Copilot Studio</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-08-05</span></div>
+      <p>利用者に閲覧権限がないと、エラーを出さずに文書が存在しないかのように振る舞う。手動認証ではアプリ登録に <code>Sites.Read.All</code> と <code>Files.Read.All</code> が最低限必要。</p>
+      <p class="url">learn.microsoft.com/ja-jp/troubleshoot/power-platform/copilot-studio/knowledge/sharepoint-no-response</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev17">
+    <div class="ev-n">[17]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/troubleshoot/power-platform/copilot-studio/lifecycle-management/block-unmanaged-customizations">Federated Knowledge Service provisioning errors when unmanaged customizations are blocked</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-08-25</span></div>
+      <p>マネージドで移管した先で「アンマネージドのカスタマイズをブロック」が有効だと、ファイル検索の準備で <code>0x80072042</code>、検索時に <code>0x80048d0b</code> が出る。DVFileSearch の <code>UnstructuredFileSearchSkill</code> をソリューションに追加して再エクスポートする。</p>
+      <p class="url">learn.microsoft.com/ja-jp/troubleshoot/power-platform/copilot-studio/lifecycle-management/block-unmanaged-customizations</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev18">
+    <div class="ev-n">[18]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/troubleshoot/power-platform/copilot-studio/licensing/publish-license-error">License errors when publishing or accessing Copilot Studio</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-07-15</span></div>
+      <p>公開時のライセンスエラーは、「Copilot Studio 作成者」のセキュリティグループ、ユーザーのライセンス、「AI 機能つきボットの公開」のテナント設定などが原因。いずれもテナントやユーザー単位の設定。</p>
+      <p class="url">learn.microsoft.com/ja-jp/troubleshoot/power-platform/copilot-studio/licensing/publish-license-error</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev19">
+    <div class="ev-n">[19]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/admin-share-bots">Share agents with other users</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date unk">最終更新日 未取得（検索結果の要約で確認）</span></div>
+      <p>チャットだけの共有は、個人、セキュリティグループ、組織全体に対してできる。一緒に編集する人は Environment Maker のセキュリティロールが必要で、編集者は個人単位でしか付けられない。Teams と Microsoft 365 Copilot では、共有された人がエージェントを追加できるのは、エージェントの機能に必要な種類の Microsoft 365 Copilot ライセンスを持つ場合に限られる。</p>
+      <p class="url">learn.microsoft.com/ja-jp/microsoft-copilot-studio/admin-share-bots</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev20">
+    <div class="ev-n">[20]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/billing-licensing">Copilot Studio licensing</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date unk">最終更新日 未取得（検索結果の要約で確認）</span></div>
+      <p>Microsoft 365 Copilot ライセンスを持つ人が Copilot Chat、Teams、SharePoint でエージェントを使う場合、通常の回答・生成回答・Microsoft Graph のテナントデータ参照は Copilot Studio のメッセージパックや従量課金にカウントされない。支払い方法は前払いのクレジットか、Azure サブスクリプションによる従量課金。</p>
+      <p class="url">learn.microsoft.com/ja-jp/microsoft-copilot-studio/billing-licensing</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev21">
+    <div class="ev-n">[21]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/copilot/agents">Agents for Microsoft Copilot Chat</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date unk">最終更新日 未取得（検索結果の要約で確認）</span></div>
+      <p>ライセンスのないユーザーがテナントのデータ（SharePoint、Copilot コネクタなど）を参照するエージェントを使うには、Microsoft 365 Copilot のライセンスか、テナントで従量課金が有効になっていることが必要。従量課金は既定では無効で、管理者が有効にする。</p>
+      <p class="url">learn.microsoft.com/ja-jp/copilot/agents</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev22">
+    <div class="ev-n">[22]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/power-platform/admin/managed-environment-sharing-limits">Limit sharing（マネージド環境）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-03-02</span></div>
+      <p>マネージド環境では、エージェントを「編集者」「閲覧者」として共有できるか、セキュリティグループと共有できるか、閲覧者の人数の上限を管理者が決められる。ルールは共有しようとした時点で適用され、違反すると作成者にエラーが表示される。</p>
+      <p class="url">learn.microsoft.com/ja-jp/power-platform/admin/managed-environment-sharing-limits</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev23">
+    <div class="ev-n">[23]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-365/admin/manage/agent-settings">Agent settings in Microsoft 365 admin center</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date unk">最終更新日 未取得（検索結果の要約で確認）</span></div>
+      <p>エージェントの「ユーザーアクセス」で、エージェントを使える人を「すべてのユーザー」「特定のユーザーまたはグループ」「なし」から選べる。画面の場所は版によって「エージェント &gt; 設定」または「Copilot &gt; 設定 &gt; データアクセス &gt; エージェント」と案内されている。</p>
+      <p class="url">learn.microsoft.com/ja-jp/microsoft-365/admin/manage/agent-settings</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev24">
+    <div class="ev-n">[24]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/power-platform/admin/control-user-access">Control user access to environments with security groups and licenses</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-08-26</span></div>
+      <p>環境にセキュリティグループを関連付けると、対象の Power Platform や Dynamics 365 のライセンスを持つそのグループのメンバーだけが環境のユーザーになる。ユーザーは少なくとも1つのセキュリティロールがないと環境にアクセスできない。</p>
+      <p class="url">learn.microsoft.com/ja-jp/power-platform/admin/control-user-access</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev25">
+    <div class="ev-n">[25]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/answers/questions/5965007/users-can-see-copilot-agent-in-built-by-your-org-b">Users can see Copilot agent in "Built by your org" but cannot add it unless explicitly granted Viewer access（Microsoft Q&amp;A）</a></p>
+      <div class="ev-bar"><span class="tag third">第三者・コミュニティ</span><span class="date unk">日付不明</span></div>
+      <p>「組織全体」への共有だけでは「You don't have permissions to add this agent」が出て、個別に閲覧者として追加すると使えたという報告。回答では Microsoft 365 管理センターのユーザーアクセス設定の確認が勧められている。Teams のカスタムアプリ設定の確認は、同種の Q&amp;A で案内されている対処。</p>
+      <p class="url">learn.microsoft.com/en-us/answers/questions/5965007</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>調査日：<span class="mono">2026-09-29</span>　／　対象：Copilot Studio（同一テナント内の環境間移管）</div>
+  <div>出典の日付（英語版原文の最終更新日）</div>
+  <ul class="mono">
+    <li>[1] 2026-03-20　[2] 2026-03-10　[3] 2026-06-04　[4] 2025-09-09</li>
+    <li>[5] 2026-05-21　[6] 2025-11-19　[7] 未取得　[8] 未取得</li>
+    <li>[9] 2024-10-09　[10] 2026-01-09　[11] 2026-01-09　[12] 2026-09-18</li>
+    <li>[13] 2025-09-30　[14] 未取得　[15] 未取得　[16] 2026-08-05</li>
+    <li>[17] 2026-08-25　[18] 2026-07-15　[19] 未取得　[20] 未取得</li>
+    <li>[21] 未取得　[22] 2026-03-02　[23] 未取得　[24] 2026-08-26</li>
+    <li>[25] 日付不明（コミュニティ）</li>
+  </ul>
+</footer>
+
+</div>
+</body>
+</html>
