@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Power Platformの複数環境でクレジット消費に偏りがあるとき、Copilotクレジットなどを環境間で付け替えられるかを公式ドキュメントで確認した調査メモ。調査日 2026年9月29日。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Power Platformのクレジットは環境間で付け替えられる？</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F1F3F5;
+  --surface:#FFFFFF;
+  --surface-sunk:#EAEEF1;
+  --ink:#171B21;
+  --muted:#5B6673;
+  --line:#DCE1E6;
+  --line-strong:#C2CBD3;
+  --accent:#1F5C7A;
+  --accent-soft:#E4EEF3;
+  --ok:#2C6B50;
+  --ok-soft:#E1EFE7;
+  --warn:#8A5A15;
+  --warn-soft:#F5EBD9;
+  --none:#8C3B3B;
+  --none-soft:#F4E3E3;
+  --tag-official:#1F5C7A;
+  --tag-third:#6B5B8A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161B;
+    --surface:#1A1F26;
+    --surface-sunk:#141920;
+    --ink:#E6EAEF;
+    --muted:#9BA6B2;
+    --line:#2B323B;
+    --line-strong:#3C4753;
+    --accent:#7CBDDA;
+    --accent-soft:#1B2C36;
+    --ok:#87CBA4;
+    --ok-soft:#18271F;
+    --warn:#E2B36C;
+    --warn-soft:#2A2318;
+    --none:#E59696;
+    --none-soft:#2B1C1C;
+    --tag-official:#7CBDDA;
+    --tag-third:#B7A6D6;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161B;
+  --surface:#1A1F26;
+  --surface-sunk:#141920;
+  --ink:#E6EAEF;
+  --muted:#9BA6B2;
+  --line:#2B323B;
+  --line-strong:#3C4753;
+  --accent:#7CBDDA;
+  --accent-soft:#1B2C36;
+  --ok:#87CBA4;
+  --ok-soft:#18271F;
+  --warn:#E2B36C;
+  --warn-soft:#2A2318;
+  --none:#E59696;
+  --none-soft:#2B1C1C;
+  --tag-official:#7CBDDA;
+  --tag-third:#B7A6D6;
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  font-size:15px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{
+  max-width:780px;
+  margin:0 auto;
+  padding-inline:20px;
+  padding-block:40px 64px;
+}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+
+/* header */
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin:0 0 14px;
+}
+h1{
+  font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;
+  font-weight:700;
+  font-size:clamp(25px,5.4vw,36px);
+  line-height:1.4;
+  letter-spacing:.01em;
+  margin:0 0 20px;
+  text-wrap:balance;
+}
+.meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 24px;
+  padding-block:16px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  font-size:13px;
+  color:var(--muted);
+}
+.meta b{
+  display:block;
+  font-size:10.5px;
+  font-weight:500;
+  letter-spacing:.12em;
+  color:var(--muted);
+  opacity:.8;
+  font-family:"IBM Plex Mono",monospace;
+}
+.meta span{color:var(--ink);font-size:13.5px;line-height:1.6}
+
+/* verdict */
+.verdict{
+  margin-block:32px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-left:5px solid var(--accent);
+  padding:24px 22px;
+}
+.verdict h2{
+  font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;
+  font-size:18px;
+  font-weight:600;
+  line-height:1.65;
+  margin:0 0 12px;
+  text-wrap:balance;
+}
+.verdict p{margin:0 0 10px;font-size:14px;color:var(--muted)}
+.verdict p:last-child{margin-bottom:0}
+.verdict strong{color:var(--ink);font-weight:700}
+
+/* sections */
+section{margin-block:44px}
+h2.sec{
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.1em;
+  margin:0 0 6px;
+  padding-bottom:10px;
+  border-bottom:2px solid var(--ink);
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+}
+h2.sec em{
+  font-style:normal;
+  font-family:"IBM Plex Mono",monospace;
+  font-size:11px;
+  font-weight:400;
+  color:var(--muted);
+  letter-spacing:.04em;
+}
+.lead{font-size:13.5px;color:var(--muted);margin:14px 0 18px}
+
+/* table */
+.scroller{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:600px;font-size:13.5px}
+th,td{padding:13px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{
+  background:var(--surface-sunk);
+  font-size:11px;
+  letter-spacing:.08em;
+  font-weight:700;
+  color:var(--muted);
+  white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+tr.focus td{background:var(--accent-soft)}
+td.q{font-weight:500;line-height:1.6}
+td.note{color:var(--muted);font-size:12.5px;line-height:1.65}
+.pill{
+  display:inline-block;
+  white-space:nowrap;
+  font-size:11.5px;
+  font-weight:700;
+  padding:3px 9px;
+  border-radius:2px;
+  letter-spacing:.02em;
+}
+.p-ok{background:var(--ok-soft);color:var(--ok)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-none{background:var(--none-soft);color:var(--none)}
+.ref{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:11px;
+  color:var(--accent);
+  white-space:nowrap;
+}
+
+/* evidence */
+.ev{
+  display:grid;
+  grid-template-columns:38px 1fr;
+  gap:0 12px;
+  padding-block:18px;
+  border-bottom:1px solid var(--line);
+}
+.ev:last-of-type{border-bottom:none}
+.ev-n{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:12px;
+  color:var(--accent);
+  padding-top:2px;
+}
+.ev-title{margin:0 0 6px;font-size:14.5px;font-weight:700;line-height:1.6}
+.ev-title a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:3px}
+.ev-title a:hover{text-decoration-color:var(--accent)}
+.ev-bar{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-bottom:8px}
+.tag{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px;
+  letter-spacing:.06em;
+  padding:2px 7px;
+  border:1px solid currentColor;
+  border-radius:2px;
+}
+.t-official{color:var(--tag-official)}
+.t-third{color:var(--tag-third)}
+.ev-date{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted)}
+.ev-sum{margin:0 0 8px;font-size:13.5px;color:var(--muted);line-height:1.8}
+.ev-url{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px;
+  color:var(--muted);
+  opacity:.75;
+  word-break:break-all;
+  line-height:1.5;
+}
+
+/* alternatives */
+.alts{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.alt{background:var(--surface);border:1px solid var(--line);padding:20px 18px}
+.alt h3{margin:0 0 10px;font-size:15px;font-weight:700;line-height:1.6}
+.alt p{margin:0 0 14px;font-size:13.5px;color:var(--muted)}
+.alt dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:12.5px;border-top:1px dashed var(--line-strong);padding-top:12px}
+.alt dt{color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;padding-top:3px}
+.alt dd{margin:0;line-height:1.7}
+
+/* caution */
+ul.caution{margin:0;padding:0;list-style:none}
+ul.caution li{
+  position:relative;
+  padding-left:20px;
+  margin-bottom:12px;
+  font-size:13.5px;
+  line-height:1.85;
+}
+ul.caution li::before{
+  content:"";
+  position:absolute;
+  left:2px;
+  top:.72em;
+  width:7px;
+  height:7px;
+  background:var(--accent);
+}
+ul.caution b{font-weight:700}
+
+/* footer */
+footer{
+  margin-top:56px;
+  padding-top:22px;
+  border-top:1px solid var(--line);
+  font-size:12px;
+  color:var(--muted);
+}
+footer h3{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px;
+  letter-spacing:.12em;
+  font-weight:500;
+  margin:0 0 10px;
+}
+footer ol{margin:0 0 16px;padding-left:20px}
+footer li{margin-bottom:3px;line-height:1.7}
+.disclaim{font-size:11.5px;line-height:1.8;opacity:.85;margin:0}
+
+@media (max-width:420px){
+  .wrap{padding-block:28px 48px}
+  .verdict{padding:20px 16px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* allocation example (stacked bars) */
+:root{
+  --seg-a:#1F5C7A;
+  --seg-b:#3F7F99;
+  --seg-c:#A4552F;
+  --seg-d:#6B7682;
+  --seg-ink:#FFFFFF;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --seg-a:#7CBDDA;
+    --seg-b:#4F8CA6;
+    --seg-c:#E3A07E;
+    --seg-d:#8E99A5;
+    --seg-ink:#0F1418;
+  }
+}
+:root[data-theme="dark"]{
+  --seg-a:#7CBDDA;
+  --seg-b:#4F8CA6;
+  --seg-c:#E3A07E;
+  --seg-d:#8E99A5;
+  --seg-ink:#0F1418;
+}
+.alloc{background:var(--surface);border:1px solid var(--line);padding:20px 18px;display:grid;gap:14px}
+.alloc-head{margin:0;font-size:13px;color:var(--muted);line-height:1.7}
+.alloc-head b{color:var(--ink)}
+.alloc-row{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:center}
+.alloc-label{font-size:12px;font-weight:700;color:var(--muted)}
+.bar{display:flex;height:34px;min-width:0;border:1px solid var(--line-strong)}
+.seg{
+  display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:500;color:var(--seg-ink);
+  border-right:2px solid var(--surface);
+}
+.seg:last-child{border-right:none}
+.s-a{background:var(--seg-a)}
+.s-b{background:var(--seg-b)}
+.s-c{background:var(--seg-c)}
+.s-d{background:var(--seg-d)}
+.s-free{
+  color:var(--muted);
+  background:repeating-linear-gradient(135deg,var(--surface-sunk) 0 6px,var(--surface) 6px 12px);
+}
+.alloc table{min-width:460px;font-size:12.5px}
+.alloc th,.alloc td{padding:8px 10px}
+.alloc td.num,.alloc th.num{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.alloc .over{color:var(--none);font-weight:700}
+.alloc .up{color:var(--ok);font-weight:700}
+.sw{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
+.alloc-note{margin:0;font-size:12px;color:var(--muted);line-height:1.7}
+
+/* steps */
+ol.steps{margin:0;padding:0;list-style:none;counter-reset:st;display:grid;gap:12px}
+ol.steps li{
+  counter-increment:st;
+  display:grid;grid-template-columns:34px 1fr;gap:0 12px;
+  background:var(--surface);border:1px solid var(--line);padding:16px 16px 14px;
+}
+ol.steps li::before{
+  content:counter(st);
+  font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:500;
+  color:var(--accent);border:1px solid var(--accent);
+  width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+}
+ol.steps li > div{min-width:0}
+ol.steps h3{margin:0 0 4px;font-size:14.5px;font-weight:700;line-height:1.6}
+ol.steps p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.8}
+.path{
+  display:inline;font-family:"IBM Plex Mono",monospace;font-size:11.5px;
+  background:var(--surface-sunk);color:var(--ink);padding:1px 6px;word-break:break-word;
+}
+.guess{
+  display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.04em;
+  padding:1px 7px;margin-right:4px;border:1px dashed var(--warn);color:var(--warn);
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">調査メモ / Power Platform 管理</p>
+  <h1>Power Platformのクレジットは<br>環境間で付け替えられる？</h1>
+  <div class="meta">
+    <div><b>調査日</b><span class="mono">2026-09-29</span></div>
+    <div><b>調査対象</b><span>Power Platform 管理センターのクレジット・容量の割り当て</span></div>
+    <div><b>確認の軸</b><span>複数環境で消費が偏ったとき、配分を移し替えられるか</span></div>
+  </div>
+</header>
+
+<div class="verdict">
+  <h2>環境から環境へ直接「送る」機能はありませんが、クレジットはもともと会社全体の共有プールなので、割り当て量を変えれば実質的に付け替えられます。</h2>
+  <p>Copilotクレジット（Copilot Studioのエージェントが動くたびに減っていく利用枠）やAI Builderクレジットは、購入するとまず <strong>テナント（会社全体）のプール</strong> に入り、そこから各環境へ「割り当て」る仕組みです。割り当てはあとから変更できるので、<strong>余っている環境の割り当てを減らす → 足りない環境に足す</strong> の2ステップで配分を移せます。</p>
+  <p>気をつけたいのは2点です。<strong>使い残しは翌月に繰り越されない</strong>（毎月1日にリセット）ことと、<strong>割り当てを設定していない環境は、初期設定でプールの空きから自由に使える</strong> ことです。後者が「偏り」の正体であることも多いので、配分し直すなら「割り当て」と「上限（プールから追加で使わせない設定）」をセットで考えるのがポイントです。</p>
+</div>
+
+<section>
+  <h2 class="sec">可否マトリクス <em>Matrix</em></h2>
+  <p class="lead">網かけの行が、今回の質問の中心（Copilot Studio・AI Builderで消費される「クレジット」）です。「✕ 記載なし」は「公式に書かれていない＝未確認」という意味で、「絶対にできない」と断定するものではありません。</p>
+  <div class="scroller">
+    <table>
+      <thead>
+        <tr>
+          <th style="min-width:180px">クレジット・容量の種類</th>
+          <th>環境間の付け替え</th>
+          <th style="min-width:250px">仕組み・補足</th>
+          <th>根拠</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="focus">
+          <td class="q">Copilotクレジット<br><span style="font-size:12px;color:var(--muted)">Copilot Studioのエージェント・エージェントフロー</span></td>
+          <td><span class="pill p-ok">○ 可</span></td>
+          <td class="note">購入分はテナント全体でプールされ、環境ごとに割り当てて使います。割り当て画面で環境を選んで数値を変えるだけ。「テナントの空き容量から引き出す」をオフにすると、割り当て分がその環境の上限になります。</td>
+          <td class="ref">[1][2]</td>
+        </tr>
+        <tr class="focus">
+          <td class="q">AI Builderクレジット<br><span style="font-size:12px;color:var(--muted)">Power Apps・Power AutomateのAI機能</span></td>
+          <td><span class="pill p-ok">○ 可</span></td>
+          <td class="note">初期状態は「未割り当て」でテナントのプールにあり、どの環境でも使えます。環境への割り当てはいつでも変更可。超過時の対処の1番目として「既存の容量を再割り当てする」が公式に挙がっています。</td>
+          <td class="ref">[3][5]</td>
+        </tr>
+        <tr>
+          <td class="q">Dataverse容量<br><span style="font-size:12px;color:var(--muted)">データベース・ファイル・ログ</span></td>
+          <td><span class="pill p-ok">○ 可（任意）</span></td>
+          <td class="note">もともとテナント全体で共有。環境への事前割り当ては任意で、割り当てた分だけ他環境が使える量が減ります。超過時は現状メール通知のみ（止まらない「ゆるい制限」）。</td>
+          <td class="ref">[6]</td>
+        </tr>
+        <tr>
+          <td class="q">その他の容量アドオン<br><span style="font-size:12px;color:var(--muted)">Power Automate プロセス、アプリパス、Power Pagesなど</span></td>
+          <td><span class="pill p-ok">○ 可</span></td>
+          <td class="note">「購入 → 環境へ割り当て → 消費」の3段階。管理センターの同じ画面で、割り当ての追加・変更ができます。</td>
+          <td class="ref">[5]</td>
+        </tr>
+        <tr>
+          <td class="q">従量課金（Azureの課金プラン）への紐づけ</td>
+          <td><span class="pill p-ok">○ 可</span></td>
+          <td class="note">1つの環境は同時に1つの課金プランにだけ紐づけられ、別プランへの変更や解除はいつでもできます。</td>
+          <td class="ref">[7]</td>
+        </tr>
+        <tr>
+          <td class="q">使い残しを翌月に繰り越す</td>
+          <td><span class="pill p-none">✕ 不可（明記あり）</span></td>
+          <td class="note">CopilotクレジットとAI Builderクレジットは毎月1日にリセットされ、未使用分は繰り越されないと明記されています。</td>
+          <td class="ref">[3][4]</td>
+        </tr>
+        <tr>
+          <td class="q">環境Aから環境Bへ直接「移す」専用ボタン</td>
+          <td><span class="pill p-none">✕ 記載なし</span></td>
+          <td class="note">公式手順は「環境を選んで割り当て数を入力する」形のみ。移し替えは「減らす → 足す」の2回の操作で行います。</td>
+          <td class="ref">[1][5]</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">付け替えのイメージ <em>Example</em></h2>
+  <p class="lead">クレジットは環境の「財布」に入っているのではなく、会社の共通口座から各環境に「予算枠」を切り出しているイメージです。付け替えは、この枠の線を引き直す作業にあたります。</p>
+  <div class="alloc">
+    <p class="alloc-head">例：会社で <b class="mono">100,000</b> クレジット／月 を購入し、4環境に配分している場合（数字は説明用の架空の値です）</p>
+    <div class="alloc-row">
+      <span class="alloc-label">変更前</span>
+      <div class="bar" role="img" aria-label="変更前：A 40,000、B 40,000、C 10,000、D 10,000">
+        <span class="seg s-a" style="flex:40">A</span>
+        <span class="seg s-b" style="flex:40">B</span>
+        <span class="seg s-c" style="flex:10">C</span>
+        <span class="seg s-d" style="flex:10">D</span>
+      </div>
+    </div>
+    <div class="alloc-row">
+      <span class="alloc-label">変更後</span>
+      <div class="bar" role="img" aria-label="変更後：A 15,000、B 20,000、C 45,000、D 10,000、未割り当ての予備 10,000">
+        <span class="seg s-a" style="flex:15">A</span>
+        <span class="seg s-b" style="flex:20">B</span>
+        <span class="seg s-c" style="flex:45">C</span>
+        <span class="seg s-d" style="flex:10">D</span>
+        <span class="seg s-free" style="flex:10">予備</span>
+      </div>
+    </div>
+    <div class="scroller">
+      <table>
+        <thead>
+          <tr><th>環境</th><th class="num">変更前の割り当て</th><th class="num">先月の消費</th><th class="num">変更後の割り当て</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="sw s-a"></span>環境A</td><td class="num">40,000</td><td class="num">12,000</td><td class="num">15,000</td></tr>
+          <tr><td><span class="sw s-b"></span>環境B</td><td class="num">40,000</td><td class="num">15,000</td><td class="num">20,000</td></tr>
+          <tr><td><span class="sw s-c"></span>環境C</td><td class="num">10,000</td><td class="num over">38,000</td><td class="num up">45,000</td></tr>
+          <tr><td><span class="sw s-d"></span>環境D</td><td class="num">10,000</td><td class="num">9,000</td><td class="num">10,000</td></tr>
+          <tr><td><span class="sw s-free"></span>未割り当て（予備）</td><td class="num">0</td><td class="num">—</td><td class="num">10,000</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="alloc-note">合計は変わらず100,000のまま。AとBから減らした枠を、足りなかったCに回しています。未割り当てを少し残しておくと、「テナントの空き容量から引き出す」をオンにした環境の急な増加を受け止める予備になります。</p>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">付け替えの手順 <em>How to</em></h2>
+  <p class="lead">Copilotクレジットの場合の流れです。画面名は英語版の表記で、日本語表示では訳語が異なることがあります。操作できるのはPower Platform管理者・グローバル管理者などの管理者ロールです。</p>
+  <ol class="steps">
+    <li><div>
+      <h3>どの環境がどれだけ使っているかを確認する</h3>
+      <p><span class="path">Licensing › Copilot Studio › Summary › Download report</span> で環境別のレポートを取得。環境単位の日次消費は最大3か月分見られます。まず環境別で当たりを付け、次にエージェント別・ユーザー別で原因を絞ります。<span class="ref">[1]</span></p>
+    </div></li>
+    <li><div>
+      <h3>余っている環境の割り当てを減らす</h3>
+      <p><span class="path">Manage Copilot Credits</span> で環境を選び、割り当て数を下げて保存。画面には「消費済み・割り当て済み・割り当て可能な残り」が並ぶので、どれだけ動かせるかが分かります。<span class="ref">[1][2]</span></p>
+    </div></li>
+    <li><div>
+      <h3>足りない環境に割り当てる</h3>
+      <p>同じ画面で対象の環境を選び、手順2で空いた分を上乗せします。AI Builderクレジットは <span class="path">Licensing › Capacity add-ons › Add-ons</span> から同じ要領で変更します。<span class="ref">[3][5]</span></p>
+    </div></li>
+    <li><div>
+      <h3>使い切ったときの動きを決める</h3>
+      <p><strong>Capacity overages</strong> で「テナントの空き容量から引き出す」「従量課金プランに請求する」を選べます。どちらもオフなら割り当て分で打ち止めです。あわせて <span class="path">Manage Agents</span> でエージェントごとの月間上限・通知・自動停止も設定できます。<span class="ref">[1]</span></p>
+    </div></li>
+  </ol>
+</section>
+
+<section>
+  <h2 class="sec">配分の考え方 <em>Options</em></h2>
+  <p class="lead">共有プールなので、合計が足りていれば「偏っている」こと自体は問題になりません。困るのは、ある環境が使いすぎて他の環境の分まで食べてしまうときです。「公平に分けたい」のか「使いすぎを防ぎたい」のかで、選ぶ方法が変わります。</p>
+  <div class="alts">
+    <div class="alt">
+      <h3>案A：環境ごとに枠を決めて上限にする</h3>
+      <p>4環境それぞれに割り当てを設定し、「テナントの空き容量から引き出す」をオフに。部門やプロジェクトごとに予算を分けて管理したいとき向きです。枠を使い切るとその環境のエージェントが止まるため、月初の見直しを運用に組み込みます。</p>
+      <dl>
+        <dt>難易度</dt><dd>中（毎月の消費を見て配分を調整）</dd>
+        <dt>追加費用</dt><dd>なし（超過分を従量課金で受ける場合はAzure側で課金）</dd>
+      </dl>
+    </div>
+    <div class="alt">
+      <h3>案B：共有プールのまま、使いすぎだけ抑える</h3>
+      <p>環境への割り当ては最小限にして、プールの柔軟さを活かします。そのうえでエージェントごとの月間上限と通知を設定し、特定のエージェントが暴走したときだけ止まるようにします。</p>
+      <dl>
+        <dt>難易度</dt><dd>低（上限と通知を一度決めればよい）</dd>
+        <dt>追加費用</dt><dd>なし</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">注意点 <em>Caveats</em></h2>
+  <ul class="caution">
+    <li><b>繰り越しはできません。</b>CopilotクレジットとAI Builderクレジットは毎月1日にリセットされます。「今月余った分を来月に回す」ことはできないので、配分は1か月のピークに合わせて考えます。<span class="ref">[3][4]</span></li>
+    <li><span class="guess">定義からの推論</span><b>今月すでに使った量より少なく減らさないこと。</b>超過は「その月の消費量が使える量を上回った状態」と定義されています。月の途中で消費済みの量を下回るまで割り当てを減らすと、その環境はすぐ超過扱いになると考えられます。減らす量は月初か、消費実績を見てから決めるのが安全です。<span class="ref">[1][3]</span></li>
+    <li><b>割り当てのない環境は、初期設定でプールの空きから使えます。</b>割り当て設定がない対象環境では「テナントの空き容量から引き出す」が既定でオン。偏りを抑えたいなら、ここの設定を見直さない限り状況は変わりません。<span class="ref">[1]</span></li>
+    <li><b>環境グループのルールが優先されます。</b>環境グループ（複数環境をまとめて管理する仕組み）のルールで「テナントの空き容量から引き出す」が決められていると、個別の環境では変更できません。グループのルール側を変更します。<span class="ref">[2]</span></li>
+    <li><b>AI Builderクレジットは切り替え期にあります。</b>ライセンスに付いてくるAI Builderクレジットは2026年11月1日に廃止され、新規のお客様はすでにアドオンを購入できずCopilotクレジットを購入する形です。AI Builderの配分を組み直すなら、Copilotクレジットへの移行とあわせて検討するのが効率的です。<span class="ref">[3]</span></li>
+    <li><b>Dataverse容量は数える環境が決まっています。</b>既定・運用（本番）・サンドボックス環境の使用量が数えられ、試用・開発者環境などは数えられません。4環境の種類によって、見え方が変わる点に注意してください。<span class="ref">[6]</span></li>
+    <li><b>割り当てを変更できる人を絞れます。</b>容量アドオンの割り当ては、テナント設定で「特定の管理者のみ」に制限できます。付け替えを運用ルールにするなら、誰が変更するかも決めておくと安心です。<span class="ref">[5]</span></li>
+  </ul>
+</section>
+
+<section>
+  <h2 class="sec">根拠 <em>Evidence</em></h2>
+  <p class="lead">すべてMicrosoftの公式ドキュメントです。日付は各ページのメタ情報（ms.date＝Learnに表示される最終更新日）です。本文は公式ドキュメントの公開ソース（GitHubのMicrosoftDocsリポジトリ）で確認しました。</p>
+
+  <div class="ev">
+    <div class="ev-n">[1]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/power-platform/admin/manage-copilot-studio-copilot-credits-capacity">Manage Copilot Credits and capacity for Copilot Studio</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">最終更新 2026-09-18</span></div>
+      <p class="ev-sum">購入したCopilotクレジットは <strong>テナント全体でプールされ、環境に割り当てて使う</strong> と明記。割り当てパネルで環境を選び、クレジット数を指定する手順を説明しています。超過時は「テナントの空き容量から引き出す」「従量課金プランに請求」を選べ、<strong>割り当て設定がない対象環境では前者が既定で選択</strong>。容量切れの解決策として「reallocate capacity（再割り当て）」が挙がっています。環境別の日次消費（最大3か月）、環境・エージェント・ユーザー別のレポート、エージェントごとの月間上限にも触れています。</p>
+      <p class="ev-url">learn.microsoft.com/en-us/power-platform/admin/manage-copilot-studio-copilot-credits-capacity</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[2]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/power-platform/admin/programmability-tutorial-manage-copilot-credit-allocations">Tutorial: Manage Copilot Credits allocations programmatically</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">最終更新 2026-08-28</span></div>
+      <p class="ev-sum">管理者が「クレジットを必要な環境に割り当て、使い切ったときの動きを決める」ことを前提に、管理センターとAPIの両方で手順を解説。割り当て画面には <strong>消費済み・割り当て済み・割り当て可能な残り</strong> が表示されると説明しています。多数の環境に配分する場合はAPIやSDKで自動化できること、<strong>環境グループのルールで設定が固定されていると個別に変更できない</strong>ことも記載されています。</p>
+      <p class="ev-url">learn.microsoft.com/en-us/power-platform/admin/programmability-tutorial-manage-copilot-credit-allocations</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[3]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/ai-builder/credit-management">Licensing and AI Builder credits</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">最終更新 2026-01-14</span></div>
+      <p class="ev-sum">AI Builderクレジットは <strong>初期状態では未割り当てでテナントのプールにあり、どの環境でも使える</strong>。環境に割り当てることもでき、割り当ては <strong>いつでも更新できる</strong> と説明。超過時の対処の1番目に「組織（テナント）または環境レベルの既存容量を再割り当てする」を挙げています。未使用分は翌月に繰り越さないこと、ライセンス付属分が2026年11月1日に廃止されること、新規のお客様はアドオンを購入できずCopilotクレジットを購入することも記載。</p>
+      <p class="ev-url">learn.microsoft.com/en-us/ai-builder/credit-management</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[4]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/ai-builder/administer-licensing">Overview of licensing（AI Builder）</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">最終更新 2026-09-08</span></div>
+      <p class="ev-sum">消費量は毎月リセットされるため、購入・割り当ては <strong>1か月の最大消費に見合う量で十分</strong> とし、「<strong>未使用のCopilotクレジットやAI Builderクレジットは翌月に繰り越されない</strong>」と明記。使い切った場合は、購入するか、AI BuilderクレジットまたはCopilotクレジットを環境に割り当て直す必要があるとしています。</p>
+      <p class="ev-url">learn.microsoft.com/en-us/ai-builder/administer-licensing</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[5]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/power-platform/admin/capacity-add-on">Capacity add-ons</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">最終更新 2025-12-12</span></div>
+      <p class="ev-sum">容量アドオンは「購入 → 環境へ割り当て → 消費」の3段階と説明し、「<strong>Allocate or change capacity in an environment</strong>（環境の容量を割り当てる・変更する）」の手順を掲載。Dataverseの容量アドオンは環境への割り当てが不要でテナント全体に加算されること、割り当てできる管理者をテナント設定で制限できることも記載されています。</p>
+      <p class="ev-url">learn.microsoft.com/en-us/power-platform/admin/capacity-add-on</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[6]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/power-platform/admin/capacity-storage">Dataverse capacity-based storage details</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">最終更新 2026-08-17</span></div>
+      <p class="ev-sum">Dataverseの容量は環境に事前割り当てでき、割り当てると <strong>テナント全体で他の環境が使える量がその分減る</strong>。割り当ては任意で、全環境に行う必要はない。割り当てを超えた場合は現状メール通知のみ（ソフト制限）。消費に数えられるのは既定・運用・サンドボックス環境で、試用・開発者環境などは数えられないとしています。</p>
+      <p class="ev-url">learn.microsoft.com/en-us/power-platform/admin/capacity-storage</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[7]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/power-platform/admin/pay-as-you-go-overview">Pay-as-you-go plan overview</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">最終更新 2025-05-29</span></div>
+      <p class="ev-sum">環境をAzureの課金プランに紐づけると従量課金の環境になる。<strong>1つの環境は同時に1つの課金プランにだけ紐づけられ、別プランへの変更や解除はいつでもできる</strong> と記載。解除すれば通常の環境に戻り、Azureへの請求は止まります。</p>
+      <p class="ev-url">learn.microsoft.com/en-us/power-platform/admin/pay-as-you-go-overview</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <h3>出典日付一覧</h3>
+  <ol>
+    <li>[1] Manage Copilot Credits and capacity for Copilot Studio — 最終更新 2026-09-18（公式）</li>
+    <li>[2] Manage Copilot Credits allocations programmatically — 最終更新 2026-08-28（公式）</li>
+    <li>[3] Licensing and AI Builder credits — 最終更新 2026-01-14（公式）</li>
+    <li>[4] Overview of licensing（AI Builder） — 最終更新 2026-09-08（公式）</li>
+    <li>[5] Capacity add-ons — 最終更新 2025-12-12（公式）</li>
+    <li>[6] Dataverse capacity-based storage details — 最終更新 2026-08-17（公式）</li>
+    <li>[7] Pay-as-you-go plan overview — 最終更新 2025-05-29（公式）</li>
+  </ol>
+  <p class="disclaim">調査日: 2026年9月29日。本ページは公開情報のみに基づく調査メモです。ライセンス体系や管理センターの画面は頻繁に更新されるため、実際に配分を変更する際は、最新の公式ドキュメントと自社テナントの管理センターの表示を必ずご確認ください。</p>
+</footer>
+
+</div>
+</body>
+</html>
