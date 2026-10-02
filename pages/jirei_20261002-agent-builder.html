@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Agent Builder の活用事例（HCLTech）。2026年10月2日作成。公開情報（Microsoft Community Hub）をもとにまとめています。">
+<title>社員8万人超に声をかけ、約6週間でエージェントを使う人が3,056人から13,727人に増えました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Agent Builder</span>2026年10月2日／IT サービス業（HCLTech）・全社のエージェント作り</p>
+
+  <h1>社員8万人超に声をかけ、約6週間でエージェントを使う人が3,056人から13,727人に増えました</h1>
+
+  <div class="lead">
+    <p>HCLTech は、Microsoft 365 Copilot を配っても、多くの社員がエージェント（AI の専用アシスタント）を作る・使うところまで進まないという課題を抱えていました。</p>
+    <p>2026年5月中旬から6月末まで、8万人超の社員を招き、Agent Builder（Microsoft 365 Copilot に含まれる、コードを書かずにエージェントを作れる機能）を使った「Agent Buddy Program」を実施しました。</p>
+    <p>キャンペーン中に、エージェントを使っている社員は3,056人から13,727人へ、349%増えました。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>ライセンスは配った。でも、ふたを開けると一部の詳しい人しか使っていない。社内でAIを広げようとした人なら、一度は経験する場面ではないでしょうか。</p>
+  <p>Microsoft の記事は、この状況を「技術の準備はできているのに、広い範囲の利用が進まない」と整理しています。課題は技術よりも、気づきや自信、「自分の仕事に役立つ」という実感をどう作るか、という点にあるとしています。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Agent Builder は、日本語などの自然な言葉で「こんなエージェントがほしい」と伝えるだけで、エージェントを作れる機能です。HCLTech は、これを広めるための取り組みとして、説明会ではなく、一緒に作る「co-build（共同ビルド）」形式のセッションを開きました。</p>
+  <p>セッションは、事業部ごとの優先課題や実際の業務に合わせて設計されました。研究・分析、社内ナレッジの検索、計画・生産性、レポート作成、社員の学習、コミュニケーション、開発・品質保証といった場面が扱われました。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="社内展開の流れ">
+      <li><div class="box">招待</div></li>
+      <li><div class="box">事業部ごとに<br>一緒に作る<br>セッション</div></li>
+      <li><div class="box">その場で<br>エージェントを作る</div></li>
+      <li><div class="box">社内で共有・<br>継続して使う</div></li>
+    </ol>
+    <figcaption>社内展開の流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>社員8万人超を対象に、キャンペーン（Agent Buddy Program）として声をかけました。</li>
+    <li>事業部ごとの課題に合わせた、手を動かすセッションを開きました。見るだけではなく、参加者が自分で作る形です。</li>
+    <li>参加者から、エージェントのアイデアが1,100件以上出ました。最も多かったのは「計画・生産性」の分野でした。</li>
+    <li>セッションの後も、アイデアの共有や、より進んだ使い方の要望が続いたと記事は伝えています。</li>
+  </ol>
+  <p class="src-note">※ 4つの手順は、出典の説明を順に並べ直したものです。流れ図の「社内で共有・継続して使う」は、出典の「セッション後も参加者が使い方を共有した」という記述をまとめた表現です。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>全社で使えるようになっていても、実際にエージェントを作った・使った人は一部に限られていました（記事は、使用中のユーザー3,056人という開始時点の数字を示しています）。</p></div>
+    <div class="after"><h3>いま</h3><p>エージェントを使う社員が13,727人（ライセンスありが8,722人、なしが5,005人）に増えました。HCLTech 全体で記録されたエージェントは36,286体で、うち27,375体は2026年上半期に作られました。社員が作ったエージェントは、使われたエージェントの73.9%を占めました。</p></div>
+  </div>
+  <p>数字は、Microsoft の記事が HCLTech の取り組みとして紹介している公表値です。業務の時間短縮や費用の削減などの効果は、記事では公表されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>自分の部署で、日々の仕事の中から「毎回同じことをしている作業」を1つ選びます。</li>
+    <li>Microsoft 365 Copilot の Agent Builder を開き、その作業を言葉で説明して、エージェントを作ってみます。</li>
+    <li>同僚を2〜3人誘い、同じ画面を見ながら一緒に作る30分を設けます。記事も「見るより作る」ことを勧めています。</li>
+  </ol>
+  <p>Agent Builder は Microsoft 365 Copilot に含まれる機能です。使えるかどうかは、ライセンスや管理者の設定で変わります。先に情報システム部門へ確認してください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>セッション前にライセンスやアクセスを確認します</strong>
+    <p>記事は、よくある詰まりとして、ライセンスやアクセスの問題、ログイン時の混乱、デモ環境の不具合を挙げています。対策は、事前にIT部門と確認すること、資料とアクセス手順を前もって配ること、デモ環境を事前に確認することです。</p>
+  </div>
+  <p>エージェントに社内資料をつなぐ場合は、見せてよい範囲かどうかを先に確認してください。AI は、もっともらしい間違いを答えることがあります（ハルシネーション）。作ったエージェントの答えは、利用者が確かめてから使います。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>記事の結論は、「まず何かを作ってもらう」のではなく、「本当の困りごとを1つ解決する」ことから始める、というものでした。エージェントを作ることは、価値を実感した結果であって、出発点ではないということです。</p>
+  <p>自分の職場に置き換えると、最初の一歩は、全員への研修ではなく、1つのチームから始めることかもしれません。そのチームの実際の仕事に合うエージェントを一緒に作り、うまくいった点を次のチームに伝えます。これは、Agent Builder に限らず、新しい道具を職場に広げるときにも使える進め方です。</p>
+
+  <footer>
+    <p>出典：Microsoft Community Hub「Change Management Best Practices to Drive Value with Agent Builder」（2026年9月28日公開）<br>
+    <a href="https://techcommunity.microsoft.com/blog/microsoft-copilot-blog/change-management-best-practices-to-drive-value-with-agent-builder/4559753">https://techcommunity.microsoft.com/blog/microsoft-copilot-blog/change-management-best-practices-to-drive-value-with-agent-builder/4559753</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月2日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

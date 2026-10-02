@@ -8,6 +8,8 @@
 |---|---|---|---|---|
 | 2026-09-28 | Agent Builder | 東京建物 | pages/jirei_20260928-agent-builder.html | https://www.microsoft.com/ja-jp/customers/story/26555-tokyo-tatemono-microsoft-365 |
 | 2026-09-28 | Copilot Studio | カナダ公務員委員会（PSC） | pages/jirei_20260928-copilot-studio.html | https://www.microsoft.com/en/customers/story/26864-public-service-commission-of-canada-microsoft-365-copilot |
+| 2026-10-02 | Agent Builder | HCLTech | pages/jirei_20261002-agent-builder.html | https://techcommunity.microsoft.com/blog/microsoft-copilot-blog/change-management-best-practices-to-drive-value-with-agent-builder/4559753 |
+| 2026-10-02 | Copilot Studio | Premera Blue Cross | pages/jirei_20261002-copilot-studio.html | https://www.microsoft.com/en/customers/story/26405-premera-blue-cross-microsoft-365 |
 
 ## ネタ帳（候補）
 
@@ -16,9 +18,6 @@
 - **Copilot Studio**｜りそなグループ（2026-07-06 公開、本文確認済み）
   https://www.microsoft.com/ja-jp/customers/story/26717-resona-holdings-microsoft-copilot-studio
   融資・住宅ローン・企業年金・iDeCo の4領域の問い合わせ対応。数字の公表はなし。ナレッジを細かく分けてハルシネーションを減らした話が厚い。
-- **Copilot Studio**｜Premera Blue Cross（2026-04-17 公開、本文確認済み）
-  https://www.microsoft.com/en/customers/story/26405-premera-blue-cross-microsoft-365
-  契約書類の処理エージェントで 30〜45分 → 約3分。
 - **Copilot Studio**｜AGCO（2026-07-06 公開、本文確認済み）
   https://www.microsoft.com/en/customers/story/26836-agco-corp-word
   社員約2,000人がエージェントの作り手に。一部の品質レビューが数週間 → 約1時間。個別エージェントの詳細は薄め。
@@ -52,3 +51,4 @@
 - 2026-09-28：初回は手作業で作成。本文を読めたのは www.microsoft.com だけでした（learn / news / adoption / ukstories.microsoft.com、techcommunity、日本のメディアはネットワーク制限で読めず）。
 - 2026-10-02：配信を「毎週月曜」から「2日に1回（奇数日の朝 8:50）・毎回2本」に変更。Agent Builder の候補（OBC・Capita・NTTドコモ）を読んだが、どれも Agent Builder 枠には不向きだった。
 - 2026-10-02：環境のネットワークを Custom（`*.microsoft.com`・`*.itmedia.co.jp`・`xtech.nikkei.com` を追加）に変更。learn.microsoft.com・techcommunity・TechTarget ジャパン・日経クロステックは読めるようになった。news.microsoft.com と ukstories.microsoft.com は相手側の Cloudflare に断られる。
+- 2026-10-02：Agent Builder 枠は HCLTech（techcommunity の Microsoft ブログ）。WebFetch は本文を返さなかったため、`curl -sL --compressed -A "Mozilla/5.0"` で取得し、HTML 内の JSON の body から本文を読んだ。HCLTech は社内展開（採用促進）の事例で、個別エージェントの中身の話ではない。

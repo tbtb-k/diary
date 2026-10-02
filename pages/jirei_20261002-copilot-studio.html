@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Premera Blue Cross）。2026年10月2日作成。公開情報（Microsoft 顧客事例）をもとにまとめています。">
+<title>契約書類の処理が30〜45分から約3分になりました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月2日／医療保険（Premera Blue Cross）・契約書類の処理</p>
+
+  <h1>契約書類の処理が30〜45分から約3分になりました</h1>
+
+  <div class="lead">
+    <p>米国の医療保険会社 Premera Blue Cross では、手作業の業務が多く、処理待ちが積み上がっていました。IT 部門や開発部門も手一杯でした。</p>
+    <p>そこで、Microsoft 365 Copilot と Copilot Studio（エージェントを少ないコードで作れるツール）を使い、部門をまたぐチームが9週間で複数のエージェントを作りました。</p>
+    <p>そのうち契約書類を処理するエージェントでは、作業が30〜45分から約3分になりました。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>書類を開いて、必要な情報を探して、別の場所に写して、確認して、次の担当に回す。毎日続く作業なのに、システム開発を頼むほどではない。そのまま後回しになり、待ち行列だけが増えていく。こうした場面は、多くの職場にあるのではないでしょうか。</p>
+  <p>Premera では、こうした手作業が待ちを生んでいました。さらに、医療保険という規制の厳しい業種のため、新しい AI を試すときにも、決まりを守ることが欠かせませんでした。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、エージェント（AI の専用アシスタント）を、コードをほとんど書かずに作るツールです。Premera は、Word・Teams・SharePoint（社内の共有ファイル置き場）といった、いつも使っている Microsoft 365 の中で、エージェントを作れるようにしました。</p>
+  <p>開発は、製品、基盤、サイバーセキュリティ、ソフトウェア開発の担当が集まった、9週間のチーム（pod）で進めました。あわせて「データ・AI・倫理委員会」を作り、「許可なく使われる AI（シャドー AI）を出さない」ための決まりを整えました。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="契約書類を処理するエージェントの流れ">
+      <li><div class="box">部門横断の<br>9週間チーム</div></li>
+      <li><div class="box">倫理委員会で<br>ガードレール</div></li>
+      <li><div class="box">Copilot Studio で<br>エージェント作成</div></li>
+      <li><div class="box">人が確認して<br>次へ回す</div></li>
+    </ol>
+    <figcaption>契約書類を処理するエージェントの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>製品・基盤・セキュリティ・開発の担当で、9週間のチームを作りました。</li>
+    <li>データ・AI・倫理委員会が、守る決まり（ガードレール）を定めました。</li>
+    <li>Copilot Studio でエージェントを作りました。契約書類を処理する「Contract Exhibit Agent」では、人が内容を確認してから次へ回します。</li>
+    <li>ほかにも、社員向けの文章をわかりやすくするエージェントや、社内の略語を説明するエージェントを作りました。</li>
+  </ol>
+  <p class="src-note">※ 手順1〜3は出典の説明をもとにしています。エージェントの細かい設定内容は、出典では公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>契約書類の処理のワークフローに、30〜45分かかっていました。</p></div>
+    <div class="after"><h3>いま</h3><p>同じ作業が約3分になりました。人が確認してから次へ回す流れは残しています。</p></div>
+  </div>
+  <p>数字は、Microsoft の顧客事例が Premera の取り組みとして紹介している公表値です。記事では、Premera 全体で900以上のエージェントが作られたことも紹介されています。費用などの数字は公表されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>毎日・毎週くり返す、書類まわりの作業を1つ選びます。</li>
+    <li>その作業の「入力」「やること」「確認する人」を、紙に3行で書き出します。</li>
+    <li>Copilot Studio が使えるか、情報システム部門に確認します。使えるなら、小さな範囲から作ってみます。</li>
+  </ol>
+  <p>Copilot Studio は、ライセンスや社内の設定によって使える範囲が変わります。作る前に、使ってよいかどうかを管理者に確認してください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>決まりを整えながら広げます</strong>
+    <p>Premera は、委員会でガードレールを整えたうえで、エージェント作りを広げました。記事は、これを「許可しない部署」から「どうやればできるかを考える部署」への変化だったと伝えています。</p>
+  </div>
+  <p>書類を扱うエージェントには、個人情報や機密情報が含まれることがあります。見られる人の範囲を確認してください。AI は間違えることがあるため、Premera のように、最後は人が確認する流れを残すことが大切です。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>時間が大きく減ったのは、AI だけの力ではありません。決まりの整備、人の確認、現場のチームという組み合わせがあったからだと、この事例は教えてくれます。</p>
+  <p>自分の職場に置き換えると、月末の集計、問い合わせの仕分け、申請書のチェックなど、「手順は決まっているが、人手がかかる」作業があれば、同じ考え方で試せます。まず1つの作業で、確認する人を残したまま小さく始めてみるとよいでしょう。</p>
+
+  <footer>
+    <p>出典：Microsoft 顧客事例「Premera Blue Cross」（2026年4月17日公開）<br>
+    <a href="https://www.microsoft.com/en/customers/story/26405-premera-blue-cross-microsoft-365">https://www.microsoft.com/en/customers/story/26405-premera-blue-cross-microsoft-365</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月2日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
