@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Agent Builder の活用事例（人事院）。2026年10月3日作成。公開情報（日本マイクロソフト 顧客事例）をもとにまとめています。">
+<title>管理職の「部下への声かけ」練習から規程の調べものまで、人事院はコストを抑えて3つのエージェントを自分たちで作りました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Agent Builder</span>2026年10月3日／公務（人事院）・人事／情報セキュリティ</p>
+
+  <h1>管理職の「部下への声かけ」練習から規程の調べものまで、人事院はコストを抑えて3つのエージェントを自分たちで作りました</h1>
+
+  <div class="lead">
+    <p>人事院（職員約600名）では、部下へのフィードバックの機会が少ないことや、職員の業務量の多さが課題でした。</p>
+    <p>そこで Microsoft 365 Copilot の Agent Builder（文章で指示して自分用の AI アシスタントを作る機能）を使い、コーチング練習用など3つのエージェントを職員自らが作りました。</p>
+    <p>数字で公表されているのは有料版 Copilot の検証アンケートで、「有料であっても使いたい」が8割超でした。エージェントそのものの削減効果は公表されていません。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>部下に伝えにくいことを、どう切り出せばよいか。管理職なら一度は悩んだことがあるはずです。しかも、練習できる場はなかなかありません。</p>
+  <p>不審なメールが届いたとき、詳しい人に聞かないと判断できない。何百ページもある規程のどこを見ればよいか分からない。そんな場面も、多くの職場にあるのではないでしょうか。</p>
+  <p>人事院では、国家公務員志望者の減少、若手職員の離職の増加、長時間労働、部下へのフィードバック機会の不足などが課題でした。事務総局の担当者は「職員の業務量は依然として多い状況」と述べています（意訳）。</p>
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Agent Builder は、Microsoft 365 Copilot の中で、AI に役割と参考資料を文章で教えて「専用エージェント」を作る機能です。プログラミングは要りません。</p>
+  <p>人事院は、民間のサービスや Copilot Studio（より本格的にエージェントを作るツール）も検討しました。そのうえで「なるべくコストがかからず、多くの人が使える」ことを重視し、Agent Builder を選んで内製しました。作ったのは次の3つです。</p>
+  <p><strong>コーチング支援エージェント</strong>：部下の属性を入力して仮想の部下を設定し、さまざまな場面でフィードバックの練習をします。会話への AI のアドバイスや、マネジメント傾向の自己診断もできます。</p>
+  <p><strong>不審メール判定エージェント</strong>：メールが不審かどうかの判定から、種類の分類、職員への返信案づくりまでを行います。</p>
+  <p><strong>情報セキュリティ関係規程のナビ</strong>：数百ページの規程を参考資料として登録し、条文を引用しながら回答案を出します。</p>
+  <figure class="figure">
+    <ol class="flow" aria-label="エージェントができるまでの流れ">
+      <li><div class="box">困りごとを<br>見つける</div></li>
+      <li><div class="box">Agent Builder<br>で内製</div></li>
+      <li><div class="box">3つの<br>エージェント</div></li>
+      <li><div class="box">職員が<br>業務で使う</div></li>
+    </ol>
+    <figcaption>エージェントができるまでの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>管理職のフィードバック練習、不審メールの判定、規程の調べものという、悩みの多い業務を選びます。</li>
+    <li>Agent Builder で、役割や参考資料（規程など）を指定してエージェントを作ります。</li>
+    <li>職員が日常の業務で使い、コーチング練習の相談や、規程に沿った回答案づくりに役立てます。</li>
+  </ol>
+  <p class="src-note">※ 出典に書かれているのは、作ったエージェントの機能と、Agent Builder を選んだ理由です。細かい設定内容や指示文は公開されていません。上の手順は、その機能の説明をもとにまとめています。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>部下へのフィードバックを練習する機会が少なく、不審メールの判定や規程の調べものは、経験の豊富な職員に偏りがちでした。</p></div>
+    <div class="after"><h3>いま</h3><p>仮想の部下で練習でき、不審メールの判定と返信案づくりも手伝ってもらえます。規程は、条文を引用した回答案が出てきます。経験の差に左右されにくくなりました。</p></div>
+  </div>
+  <p>公表されている数字は、有料版の Microsoft 365 Copilot を試した結果です。2025年4月に16名で始め、同年6月に178名へ広げ、9月に本格利用に入りました。アンケートでは「有料であっても使いたい」が8割超、「業務上必要と思う」は5段階で平均4.24でした。いずれも人事院が公表した数字です。</p>
+  <p>一方で、同じアンケートで約7割が「AI エージェントは未使用」と答えており、人事院は活用の推進を続けるとしています。個々のエージェントによる時間の削減などは公表されていません。</p>
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>身近な「悩みの多い業務」を1つ選びます。例：新任者からの同じ質問、規程の調べもの、練習したい会話。</li>
+    <li>参考にする資料（規程集、よくある質問の一覧など）を用意し、Agent Builder に「誰向けに、何をして、何は答えないか」を文章で伝えます。</li>
+    <li>まず数人で試し、回答の間違いや抜けを直してから、少しずつ広げます。</li>
+  </ol>
+  <p>必要なもの：Microsoft 365 Copilot を使える環境と、参考にする資料です。Agent Builder が使えるかどうかは、ライセンスや管理者の設定で変わります。まず情報システム部門に確認してください。</p>
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>入力してよい情報を決めておきましょう</strong>
+  <p>人事院は、導入の初期には入力できる情報を「機密性1情報」（公表済み、または公表できる情報）に限りました。2025年10月に、機密性2の情報の入力を解禁しています。段階的に進め、職員の AI リテラシーの向上を重視したとのことです。</p>
+  </div>
+  <p>また、検証の担当者は「どの業務で効果が出るのかを手探りで検証する必要があった」と述べています（意訳）。AI の答えには間違いが混じることがあります。規程の回答案も、最後は必ず人が条文で確かめましょう。</p>
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>人事院の事例は、「高い道具をそろえる」より先に「コストを抑え、多くの人が使える形で作る」を選んだ点が参考になります。練習・判定・調べものという、3つの違う業務を同じ道具で作っていることにも注目です。</p>
+  <p>自分の職場に置き換えると、面談の練習相手、問い合わせメールの仕分け、社内規程の案内係のうち、どれか1つなら今月中に試せそうです。まずは数人で使い、役立つかを確かめてみてください。</p>
+  <footer>
+    <p>出典：日本マイクロソフト 顧客事例「Microsoft 365 Copilot 活用により働き方を改革。国家公務員がやりがいを持てる職場を目指す人事院」（2026年9月7日公開）<br>
+    <a href="https://www.microsoft.com/ja-jp/customers/story/26988-national-personnel-authority-microsoft-365-copilot">https://www.microsoft.com/ja-jp/customers/story/26988-national-personnel-authority-microsoft-365-copilot</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月3日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

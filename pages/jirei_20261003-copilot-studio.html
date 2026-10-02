@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（りそなグループ）。2026年10月3日作成。公開情報（日本マイクロソフト 顧客事例）をもとにまとめています。">
+<title>ナレッジを細かく分け質問を選択式にして、りそなグループは銀行の問い合わせ対応エージェントの誤答を減らしました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月3日／金融（りそなグループ）・営業店からの問い合わせ対応</p>
+
+  <h1>ナレッジを細かく分け質問を選択式にして、りそなグループは銀行の問い合わせ対応エージェントの誤答を減らしました</h1>
+
+  <div class="lead">
+    <p>りそなグループでは、融資や住宅ローン、企業年金、iDeCo（個人型確定拠出年金）の問い合わせ対応に、現場で AI を使える仕組みが求められていました。</p>
+    <p>そこで Copilot Studio（エージェントを作るツール）で4つの領域のエージェントを作り、資料の分け方や質問の聞き方を工夫して、AI の間違いを減らしました。</p>
+    <p>iDeCo と融資のエージェントは2025年11月にリリース済みです。削減時間などの数字は公表されていません。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>お客様からの質問に答えるために、分厚い規則やマニュアルを探す。手続きの細かな条件を、先輩に聞いてから返事をする。どの職場にもある場面です。</p>
+  <p>りそなグループでは、融資の規則が膨大で、営業店からの照会も多様でした。人と AI が協力する働き方へ移るため、専門のプログラミングスキルがない現場の人でも AI エージェントを作れることが、課題になっていました。</p>
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、社内の資料を読ませて質問に答える「エージェント」を、あまりコードを書かずに作れる Microsoft のツールです。りそなグループはこれを中心に、Microsoft 365 や Teams（チャットツール）などとあわせて使いました。</p>
+  <p>作ったのは、iDeCo（営業店の照会対応）、融資（規則の検索と問い合わせ対応）、住宅ローン（商品内容と手続きの確認）、企業年金（届出手続きの確認）の4領域です。IT企画部と業務部門が一体となって進めました。</p>
+  <figure class="figure">
+    <ol class="flow" aria-label="問い合わせ対応エージェントの改善の流れ">
+      <li><div class="box">業務部門と<br>IT部門で始動</div></li>
+      <li><div class="box">ナレッジと<br>質問を整理</div></li>
+      <li><div class="box">試して<br>ログを分析</div></li>
+      <li><div class="box">回答の精度を<br>改善</div></li>
+    </ol>
+    <figcaption>問い合わせ対応エージェントの改善の流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>IT企画部と業務部門が一体になり、週1回の進捗報告・課題共有の会議や、各部門向けの勉強会を開きます。銀行用語を、技術側に伝わる要件へ翻訳しました。</li>
+    <li>iDeCo では、最初はナレッジ（参考資料）を大きなまとまりで入れたため、誤った回答が出ることがありました。そこで構造を見直し、質問をツリー形式で細かく分けて、利用者が選びながら問い合わせ内容を絞れるようにしました。</li>
+    <li>融資では、膨大な規則をカテゴリーに細かく分け、質問・回答・満足度のログを分析し、模範解答をつくって精度を上げています。</li>
+  </ol>
+  <p class="src-note">※ 手順は出典の説明をもとにまとめています。各エージェントの細かな設定や指示文は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>AI にナレッジを大きな単位で入れていたため、ハルシネーション（AI がもっともらしい間違いを答えること）が起き、回答を実用レベルとみなせませんでした。</p></div>
+    <div class="after"><h3>いま</h3><p>ナレッジの構造を見直し、質問を選択式で絞り込めるようにしました。iDeCo と融資のエージェントは2025年11月にリリースされ、営業店を中心に活用が広がっています。</p></div>
+  </div>
+  <p>削減時間や満足度の数字は、公表されていません。公表されているのは、4領域での取り組み、2025年11月のリリース、社内の育成プログラム「Resona GenAI Academy」の第1期が終わったことなどです。</p>
+  <p>りそなグループは、すべての問い合わせを AI だけで解決するのは現段階では難しいと見ています（意訳）。</p>
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>まず、問い合わせの多い業務を1つ選び、使う資料を最新の状態に整えます。</li>
+    <li>資料をテーマごとに細かく分けて Copilot Studio に登録し、「答えられないときは担当者に回す」と決めておきます。</li>
+    <li>数人で質問を試し、間違えた質問を記録します。その結果をもとに、資料の分け方や質問の聞き方を直します。</li>
+  </ol>
+  <p>必要なもの：Copilot Studio を使えるライセンスと、使ってよい社内資料です。利用できるかどうかは、会社の契約や管理者の設定で変わります。</p>
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>AI の間違いは、資料の分け方で減らせます</strong>
+  <p>りそなグループでは、初期に誤った回答が出ました。対策は、ナレッジの構造の見直しと、質問の細分化でした。このほか、金融機関として守るべき生成 AI のガイドラインを整備し、セキュリティ部門と密に連携しました。厳しすぎない「ガードレール」づくりのバランスも課題とされています。</p>
+  </div>
+  <p>社内で真似するときも、使ってよい資料の範囲と、個人情報や機密情報を入れてよいかを、先に決めておきましょう。回答は参考として使い、最後は人が確認する前提にしてください。</p>
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>りそなグループの事例が教えてくれるのは、エージェントの出来は「AI の賢さ」より「資料の整え方と聞き方」で大きく変わる、という点です。ログを見て直し続ける進め方は、どの業界でも使えます。</p>
+  <p>自分の職場に置き換えると、よくある質問の資料を小さく分け、選択式で絞り込める入口をつくれば、新人からの問い合わせ対応などで試せそうです。誤答が出たら、資料と質問の聞き方を見直してみてください。</p>
+  <footer>
+    <p>出典：日本マイクロソフト 顧客事例「りそなグループのコーポレートトランスフォーメーション事例（Copilot Studio による AI エージェント開発）」（2026年7月6日公開）<br>
+    <a href="https://www.microsoft.com/ja-jp/customers/story/26717-resona-holdings-microsoft-copilot-studio">https://www.microsoft.com/ja-jp/customers/story/26717-resona-holdings-microsoft-copilot-studio</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月3日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
