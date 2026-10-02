@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Claude Codeで何ができるかを、「そんなことAIでできるの！？」と驚く機能を中心に、公式ドキュメント16ページで裏取りしてまとめた調査メモ（2026年10月2日調べ）。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Claude Codeって何ができるの？</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 1本の読み物カラム。機能は「見出し＋状態」｜「説明＋頼み方」の2段組の行で並べ、スマホでは縦に積む。
+   驚きどころには蛍光ペンのマーカー、頼み方は黒い入力欄の見た目で示す。 */
+:root{
+  --bg:#F3F4F0;
+  --surface:#FFFFFF;
+  --sunk:#EAECE6;
+  --ink:#16191D;
+  --muted:#59616A;
+  --line:#D9DCD4;
+  --line-strong:#BEC3BA;
+  --accent:#2C3B93;
+  --accent-soft:#E5E8F6;
+  --mark:#FFE36E;
+  --term-bg:#1C2029;
+  --term-ink:#ECEEF3;
+  --term-dim:#8F98A8;
+  --term-caret:#FFD84D;
+  --ok:#2C6B4F;        --ok-soft:#DFEFE6;
+  --beta:#7A5710;      --beta-soft:#F5EAD3;
+  --preview:#8A3A6B;   --preview-soft:#F5E1EC;
+  --exp:#8C3B3B;       --exp-soft:#F4E2E2;
+  --font-display:"Dela Gothic One","Hiragino Kaku Gothic StdN","Yu Gothic",sans-serif;
+  --font-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,"Zen Kaku Gothic New",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111317;
+    --surface:#191C21;
+    --sunk:#15181C;
+    --ink:#E7E9EC;
+    --muted:#9AA2AC;
+    --line:#2A2F36;
+    --line-strong:#3A414A;
+    --accent:#A9B4FF;
+    --accent-soft:#1F2442;
+    --mark:rgba(255,214,77,.32);
+    --term-bg:#0B0D11;
+    --term-ink:#E6E9EF;
+    --term-dim:#7F889A;
+    --term-caret:#FFD84D;
+    --ok:#8BCFA8;        --ok-soft:#17271E;
+    --beta:#E5BC6E;      --beta-soft:#2A2316;
+    --preview:#E9A3CC;   --preview-soft:#2C1A25;
+    --exp:#EC9A9A;       --exp-soft:#2D1B1B;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111317;
+  --surface:#191C21;
+  --sunk:#15181C;
+  --ink:#E7E9EC;
+  --muted:#9AA2AC;
+  --line:#2A2F36;
+  --line-strong:#3A414A;
+  --accent:#A9B4FF;
+  --accent-soft:#1F2442;
+  --mark:rgba(255,214,77,.32);
+  --term-bg:#0B0D11;
+  --term-ink:#E6E9EF;
+  --term-dim:#7F889A;
+  --term-caret:#FFD84D;
+  --ok:#8BCFA8;        --ok-soft:#17271E;
+  --beta:#E5BC6E;      --beta-soft:#2A2316;
+  --preview:#E9A3CC;   --preview-soft:#2C1A25;
+  --exp:#EC9A9A;       --exp-soft:#2D1B1B;
+  color-scheme:dark;
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{
+  max-width:940px;
+  margin:0 auto;
+  padding-inline:20px;
+  padding-block:40px 56px;
+  display:flex;
+  flex-direction:column;
+  gap:56px;
+}
+a{color:var(--accent); text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:3px}
+mark{
+  background:linear-gradient(transparent 55%, var(--mark) 55%);
+  color:inherit;
+  padding:0 .1em;
+}
+h1,h2,h3{text-wrap:balance; word-break:auto-phrase; margin:0}
+p{margin:0}
+
+/* ───── ヘッダー ───── */
+.hero{display:flex; flex-direction:column; gap:18px}
+.eyebrow{
+  font-size:13px; letter-spacing:.08em; color:var(--muted);
+  display:flex; flex-wrap:wrap; gap:6px 16px;
+}
+.eyebrow b{color:var(--ink); font-weight:700}
+.hero h1{
+  font-family:var(--font-display);
+  font-weight:400;
+  font-size:clamp(30px, 6.4vw, 52px);
+  line-height:1.25;
+  letter-spacing:.01em;
+}
+.hero .lead{font-size:clamp(16px, 2.2vw, 18px); color:var(--muted); max-width:42em}
+
+.verdict{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-left:6px solid var(--accent);
+  border-radius:6px;
+  padding:22px 24px;
+  display:flex; flex-direction:column; gap:10px;
+}
+.verdict .label{font-size:12px; letter-spacing:.14em; color:var(--accent); font-weight:700}
+.verdict .one{font-size:clamp(18px, 2.6vw, 22px); font-weight:700; line-height:1.6}
+.verdict p:not(.one){max-width:46em}
+
+.surfaces{display:flex; flex-direction:column; gap:10px}
+.surfaces h2{font-size:14px; letter-spacing:.08em; color:var(--muted); font-weight:700}
+.chips{display:flex; flex-wrap:wrap; gap:8px; padding:0; margin:0; list-style:none}
+.chips li{
+  font-size:14px; padding:4px 12px; border-radius:999px;
+  background:var(--sunk); border:1px solid var(--line);
+}
+.surfaces .note{font-size:13px; color:var(--muted)}
+
+/* ───── 機能グループ ───── */
+.group{display:flex; flex-direction:column; gap:18px}
+.group-head{display:flex; flex-direction:column; gap:4px; padding-bottom:12px; border-bottom:2px solid var(--ink)}
+.group-head h2{font-family:var(--font-display); font-weight:400; font-size:clamp(22px, 3.6vw, 30px); line-height:1.35}
+.group-head p{color:var(--muted); font-size:15px}
+
+.feat{
+  display:grid;
+  grid-template-columns:minmax(0, 15em) minmax(0, 1fr);
+  gap:14px 32px;
+  padding:22px 0 24px;
+  border-bottom:1px solid var(--line);
+}
+.feat:last-child{border-bottom:0}
+.feat-side{display:flex; flex-direction:column; gap:10px; min-width:0}
+.feat-side h3{font-size:19px; line-height:1.55; font-weight:700}
+.meta{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.feat-body{display:flex; flex-direction:column; gap:12px; min-width:0}
+.feat-body ul{margin:0; padding-left:1.2em; display:flex; flex-direction:column; gap:4px}
+.cite{font-size:13px; color:var(--muted)}
+.cite a{margin-left:4px; font-family:var(--font-mono); font-size:12px}
+
+.pill{
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:12px; font-weight:700; letter-spacing:.03em;
+  padding:2px 10px; border-radius:999px; white-space:nowrap;
+}
+.pill::before{content:""; width:6px; height:6px; border-radius:50%; background:currentColor}
+.pill.ok{color:var(--ok); background:var(--ok-soft)}
+.pill.beta{color:var(--beta); background:var(--beta-soft)}
+.pill.preview{color:var(--preview); background:var(--preview-soft)}
+.pill.exp{color:var(--exp); background:var(--exp-soft)}
+.plan{font-size:12px; color:var(--muted); padding:2px 8px; border:1px solid var(--line-strong); border-radius:4px; white-space:nowrap}
+
+.ask{
+  background:var(--term-bg);
+  color:var(--term-ink);
+  border-radius:8px;
+  padding:12px 16px 14px;
+  font-family:var(--font-mono);
+  font-size:14px;
+  line-height:1.7;
+  overflow-x:auto;
+}
+.ask .ask-label{display:block; font-family:var(--font-body); font-size:11px; letter-spacing:.12em; color:var(--term-dim); margin-bottom:4px}
+.ask .line{display:block; white-space:pre-wrap; word-break:break-word}
+.ask .line::before{content:"> "; color:var(--term-caret)}
+
+.aside{
+  font-size:14px;
+  background:var(--accent-soft);
+  border-radius:6px;
+  padding:10px 14px;
+}
+.aside b{color:var(--accent)}
+kbd{font-family:var(--font-mono); font-size:.85em; padding:1px 6px; border:1px solid var(--line-strong); border-bottom-width:2px; border-radius:4px; background:var(--surface)}
+code{font-family:var(--font-mono); font-size:.9em}
+
+/* ───── 早見表 ───── */
+section > h2.sec{
+  font-family:var(--font-display); font-weight:400;
+  font-size:clamp(22px, 3.6vw, 30px); line-height:1.35;
+  padding-bottom:12px; border-bottom:2px solid var(--ink);
+  margin-bottom:18px;
+}
+.legend{display:flex; flex-wrap:wrap; gap:8px 14px; font-size:13px; color:var(--muted); margin-bottom:14px}
+.legend span{display:inline-flex; gap:6px; align-items:center}
+.table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:760px; font-size:14px; line-height:1.6}
+th, td{padding:10px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line)}
+thead th{background:var(--sunk); font-size:12px; letter-spacing:.06em; color:var(--muted); font-weight:700; white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+td:first-child{font-weight:700}
+td.ref{font-family:var(--font-mono); font-size:12px; white-space:nowrap}
+
+/* ───── まず試すなら ───── */
+.try{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px}
+.try-card{
+  background:var(--surface); border:1px solid var(--line); border-radius:6px;
+  padding:18px; display:flex; flex-direction:column; gap:10px;
+}
+.try-card h3{font-size:17px; line-height:1.5}
+.try-card dl{margin:0; display:grid; grid-template-columns:auto 1fr; gap:2px 10px; font-size:13px}
+.try-card dt{color:var(--muted)}
+.try-card dd{margin:0}
+.try-card p{font-size:14px}
+
+/* ───── 注意点 ───── */
+.cautions{margin:0; padding-left:1.3em; display:flex; flex-direction:column; gap:10px; max-width:48em}
+
+/* ───── 根拠 ───── */
+.sources{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:0}
+.src{display:grid; grid-template-columns:3.2em minmax(0,1fr); gap:2px 10px; padding:12px 0; border-bottom:1px solid var(--line)}
+.src:last-child{border-bottom:0}
+.src .n{font-family:var(--font-mono); font-size:13px; color:var(--muted); padding-top:2px}
+.src .t{font-weight:700}
+.src .row{display:flex; flex-wrap:wrap; gap:6px 12px; align-items:center; font-size:13px; color:var(--muted)}
+.src .tag{font-size:11px; font-weight:700; color:var(--accent); border:1px solid currentColor; border-radius:3px; padding:0 6px}
+.src .sum{font-size:14px}
+.src .url{font-family:var(--font-mono); font-size:12px; color:var(--muted); word-break:break-all}
+.src > :not(.n){grid-column:2}
+.src > .n{grid-row:1 / span 4}
+
+footer{
+  font-size:13px; color:var(--muted);
+  border-top:1px solid var(--line); padding-top:18px;
+  display:flex; flex-direction:column; gap:6px;
+}
+
+@media (max-width: 760px){
+  .wrap{padding-block:28px 40px; gap:44px}
+  .feat{grid-template-columns:minmax(0,1fr); gap:12px}
+  .try{grid-template-columns:minmax(0,1fr)}
+  .verdict{padding:18px}
+}
+@media (prefers-reduced-motion: no-preference){
+  a{transition:color .15s}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow"><span><b>調査メモ</b></span><span>調査日 2026年10月2日</span><span>対象：Claude Code（Anthropic社のAIエージェント）</span></div>
+    <h1>Claude Codeって<br>何ができるの？</h1>
+    <p class="lead">「そんなことAIでできるの！？」と驚く機能を中心に、12個を選びました。どれも公式ドキュメントで1つずつ裏取りしています。</p>
+
+    <div class="verdict" role="note" aria-label="結論">
+      <span class="label">結論</span>
+      <p class="one">Claude Codeは「文章で答えるAI」ではなく、<mark>「実際に手を動かしてくれるAI」</mark>です。</p>
+      <p>ファイルを読み書きし、パソコンの画面やブラウザを操作し、決めた時間になるとクラウド上で勝手に働き始めます。何十体もの「分身」を同時に動かして手分けすることもできます。</p>
+      <p>ただし、驚きの大きい機能ほど「リサーチプレビュー（＝試験提供中）」や「ベータ」の段階で、契約プランによって使えないものもあります。使う前に下の早見表で確認してください。</p>
+    </div>
+
+    <div class="surfaces">
+      <h2>どこで使える？</h2>
+      <ul class="chips">
+        <li>ターミナル（文字で命令する画面）</li>
+        <li>VS Code・JetBrains（開発用ソフト）</li>
+        <li>デスクトップアプリ（Mac・Windows）</li>
+        <li>ブラウザ（claude.ai/code）</li>
+        <li>スマホのClaudeアプリ</li>
+      </ul>
+      <p class="note">ブラウザ版はパソコンへのインストールが不要です。どこから使っても中身は同じClaude Codeです。<span class="cite"><a href="#s1">[1]</a></span></p>
+    </div>
+  </header>
+
+  <!-- ───────── グループ1 ───────── -->
+  <section class="group" aria-labelledby="g1">
+    <div class="group-head">
+      <h2 id="g1">目と手がある</h2>
+      <p>画面を見て、マウスとキーボードを自分で動かします。</p>
+    </div>
+
+    <article class="feat">
+      <div class="feat-side">
+        <h3>パソコンの画面を<mark>見て、自分でクリック</mark>する</h3>
+        <div class="meta"><span class="pill preview">リサーチプレビュー</span><span class="plan">Pro・Max</span></div>
+      </div>
+      <div class="feat-body">
+        <p>「コンピューター操作（computer use）」という機能です。Claudeがアプリを開き、画面のスクリーンショットを見ながらクリック・入力・スクロールをします。APIやコマンドが用意されていない専用の業務ソフトや、画面でしか操作できないツールも動かせます。</p>
+        <ul>
+          <li>自分で作ったアプリを起動し、全部のボタンを押して壊れていないか確かめる</li>
+          <li>「小さいウィンドウだと表示が崩れる」と伝えると、ウィンドウを縮めて再現し、直してから再確認する</li>
+        </ul>
+        <div class="ask"><span class="ask-label">こう頼むだけ</span><span class="line">アプリを起動して、各タブを順番にクリックして落ちないか確かめて。エラー画面が出たらスクショを撮って</span></div>
+        <p class="aside"><b>安心のしくみ：</b>操作してよいアプリはその都度あなたが許可します。<kbd>Esc</kbd>キーを押せばどこからでも即停止できます。デスクトップアプリ版はMacとWindows、ターミナル版はMacのみ対応です。</p>
+        <p class="cite">根拠<a href="#s2">[2]</a><a href="#s3">[3]</a></p>
+      </div>
+    </article>
+
+    <article class="feat">
+      <div class="feat-side">
+        <h3>いつものChromeで、<mark>ログインしたまま</mark>作業する</h3>
+        <div class="meta"><span class="pill ok">提供中</span><span class="plan">Pro・Max・Team・Enterprise</span></div>
+      </div>
+      <div class="feat-body">
+        <p>Chrome拡張機能「Claude in Chrome」とつなぐと、Claudeがあなたのブラウザで新しいタブを開いて作業します。ログイン状態を共有するので、Gmail・Googleドキュメント・Notionなど、ふだん使っているサイトを専用の連携設定なしで扱えます。</p>
+        <ul>
+          <li>手元の表（CSV）を1行ずつ読み、社内システムの入力フォームに転記する</li>
+          <li>商品一覧のページから名前・価格・在庫を抜き出して表にまとめる</li>
+          <li>操作の様子をGIF動画に録画して、手順書の代わりに共有する</li>
+        </ul>
+        <div class="ask"><span class="ask-label">こう頼むだけ</span><span class="line">contacts.csv の各行について、CRMで「連絡先を追加」を押して名前・メール・電話を入力して</span></div>
+        <p class="aside"><b>人に任せる場面：</b>ログイン画面やCAPTCHA（「私はロボットではありません」の確認）が出ると、Claudeは止まってあなたに操作を頼みます。</p>
+        <p class="cite">根拠<a href="#s4">[4]</a></p>
+      </div>
+    </article>
+
+    <article class="feat">
+      <div class="feat-side">
+        <h3>iPhoneアプリを<mark>自分で起動して、タップして</mark>確かめる</h3>
+        <div class="meta"><span class="pill beta">パブリックベータ</span><span class="plan">Pro・Max・Team・Enterprise</span></div>
+      </div>
+      <div class="feat-body">
+        <p>デスクトップアプリでは、iPhoneの画面を再現するシミュレーター（パソコン上の仮想iPhone）が会話の横に表示されます。Claudeがアプリを入れ、画面をタップして進み、表示を読み取って自分の修正が正しいか確かめます。その様子をあなたは横で見ていられますし、途中で自分がタップすることもできます。</p>
+        <div class="ask"><span class="ask-label">こう頼むだけ</span><span class="line">アプリをビルドしてシミュレーターで起動して、初回登録の流れを確認して</span></div>
+        <p class="aside"><b>条件：</b>MacとXcode（Apple純正の開発ソフト）が必要です。操作できるのは仮想のiPhoneだけで、実機のiPhoneは操作できません。</p>
+        <p class="cite">根拠<a href="#s5">[5]</a></p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ───────── グループ2 ───────── -->
+  <section class="group" aria-labelledby="g2">
+    <div class="group-head">
+      <h2 id="g2">分身して、手分けする</h2>
+      <p>1体のAIではなく、何体ものAIが同時に動きます。</p>
+    </div>
+
+    <article class="feat">
+      <div class="feat-side">
+        <h3><mark>数十〜数百体のAI</mark>で、一気に片づける</h3>
+        <div class="meta"><span class="pill ok">提供中</span><span class="plan">有料プラン全般</span></div>
+      </div>
+      <div class="feat-body">
+        <p>「ダイナミックワークフロー」という機能です。Claudeが作業の段取りを台本（プログラム）として書き、その台本に沿って多数の「サブエージェント（＝手伝い役のAI）」を同時に動かします。1回の実行で最大1,000体まで、初期設定では同時に16体まで動きます。</p>
+        <ul>
+          <li>500個のファイルの書き換えを、1ファイル1体ずつ並行して進める</li>
+          <li>組み込みの <code>/deep-research</code> は、複数の観点でWeb検索し、出典同士を突き合わせ、裏が取れなかった主張を落としてから報告書にする</li>
+        </ul>
+        <div class="ask"><span class="ask-label">こう頼むだけ</span><span class="line">ワークフローを使って、src/routes/ の全ファイルに認証チェック漏れがないか調べて。見つけたものは別のAIに反論させてから報告して</span></div>
+        <p class="aside"><b>補足：</b>Proプランでは設定画面（<code>/config</code>）でオンにします。AIの数が増えるぶん、使用量も多く消費します。</p>
+        <p class="cite">根拠<a href="#s6">[6]</a></p>
+      </div>
+    </article>
+
+    <article class="feat">
+      <div class="feat-side">
+        <h3>AI同士で<mark>議論させて</mark>、答えを出す</h3>
+        <div class="meta"><span class="pill exp">実験的・初期設定はオフ</span></div>
+      </div>
+      <div class="feat-body">
+        <p>「エージェントチーム」では、リーダー役のClaudeが仲間のClaudeを何体か立ち上げます。仲間同士は直接メッセージを送り合い、共有のToDoリストから仕事を取り合って進めます。あなたが特定の仲間に直接話しかけることもできます。</p>
+        <p>公式の例では、原因がわからない不具合に対して5体に別々の仮説を調べさせ、<mark>「科学の討論のように、互いの説を論破し合って」</mark>と指示しています。1体だと最初に思いついた説に引っぱられがちですが、反論を生き残った説は本当の原因である可能性が高い、という考え方です。</p>
+        <div class="ask"><span class="ask-label">こう頼むだけ</span><span class="line">仲間を3人立てて。1人はUX、1人は技術設計、1人はあえて反対意見を言う役で、この企画を検討して</span></div>
+        <p class="cite">根拠<a href="#s7">[7]</a></p>
+      </div>
+    </article>
+
+    <article class="feat">
+      <div class="feat-side">
+        <h3>審査員AIの大群がバグを探し、<mark>再現して確認まで</mark>する</h3>
+        <div class="meta"><span class="pill preview">リサーチプレビュー</span><span class="plan">Pro・Max は3回無料</span></div>
+      </div>
+      <div class="feat-body">
+        <p>「ultrareview（ウルトラレビュー）」は、クラウド上で多数のレビュー役AIが変更内容を並行して調べる機能です。報告される指摘はすべて<mark>別に再現・検証されたもの</mark>なので、「好みの問題」ではなく本物のバグに絞られます。かかる時間はおよそ5〜10分で、その間あなたのパソコンは別の作業に使えます。</p>
+        <div class="ask"><span class="ask-label">こう頼むだけ</span><span class="line">/code-review ultra</span></div>
+        <p class="aside"><b>費用：</b>Pro・Maxは最初の3回が無料（1回限り）。その後は1回あたり約5〜25ドルを追加の使用量クレジットで支払います。</p>
+        <p class="cite">根拠<a href="#s8">[8]</a></p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ───────── グループ3 ───────── -->
+  <section class="group" aria-labelledby="g3">
+    <div class="group-head">
+      <h2 id="g3">あなたがいない間も働く</h2>
+      <p>パソコンの前にいなくても、仕事が進みます。</p>
+    </div>
+
+    <article class="feat">
+      <div class="feat-side">
+        <h3><mark>パソコンを閉じていても</mark>、決まった時間に働く</h3>
+        <div class="meta"><span class="pill preview">リサーチプレビュー</span><span class="plan">Pro・Max・Team・Enterprise</span></div>
+      </div>
+      <div class="feat-body">
+        <p>「ルーティン」は、頼みごと・対象のリポジトリ（作業フォルダ）・連携サービスをひとまとめにして保存し、自動で実行する機能です。実行はAnthropic社のクラウドで行われるので、あなたのパソコンの電源が切れていても動きます。</p>
+        <ul>
+          <li>毎朝・毎週など時間を決めて実行（最短1時間おき）</li>
+          <li>外部のシステムから呼び出されたら実行（例：監視ツールがエラーを検知したら原因を調べる）</li>
+          <li>GitHubでプルリクエスト（変更の提案）が出されたら実行</li>
+        </ul>
+        <div class="ask"><span class="ask-label">こう頼むだけ</span><span class="line">/schedule 明日の朝9時に、昨日取り込まれた変更を要約して</span></div>
+        <p class="aside"><b>実はこのサイトでも：</b>この学習記録サイトの事例記事（<code>jirei_</code> から始まるページ）は、2日に1回の定期実行でClaude Codeが調べて書き、公開しています。</p>
+        <p class="cite">根拠<a href="#s9">[9]</a></p>
+      </div>
+    </article>
+
+    <article class="feat">
+      <div class="feat-side">
+        <h3>ゴールを決めたら、<mark>達成するまで自分で続ける</mark></h3>
+        <div class="meta"><span class="pill ok">提供中</span></div>
+      </div>
+      <div class="feat-body">
+        <p><code>/goal</code> で「完了の条件」を決めると、Claudeはあなたが毎回「続けて」と言わなくても作業を繰り返します。1区切りごとに、作業しているAIとは<mark>別の小さなAIが「条件を満たしたか」を判定</mark>し、まだなら次に進みます。条件を満たすか、達成不可能と判断されると止まります。</p>
+        <div class="ask"><span class="ask-label">こう頼むだけ</span><span class="line">/goal 「要対応」ラベルの課題がゼロになるまで</span></div>
+        <p class="cite">根拠<a href="#s10">[10]</a></p>
+      </div>
+    </article>
+
+    <article class="feat">
+      <div class="feat-side">
+        <h3>外出先のスマホから、<mark>家のパソコンの作業を続ける</mark></h3>
+        <div class="meta"><span class="pill ok">提供中</span><span class="plan">Pro・Max・Team・Enterprise</span></div>
+      </div>
+      <div class="feat-body">
+        <p>「Remote Control」を使うと、自分のパソコンで動いているClaude Codeの会話を、スマホのClaudeアプリや別のパソコンのブラウザからそのまま続けられます。スマホで撮った写真を送って見せることもできます。ノートパソコンがスリープしても、復帰すると自動でつながり直します。</p>
+        <p>デスクトップアプリの「Dispatch」を使えば、スマホからメッセージで仕事を頼み、終わったらスマホに通知を受け取れます（Dispatchは Pro・Max のみ）。</p>
+        <p class="aside"><b>注意：</b>Remote Controlは作業そのものは自分のパソコンで動くので、電源は入れたままにしておく必要があります。パソコンを閉じたいなら、上のルーティンやクラウドでの実行を使います。</p>
+        <p class="cite">根拠<a href="#s11">[11]</a><a href="#s3">[3]</a></p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ───────── グループ4 ───────── -->
+  <section class="group" aria-labelledby="g4">
+    <div class="group-head">
+      <h2 id="g4">つながって、見せて、覚える</h2>
+      <p>いつものチャットから頼めて、成果はページで届き、教えたことは忘れません。</p>
+    </div>
+
+    <article class="feat">
+      <div class="feat-side">
+        <h3>Slackで <mark>@Claude に頼むと、修正案が返ってくる</mark></h3>
+        <div class="meta"><span class="pill ok">提供中</span><span class="plan">Pro・Max・Team・Enterprise</span></div>
+      </div>
+      <div class="feat-body">
+        <p>Slackのチャンネルで不具合の報告に @Claude とメンションすると、Claudeがスレッドの流れを読んで状況をつかみ、クラウド上で作業を始めます。途中経過はスレッドに書き込まれ、終わると「プルリクエストを作成」ボタン付きで知らせてくれます。</p>
+        <p>また「チャンネル」という仕組み（リサーチプレビュー）では、Telegram・Discord・iMessageから動作中のClaude Codeに話しかけ、返事を同じアプリで受け取れます。</p>
+        <p class="aside"><b>補足：</b>Team・Enterpriseでは、このSlack連携は組織共有の「Claude Tag」へ移行中です。対象のコードはGitHubにある必要があります。</p>
+        <p class="cite">根拠<a href="#s12">[12]</a><a href="#s13">[13]</a></p>
+      </div>
+    </article>
+
+    <article class="feat">
+      <div class="feat-side">
+        <h3>結果を<mark>共有できるWebページ</mark>にして、コメントに返事もする</h3>
+        <div class="meta"><span class="pill ok">提供中</span><span class="plan">Pro・Max・Team・Enterprise</span></div>
+      </div>
+      <div class="feat-body">
+        <p>「アーティファクト」は、作業結果をclaude.ai上のWebページとして公開する機能です。最初は自分だけが見られる状態で、必要に応じて社内や一般に共有できます。作業が進むと同じURLのまま中身が更新されます。</p>
+        <ul>
+          <li>開くたびに連携サービスから最新データを取ってくるダッシュボードも作れる</li>
+          <li>編集権限のある共有相手がコメントを「Claudeに送る」と、Claudeが読んで返信し、頼まれた修正まで反映する（組織内で共有した場合）</li>
+          <li><code>/slides</code> でスライド、<code>/design</code> で画面デザイン案も作れる（テンプレートはベータ）</li>
+        </ul>
+        <div class="ask"><span class="ask-label">こう頼むだけ</span><span class="line">先週の問い合わせ件数をサービス別のグラフにしたページを作って</span></div>
+        <p class="cite">根拠<a href="#s14">[14]</a></p>
+      </div>
+    </article>
+
+    <article class="feat">
+      <div class="feat-side">
+        <h3>一度教えたことを<mark>覚えて、次から自分で守る</mark></h3>
+        <div class="meta"><span class="pill ok">提供中</span></div>
+      </div>
+      <div class="feat-body">
+        <p>Claude Codeは毎回、作業フォルダにある <code>CLAUDE.md</code>（ルールを書いたメモ）を最初に読みます。さらに「オートメモリー」がオンだと、あなたが直した点や好みをClaude自身がメモに残し、次回からそれに沿って動きます。</p>
+        <p>よく頼む手順は「スキル」として保存でき、<code>/スキル名</code> で呼び出したり、関係がある場面でClaudeが自分から使ったりします。</p>
+        <p class="aside"><b>実はこのサイトでも：</b>事例記事の書き方（読み手、文体、置き場所など）は <code>weekly-jirei</code> というスキルにまとめてあり、定期実行のたびにClaudeがそれを読んで同じ品質で書いています。</p>
+        <p class="cite">根拠<a href="#s15">[15]</a><a href="#s16">[16]</a></p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ───────── 早見表 ───────── -->
+  <section aria-labelledby="matrix">
+    <h2 class="sec" id="matrix">早見表</h2>
+    <div class="legend">
+      <span><span class="pill ok">提供中</span>正式に使える</span>
+      <span><span class="pill beta">ベータ</span>試用版として公開中</span>
+      <span><span class="pill preview">リサーチプレビュー</span>試験提供。仕様や料金が変わる可能性あり</span>
+      <span><span class="pill exp">実験的</span>自分で設定を変えて有効にする</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>機能</th><th>使う場所</th><th>必要なプラン</th><th>提供状況</th><th>根拠</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>パソコン画面の操作</td><td>デスクトップアプリ（Mac・Windows）、ターミナル（Macのみ）</td><td>Pro・Max（Team・Enterpriseは不可）</td><td><span class="pill preview">リサーチプレビュー</span></td><td class="ref"><a href="#s2">[2]</a><a href="#s3">[3]</a></td></tr>
+          <tr><td>Chromeの操作</td><td>ターミナル、VS Code ＋ Chrome拡張（Edgeなども可）</td><td>Pro・Max・Team・Enterprise</td><td><span class="pill ok">提供中</span></td><td class="ref"><a href="#s4">[4]</a></td></tr>
+          <tr><td>iPhoneアプリの確認</td><td>デスクトップアプリ（Mac＋Xcode）</td><td>Pro・Max・Team・Enterprise</td><td><span class="pill beta">パブリックベータ</span></td><td class="ref"><a href="#s5">[5]</a></td></tr>
+          <tr><td>数十〜数百体で手分け</td><td>ターミナル、デスクトップ、VS Code など</td><td>有料プラン全般（Proは設定でオン）</td><td><span class="pill ok">提供中</span></td><td class="ref"><a href="#s6">[6]</a></td></tr>
+          <tr><td>AI同士の議論</td><td>ターミナル</td><td>記載なし</td><td><span class="pill exp">実験的</span></td><td class="ref"><a href="#s7">[7]</a></td></tr>
+          <tr><td>大規模なバグ審査</td><td>ターミナルから起動、実行はクラウド</td><td>Pro・Maxは3回無料、以降は追加料金</td><td><span class="pill preview">リサーチプレビュー</span></td><td class="ref"><a href="#s8">[8]</a></td></tr>
+          <tr><td>定期実行（ルーティン）</td><td>Web・デスクトップ・ターミナルで作成、実行はクラウド</td><td>Pro・Max・Team・Enterprise</td><td><span class="pill preview">リサーチプレビュー</span></td><td class="ref"><a href="#s9">[9]</a></td></tr>
+          <tr><td>ゴールまで自走</td><td>Claude Codeの会話内（<code>/goal</code>）</td><td>記載なし</td><td><span class="pill ok">提供中</span></td><td class="ref"><a href="#s10">[10]</a></td></tr>
+          <tr><td>スマホから続きを操作</td><td>スマホアプリ・ブラウザ</td><td>Pro・Max・Team・Enterprise（Dispatchは Pro・Max）</td><td><span class="pill ok">提供中</span></td><td class="ref"><a href="#s11">[11]</a><a href="#s3">[3]</a></td></tr>
+          <tr><td>チャットから依頼</td><td>Slack、Telegram・Discord・iMessage</td><td>Slack：Pro・Max・Team・Enterprise</td><td><span class="pill ok">提供中</span><br><span class="pill preview">チャンネルはプレビュー</span></td><td class="ref"><a href="#s12">[12]</a><a href="#s13">[13]</a></td></tr>
+          <tr><td>共有ページ（アーティファクト）</td><td>ターミナル、デスクトップアプリ</td><td>Pro・Max・Team・Enterprise</td><td><span class="pill ok">提供中</span><br><span class="pill beta">テンプレートはベータ</span></td><td class="ref"><a href="#s14">[14]</a></td></tr>
+          <tr><td>記憶とスキル</td><td>どこからでも</td><td>記載なし</td><td><span class="pill ok">提供中</span></td><td class="ref"><a href="#s15">[15]</a><a href="#s16">[16]</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ───────── まず試すなら ───────── -->
+  <section aria-labelledby="try">
+    <h2 class="sec" id="try">まず試すなら</h2>
+    <div class="try">
+      <div class="try-card">
+        <h3>調べものをページにしてもらう</h3>
+        <dl><dt>難しさ</dt><dd>低い</dd><dt>追加費用</dt><dd>なし（プランの使用量を消費）</dd></dl>
+        <p>知りたいことを伝えて「ページにまとめて」と頼むだけです。このページもその方法で作りました。</p>
+      </div>
+      <div class="try-card">
+        <h3>週1回のまとめを自動化する</h3>
+        <dl><dt>難しさ</dt><dd>低い〜ふつう</dd><dt>追加費用</dt><dd>なし（実行ごとに使用量を消費）</dd></dl>
+        <p>ブラウザで claude.ai/code/routines を開き、「新しいルーティン」から頼みごとと時間を決めます。</p>
+      </div>
+      <div class="try-card">
+        <h3>ブラウザの手作業を1つ任せる</h3>
+        <dl><dt>難しさ</dt><dd>ふつう</dd><dt>追加費用</dt><dd>なし</dd></dl>
+        <p>Chrome拡張の導入と、ターミナルかVS Codeからの起動が必要です。まずは個人的な転記作業など、失敗しても困らないもので試すのがおすすめです。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 注意点 ───────── -->
+  <section aria-labelledby="caution">
+    <h2 class="sec" id="caution">説明するときの注意点</h2>
+    <ul class="cautions">
+      <li><b>驚きの大きい機能ほど試験提供中です。</b>画面操作・定期実行・バグ審査はリサーチプレビュー、AI同士の議論は実験的機能です。仕様・料金・対象プランが変わる可能性があります。<span class="cite"><a href="#s2">[2]</a><a href="#s7">[7]</a><a href="#s8">[8]</a><a href="#s9">[9]</a></span></li>
+      <li><b>会社のプランでは使えない機能があります。</b>パソコン画面の操作とDispatchは Pro・Max のみで、Team・Enterpriseでは使えません。Team・Enterpriseでは、定期実行やRemote Controlは管理者の設定しだいで使えないことがあります。<span class="cite"><a href="#s3">[3]</a><a href="#s9">[9]</a><a href="#s11">[11]</a></span></li>
+      <li><b>claude.aiのアカウントでのログインが前提の機能が多いです。</b>Chrome操作、画面操作、定期実行、共有ページ、Remote Controlは、APIキーやAmazon Bedrockなどの経由では使えません。<span class="cite"><a href="#s2">[2]</a><a href="#s4">[4]</a><a href="#s9">[9]</a><a href="#s11">[11]</a><a href="#s14">[14]</a></span></li>
+      <li><b>Claudeの作業は「あなた」として記録されます。</b>定期実行での変更やSlack投稿は、あなたのアカウント名で残ります。Chrome操作の録画GIFには、ログイン中のアカウント情報も映り込みます。<span class="cite"><a href="#s4">[4]</a><a href="#s9">[9]</a></span></li>
+      <li><b>たくさんのAIを動かすほど、使用量も増えます。</b>ワークフローやエージェントチームは、1体で作業するより多くの使用量を消費します。<span class="cite"><a href="#s6">[6]</a><a href="#s7">[7]</a></span></li>
+    </ul>
+  </section>
+
+  <!-- ───────── 根拠 ───────── -->
+  <section aria-labelledby="src">
+    <h2 class="sec" id="src">根拠</h2>
+    <ol class="sources">
+      <li class="src" id="s1"><span class="n">[1]</span><a class="t" href="https://code.claude.com/docs/en/overview" target="_blank" rel="noopener">Overview</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-09-25</span></div><p class="sum">Claude Codeの全体像。ターミナル・VS Code・デスクトップ・Web・モバイルで同じClaude Codeが動くこと、定期実行やスマホからの継続の概要。</p><span class="url">https://code.claude.com/docs/en/overview</span></li>
+      <li class="src" id="s2"><span class="n">[2]</span><a class="t" href="https://code.claude.com/docs/en/computer-use" target="_blank" rel="noopener">Let Claude use your computer from the CLI</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-09-13</span></div><p class="sum">ターミナルからの画面操作。Macのリサーチプレビューで Pro・Max が対象。アプリごとの許可、Escキーでの停止、ターミナル画面はスクショに写らないこと。</p><span class="url">https://code.claude.com/docs/en/computer-use</span></li>
+      <li class="src" id="s3"><span class="n">[3]</span><a class="t" href="https://code.claude.com/docs/en/desktop" target="_blank" rel="noopener">Desktop application</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-10-01</span></div><p class="sum">デスクトップアプリでの画面操作（Mac・Windows、Pro・Max、リサーチプレビュー）と、スマホから仕事を頼めるDispatch（Pro・Max のみ）。</p><span class="url">https://code.claude.com/docs/en/desktop</span></li>
+      <li class="src" id="s4"><span class="n">[4]</span><a class="t" href="https://code.claude.com/docs/en/chrome" target="_blank" rel="noopener">Use Claude Code with Chrome</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-09-30</span></div><p class="sum">ブラウザのログイン状態を共有して操作すること、フォーム入力・データ抽出・GIF録画の例、ログイン画面やCAPTCHAでは人に任せること、対象プラン。</p><span class="url">https://code.claude.com/docs/en/chrome</span></li>
+      <li class="src" id="s5"><span class="n">[5]</span><a class="t" href="https://code.claude.com/docs/en/desktop-ios-simulator" target="_blank" rel="noopener">Test iOS apps in the simulator</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-09-29</span></div><p class="sum">デスクトップアプリのiOSシミュレーター表示はMacでのパブリックベータ。Claudeがアプリを入れて操作し、画面を読んで確認すること。実機は不可。</p><span class="url">https://code.claude.com/docs/en/desktop-ios-simulator</span></li>
+      <li class="src" id="s6"><span class="n">[6]</span><a class="t" href="https://code.claude.com/docs/en/workflows" target="_blank" rel="noopener">Orchestrate subagents at scale with dynamic workflows</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-09-29</span></div><p class="sum">台本で多数のサブエージェントを動かす仕組み。1回最大1,000体、初期設定で同時16体。<code>/deep-research</code> の出典突き合わせ。有料プラン全般で利用可。</p><span class="url">https://code.claude.com/docs/en/workflows</span></li>
+      <li class="src" id="s7"><span class="n">[7]</span><a class="t" href="https://code.claude.com/docs/en/agent-teams" target="_blank" rel="noopener">Orchestrate teams of Claude Code sessions</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-10-01</span></div><p class="sum">エージェントチームは実験的で初期設定はオフ。仲間同士の直接のやり取り、仮説を論破し合わせる例、使用量が多くなること。</p><span class="url">https://code.claude.com/docs/en/agent-teams</span></li>
+      <li class="src" id="s8"><span class="n">[8]</span><a class="t" href="https://code.claude.com/docs/en/ultrareview" target="_blank" rel="noopener">Find bugs with ultrareview</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-10-02</span></div><p class="sum">クラウドで多数のレビュー役AIが調べ、指摘を独立に再現・検証すること。所要5〜10分、Pro・Maxは3回無料、以降1回約5〜25ドル。リサーチプレビュー。</p><span class="url">https://code.claude.com/docs/en/ultrareview</span></li>
+      <li class="src" id="s9"><span class="n">[9]</span><a class="t" href="https://code.claude.com/docs/en/routines" target="_blank" rel="noopener">Automate work with routines</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-10-02</span></div><p class="sum">ルーティンはクラウドで動くためパソコンを閉じても実行されること。時間・API・GitHubの3種類のきっかけ、最短1時間間隔、作業があなたの名前で記録されること。</p><span class="url">https://code.claude.com/docs/en/routines</span></li>
+      <li class="src" id="s10"><span class="n">[10]</span><a class="t" href="https://code.claude.com/docs/en/goal" target="_blank" rel="noopener">Keep Claude working toward a goal</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-09-26</span></div><p class="sum"><code>/goal</code> で完了条件を決めると、別の小さなAIが1区切りごとに達成を判定し、未達なら作業を続けること。</p><span class="url">https://code.claude.com/docs/en/goal</span></li>
+      <li class="src" id="s11"><span class="n">[11]</span><a class="t" href="https://code.claude.com/docs/en/remote-control" target="_blank" rel="noopener">Continue local sessions from any device with Remote Control</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-10-02</span></div><p class="sum">自分のパソコンの作業をスマホやブラウザから続けられること、写真の送信、スリープ後の自動再接続、対象プランとパソコンの電源が必要なこと。</p><span class="url">https://code.claude.com/docs/en/remote-control</span></li>
+      <li class="src" id="s12"><span class="n">[12]</span><a class="t" href="https://code.claude.com/docs/en/slack" target="_blank" rel="noopener">Claude Code in Slack</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-09-22</span></div><p class="sum">@Claude で依頼するとクラウドで作業し、スレッドに経過を投稿、完了時にプルリクエスト作成ボタンを出すこと。Team・EnterpriseはClaude Tagへ移行中。</p><span class="url">https://code.claude.com/docs/en/slack</span></li>
+      <li class="src" id="s13"><span class="n">[13]</span><a class="t" href="https://code.claude.com/docs/en/channels" target="_blank" rel="noopener">Push events into a running session with channels</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-10-02</span></div><p class="sum">Telegram・Discord・iMessageから動作中のセッションに話しかけ、同じアプリに返事を受け取れること。リサーチプレビュー。</p><span class="url">https://code.claude.com/docs/en/channels</span></li>
+      <li class="src" id="s14"><span class="n">[14]</span><a class="t" href="https://code.claude.com/docs/en/artifacts" target="_blank" rel="noopener">Share session output as artifacts</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-10-02</span></div><p class="sum">作業結果をWebページとして公開・共有できること、連携サービスの最新データ表示、コメントへの返信と修正、スライド・デザインのテンプレート（ベータ）。</p><span class="url">https://code.claude.com/docs/en/artifacts</span></li>
+      <li class="src" id="s15"><span class="n">[15]</span><a class="t" href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener">How Claude remembers your project</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-10-01</span></div><p class="sum">CLAUDE.md を毎回読むこと、オートメモリーで直された点や好みをClaude自身が記録すること。</p><span class="url">https://code.claude.com/docs/en/memory</span></li>
+      <li class="src" id="s16"><span class="n">[16]</span><a class="t" href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">Extend Claude with skills</a><div class="row"><span class="tag">公式</span><span>最終更新 2026-10-02</span></div><p class="sum">よく使う手順をスキルとして保存し、<code>/スキル名</code> で呼び出したり、関係する場面でClaudeが自動で使ったりできること。</p><span class="url">https://code.claude.com/docs/en/skills</span></li>
+    </ol>
+  </section>
+
+  <footer>
+    <p>調査日：2026年10月2日。出典はすべてAnthropic社の公式ドキュメント（code.claude.com）です。</p>
+    <p>各出典の最終更新日（ページのメタ情報より）：[1] 09-25／[2] 09-13／[3] 10-01／[4] 09-30／[5] 09-29／[6] 09-29／[7] 10-01／[8] 10-02／[9] 10-02／[10] 09-26／[11] 10-02／[12] 09-22／[13] 10-02／[14] 10-02／[15] 10-01／[16] 10-02（いずれも2026年）</p>
+    <p>提供状況や対象プランは時期によって変わります。最新の情報は各出典を確認してください。</p>
+  </footer>
+
+</div>
+</body>
+</html>
