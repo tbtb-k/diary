@@ -11,7 +11,7 @@
 
 ## ネタ帳（候補）
 
-使う前に必ず本文を WebFetch で読み直してください。「本文確認済み」は 2026-09-28 時点で中身を読んだもの、「未確認」は検索結果の要約だけで見つけたものです。使った候補はここから消し、「掲載済み」に移します。
+使う前に必ず本文を WebFetch で読み直してください。「本文確認済み」はカッコ内の公開日の記事を、実際に開いて中身を読んだもの、「未確認」は検索結果の要約だけで見つけたものです。使った候補はここから消し、「掲載済み」に移します。
 
 - **Copilot Studio**｜りそなグループ（2026-07-06 公開、本文確認済み）
   https://www.microsoft.com/ja-jp/customers/story/26717-resona-holdings-microsoft-copilot-studio
@@ -22,15 +22,12 @@
 - **Copilot Studio**｜AGCO（2026-07-06 公開、本文確認済み）
   https://www.microsoft.com/en/customers/story/26836-agco-corp-word
   社員約2,000人がエージェントの作り手に。一部の品質レビューが数週間 → 約1時間。個別エージェントの詳細は薄め。
-- **Agent Builder / Copilot Studio**｜OBC（未確認）
-  https://www.microsoft.com/ja-jp/customers/story/26323-obc-microsoft-365-copilot
-  検索要約では Agent Builder の記載あり。
-- **Agent Builder?**｜NTTドコモ（未確認）
-  https://www.microsoft.com/ja-jp/customers/story/26409-ntt-docomo-microsoft-365-e5
-  情報システム部門の部長14人が「マネージャーエージェント」を作成（検索要約）。どのツールか要確認。
-- **Agent Builder**｜Capita（未確認）
+- **Copilot Studio**｜Capita（2025-09-10 公開、本文確認済み）
   https://www.microsoft.com/en/customers/story/25164-capita-microsoft-copilot-studio/
-  全社員に Agent Builder を開放（検索要約）。
+  継続的改善の責任者のチームが Copilot Studio で、毎日数千通のメールを仕分けるエージェントを作成。返信までの時間が60%短縮。
+- **Copilot Studio**｜OBC（2026-04-06 公開、本文は一部確認）
+  https://www.microsoft.com/ja-jp/customers/story/26323-obc-microsoft-365-copilot
+  Copilot Studio での内製開発が中心。Agent Builder 枠には不向き（下の「見送り」参照）。
 - **Copilot Studio**｜Coca-Cola Andina（未確認）
   https://www.microsoft.com/en/customers/story/26256-coca-cola-andina-microsoft-copilot-studio
 - **Copilot Studio**｜Unifi（未確認）
@@ -41,6 +38,13 @@
 - **Agent Builder?**｜Hiscox（未確認）
   社員約3,500人が6,000体以上のエージェントを作成、3時間 → 約20分の例あり（検索要約）。一次情報の ukstories.microsoft.com は、いまの実行環境からは読めません。読めるようになったら候補にします。
 
+### 見送り（Agent Builder 枠としては記事にならない。読み直さなくてよい）
+
+- OBC（2026-04-06）：「エージェントビルダー」は回答文を整えるツールづくりに一言出てくるだけ。
+- Capita（2025-09-10）：「全社員に Agent Builder を開放した」の一文だけで、具体的なエージェントの話がない。
+- NTTドコモ（2026-05-14）https://www.microsoft.com/ja-jp/customers/story/26409-ntt-docomo-microsoft-365-e5 ：部長14人が「上長エージェント」を作成したが、使ったツールの記載がない。
+
 ## 実行メモ
 
 - 2026-09-28：初回は手作業で作成。本文を読めたのは www.microsoft.com だけでした（learn / news / adoption / ukstories.microsoft.com、techcommunity、日本のメディアはネットワーク制限で読めず）。
+- 2026-10-02：配信を「毎週月曜」から「2日に1回（奇数日の朝 8:50）・毎回2本」に変更。Agent Builder の候補（OBC・Capita・NTTドコモ）を読んだが、どれも Agent Builder 枠には不向きだった。

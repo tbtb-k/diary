@@ -1,11 +1,11 @@
 ---
 name: weekly-jirei
-description: 毎週、Microsoft 365 Copilot の Agent Builder と Copilot Studio の活用事例を1本ずつ記事HTMLにまとめ、学習記録サイト（tbtb-k/diary の pages/）の main に公開する手順。「今週の事例」「週次事例」「weekly-jirei」と言われたとき、または定期実行から呼ばれたときに使う。
+description: 2日に1回、Microsoft 365 Copilot の Agent Builder と Copilot Studio の活用事例を1本ずつ記事HTMLにまとめ、学習記録サイト（tbtb-k/diary の pages/）の main に公開する手順。「今回の事例」「定期事例」「週次事例」「weekly-jirei」と言われたとき、または定期実行から呼ばれたときに使う。
 ---
 
-# 週次の AI 活用事例（Agent Builder / Copilot Studio）
+# 定期の AI 活用事例（Agent Builder / Copilot Studio）
 
-毎週1回、公開されている事例から **Agent Builder 枠1本・Copilot Studio 枠1本** を選び、1記事1事例のHTMLにして、サイト（https://tbtb-k.github.io/diary/）に公開します。
+2日に1回（日本時間の奇数日の朝 8:50）、公開されている事例から **Agent Builder 枠1本・Copilot Studio 枠1本** を選び、1記事1事例のHTMLにして、サイト（https://tbtb-k.github.io/diary/）に公開します。持ち主の希望は「毎回2本」です。
 
 - 読み手：AI を使い始めたばかりの人。非エンジニア前提で、専門用語には必ず一言そえます。
 - 公開先：`tbtb-k/diary` リポジトリの `main` ブランチ。`pages/` に置くと、トップの一覧に自動で並びます。
@@ -30,7 +30,7 @@ cd <diary のチェックアウト>          # 見つからなければ add_repo
 git fetch origin main
 git checkout -B weekly-jirei origin/main
 D=$(TZ=Asia/Tokyo date +%Y%m%d)
-ls pages/jirei_${D}-* 2>/dev/null     # すでにあれば今週分は作成済み。上書きせずに終了し、その旨を報告する
+ls pages/jirei_${D}-* 2>/dev/null     # すでにあれば今回分は作成済み。上書きせずに終了し、その旨を報告する
 ```
 
 `log.md` を読み、「掲載済み」と「ネタ帳」を把握します。
@@ -48,8 +48,11 @@ ls pages/jirei_${D}-* 2>/dev/null     # すでにあれば今週分は作成済�
    - 本文にツール名が明記されている。Agent Builder 枠は「Agent Builder」「エージェント ビルダー」、または旧称の「Copilot Studio agent builder」「Copilot Studio lite」の記載があるもの。Copilot Studio 枠は Copilot Studio でエージェントを作ったもの。
    - 困りごと（before）と変化（after）が書ける。数字があればなお良い。
    - 新しいもの優先（公開から1年以内が目安）。
-   - 「掲載済み」と同じ事例は選ばない。同じ組織が2週続かないようにする。日本と海外の事例がかたよらないようにする。
-4. 条件を満たす事例が見つからない枠は、無理に作らず、その枠を休みにして報告に書きます。**事例をでっち上げたり、別の事例の数字を混ぜたりしないでください。**
+   - 「掲載済み」と同じ事例は選ばない。直近3回の掲載と同じ組織は避ける。日本と海外の事例がかたよらないようにする。
+   - 「Agent Builder を全社員に開放した」のような一文だけの記載では記事にしない（8ブロックが埋まらないため）。ネタ帳の「見送り」にあるものは読み直さなくてよい。
+4. 片方の枠で条件を満たす事例が見つからないときは、**もう片方のツールの事例をもう1本**にして、毎回2本を保ちます。ファイル名は `pages/jirei_YYYYMMDD-copilot-studio-2.html`（または `-agent-builder-2.html`）にし、報告に「Agent Builder 枠は事例が見つからず、Copilot Studio を2本にしました」のように書きます。両方とも見つからなければ休みにして報告します。**事例をでっち上げたり、別の事例の数字を混ぜたりしないでください。**
+
+**Agent Builder の事例は少なめです**（2026-10 時点）。見つかりやすい順に、Microsoft の日本語・英語の顧客事例 → Microsoft の公式ブログ（Copilot ブログ、Microsoft 365 ブログ、Inside Track）で特定の組織の使い方を紹介した記事、の順に探します。公開から1年以内のものが尽きたら、2年以内まで広げてかまいません。
 
 **ネットワークの制約（2026-09 時点）**：本文を読めるのは `www.microsoft.com` だけです。learn / news / adoption / ukstories.microsoft.com、techcommunity、日本のメディア（ITmedia・日経など）はブロックされます。読めないページを出典にしてはいけません。ブロックされたら、そのホスト名を報告に書きます。
 
@@ -82,7 +85,7 @@ ls pages/jirei_${D}-* 2>/dev/null     # すでにあれば今週分は作成済�
 
 ### 4. 仕上げ前のチェック
 
-- [ ] ファイル名が `pages/jirei_YYYYMMDD-agent-builder.html` / `pages/jirei_YYYYMMDD-copilot-studio.html`（`.html.html` になっていない）
+- [ ] ファイル名が `pages/jirei_YYYYMMDD-agent-builder.html` / `pages/jirei_YYYYMMDD-copilot-studio.html`（代わりの2本目なら `-2` つき。`.html.html` になっていない）
 - [ ] `{{` が残っていない（`grep -n '{{' pages/jirei_${D}-*.html` が空）
 - [ ] 8ブロックがこの順番でそろい、流れ図が1つ入っている
 - [ ] 全文ですます調。専門用語に説明がある
@@ -93,12 +96,12 @@ ls pages/jirei_${D}-* 2>/dev/null     # すでにあれば今週分は作成済�
 
 ### 5. 記録を更新する
 
-`log.md` の「掲載済み」に2行を足し、使った候補をネタ帳から消します。本文を読んだが今回使わなかった良い候補があれば、ネタ帳に「本文確認済み」で足しておきます。「実行メモ」に、気づいたこと（ブロックされたホストなど）を1行残します。
+`log.md` の「掲載済み」に掲載した分の行を足し、使った候補をネタ帳から消します。本文を読んだが今回使わなかった良い候補があれば、ネタ帳に「本文確認済み」で足しておきます。「実行メモ」に、気づいたこと（ブロックされたホストなど）を1行残します。
 
 ### 6. 公開する（main に push）
 
 ```bash
-git add pages/jirei_${D}-agent-builder.html pages/jirei_${D}-copilot-studio.html .claude/skills/weekly-jirei/log.md
+git add pages/jirei_${D}-*.html .claude/skills/weekly-jirei/log.md
 git commit -m "Add weekly case studies ${D} (Agent Builder / Copilot Studio)"
 git push origin HEAD:main
 ```
@@ -115,7 +118,7 @@ git push origin HEAD:main
 この報告は、持ち主のスマホとメールに通知として届きます。短く、次の形で書きます。
 
 ```
-今週の事例を公開しました 🎉
+今回の事例を公開しました 🎉
 ・Agent Builder：<タイトル>（<組織名>）
   https://tbtb-k.github.io/diary/pages/jirei_YYYYMMDD-agent-builder.html
 ・Copilot Studio：<タイトル>（<組織名>）
