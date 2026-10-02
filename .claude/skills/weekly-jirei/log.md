@@ -28,6 +28,9 @@
 - **Copilot Studio**｜OBC（2026-04-06 公開、本文は一部確認）
   https://www.microsoft.com/ja-jp/customers/story/26323-obc-microsoft-365-copilot
   Copilot Studio での内製開発が中心。Agent Builder 枠には不向き（下の「見送り」参照）。
+- **Copilot Studio**｜カコムス（TechTarget ジャパン、2026-09-23 公開、本文の冒頭を確認）
+  https://techtarget.itmedia.co.jp/tt/article/2609/23/2000001555/
+  Microsoft 365 Copilot と Copilot Studio などで社内問い合わせを約6割削減。現場主導のエージェント開発の話あり。Copilot Studio で何を作ったかは本文で要確認。
 - **Copilot Studio**｜Coca-Cola Andina（未確認）
   https://www.microsoft.com/en/customers/story/26256-coca-cola-andina-microsoft-copilot-studio
 - **Copilot Studio**｜Unifi（未確認）
@@ -36,7 +39,7 @@
   https://www.microsoft.com/insidetrack/blog/how-our-employees-are-extending-enterprise-ai-with-custom-retrieval-agents/
   数字が少ないので、ほかに候補がないときの予備。
 - **Agent Builder?**｜Hiscox（未確認）
-  社員約3,500人が6,000体以上のエージェントを作成、3時間 → 約20分の例あり（検索要約）。一次情報の ukstories.microsoft.com は、いまの実行環境からは読めません。読めるようになったら候補にします。
+  社員約3,500人が6,000体以上のエージェントを作成、3時間 → 約20分の例あり（検索要約）。一次情報の ukstories.microsoft.com は、ネットワーク許可後も相手のサイト側（Cloudflare）に断られて読めません（2026-10-02）。
 
 ### 見送り（Agent Builder 枠としては記事にならない。読み直さなくてよい）
 
@@ -48,3 +51,4 @@
 
 - 2026-09-28：初回は手作業で作成。本文を読めたのは www.microsoft.com だけでした（learn / news / adoption / ukstories.microsoft.com、techcommunity、日本のメディアはネットワーク制限で読めず）。
 - 2026-10-02：配信を「毎週月曜」から「2日に1回（奇数日の朝 8:50）・毎回2本」に変更。Agent Builder の候補（OBC・Capita・NTTドコモ）を読んだが、どれも Agent Builder 枠には不向きだった。
+- 2026-10-02：環境のネットワークを Custom（`*.microsoft.com`・`*.itmedia.co.jp`・`xtech.nikkei.com` を追加）に変更。learn.microsoft.com・techcommunity・TechTarget ジャパン・日経クロステックは読めるようになった。news.microsoft.com と ukstories.microsoft.com は相手側の Cloudflare に断られる。

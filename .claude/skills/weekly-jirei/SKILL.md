@@ -43,6 +43,7 @@ ls pages/jirei_${D}-* 2>/dev/null     # すでにあれば今回分は作成済�
    - `site:microsoft.com/en/customers/story "Agent Builder"`
    - `site:microsoft.com/en/customers/story Copilot Studio agent`
    - `site:microsoft.com/insidetrack/blog agent`
+   - `site:techtarget.itmedia.co.jp Copilot Studio 事例` / `site:itmedia.co.jp エージェント ビルダー 事例` / `site:xtech.nikkei.com Copilot Studio エージェント`
 2. 候補の本文を **WebFetch で必ず読みます**。検索結果の要約だけで数字や事実を書いてはいけません。
 3. 次の条件で1本ずつ選びます。
    - 本文にツール名が明記されている。Agent Builder 枠は「Agent Builder」「エージェント ビルダー」、または旧称の「Copilot Studio agent builder」「Copilot Studio lite」の記載があるもの。Copilot Studio 枠は Copilot Studio でエージェントを作ったもの。
@@ -52,9 +53,13 @@ ls pages/jirei_${D}-* 2>/dev/null     # すでにあれば今回分は作成済�
    - 「Agent Builder を全社員に開放した」のような一文だけの記載では記事にしない（8ブロックが埋まらないため）。ネタ帳の「見送り」にあるものは読み直さなくてよい。
 4. 片方の枠で条件を満たす事例が見つからないときは、**もう片方のツールの事例をもう1本**にして、毎回2本を保ちます。ファイル名は `pages/jirei_YYYYMMDD-copilot-studio-2.html`（または `-agent-builder-2.html`）にし、報告に「Agent Builder 枠は事例が見つからず、Copilot Studio を2本にしました」のように書きます。両方とも見つからなければ休みにして報告します。**事例をでっち上げたり、別の事例の数字を混ぜたりしないでください。**
 
-**Agent Builder の事例は少なめです**（2026-10 時点）。見つかりやすい順に、Microsoft の日本語・英語の顧客事例 → Microsoft の公式ブログ（Copilot ブログ、Microsoft 365 ブログ、Inside Track）で特定の組織の使い方を紹介した記事、の順に探します。公開から1年以内のものが尽きたら、2年以内まで広げてかまいません。
+**Agent Builder の事例は少なめです**（2026-10 時点）。見つかりやすい順に、Microsoft の日本語・英語の顧客事例 → 日本の IT メディア（TechTarget ジャパン、ITmedia、日経クロステック）の導入事例記事 → Microsoft の公式ブログ（Copilot ブログ、Microsoft 365 ブログ、Inside Track）で特定の組織の使い方を紹介した記事、の順に探します。公開から1年以内のものが尽きたら、2年以内まで広げてかまいません。
 
-**ネットワークの制約（2026-09 時点）**：本文を読めるのは `www.microsoft.com` だけです。learn / news / adoption / ukstories.microsoft.com、techcommunity、日本のメディア（ITmedia・日経など）はブロックされます。読めないページを出典にしてはいけません。ブロックされたら、そのホスト名を報告に書きます。
+**ネットワーク（2026-10-02 更新）**：環境で `*.microsoft.com`、`*.itmedia.co.jp`、`xtech.nikkei.com` を許可しています。Microsoft の顧客事例に加えて、learn.microsoft.com、techcommunity.microsoft.com、TechTarget ジャパン（techtarget.itmedia.co.jp）、ITmedia、日経クロステックの事例記事も出典に使えます。
+
+- `news.microsoft.com` と `ukstories.microsoft.com` は、相手のサイト側（Cloudflare）が自動アクセスを断るため、読めないことがあります。
+- WebFetch が「blocked」と返したときは、`curl -sL -A "Mozilla/5.0" <URL>` で取得し、HTML から本文を取り出して確かめてかまいません。
+- どの方法でも本文を読めなかったページは出典にしません。読めなかったホスト名は報告に書きます。
 
 ### 3. 記事を書く
 
