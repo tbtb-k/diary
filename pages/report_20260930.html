@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Weekly 2026/09/30号</title>
+<style>
+body{margin:0}
+/* layout: 760px single column newsletter; category color labels; dark-orange accent */
+:root{
+  --bg:#FBFAF9;
+  --surface:#FFFFFF;
+  --ink:#1C1917;
+  --ink-2:#57534E;
+  --ink-3:#857C75;
+  --line:#E7E2DE;
+  --accent:#C2410C;
+  --accent-ink:#9A3412;
+  --accent-soft:#FFF1E8;
+  --cat-copilot:#C2410C;
+  --cat-ms:#2F5D8C;
+  --cat-ind:#2E7560;
+  --cat-jp:#8C3B6A;
+  --ok:#1F7A45; --ok-bg:#E6F4EB;
+  --roll:#2563A8; --roll-bg:#E6EFFA;
+  --pre:#8A5A00; --pre-bg:#FBF0D9;
+  --dev:#5B5550; --dev-bg:#EFECEA;
+  --f-body:"BIZ UDPGothic","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic","Meiryo",sans-serif;
+  --f-head:"Hiragino Sans","Yu Gothic UI","Yu Gothic","BIZ UDPGothic","Meiryo",sans-serif;
+  --f-mark:"Segoe UI Variable Display","Segoe UI","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"Cascadia Mono","Consolas","SFMono-Regular","Menlo",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#141211; --surface:#1C1917; --ink:#F2EEEA; --ink-2:#C4BCB5; --ink-3:#958B84; --line:#302B28;
+    --accent:#F07A3A; --accent-ink:#F59A63; --accent-soft:#2A1A10;
+    --cat-copilot:#F07A3A; --cat-ms:#7FA7D6; --cat-ind:#6CC1A5; --cat-jp:#D98BB8;
+    --ok:#6FD39A; --ok-bg:#12291C; --roll:#7EB2EE; --roll-bg:#122033;
+    --pre:#E8B85A; --pre-bg:#2B2210; --dev:#B8B0A9; --dev-bg:#262220;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#141211; --surface:#1C1917; --ink:#F2EEEA; --ink-2:#C4BCB5; --ink-3:#958B84; --line:#302B28;
+  --accent:#F07A3A; --accent-ink:#F59A63; --accent-soft:#2A1A10;
+  --cat-copilot:#F07A3A; --cat-ms:#7FA7D6; --cat-ind:#6CC1A5; --cat-jp:#D98BB8;
+  --ok:#6FD39A; --ok-bg:#12291C; --roll:#7EB2EE; --roll-bg:#122033;
+  --pre:#E8B85A; --pre-bg:#2B2210; --dev:#B8B0A9; --dev-bg:#262220;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:16px; line-height:1.85;
+  padding-inline:16px; padding-block:0 64px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px; margin-inline:auto}
+a{color:var(--accent-ink); text-underline-offset:3px}
+a:hover{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:2px}
+.mono{font-family:var(--f-mono); font-variant-numeric:tabular-nums}
+
+.mast{padding-block:40px 20px; border-bottom:5px solid var(--accent); position:relative}
+.mast::after{content:""; position:absolute; left:0; right:0; bottom:-11px; border-bottom:1px solid var(--accent)}
+.mast-top{display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; font-size:12px; letter-spacing:.08em; color:var(--ink-3)}
+.proto{color:var(--accent-ink); border:1px solid currentColor; padding:1px 8px; border-radius:3px}
+.wordmark{font-family:var(--f-mark); font-weight:800; font-size:clamp(2.8rem,11vw,4.6rem); line-height:1; letter-spacing:-.035em; margin:18px 0 6px}
+.wordmark b{color:var(--accent); font-weight:800}
+.issue-row{display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 18px}
+.issue{font-family:var(--f-head); font-weight:700; font-size:1.25rem; margin:0}
+.period{font-size:13px; color:var(--ink-2); margin:0}
+.lede{margin:10px 0 0; color:var(--ink-2); font-size:15px}
+
+.summary{margin-top:40px}
+.label{font-family:var(--f-head); font-size:12px; font-weight:700; letter-spacing:.14em; color:var(--accent-ink); margin:0 0 10px}
+.summary ul{list-style:none; margin:0; padding:0; display:grid; gap:10px}
+.summary li{display:grid; grid-template-columns:22px 1fr; gap:8px; font-size:1.02rem; line-height:1.75; text-wrap:pretty}
+.summary li::before{content:""; width:10px; height:10px; margin-top:.62em; background:var(--accent); border-radius:1px; transform:rotate(45deg)}
+
+.toc{margin-top:36px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding-block:14px}
+.toc ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px 24px}
+.toc a{display:flex; align-items:center; gap:10px; padding:5px 0; color:var(--ink); text-decoration:none; font-size:15px}
+.toc a:hover{color:var(--accent)}
+.toc .dot{width:9px; height:9px; border-radius:50%; background:var(--c, var(--ink-3)); flex:none}
+.toc .n{margin-left:auto; font-size:12px; color:var(--ink-3)}
+@media (max-width:560px){.toc ol{grid-template-columns:1fr}}
+
+.sec{margin-top:56px; scroll-margin-top:16px}
+.sec-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px; padding-bottom:10px; border-bottom:2px solid var(--cat)}
+.sec-tag{font-family:var(--f-mono); font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--surface); background:var(--cat); padding:2px 8px; border-radius:3px}
+.sec-head h2{font-family:var(--f-head); font-size:1.35rem; line-height:1.4; margin:0; text-wrap:balance}
+.sec-head .count{margin-left:auto; font-size:12px; color:var(--ink-3)}
+.sec-note{font-size:14px; color:var(--ink-2); margin:12px 0 0}
+
+.item{padding-block:26px; border-bottom:1px solid var(--line)}
+.item:last-of-type{border-bottom:0}
+.meta{display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; font-size:12px}
+.date{font-family:var(--f-mono); color:var(--ink-2); font-variant-numeric:tabular-nums}
+.st{display:inline-flex; align-items:center; gap:6px; padding:1px 9px; border-radius:999px; font-weight:700; font-size:11.5px; letter-spacing:.03em}
+.st::before{content:""; width:6px; height:6px; border-radius:50%; background:currentColor}
+.st-ok{color:var(--ok); background:var(--ok-bg)}
+.st-roll{color:var(--roll); background:var(--roll-bg)}
+.st-pre{color:var(--pre); background:var(--pre-bg)}
+.st-dev{color:var(--dev); background:var(--dev-bg)}
+.st-note{color:var(--ink-2); background:transparent; border:1px solid var(--line)}
+.id{font-family:var(--f-mono); font-size:11px; color:var(--ink-3); border:1px solid var(--line); padding:0 6px; border-radius:3px}
+.item h3{font-family:var(--f-head); font-size:1.13rem; line-height:1.55; margin:8px 0 12px; text-wrap:balance}
+.rows{margin:0; display:grid; gap:10px}
+.rows > div{display:grid; grid-template-columns:9.6em minmax(0,1fr); gap:2px 16px}
+.rows dt{font-family:var(--f-head); font-size:12.5px; font-weight:700; color:var(--ink-3); padding-top:.2em; letter-spacing:.02em}
+.rows dd{margin:0; text-wrap:pretty}
+.rows .field{background:var(--accent-soft); border-radius:6px; padding:10px 12px; margin-top:2px}
+.rows .field dt{color:var(--accent-ink)}
+.src{margin:12px 0 0; font-size:12.5px; color:var(--ink-3); line-height:1.7}
+.src a{word-break:break-word}
+@media (max-width:560px){.rows > div{grid-template-columns:1fr}}
+
+.term{margin-top:56px; background:var(--surface); border:1px solid var(--line); border-top:4px solid var(--accent); border-radius:4px; padding:22px 22px 18px; scroll-margin-top:16px}
+.term .word{font-family:var(--f-head); font-size:1.5rem; font-weight:700; margin:0; line-height:1.4}
+.term .yomi{font-size:13px; color:var(--ink-3); margin:0 0 14px}
+.term h3{font-family:var(--f-head); font-size:13px; letter-spacing:.06em; color:var(--accent-ink); margin:16px 0 4px}
+.term p{margin:0}
+.term ul{margin:0; padding-left:1.2em}
+.term li{margin-block:4px}
+.say{margin-top:14px; padding:12px 14px; border-left:3px solid var(--accent); background:var(--accent-soft); border-radius:0 6px 6px 0}
+
+.sched{list-style:none; margin:14px 0 0; padding:0}
+.sched li{display:grid; grid-template-columns:9.5em minmax(0,1fr); gap:4px 16px; padding-block:12px; border-bottom:1px solid var(--line)}
+.sched .when{font-family:var(--f-mono); font-size:13.5px; color:var(--accent-ink); font-weight:600; font-variant-numeric:tabular-nums}
+.sched .what b{font-family:var(--f-head)}
+.sched .what small{display:block; color:var(--ink-3); font-size:12.5px}
+@media (max-width:560px){.sched li{grid-template-columns:1fr}}
+
+.sources ol{margin:14px 0 0; padding-left:1.8em; font-size:13.5px; line-height:1.7; color:var(--ink-2)}
+.sources li{margin-block:8px; padding-left:4px}
+.sources li::marker{font-family:var(--f-mono); color:var(--ink-3)}
+.sources .pub{color:var(--ink-3)}
+.sources a{word-break:break-word}
+
+.back{display:inline-block; margin-top:14px; font-size:12.5px; color:var(--ink-3); text-decoration:none}
+.back:hover{color:var(--accent)}
+.foot{margin-top:56px; padding-top:16px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-3); line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast" id="top">
+  <div class="mast-top mono"><span>No.01</span><span>READ ≈ 10 MIN</span></div>
+  <h1 class="wordmark"><b>AI</b> Weekly</h1>
+  <div class="issue-row">
+    <p class="issue">2026/09/30号</p>
+    <p class="period mono">対象期間 2026/09/23（水）– 09/29（火）</p>
+  </div>
+  <p class="lede">Copilotを中心に、AIの1週間を10分で。</p>
+</header>
+
+<section class="summary" aria-labelledby="sum-h">
+  <p class="label" id="sum-h">今週の3行まとめ</p>
+  <ul>
+    <li>9/25、Microsoftが新しいCopilotを発表。「Home」「Code」「Autopilot」の3つの入口に整理され、Copilotの中でアプリ作りや常時動くエージェントまで扱う方向がはっきりしました。</li>
+    <li>あわせて料金の考え方も整理されました。毎日の作業は月額ライセンスの範囲、Cowork・Code・Autopilotのような重い作業はCopilotクレジットの従量課金です。</li>
+    <li>9月のリリースノートでは、FormsのCopilotチャット、Outlookの整理操作、PowerPointの自作スキルなど、すぐ紹介できる小さな改善がまとまって一般提供になりました。</li>
+  </ul>
+</section>
+
+<nav class="toc" aria-label="目次">
+  <ol>
+    <li><a href="#copilot" style="--c:var(--cat-copilot)"><span class="dot"></span>Copilot<span class="n mono">5件</span></a></li>
+    <li><a href="#ms" style="--c:var(--cat-ms)"><span class="dot"></span>Microsoft・GitHub<span class="n mono">2件</span></a></li>
+    <li><a href="#industry" style="--c:var(--cat-ind)"><span class="dot"></span>AI業界<span class="n mono">2件</span></a></li>
+    <li><a href="#japan" style="--c:var(--cat-jp)"><span class="dot"></span>国内<span class="n mono">1件</span></a></li>
+    <li><a href="#term"><span class="dot"></span>今週のかみ砕き用語</a></li>
+    <li><a href="#next"><span class="dot"></span>来週以降の注目予定</a></li>
+    <li><a href="#sources"><span class="dot"></span>出典一覧</a></li>
+  </ol>
+</nav>
+
+<!-- ============ COPILOT ============ -->
+<section class="sec" id="copilot" style="--cat:var(--cat-copilot)">
+  <header class="sec-head"><span class="sec-tag">Copilot</span><h2>M365 Copilot／Copilot Studio</h2><span class="count mono">5件</span></header>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-09-25">2026/09/25</time><span class="st st-note">発表</span><span class="st st-pre">Frontier</span><span class="st st-dev">プライベートプレビュー</span></div>
+    <h3>新しいCopilotを発表。「Home」「Code」「Autopilot」の3つの入口に</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>Copilotが3つの入口に整理されます。Homeはチャットと、仕事をまるごと任せる「Cowork」をまとめた出発点で、Word・Excel・PowerPointもCopilotの中で開いて共同編集できます。Codeは言葉で指示してダッシュボードや業務ツールを作る場所で、GitHub Copilotと同じ技術を安全な隔離環境（サンドボックス）で動かします。Autopilotは、決まった仕事の追跡や進捗確認を裏で動き続けて代わりにこなすエージェントです。HomeとCodeはFrontierで数週間以内に、Autopilotは9月末にプライベートプレビューの対象を広げる予定です。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>「チャットで聞く」から「作る・任せる」まで、Copilotひとつで完結させる方向性がはっきりしました。一方で、日本語対応や日本での提供時期は、今回の発表では明示されていません。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>「Homeは相談、Codeはアプリ作り、Autopilotは留守番役」と3行で言い換えると、勉強会の冒頭で全体像を伝えやすくなります。まだ試せる人は限られると添えておくと、期待値もそろえられます。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://news.microsoft.com/source/asia/features/introducing-the-new-copilot-with-home-code-and-autopilot/?lang=ja" target="_blank" rel="noopener">Microsoft Source Asia「Home、Code、Autopilot を備えた新しい Copilot を発表」</a>／<a href="https://ai.watch.impress.co.jp/docs/news/2143295.html" target="_blank" rel="noopener">AI Watch</a>／<a href="https://www.geekwire.com/2026/microsoft-unveils-all-in-one-copilot-app-taking-on-anthropic-and-openai-in-new-push-to-boost-adoption/" target="_blank" rel="noopener">GeekWire</a></p>
+  </article>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-09-25">2026/09/25</time><span class="st st-note">発表</span></div>
+    <h3>料金の考え方を整理。日常は月額ライセンス、重い作業はCopilotクレジット</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>新しいCopilotの発表にあわせて、料金の仕組みが2本立てで説明されました。チャットやWord・Excelなどでの日常的な使い方はユーザーごとの月額ライセンスの範囲です。Cowork、Code、Autopilot、長時間動くエージェントは「Copilotクレジット」を使う従量課金です。管理者向けには、Agent 365で支出の上限や方針を決められる仕組みも広げるとしています。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>「どこまでが定額か」の線引きが見えたのは前進です。ただしCodeやAutopilotがどれくらいクレジットを使うかの細かい単価は、まだ示されていません。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>「普段使いは追加料金なし、エージェントに長く働かせるとメーター制」と説明すると、情報システム部門の不安に先回りできます。予算の相談は、支出の上限を誰が決めるかとセットで進めるのがおすすめです。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://news.microsoft.com/source/asia/features/introducing-the-new-copilot-with-home-code-and-autopilot/?lang=ja" target="_blank" rel="noopener">Microsoft Source Asia</a>／<a href="https://techcommunity.microsoft.com/blog/microsoft-copilot-blog/evolution-of-the-copilot-pricing-model/4559416" target="_blank" rel="noopener">Microsoft Tech Community「Evolution of the Copilot pricing model」</a>／<a href="https://venturebeat.com/technology/microsoft-revamps-its-copilot-ai-with-a-persistent-autopilot-agent-and-hosting-for-ai-generated-apps" target="_blank" rel="noopener">VentureBeat</a></p>
+  </article>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-09-25">2026/09/25</time><span class="st st-pre">パブリックプレビュー</span></div>
+    <h3>Copilotで作ったアプリの「置き場所」を提供。Copilot Managed Runtime</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>Copilot Cowork、Copilot Code、Copilot Studioで作ったアプリを、Microsoft 365の組織の中で動かすための実行基盤「Copilot Managed Runtime」がパブリックプレビューになりました。Entra ID（Microsoftのサインイン・ID管理）による共有の制御、つないでよいデータの制限、Gitによる自動の版管理、管理センターでの一覧と監視が最初から付いています。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>「AIで作ったアプリを誰がどこで管理するのか」という心配に、Microsoft側が答えを用意した形です。料金の詳細はこの記事では示されていません。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>Copilot Studioでアプリ作成を試すお客様には、「作ったものは管理センターから一覧で見える」ことを先に伝えると、野良アプリへの不安を減らせます。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://www.microsoft.com/en-us/copilot/blog/copilot-studio/build-where-you-want-run-with-confidence-now-microsoft-hosts-and-manages-the-code-created-by-copilot/" target="_blank" rel="noopener">Microsoft Copilot Blog（Copilot Studio）</a></p>
+  </article>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-09-23">2026/09/23</time><span class="st st-ok">GA</span><span class="st st-roll">順次展開</span></div>
+    <h3>9月のリリースノート：Forms、Outlook、PowerPoint、ノートブックの改善</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>9月分のリリースノートで、次の機能が一般提供としてまとめられました。FormsにCopilotのチャット欄が付き、フォームの改善や回答の分析を相談できます（M365 Copilotライセンスが必要）。OutlookではCopilotへの指示でメールの移動・分類・削除や仕分けルールの管理ができ、まとめて変更するときは確認が入ります。PowerPoint（Web）では自分用の「スキル」を作れるようになり、Copilotノートブックにはメールや Teams会議を参照として追加できます。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>どれも普段使いのアプリの中で完結する改善で、紹介しやすいものばかりです。展開は順番に行われるため、テナントによっては表示まで時間がかかります。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>「Outlookで『先週のニュースレターを全部フォルダに移して』と頼める」は、デモ映えする小ネタとして勉強会で使えます。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/release-notes" target="_blank" rel="noopener">Microsoft Learn「Release Notes for Microsoft 365 Copilot」</a></p>
+  </article>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-09-25">2026/09/25</time><span class="st st-roll">展開中</span><span class="id">MC1478975</span></div>
+    <h3>宣言型エージェントから、Agent 365のエージェントを呼び出せるように</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>宣言型エージェント（指示と知識を設定して作るエージェント）が、Agent 365に登録された他のエージェントを「接続されたエージェント」として呼び出せるようになります。エージェント同士が話すための共通ルール「Agent2Agent」を使う仕組みで、これまでのOpenAPIやMCPサーバーに加わる新しいつなぎ方です。一般提供は8月下旬〜9月下旬の予定とされています。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>インストールできるのは管理者だけで、管理センターの「接続されたエージェント」タブで中身を確認してから承認する流れです。つなぐ前に、相手のエージェントがデータをどう扱うかの確認が必要です。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>エージェントを作る部門と承認する管理者が別の組織では、承認の手順を今のうちに決めておくと後で慌てずに済みます。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://mc.merill.net/message/MC1478975" target="_blank" rel="noopener">Microsoft 365 Message Center Archive「MC1478975」</a></p>
+  </article>
+  <a class="back" href="#top">↑ 目次へ</a>
+</section>
+
+<!-- ============ MICROSOFT / GITHUB ============ -->
+<section class="sec" id="ms" style="--cat:var(--cat-ms)">
+  <header class="sec-head"><span class="sec-tag">MS · GitHub</span><h2>その他のMicrosoft AI／GitHub Copilot</h2><span class="count mono">2件</span></header>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-09-24">2026/09/24</time><span class="st st-note">設定変更</span><span class="st st-dev">10/22 適用</span></div>
+    <h3>GitHub Copilot、新機能を「最初からONにするか」を組織で決められるように</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>Copilot BusinessとEnterpriseで、まだ設定していない新機能をどう扱うかの「既定のポリシー」を選べるようになりました。選択肢は「有効」「無効（承認が必要）」「各組織に任せる」の3つです。設定期間を経て、10月22日から適用されます。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>すでに個別にON／OFFを決めた機能は上書きされません。プレビュー機能は、この設定に関係なく自分で有効にする方式のままです。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>前号で扱った「新モデルは自動でON」の続きの話です。ガバナンスを重視するお客様には、10/22までに方針を決めるよう声をかけておくと安心です。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://github.blog/changelog/2026-09-24-default-enablement-of-copilot-features-for-copilot-business-and-enterprise/" target="_blank" rel="noopener">GitHub Changelog「Default enablement of Copilot features for Copilot Business and Enterprise」</a></p>
+  </article>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-09-28">2026/09/28</time><span class="st st-ok">GA</span></div>
+    <h3>GitHub CopilotでClaude Sonnet 5.5が使えるように</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>Anthropicの新モデルClaude Sonnet 5.5が、発表当日からGitHub Copilotで一般提供になりました。ProからEnterpriseまでの全有料プランが対象で、VS Code、Visual Studio、JetBrains、Xcode、Eclipse、github.com、モバイルアプリ、CLIなどで使えます。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>GitHubの検証では、前のSonnet 5と同じくらいの出来を、より少ない手順とトークンで速く出せたとしています。BusinessとEnterpriseでは、管理者が止めていなければ初期状態で有効になります。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://github.blog/changelog/2026-09-28-claude-sonnet-5-5-in-github-copilot/" target="_blank" rel="noopener">GitHub Changelog「Claude Sonnet 5.5 in GitHub Copilot」</a></p>
+  </article>
+  <a class="back" href="#top">↑ 目次へ</a>
+</section>
+
+<!-- ============ INDUSTRY ============ -->
+<section class="sec" id="industry" style="--cat:var(--cat-ind)">
+  <header class="sec-head"><span class="sec-tag">Industry</span><h2>主要AI企業・モデルの動き</h2><span class="count mono">2件</span></header>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-09-29">2026/09/29</time><span class="st st-note">発表</span></div>
+    <h3>OpenAI DevDay 2026。常駐エージェント「Dots」やTeamsからの呼び出し</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>OpenAIが開発者向けイベントで20以上の発表を行いました。継続的な仕事を任せられる常駐型エージェント「Dots」、上位モデル並みの賢さを5分の1の料金で使える「GPT-6.1 Sol」、画面を操作できるエージェントAPIなどです。Business・Enterpriseでは、Microsoft TeamsやSlackの会話の中で@ChatGPTを呼び出す機能も発表されました。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>「裏で動き続けるエージェント」は、MicrosoftのAutopilotと同じ方向です。各社がそろって同じ方向を向き始めた、と見ておくとよさそうです。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>「Teamsに別のAIを入れたい」という相談が出たときは、Copilotとの役割分担とデータの扱いを先に整理するのが安全です。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://openai.com/index/devday-2026-recap/" target="_blank" rel="noopener">OpenAI「DevDay 2026 Recap」</a></p>
+  </article>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-09-28">2026/09/28</time><span class="st st-ok">GA</span></div>
+    <h3>Anthropic「Claude Sonnet 5.5」を公開。速く、少ない手数で</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>AnthropicがClaude Sonnet 5.5を公開しました。前のSonnet 5より30％以上速く、知識作業では上位のOpus 5.5に近い成績を出したとしています。API料金は100万トークンあたり入力2ドル・出力10ドルで前と同じですが、少ないトークンで終わるため、作業あたりのコストは最大30％下がるとしています。AWS、Google Cloud、Microsoft Azureでも提供されます。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>GitHub Copilotには当日から入りました。M365 CopilotやCopilot Studioで選べるようになるかは、今のところ発表されていません。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://www.anthropic.com/claude-sonnet-5-5" target="_blank" rel="noopener">Anthropic「Introducing Claude Sonnet 5.5」</a></p>
+  </article>
+  <a class="back" href="#top">↑ 目次へ</a>
+</section>
+
+<!-- ============ JAPAN ============ -->
+<section class="sec" id="japan" style="--cat:var(--cat-jp)">
+  <header class="sec-head"><span class="sec-tag">Japan</span><h2>国内の導入事例・制度・イベント</h2><span class="count mono">1件</span></header>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-09-23">2026/09/23</time><span class="st st-note">導入事例</span></div>
+    <h3>Copilot Studioの社内規程ボットで、社内問い合わせが約6割減った事例</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>TechTargetジャパンが、IT企業のカコムスの事例を紹介しました。M365 Copilotの日常利用から始め、Copilot StudioでSharePointの社内規程を参照するチャットボットや経歴書づくりのエージェントを作りました。社内問い合わせは約6割減り、人事・総務の対応工数は4割程度まで下がったそうです。エンジニアではない営業担当者が自分でエージェントを作る文化が根づいた点も紹介されています。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>「個人利用→全社活用→現場でエージェント作り」と段階を踏んだ進め方は、多くの組織でそのまま参考になります。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>「最初の1本は社内規程ボット」は、SharePointに資料がある組織なら取り組みやすいテーマです。勉強会のハンズオン題材の候補になります。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://techtarget.itmedia.co.jp/tt/article/2609/23/2000001555/" target="_blank" rel="noopener">TechTargetジャパン「なぜMicrosoft製品か Copilotで問い合わせ6割減の企業」</a></p>
+  </article>
+  <a class="back" href="#top">↑ 目次へ</a>
+</section>
+
+<!-- ============ TERM ============ -->
+<section class="term" id="term" aria-labelledby="term-h">
+  <p class="label">今週のかみ砕き用語</p>
+  <p class="word" id="term-h">Copilotクレジット（従量課金）</p>
+  <p class="yomi">今週の料金の話、Cowork・Code・Autopilotの話は、すべてこの言葉につながっています</p>
+
+  <h3>ひとことで</h3>
+  <p>月額ライセンスとは別に、使った分だけ減っていく「Copilot用のポイント」です。</p>
+
+  <h3>たとえるなら</h3>
+  <p>スマホの料金プラン。通話やメッセージ（日常のチャットやWord・Excelでの利用）は基本料金に含まれていて、大容量の通信（エージェントに長く働かせる作業）は使った分だけ追加でかかるイメージです。</p>
+
+  <h3>押さえておきたいこと</h3>
+  <ul>
+    <li>Cowork、Code、Autopilot、Copilot Studioのエージェントなど、AIに長く考えさせたり作業させたりする機能で使われます。</li>
+    <li>管理者は、支出の上限や誰がどこまで使えるかを決められます（Agent 365で管理の範囲を広げる予定）。</li>
+    <li>機能ごとの細かい消費量はまだ発表が続いている段階なので、見積もりは公式ガイドの最新版で確認します。</li>
+  </ul>
+
+  <div class="say"><b>勉強会での言い方：</b>「ふだんのCopilotは定額の範囲です。エージェントに長く働いてもらうときだけ、メーターが回ると思ってください。」</div>
+</section>
+
+<!-- ============ NEXT ============ -->
+<section class="sec" id="next" style="--cat:var(--accent)">
+  <header class="sec-head"><span class="sec-tag">Upcoming</span><h2>来週以降の注目予定</h2></header>
+  <ol class="sched">
+    <li><span class="when">09/30〜</span><span class="what"><b>Work IQ（業務アプリ向け）パブリックプレビュー</b><small>Dynamics 365やPower Platformのデータを、Copilotやエージェントが業務の文脈として使えるようにする仕組み。10月にかけて順次展開。</small></span></li>
+    <li><span class="when">9月末〜</span><span class="what"><b>Copilot Code（Frontier）／Autopilot（プライベートプレビュー拡大）</b><small>まずは一部の組織から。日本での提供時期は未発表です。</small></span></li>
+    <li><span class="when">10月</span><span class="what"><b>Homeの「Today」プライベートプレビュー、Agent 365の支出管理の対象拡大</b><small>支出管理はCode、Copilot Managed Runtime、Copilot Studioにも広がる予定です。</small></span></li>
+    <li><span class="when">10/22（木）</span><span class="what"><b>GitHub Copilot 新機能の既定ポリシーが適用</b><small>Business・Enterpriseの管理者は、それまでに方針を設定。</small></span></li>
+    <li><span class="when">11/17–20</span><span class="what"><b>Microsoft Ignite 2026</b><small>サンフランシスコ開催。新しいCopilotの続報が出そうです。</small></span></li>
+  </ol>
+</section>
+
+<!-- ============ SOURCES ============ -->
+<section class="sec sources" id="sources" style="--cat:var(--ink-3)">
+  <header class="sec-head"><span class="sec-tag">Sources</span><h2>出典一覧</h2></header>
+  <ol>
+    <li><a href="https://news.microsoft.com/source/asia/features/introducing-the-new-copilot-with-home-code-and-autopilot/?lang=ja" target="_blank" rel="noopener">Home、Code、Autopilot を備えた新しい Copilot を発表</a> <span class="pub">— Microsoft Source Asia, 2026/09/28（英語版は 2026/09/25）</span></li>
+    <li><a href="https://blogs.microsoft.com/blog/2026/09/25/introducing-the-new-copilot-with-home-code-and-autopilot/" target="_blank" rel="noopener">Introducing the new Copilot with Home, Code and Autopilot</a> <span class="pub">— The Official Microsoft Blog, 2026/09/25</span></li>
+    <li><a href="https://ai.watch.impress.co.jp/docs/news/2143295.html" target="_blank" rel="noopener">マイクロソフトが新Copilot発表、「Home」「Code」「Autopilot」</a> <span class="pub">— AI Watch, 2026/09/25</span></li>
+    <li><a href="https://www.geekwire.com/2026/microsoft-unveils-all-in-one-copilot-app-taking-on-anthropic-and-openai-in-new-push-to-boost-adoption/" target="_blank" rel="noopener">Microsoft unveils all-in-one Copilot app</a> <span class="pub">— GeekWire, 2026/09/25</span></li>
+    <li><a href="https://techcommunity.microsoft.com/blog/microsoft-copilot-blog/evolution-of-the-copilot-pricing-model/4559416" target="_blank" rel="noopener">Evolution of the Copilot pricing model</a> <span class="pub">— Microsoft Tech Community, 2026/09</span></li>
+    <li><a href="https://venturebeat.com/technology/microsoft-revamps-its-copilot-ai-with-a-persistent-autopilot-agent-and-hosting-for-ai-generated-apps" target="_blank" rel="noopener">Microsoft revamps its Copilot AI with a persistent Autopilot agent</a> <span class="pub">— VentureBeat, 2026/09/25</span></li>
+    <li><a href="https://www.microsoft.com/en-us/copilot/blog/copilot-studio/build-where-you-want-run-with-confidence-now-microsoft-hosts-and-manages-the-code-created-by-copilot/" target="_blank" rel="noopener">Build where you want, run with confidence: Microsoft hosts and manages the code created by Copilot</a> <span class="pub">— Microsoft Copilot Blog, 2026/09/25</span></li>
+    <li><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/release-notes" target="_blank" rel="noopener">Release Notes for Microsoft 365 Copilot（September 23, 2026）</a> <span class="pub">— Microsoft Learn, 2026/09/23</span></li>
+    <li><a href="https://mc.merill.net/message/MC1478975" target="_blank" rel="noopener">MC1478975 Use Microsoft Agent 365 agents as connected agents in declarative agents</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/09/25</span></li>
+    <li><a href="https://github.blog/changelog/2026-09-24-default-enablement-of-copilot-features-for-copilot-business-and-enterprise/" target="_blank" rel="noopener">Default enablement of Copilot features for Copilot Business and Enterprise</a> <span class="pub">— GitHub Changelog, 2026/09/24</span></li>
+    <li><a href="https://github.blog/changelog/2026-09-28-claude-sonnet-5-5-in-github-copilot/" target="_blank" rel="noopener">Claude Sonnet 5.5 in GitHub Copilot</a> <span class="pub">— GitHub Changelog, 2026/09/28</span></li>
+    <li><a href="https://openai.com/index/devday-2026-recap/" target="_blank" rel="noopener">DevDay 2026 Recap</a> <span class="pub">— OpenAI, 2026/09/29</span></li>
+    <li><a href="https://www.anthropic.com/claude-sonnet-5-5" target="_blank" rel="noopener">Introducing Claude Sonnet 5.5</a> <span class="pub">— Anthropic, 2026/09/28</span></li>
+    <li><a href="https://techtarget.itmedia.co.jp/tt/article/2609/23/2000001555/" target="_blank" rel="noopener">なぜMicrosoft製品か Copilotで問い合わせ6割減の企業</a> <span class="pub">— TechTargetジャパン, 2026/09/23</span></li>
+    <li><a href="https://www.microsoft.com/en-us/dynamics-365/blog/it-professional/2026/09/25/work-iq-business-and-workplace-intelligence-in-the-flow-of-work/" target="_blank" rel="noopener">Work IQ: Business and workplace intelligence in the flow of work</a> <span class="pub">— Microsoft Dynamics 365 Blog, 2026/09/25</span></li>
+    <li><a href="https://www.kesslernity.com/copilot-weekly/2026-W39" target="_blank" rel="noopener">Copilot Weekly 2026-W39</a> <span class="pub">— Kesslernity, 2026/09（手がかりとして参照）</span></li>
+  </ol>
+  <a class="back" href="#top">↑ 目次へ</a>
+</section>
+
+<footer class="foot">
+  AI Weekly No.01｜公開情報をもとに要約しています。機能の提供時期や内容は変わることがあるため、使う前に出典を確認してください。
+</footer>
+
+</div>
+</body>
+</html>
