@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Microsoft 365 Copilot ライセンスがあると Copilot Studio のどの機能が追加課金なしになるのか、ライセンスがあっても Copilot クレジットがかかる例外（コンピューター操作、イベントで動くエージェントフロー、GitHub Copilot ハーネス、音声、自律エージェント）、機能ごとの消費クレジット、計算例、停止のルールを、公式ドキュメントの出典と日付つきでまとめた調査メモ。調査日 2026年10月3日。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Copilot Studio のクレジットはいつかかる？</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* layout: 1カラムの調査メモ。上から「結論 → 無料になる条件 → 機能ごとの早見表 → 計算例 → 足りなくなったら → 抑え方 → 注意点 → 根拠」 */
+:root{
+  --bg:#F1F3F5;
+  --surface:#FFFFFF;
+  --surface-sunk:#EAEEF1;
+  --ink:#171B21;
+  --muted:#5B6673;
+  --line:#DCE1E6;
+  --line-strong:#C2CBD3;
+  --accent:#1F5C7A;
+  --accent-soft:#E4EEF3;
+  --ok:#2C6B50;
+  --ok-soft:#E1EFE7;
+  --warn:#8A5A15;
+  --warn-soft:#F5EBD9;
+  --none:#8C3B3B;
+  --none-soft:#F4E3E3;
+  --tag-official:#1F5C7A;
+  --tag-third:#6B5B8A;
+  --f-display:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161B;
+    --surface:#1A1F26;
+    --surface-sunk:#141920;
+    --ink:#E6EAEF;
+    --muted:#9BA6B2;
+    --line:#2B323B;
+    --line-strong:#3C4753;
+    --accent:#7CBDDA;
+    --accent-soft:#1B2C36;
+    --ok:#87CBA4;
+    --ok-soft:#18271F;
+    --warn:#E2B36C;
+    --warn-soft:#2A2318;
+    --none:#E59696;
+    --none-soft:#2B1C1C;
+    --tag-official:#7CBDDA;
+    --tag-third:#B7A6D6;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161B;
+  --surface:#1A1F26;
+  --surface-sunk:#141920;
+  --ink:#E6EAEF;
+  --muted:#9BA6B2;
+  --line:#2B323B;
+  --line-strong:#3C4753;
+  --accent:#7CBDDA;
+  --accent-soft:#1B2C36;
+  --ok:#87CBA4;
+  --ok-soft:#18271F;
+  --warn:#E2B36C;
+  --warn-soft:#2A2318;
+  --none:#E59696;
+  --none-soft:#2B1C1C;
+  --tag-official:#7CBDDA;
+  --tag-third:#B7A6D6;
+  color-scheme:dark;
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:15px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:880px;margin:0 auto;padding-inline:20px;padding-block:40px 64px}
+.mono,code{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* header */
+.eyebrow{
+  font-family:var(--f-mono);
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 14px;
+}
+h1{
+  font-family:var(--f-display);
+  font-weight:700;font-size:clamp(25px,5.4vw,36px);line-height:1.4;
+  letter-spacing:.01em;margin:0 0 20px;text-wrap:balance;
+}
+.meta{
+  display:flex;flex-wrap:wrap;gap:8px 24px;padding-block:16px;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  font-size:13px;color:var(--muted);
+}
+.meta b{
+  display:block;font-size:10.5px;font-weight:500;letter-spacing:.12em;
+  color:var(--muted);opacity:.8;font-family:var(--f-mono);
+}
+.meta span{color:var(--ink);font-size:13.5px;line-height:1.6}
+
+/* verdict */
+.verdict{
+  margin-block:32px;background:var(--surface);
+  border:1px solid var(--line);border-left:5px solid var(--accent);
+  padding:24px 22px;
+}
+.verdict h2{
+  font-family:var(--f-display);
+  font-size:18px;font-weight:600;line-height:1.65;margin:0 0 12px;text-wrap:balance;
+}
+.verdict p{margin:0 0 10px;font-size:14px;color:var(--muted)}
+.verdict strong{color:var(--ink);font-weight:700}
+.exlist{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:6px}
+.exlist li{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 10px;align-items:baseline;
+  font-size:13.5px;line-height:1.7;background:var(--none-soft);padding:8px 12px;
+}
+.exlist li b{font-family:var(--f-mono);font-size:11px;color:var(--none);font-weight:500}
+.exlist li span{color:var(--ink)}
+.exlist li.maybe{background:var(--warn-soft)}
+.exlist li.maybe b{color:var(--warn)}
+
+/* sections */
+section{margin-block:48px}
+h2.sec{
+  font-size:13px;font-weight:700;letter-spacing:.1em;margin:0 0 6px;
+  padding-bottom:10px;border-bottom:2px solid var(--ink);
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;
+}
+h2.sec em{
+  font-style:normal;font-family:var(--f-mono);
+  font-size:11px;font-weight:400;color:var(--muted);letter-spacing:.04em;
+}
+.lead{font-size:13.5px;color:var(--muted);margin:14px 0 18px}
+.lead strong{color:var(--ink)}
+
+/* 無料の条件 */
+.bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:16px}
+.bin{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--ok);padding:16px 18px;min-width:0}
+.bin .k{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;color:var(--ok);margin:0 0 4px}
+.bin h3{margin:0 0 6px;font-size:14.5px;font-weight:700;line-height:1.6}
+.bin p{margin:0;font-size:13px;color:var(--muted);line-height:1.75}
+.bin p b{color:var(--ink);font-weight:700}
+.note-box{
+  margin-top:14px;background:var(--surface-sunk);border:1px dashed var(--line-strong);
+  padding:14px 16px;font-size:13.5px;line-height:1.8;
+}
+.note-box p{margin:0 0 8px}
+.note-box p:last-child{margin-bottom:0}
+.note-box b{font-weight:700}
+
+/* 早見表 */
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 0 12px;font-size:12.5px;color:var(--muted);align-items:center}
+.legend .swatch{display:inline-block;width:12px;height:12px;background:var(--accent-soft);border:1px solid var(--line-strong);vertical-align:-1px;margin-right:6px}
+.scroller{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:780px;font-size:13px}
+th,td{padding:12px 13px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{
+  background:var(--surface-sunk);font-size:11px;letter-spacing:.08em;
+  font-weight:700;color:var(--muted);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+tr.grp td{
+  background:var(--surface-sunk);font-size:11.5px;font-weight:700;letter-spacing:.08em;
+  color:var(--accent);padding-block:8px;
+}
+tr.focus td{background:var(--accent-soft)}
+td.q{width:30%;line-height:1.6}
+td.q b{display:block;font-weight:700;font-size:13.5px}
+td.q span{display:block;color:var(--muted);font-size:12px;line-height:1.65;margin-top:2px}
+td.c{width:18%;font-family:var(--f-mono);font-size:12px;line-height:1.7;font-variant-numeric:tabular-nums}
+td.c span{display:block;font-family:var(--f-body);color:var(--muted);font-size:11.5px}
+td.v{width:24%;line-height:1.6}
+td.v small{display:block;margin-top:5px;color:var(--muted);font-size:11.5px;line-height:1.6}
+.pill{
+  display:inline-block;white-space:nowrap;font-size:11px;font-weight:700;
+  padding:2px 8px;border-radius:2px;letter-spacing:.02em;
+}
+.p-ok{background:var(--ok-soft);color:var(--ok)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-none{background:var(--none-soft);color:var(--none)}
+.p-na{background:var(--surface-sunk);color:var(--muted);border:1px solid var(--line)}
+.ref{font-family:var(--f-mono);font-size:11px;color:var(--accent);white-space:nowrap;text-decoration:none;margin-left:2px}
+.ref:hover{text-decoration:underline}
+td .ref{display:inline-block}
+td.r{white-space:nowrap;width:1%}
+
+/* 計算例 */
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+th.num{text-align:right}
+.calc{margin-top:10px;font-size:12.5px;color:var(--muted);line-height:1.75}
+
+/* 施行と対策 */
+.fixlist{list-style:none;margin:0;padding:0;counter-reset:fx}
+.fixlist li{
+  counter-increment:fx;display:grid;grid-template-columns:34px minmax(0,1fr);gap:0 12px;
+  padding-block:13px;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.8;
+}
+.fixlist li:last-child{border-bottom:none}
+.fixlist li::before{
+  content:counter(fx,decimal-leading-zero);font-family:var(--f-mono);font-size:11px;
+  color:var(--accent);padding-top:3px;
+}
+.fixlist b{font-weight:700}
+.fixlist span.m{display:block;color:var(--muted);font-size:12.5px}
+.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:6px}
+.tip{background:var(--surface);border:1px solid var(--line);padding:14px 16px;min-width:0}
+.tip h3{margin:0 0 6px;font-size:14px;font-weight:700;line-height:1.6}
+.tip p{margin:0 0 8px;font-size:13px;color:var(--muted);line-height:1.75}
+.tip .cost{display:flex;flex-wrap:wrap;gap:6px;margin:0}
+.tip .cost span{font-size:11.5px;padding:2px 8px;border:1px solid var(--line-strong);background:var(--surface-sunk);line-height:1.6;color:var(--ink)}
+
+/* evidence */
+.ev{
+  display:grid;grid-template-columns:38px minmax(0,1fr);gap:0 12px;
+  padding-block:18px;border-bottom:1px solid var(--line);
+}
+.ev:last-of-type{border-bottom:none}
+.ev-n{font-family:var(--f-mono);font-size:12px;color:var(--accent);padding-top:2px}
+.ev-title{margin:0 0 6px;font-size:14.5px;font-weight:700;line-height:1.6}
+.ev-title a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:3px}
+.ev-title a:hover{text-decoration-color:var(--accent)}
+.ev-bar{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-bottom:8px}
+.tag{
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;
+  padding:2px 7px;border:1px solid currentColor;
+}
+.tag.official{color:var(--tag-official)}
+.date{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.ev p{margin:0 0 6px;font-size:13.5px;color:var(--muted);line-height:1.8}
+.ev .url{font-family:var(--f-mono);font-size:11px;color:var(--muted);word-break:break-all;opacity:.85}
+
+/* caveats */
+.caveats{list-style:none;margin:0;padding:0}
+.caveats li{
+  display:grid;grid-template-columns:18px minmax(0,1fr);gap:0 10px;
+  padding-block:10px;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.8;
+}
+.caveats li:last-child{border-bottom:none}
+.caveats li::before{content:"—";color:var(--muted)}
+
+footer{
+  margin-top:56px;padding-top:18px;border-top:2px solid var(--ink);
+  font-size:12px;color:var(--muted);line-height:1.8;
+}
+footer .mono{font-size:11.5px}
+footer ul{margin:8px 0 0;padding-left:1.1em}
+
+@media (max-width:520px){
+  .wrap{padding-inline:16px}
+  .ev{grid-template-columns:1fr;gap:4px 0}
+  .exlist li{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Research memo / Copilot Studio</p>
+  <h1>Copilot Studio のクレジットはいつかかる？</h1>
+  <div class="meta">
+    <div><b>調査日</b><span class="mono">2026-10-03</span></div>
+    <div><b>対象</b><span>Copilot Studio のエージェント（標準ハーネス／GitHub Copilot ハーネス）</span></div>
+    <div><b>問い</b><span>Microsoft 365 Copilot ライセンスがあれば無料なのはどこまでか</span></div>
+  </div>
+</header>
+
+<div class="verdict">
+  <h2>Microsoft 365 Copilot ライセンスを持つ社員が、Teams や Copilot Chat の中で標準ハーネスのエージェントを使うぶんは、ほぼ追加課金なしです。ただし、ライセンスがあってもクレジットがかかる例外があります。</h2>
+  <p>公式の料金表には「Microsoft 365 Copilot ライセンス ユーザーが使用」という列があり、クラシック回答、生成型の回答、エージェント アクション、テナント グラフ、AIツール、エージェント フローのすべてが<strong>「追加課金なし（No charge）」</strong>です<a class="ref" href="#ev1">[1]</a>。条件は、<strong>社員向けの利用で、使う本人がライセンスを持ち、本人のIDで認証されて動くこと</strong>です<a class="ref" href="#ev1">[1]</a>。Web サイトなど Microsoft 365 の外のチャネルで使うと、ライセンスがあっても課金されます<a class="ref" href="#ev3">[3]</a>。</p>
+  <p>ライセンスがあってもクレジットがかかるのは次のものです。</p>
+  <ul class="exlist">
+    <li><b>課金</b><span>コンピューター操作（CUA：画面を見てクリックや入力をするツール）<a class="ref" href="#ev1">[1]</a></span></li>
+    <li><b>課金</b><span>スケジュールやイベントなど、「エージェントがフローを呼び出すとき」以外のトリガーで動くエージェント フロー<a class="ref" href="#ev1">[1]</a></span></li>
+    <li><b>課金</b><span>GitHub Copilot ハーネスのエージェントとワークフロー。作る・試す段階からかかる<a class="ref" href="#ev3">[3]</a><a class="ref" href="#ev4">[4]</a></span></li>
+    <li class="maybe"><b>記載なし</b><span>音声（電話応対など）。料金表に「追加課金なし」の扱いが書かれていない<a class="ref" href="#ev1">[1]</a></span></li>
+    <li class="maybe"><b>推論</b><span>人を介さずイベントで動く自律エージェント。「本人のIDで動く」という無料の条件に当てはまらないため、課金と見ておくのが安全<a class="ref" href="#ev1">[1]</a></span></li>
+  </ul>
+</div>
+
+<section>
+  <h2 class="sec">追加課金なしになる3つの条件 <em>すべて満たしたときだけ</em></h2>
+  <p class="lead">料金表の「追加課金なし」は、Microsoft 365 Copilot ライセンス（ユーザーごとの契約）に<strong>含まれている</strong>という意味です。次の3つがそろったときに適用されます。</p>
+  <div class="bins">
+    <div class="bin">
+      <p class="k">WHO / 使う人</p>
+      <h3>本人がライセンスを持ち、本人のIDで使う</h3>
+      <p>社員向け（Business to Employee）の利用で、使う人が Microsoft 365 Copilot ライセンスを持ち、<b>その人のIDで認証されて</b>エージェントが動くこと<a class="ref" href="#ev1">[1]</a>。</p>
+    </div>
+    <div class="bin">
+      <p class="k">WHERE / 使う場所</p>
+      <h3>Microsoft 365 の中で使う</h3>
+      <p>Teams、Copilot Chat、SharePoint など<b>Microsoft 365 のチャネル</b>で使うこと。外部向け Web サイトなどで使うと課金<a class="ref" href="#ev2">[2]</a><a class="ref" href="#ev3">[3]</a>。</p>
+    </div>
+    <div class="bin">
+      <p class="k">HOW / 作り方</p>
+      <h3>標準ハーネスのエージェント</h3>
+      <p>GitHub Copilot ハーネスのエージェントは、<b>ライセンスに関係なく全部課金</b>。作成中のプレビューや評価も含む<a class="ref" href="#ev3">[3]</a><a class="ref" href="#ev5">[5]</a>。</p>
+    </div>
+  </div>
+  <div class="note-box">
+    <p><b>「無料」には上限があります。</b>追加課金なしの利用は「フェアユース（公正な利用）の範囲内」に限られ、Microsoft は製品や使われ方の変化に応じて上限を見直すとしています<a class="ref" href="#ev1">[1]</a>。</p>
+    <p><b>課金は「人」ではなく「エージェントと環境」の単位で数えられます。</b>誰が何クレジット使ったかを個人ごとに請求に割り当てる仕組みではありません<a class="ref" href="#ev3">[3]</a>。</p>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">機能ごとの早見表 <em>何が起きたら、何クレジットかかるか</em></h2>
+  <p class="lead">1回のやり取りで複数の機能が同時に動くことがあります。たとえばテナント グラフを使う生成型の回答は、10＋2＝<strong>12クレジット</strong>です<a class="ref" href="#ev1">[1]</a>。</p>
+  <div class="legend">
+    <span><span class="pill p-ok">追加課金なし</span></span>
+    <span><span class="pill p-none">課金</span></span>
+    <span><span class="pill p-warn">記載なし・推論</span></span>
+    <span><span class="swatch"></span>ライセンスがあってもクレジットがかかる行</span>
+  </div>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>機能（何が起きたとき）</th><th>消費クレジット</th><th>ライセンスあり・M365内</th><th>ライセンスなし／M365外</th><th>根拠</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="5">会話の基本</td></tr>
+        <tr>
+          <td class="q"><b>クラシック回答</b><span>トピックで作った決まった返答</span></td>
+          <td class="c">1<span>1回ごと</span></td>
+          <td class="v"><span class="pill p-ok">追加課金なし</span></td>
+          <td class="v"><span class="pill p-none">課金</span></td>
+          <td class="r"><a class="ref" href="#ev1">[1]</a></td>
+        </tr>
+        <tr>
+          <td class="q"><b>生成型の回答</b><span>ナレッジをもとにAIが作る回答</span></td>
+          <td class="c">2<span>1回ごと</span></td>
+          <td class="v"><span class="pill p-ok">追加課金なし</span></td>
+          <td class="v"><span class="pill p-none">課金</span><small>Microsoft 365 の Agent Builder で作ったエージェントで、テナント グラフを使わない回答は課金なし</small></td>
+          <td class="r"><a class="ref" href="#ev1">[1]</a></td>
+        </tr>
+        <tr>
+          <td class="q"><b>エージェント アクション</b><span>トリガー、深い推論、トピックの切り替え、ツールの呼び出しなど。テスト時のアクティビティ マップに出る手順</span></td>
+          <td class="c">5<span>1回ごと</span></td>
+          <td class="v"><span class="pill p-ok">追加課金なし</span></td>
+          <td class="v"><span class="pill p-none">課金</span></td>
+          <td class="r"><a class="ref" href="#ev1">[1]</a></td>
+        </tr>
+        <tr>
+          <td class="q"><b>テナント グラフ グラウンディング</b><span>Microsoft 365 全体の検索技術で回答の根拠を探す設定</span></td>
+          <td class="c">10<span>1メッセージごと</span></td>
+          <td class="v"><span class="pill p-ok">追加課金なし</span></td>
+          <td class="v"><span class="pill p-none">課金</span></td>
+          <td class="r"><a class="ref" href="#ev1">[1]</a></td>
+        </tr>
+
+        <tr class="grp"><td colspan="5">AIツール（プロンプトなど）</td></tr>
+        <tr>
+          <td class="q"><b>プロンプト（基本・標準・プレミアム）</b><span>中で使うAIモデルの格で3段階に分かれる</span></td>
+          <td class="c">1／15／100<span>10回答ごと。1,000トークンあたり 0.1／1.5／10</span></td>
+          <td class="v"><span class="pill p-ok">追加課金なし</span><small>標準ハーネスのエージェントの中で、ライセンス保有者が実行した場合</small></td>
+          <td class="v"><span class="pill p-none">課金</span></td>
+          <td class="r"><a class="ref" href="#ev1">[1]</a><a class="ref" href="#ev3">[3]</a></td>
+        </tr>
+        <tr>
+          <td class="q"><b>推論モデルを使う処理</b><span>深く考えるタイプのAIモデル。通常の料金に上乗せされる</span></td>
+          <td class="c">通常料金＋10<span>1,000トークンごと（プレミアム料金）</span></td>
+          <td class="v"><span class="pill p-ok">追加課金なし</span></td>
+          <td class="v"><span class="pill p-none">課金</span></td>
+          <td class="r"><a class="ref" href="#ev1">[1]</a></td>
+        </tr>
+        <tr>
+          <td class="q"><b>コンテンツ処理ツール</b><span>文書や画像の読み取りなど</span></td>
+          <td class="c">8<span>1ページごと</span></td>
+          <td class="v"><span class="pill p-ok">追加課金なし</span></td>
+          <td class="v"><span class="pill p-none">課金</span></td>
+          <td class="r"><a class="ref" href="#ev1">[1]</a></td>
+        </tr>
+
+        <tr class="grp"><td colspan="5">自動化</td></tr>
+        <tr>
+          <td class="q"><b>エージェント フロー（エージェントがフローを呼び出すとき）</b><span>会話の中からエージェントが呼び出すフロー</span></td>
+          <td class="c">13<span>100アクションごと</span></td>
+          <td class="v"><span class="pill p-ok">追加課金なし</span></td>
+          <td class="v"><span class="pill p-none">課金</span></td>
+          <td class="r"><a class="ref" href="#ev1">[1]</a></td>
+        </tr>
+        <tr class="focus">
+          <td class="q"><b>エージェント フロー（それ以外のトリガー）</b><span>スケジュール実行、メール受信などのイベントで動くフロー</span></td>
+          <td class="c">13<span>100アクションごと</span></td>
+          <td class="v"><span class="pill p-none">課金</span><small>通常料金で消費</small></td>
+          <td class="v"><span class="pill p-none">課金</span></td>
+          <td class="r"><a class="ref" href="#ev1">[1]</a></td>
+        </tr>
+        <tr class="focus">
+          <td class="q"><b>自律エージェント</b><span>人が話しかけなくても、イベントをきっかけに自分で動くエージェント</span></td>
+          <td class="c">動いた機能の合計<span>例：アクション4回で20</span></td>
+          <td class="v"><span class="pill p-warn">課金と想定</span><small>料金表に明記はない。公式の計算例では課金され、無料の条件（本人のIDで動く）にも当てはまらない</small></td>
+          <td class="v"><span class="pill p-none">課金</span></td>
+          <td class="r"><a class="ref" href="#ev1">[1]</a></td>
+        </tr>
+        <tr>
+          <td class="q"><b>Power Automate クラウド フロー</b><span>Power Automate で作った従来のフロー</span></td>
+          <td class="c">使わない<span>Copilot クレジットの対象外</span></td>
+          <td class="v" colspan="2"><span class="pill p-na">対象外</span><small>Power Automate のライセンスで動き、Copilot Studio の課金や停止措置の対象にならない</small></td>
+          <td class="r"><a class="ref" href="#ev1">[1]</a></td>
+        </tr>
+
+        <tr class="grp"><td colspan="5">ライセンスがあってもかかるもの</td></tr>
+        <tr class="focus">
+          <td class="q"><b>コンピューター操作（CUA）</b><span>APIのないシステムを、画面を見て操作するツール</span></td>
+          <td class="c">5<span>エージェント アクションの料金</span></td>
+          <td class="v"><span class="pill p-none">課金</span><small>Microsoft 365 Copilot ライセンスに含まれない</small></td>
+          <td class="v"><span class="pill p-none">課金</span></td>
+          <td class="r"><a class="ref" href="#ev1">[1]</a><a class="ref" href="#ev3">[3]</a></td>
+        </tr>
+        <tr class="focus">
+          <td class="q"><b>音声</b><span>電話応対など、声でやり取りするエージェント</span></td>
+          <td class="c">10／35／75<span>1分ごと（クラシック／生成AI／プレミアム）</span></td>
+          <td class="v"><span class="pill p-warn">記載なし</span><small>料金表に「追加課金なし」の扱いが書かれていない。会話の基本機能は音声料金に含まれる</small></td>
+          <td class="v"><span class="pill p-none">課金</span></td>
+          <td class="r"><a class="ref" href="#ev1">[1]</a></td>
+        </tr>
+        <tr class="focus">
+          <td class="q"><b>GitHub Copilot ハーネスのエージェント・ワークフロー</b><span>2026年8月に一般提供された、長く複雑な仕事向けの新しい実行エンジン</span></td>
+          <td class="c">使った量に応じて<span>AIのトークン、ツール、ナレッジ、MCP、ハーネス自体</span></td>
+          <td class="v"><span class="pill p-none">課金</span><small>作成、プレビュー、評価の段階からかかる</small></td>
+          <td class="v"><span class="pill p-none">課金</span></td>
+          <td class="r"><a class="ref" href="#ev3">[3]</a><a class="ref" href="#ev4">[4]</a></td>
+        </tr>
+
+        <tr class="grp"><td colspan="5">Copilot Chat で使うエージェント（Agent Builder など）</td></tr>
+        <tr>
+          <td class="q"><b>指示だけ、または公開Webだけを使うエージェント</b><span>社内データに触れない軽いエージェント</span></td>
+          <td class="c">—</td>
+          <td class="v"><span class="pill p-ok">追加課金なし</span></td>
+          <td class="v"><span class="pill p-ok">追加課金なし</span><small>ライセンスなしの社員（Copilot Chat）でも課金なし</small></td>
+          <td class="r"><a class="ref" href="#ev6">[6]</a></td>
+        </tr>
+        <tr>
+          <td class="q"><b>SharePoint やコネクタなど社内の共有データを使うエージェント</b><span>社内資料を根拠に答えるエージェント</span></td>
+          <td class="c">上の料金表で計算</td>
+          <td class="v"><span class="pill p-ok">追加課金なし</span></td>
+          <td class="v"><span class="pill p-none">課金</span><small>従量課金を管理者が有効にした場合のみ使える（既定はオフ）</small></td>
+          <td class="r"><a class="ref" href="#ev6">[6]</a><a class="ref" href="#ev7">[7]</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">計算例 <em>公式ドキュメントの例をもとに</em></h2>
+  <p class="lead">従量課金制では1クレジットが0.01ドルです<a class="ref" href="#ev8">[8]</a><a class="ref" href="#ev2">[2]</a>。下の金額はその単価で単純に換算したもので、前払いパックの場合の単価とは異なります。</p>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>例</th><th>1回の内訳</th><th class="num">1日の利用</th><th class="num">1日のクレジット</th><th class="num">従量課金換算</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="q"><b>Webサイトのサポート窓口</b><span>社外のお客様向け。M365の外なのでライセンスは関係ない</span></td>
+          <td>クラシック回答4回＋生成型の回答2回＝8</td>
+          <td class="num">900人</td>
+          <td class="num">7,200</td>
+          <td class="num">約72ドル</td>
+        </tr>
+        <tr>
+          <td class="q"><b>Copilot Chat の営業支援</b><span>テナント グラフを使う。ライセンスあり50人＋なし100人</span></td>
+          <td>生成型の回答4回（8）＋テナント グラフ4回（40）＝48</td>
+          <td class="num">課金は100人分</td>
+          <td class="num">4,800</td>
+          <td class="num">約48ドル</td>
+        </tr>
+        <tr>
+          <td class="q"><b>受注処理の自律エージェント</b><span>新しい注文が入るたびに自動で動く</span></td>
+          <td>エージェント アクション4回＝20</td>
+          <td class="num">公式例の1日分</td>
+          <td class="num">20</td>
+          <td class="num">約0.2ドル</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="calc">内訳とクレジット数は公式ドキュメントの例のとおりです<a class="ref" href="#ev1">[1]</a>。ドル換算はこのページで計算したもので、公式の試算ではありません。営業支援の例では、ライセンスを持つ50人ぶんは課金されていません。</p>
+</section>
+
+<section>
+  <h2 class="sec">クレジットが足りなくなったら <em>停止のルール</em></h2>
+  <ol class="fixlist">
+    <li><div><b>前払い容量の125%に達すると、エージェントが止まります。</b><span class="m">会話中のものは最後まで続きます。その後は利用者に「請求に問題があります」「使用制限に達しました」と表示され、容量が増えるか月が変わるまで使えません<a class="ref" href="#ev1">[1]</a>。</span></div></li>
+    <li><div><b>エージェント フローは、前払い容量を使い切った時点で新しい実行が止まります。</b><span class="m">エージェント本体の会話は動き続けます。実行中のフローは最後まで完了します<a class="ref" href="#ev1">[1]</a>。</span></div></li>
+    <li><div><b>従量課金制をつないだ環境は止まりません。</b><span class="m">超えた分は Azure サブスクリプションに請求されます。Azure の予算アラートは通知だけで、利用を止めません<a class="ref" href="#ev1">[1]</a><a class="ref" href="#ev3">[3]</a>。</span></div></li>
+    <li><div><b>クレジットは月ごとに使い切りで、翌月に繰り越せません。</b><span class="m">毎月の購入容量の範囲で適用されます<a class="ref" href="#ev2">[2]</a>。</span></div></li>
+  </ol>
+</section>
+
+<section>
+  <h2 class="sec">クレジットを抑える現実的な方法 <em>3案</em></h2>
+  <div class="tips">
+    <div class="tip">
+      <h3>社員向けは Teams か Copilot Chat に公開する</h3>
+      <p>ライセンス保有者が Microsoft 365 の中で使えば、標準ハーネスの基本機能は追加課金なしです。同じエージェントでも Web サイトに置くと課金されます<a class="ref" href="#ev3">[3]</a>。</p>
+      <p class="cost"><span>難易度：低</span><span>追加コスト：なし</span></p>
+    </div>
+    <div class="tip">
+      <h3>フローは「エージェントがフローを呼び出すとき」で作る</h3>
+      <p>会話から呼ぶフローならライセンス保有者は課金なしです<a class="ref" href="#ev1">[1]</a>。定期実行のような自動化は、Power Automate クラウド フローで作るとクレジットを使いません<a class="ref" href="#ev1">[1]</a>。</p>
+      <p class="cost"><span>難易度：低〜中</span><span>追加コスト：Power Automate のライセンス範囲による</span></p>
+    </div>
+    <div class="tip">
+      <h3>エージェントごとに月の上限を決める</h3>
+      <p>Power Platform 管理センターの「ライセンス &gt; Copilot Studio &gt; エージェントの管理」で月間の上限と通知を設定し、超えたら止められます。特に GitHub Copilot ハーネスの試作には必須です<a class="ref" href="#ev3">[3]</a><a class="ref" href="#ev5">[5]</a>。</p>
+      <p class="cost"><span>難易度：低（管理者作業）</span><span>追加コスト：なし</span></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">説明するときの注意点 <em>CAVEATS</em></h2>
+  <ul class="caveats">
+    <li>料金と条件はよく変わります。正式な情報は公式の<a href="https://go.microsoft.com/fwlink/?linkid=2320995">Copilot Studio ライセンス ガイド</a>で確認し、見積もりは<a href="https://microsoft.github.io/copilot-studio-estimator/">エージェント使用量見積ツール</a>を使ってください<a class="ref" href="#ev1">[1]</a>。</li>
+    <li>2025年9月1日に、課金の単位が「メッセージ」から「Copilot クレジット」に名前が変わりました。数量や従量課金の単価は変わっていません<a class="ref" href="#ev2">[2]</a>。古い資料の「メッセージ」は同じものです。</li>
+    <li>料金表の日本語版は機械翻訳で、注釈の意味が取りにくい箇所があります。このページは英語版の原文で確認しました<a class="ref" href="#ev1">[1]</a>。</li>
+    <li>GitHub Copilot ハーネスでは、開発者環境と試用版環境も2026年9月1日から課金対象になりました。「試しに作っただけ」でもクレジットを使います<a class="ref" href="#ev3">[3]</a><a class="ref" href="#ev5">[5]</a>。一方、標準ハーネスは公開後から課金が始まり、エージェント フローのテスト実行は容量を消費しません<a class="ref" href="#ev1">[1]</a><a class="ref" href="#ev4">[4]</a>。</li>
+    <li>前払いの Copilot クレジットは、Microsoft 365 側の Cowork や Work IQ などと共有されることがあります。Power Platform 管理センターと Microsoft 365 管理センターの両方で残量を確認してください<a class="ref" href="#ev3">[3]</a>。</li>
+    <li>自分で用意したモデル（Azure Foundry のモデルなど）を持ち込む構成は、この料金表の対象外で別に請求されます<a class="ref" href="#ev1">[1]</a>。</li>
+    <li>自律エージェントと音声の扱いは、料金表に「追加課金なし」の明記がなく、このページでは公式の計算例と無料の条件から判断しています。契約前に販売パートナーや Microsoft に確認するのが確実です。</li>
+  </ul>
+</section>
+
+<section id="evidence">
+  <h2 class="sec">根拠 <em>SOURCES</em></h2>
+  <p class="lead">日付は各ページのメタ情報にある最終更新日（ms.date）です。すべて Microsoft の公式ドキュメントです。</p>
+
+  <div class="ev" id="ev1">
+    <div class="ev-n">[1]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/requirements-messages-management">請求レートと管理（Billing rates and management）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-08-03</span></div>
+      <p>機能ごとの課金レートと「Microsoft 365 Copilot ライセンス ユーザーは追加課金なし」の列。無料の条件（社員向け・本人のIDで認証）、エージェント フローは「エージェントがフローを呼び出すとき」トリガーのみ対象、CUA は対象外、Agent Builder の例外、推論モデルの料金、音声料金、計算例、125%での停止、Power Automate クラウド フローは対象外。英語版でも確認。</p>
+      <p class="url">https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/requirements-messages-management</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev2">
+    <div class="ev-n">[2]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/billing-licensing">標準ハーネス ライセンス</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-08-03</span></div>
+      <p>Copilot クレジットの買い方（前払いパック、従量課金制、事前購入プラン）。2025年9月1日に「メッセージ」から名称変更し単価は不変。未使用分は繰り越さない。Microsoft 365 Copilot ライセンス保有者が Copilot Chat・Teams・SharePoint で使う場合の扱い。</p>
+      <p class="url">https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/billing-licensing</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev3">
+    <div class="ev-n">[3]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/power-platform/admin/manage-usage-github-copilot-harness">Manage costs for agents powered by the GitHub Copilot harness（英語）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-08-28</span></div>
+      <p>「Copilot Studio で今クレジットを消費するもの」の表。標準ハーネスは M365 チャネルでライセンス保有者なら対象、M365 外やライセンスなしは課金。プロンプトとワークフローは標準ハーネス内でライセンス保有者が実行した場合のみ対象。CUA と GitHub Copilot ハーネスはすべて課金。エージェント上限の設定、課金はエージェント・環境単位、開発者・試用版環境の課金開始。</p>
+      <p class="url">https://learn.microsoft.com/en-us/power-platform/admin/manage-usage-github-copilot-harness</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev4">
+    <div class="ev-n">[4]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/billing-credit-overview">Overview of usage-based billing（英語）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-09-10</span></div>
+      <p>GitHub Copilot ハーネスはトークン、ツール（ナレッジ・MCP含む）、ハーネス自体に課金。標準ハーネスは公開後に課金が始まるのに対し、GitHub Copilot ハーネスは作り始めた時点から課金。</p>
+      <p class="url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/billing-credit-overview</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev5">
+    <div class="ev-n">[5]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/govern-credit-consumption">Govern Copilot Credit consumption for agents powered by the GitHub Copilot harness（英語）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-09-17</span></div>
+      <p>GitHub Copilot ハーネスの利用は Microsoft 365 Copilot ライセンスに含まれない。公開しない試作環境でも消費が発生するため、環境単位で管理し、エージェントごとの上限を設定する。</p>
+      <p class="url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/govern-credit-consumption</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev6">
+    <div class="ev-n">[6]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/cost-considerations">Plan Licensing and Cost for Microsoft 365 Copilot Extensibility（英語）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-09-30</span></div>
+      <p>Microsoft 365 Copilot ライセンスありなら拡張機能の追加課金なし。Copilot Chat（ライセンスなし）は、指示だけ・公開Webだけのエージェントは課金なし、SharePoint やコネクタなど共有データを使うと Copilot Studio 経由で従量課金。</p>
+      <p class="url">https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/cost-considerations</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev7">
+    <div class="ev-n">[7]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/pay-as-you-go/overview">Microsoft Copilot Pay-as-You-Go Service Overview（英語）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-07-17</span></div>
+      <p>Copilot Chat と SharePoint エージェントの従量課金の仕組み。従量課金は既定でオフで、管理者が課金ポリシーを作ってサービスに接続すると使えるようになる。</p>
+      <p class="url">https://learn.microsoft.com/en-us/microsoft-365/copilot/pay-as-you-go/overview</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev8">
+    <div class="ev-n">[8]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/pay-as-you-go/meters">Meters for Microsoft Copilot Pay-as-You-Go Services（英語）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-07-17</span></div>
+      <p>Copilot Chat のエージェント利用は Copilot Studio のメーターで、1メッセージあたり0.01ドルで課金される。</p>
+      <p class="url">https://learn.microsoft.com/en-us/microsoft-365/copilot/pay-as-you-go/meters</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>調査日：<span class="mono">2026-10-03</span>　／　対象：Copilot Studio の課金（Copilot クレジット）と Microsoft 365 Copilot ライセンスの関係</div>
+  <div>出典の日付（ページの最終更新日）</div>
+  <ul class="mono">
+    <li>[1] 2026-08-03　[2] 2026-08-03　[3] 2026-08-28　[4] 2026-09-10</li>
+    <li>[5] 2026-09-17　[6] 2026-09-30　[7] 2026-07-17　[8] 2026-07-17</li>
+  </ul>
+</footer>
+
+</div>
+</body>
+</html>
