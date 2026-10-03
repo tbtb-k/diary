@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Copilot Studio の講師が意味を押さえておくべき用語を、優先度（高・中・低）別に、かみ砕いた説明と講義でのポイント、混同しやすい用語ペア、公式ドキュメントの出典と日付つきでまとめた用語集。2026年8月に一般提供されたハーネス（標準／GitHub Copilot／Copilot チャット）も収録。作成日 2026年10月3日。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Copilot Studio 講師用 用語集</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* layout: 1カラムの用語集。上から「要点 → 使い方と全体像 → 優先度 高 → 中 → 低 → 混同ペア → 注意点 → 根拠」 */
+:root{
+  --bg:#F1F3F5;
+  --surface:#FFFFFF;
+  --surface-sunk:#EAEEF1;
+  --ink:#171B21;
+  --muted:#5B6673;
+  --line:#DCE1E6;
+  --line-strong:#C2CBD3;
+  --accent:#1F5C7A;
+  --accent-soft:#E4EEF3;
+  --ok:#2C6B50;
+  --ok-soft:#E1EFE7;
+  --warn:#8A5A15;
+  --warn-soft:#F5EBD9;
+  --none:#8C3B3B;
+  --none-soft:#F4E3E3;
+  --tag-official:#1F5C7A;
+  --tag-third:#6B5B8A;
+  --f-display:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161B;
+    --surface:#1A1F26;
+    --surface-sunk:#141920;
+    --ink:#E6EAEF;
+    --muted:#9BA6B2;
+    --line:#2B323B;
+    --line-strong:#3C4753;
+    --accent:#7CBDDA;
+    --accent-soft:#1B2C36;
+    --ok:#87CBA4;
+    --ok-soft:#18271F;
+    --warn:#E2B36C;
+    --warn-soft:#2A2318;
+    --none:#E59696;
+    --none-soft:#2B1C1C;
+    --tag-official:#7CBDDA;
+    --tag-third:#B7A6D6;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161B;
+  --surface:#1A1F26;
+  --surface-sunk:#141920;
+  --ink:#E6EAEF;
+  --muted:#9BA6B2;
+  --line:#2B323B;
+  --line-strong:#3C4753;
+  --accent:#7CBDDA;
+  --accent-soft:#1B2C36;
+  --ok:#87CBA4;
+  --ok-soft:#18271F;
+  --warn:#E2B36C;
+  --warn-soft:#2A2318;
+  --none:#E59696;
+  --none-soft:#2B1C1C;
+  --tag-official:#7CBDDA;
+  --tag-third:#B7A6D6;
+  color-scheme:dark;
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:15px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:900px;margin:0 auto;padding-inline:20px;padding-block:40px 64px}
+.mono,code{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+html{scroll-behavior:smooth}
+
+/* header */
+.eyebrow{
+  font-family:var(--f-mono);
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 14px;
+}
+h1{
+  font-family:var(--f-display);
+  font-weight:700;font-size:clamp(25px,5.4vw,36px);line-height:1.4;
+  letter-spacing:.01em;margin:0 0 20px;text-wrap:balance;
+}
+.meta{
+  display:flex;flex-wrap:wrap;gap:8px 24px;padding-block:16px;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  font-size:13px;color:var(--muted);
+}
+.meta b{
+  display:block;font-size:10.5px;font-weight:500;letter-spacing:.12em;
+  color:var(--muted);opacity:.8;font-family:var(--f-mono);
+}
+.meta span{color:var(--ink);font-size:13.5px;line-height:1.6}
+
+/* jump nav */
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.jump a{
+  font-size:12.5px;text-decoration:none;color:var(--ink);
+  border:1px solid var(--line-strong);background:var(--surface);
+  padding:4px 12px;line-height:1.6;
+}
+.jump a:hover{border-color:var(--accent);color:var(--accent)}
+
+/* verdict */
+.verdict{
+  margin-block:32px;background:var(--surface);
+  border:1px solid var(--line);border-left:5px solid var(--accent);
+  padding:24px 22px;
+}
+.verdict h2{
+  font-family:var(--f-display);
+  font-size:18px;font-weight:600;line-height:1.65;margin:0 0 12px;text-wrap:balance;
+}
+.verdict p{margin:0 0 10px;font-size:14px;color:var(--muted)}
+.verdict p:last-child{margin-bottom:0}
+.verdict strong{color:var(--ink);font-weight:700}
+
+/* sections */
+section{margin-block:48px;scroll-margin-top:16px}
+h2.sec{
+  font-size:13px;font-weight:700;letter-spacing:.1em;margin:0 0 6px;
+  padding-bottom:10px;border-bottom:2px solid var(--ink);
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;
+}
+h2.sec em{
+  font-style:normal;font-family:var(--f-mono);
+  font-size:11px;font-weight:400;color:var(--muted);letter-spacing:.04em;
+}
+h3.sub{font-size:14px;font-weight:700;margin:26px 0 10px;line-height:1.6}
+.lead{font-size:13.5px;color:var(--muted);margin:14px 0 18px}
+.lead strong{color:var(--ink)}
+
+/* たとえ */
+.metaphor{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:14px}
+.metaphor div{background:var(--surface);border:1px solid var(--line);padding:12px 14px;font-size:13.5px;line-height:1.7;min-width:0}
+.metaphor b{display:block;font-weight:700;font-size:14px}
+.metaphor span{color:var(--muted);font-size:13px}
+
+/* figure */
+.figure{margin-top:20px;background:var(--surface);border:1px solid var(--line);overflow-x:auto}
+.figure svg{display:block;width:100%;min-width:600px;height:auto}
+.figcap{font-size:13px;color:var(--muted);margin:10px 0 0;line-height:1.75}
+.f-title{fill:var(--ink);font-size:15px;font-weight:700}
+.f-sub{fill:var(--muted);font-size:11.5px}
+.f-ink{fill:var(--ink)}
+.f-quiet{fill:var(--muted)}
+.f-box{fill:none;stroke:var(--line-strong);stroke-width:1.25}
+.f-frame{fill:none;stroke:var(--line-strong);stroke-width:1}
+.f-band{fill:var(--surface-sunk);stroke:var(--line-strong);stroke-width:1.25}
+.f-accent{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2}
+.f-line{fill:none;stroke:var(--muted);stroke-width:1.25}
+.f-head{fill:var(--muted)}
+
+/* tables */
+.scroller{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13px}
+th,td{padding:12px 13px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{
+  background:var(--surface-sunk);font-size:11px;letter-spacing:.08em;
+  font-weight:700;color:var(--muted);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+tr.grp td{
+  background:var(--surface-sunk);font-size:11.5px;font-weight:700;letter-spacing:.08em;
+  color:var(--accent);padding-block:8px;
+}
+td.t{width:22%;line-height:1.55}
+td.t b{display:block;font-size:14px;font-weight:700}
+td.t .en{display:block;margin-top:3px;font-family:var(--f-mono);font-size:11px;color:var(--muted);line-height:1.5}
+td.m{width:34%;line-height:1.75}
+td.p{color:var(--muted);font-size:12.5px;line-height:1.75}
+td.p strong{color:var(--ink)}
+.ref{font-family:var(--f-mono);font-size:11px;color:var(--accent);white-space:nowrap;text-decoration:none;margin-left:2px}
+.ref:hover{text-decoration:underline}
+.nosrc{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);opacity:.8;white-space:nowrap;margin-left:2px}
+.new{
+  display:inline-block;font-family:var(--f-mono);font-size:10px;font-weight:500;letter-spacing:.06em;
+  padding:1px 6px;margin-left:6px;vertical-align:2px;background:var(--warn-soft);color:var(--warn);
+}
+td.pair{width:22%;font-weight:700;line-height:1.6}
+td.say{width:30%;line-height:1.7}
+td.say q{quotes:"「" "」"}
+
+/* priority pills */
+.pill{
+  display:inline-block;white-space:nowrap;font-size:11px;font-weight:700;
+  padding:2px 8px;border-radius:2px;letter-spacing:.02em;
+}
+.p-high{background:var(--accent-soft);color:var(--accent)}
+.p-mid{background:var(--warn-soft);color:var(--warn)}
+.p-low{background:var(--surface-sunk);color:var(--muted);border:1px solid var(--line)}
+td.v{white-space:nowrap;width:1%}
+
+/* evidence */
+.ev{
+  display:grid;grid-template-columns:38px minmax(0,1fr);gap:0 12px;
+  padding-block:18px;border-bottom:1px solid var(--line);scroll-margin-top:16px;
+}
+.ev:last-of-type{border-bottom:none}
+.ev-n{font-family:var(--f-mono);font-size:12px;color:var(--accent);padding-top:2px}
+.ev-title{margin:0 0 6px;font-size:14.5px;font-weight:700;line-height:1.6}
+.ev-title a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:3px}
+.ev-title a:hover{text-decoration-color:var(--accent)}
+.ev-bar{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-bottom:8px}
+.tag{
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;
+  padding:2px 7px;border:1px solid currentColor;
+}
+.tag.official{color:var(--tag-official)}
+.tag.third{color:var(--tag-third)}
+.date{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.date.unk{color:var(--warn)}
+.ev p{margin:0 0 6px;font-size:13.5px;color:var(--muted);line-height:1.8}
+.ev .url{font-family:var(--f-mono);font-size:11px;color:var(--muted);word-break:break-all;opacity:.85}
+
+/* caveats */
+.caveats{list-style:none;margin:0;padding:0}
+.caveats li{
+  display:grid;grid-template-columns:18px minmax(0,1fr);gap:0 10px;
+  padding-block:10px;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.8;
+}
+.caveats li:last-child{border-bottom:none}
+.caveats li::before{content:"—";color:var(--muted)}
+
+footer{
+  margin-top:56px;padding-top:18px;border-top:2px solid var(--ink);
+  font-size:12px;color:var(--muted);line-height:1.8;
+}
+footer .mono{font-size:11.5px}
+footer ul{margin:8px 0 0;padding-left:1.1em}
+
+@media (max-width:520px){
+  .wrap{padding-inline:16px}
+  .ev{grid-template-columns:1fr;gap:4px 0}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Glossary / Copilot Studio</p>
+  <h1>Copilot Studio 講師用 用語集</h1>
+  <div class="meta">
+    <div><b>作成日</b><span class="mono">2026-10-03</span></div>
+    <div><b>対象</b><span>Copilot Studio を教える講師・社内推進担当</span></div>
+    <div><b>収録</b><span>優先度 高 15語／中 22語／低 16語、混同しやすいペア 13組</span></div>
+  </div>
+  <nav class="jump" aria-label="ページ内の移動">
+    <a href="#howto">使い方と全体像</a>
+    <a href="#high">優先度 高</a>
+    <a href="#mid">優先度 中</a>
+    <a href="#low">優先度 低</a>
+    <a href="#pairs">混同しやすいペア</a>
+    <a href="#evidence">根拠</a>
+  </nav>
+</header>
+
+<div class="verdict">
+  <h2>最初に押さえるのは「優先度 高」の15語です。中でも「説明」と「生成オーケストレーション」の関係が分かっていると、質疑応答がぐっと楽になります。</h2>
+  <p>今の Copilot Studio では、AI（生成オーケストレーション）が、トピック・ナレッジ・ツール・他のエージェントに付けられた<strong>「説明」を読んで、どれを使うかを自分で選びます</strong><a class="ref" href="#ev6">[6]</a>。「思った部品が使われない」という相談の多くは、この説明の書き方で解決します。</p>
+  <p>もう一つ大きな変化があります。<strong>2026年8月に「ハーネス」（エージェントを動かす実行エンジン）が3種類になりました</strong><a class="ref" href="#ev1">[1]</a><a class="ref" href="#ev13">[13]</a>。新しい「GitHub Copilot ハーネス」で増えた用語（スキル、メモリ、ワークフローなど）も収録しています。名前は似ていますが、開発者向けサービスの GitHub Copilot とは別物です<a class="ref" href="#ev1">[1]</a>。</p>
+</div>
+
+<section id="howto">
+  <h2 class="sec">この用語集の使い方 <em>優先度の目安と全体像のたとえ</em></h2>
+  <p class="lead">表の英語名は公式ドキュメントで使われている名前です。日本語の画面表記はアップデートで変わることがあるので、<strong>講義の前に実際の画面で確認してください。</strong></p>
+  <div class="scroller">
+    <table style="min-width:560px">
+      <thead><tr><th>優先度</th><th>出てくる場面</th><th>講師に求められるレベル</th></tr></thead>
+      <tbody>
+        <tr><td class="v"><span class="pill p-high">高</span></td><td>初回講義・最初のデモで必ず出る</td><td>たとえ付きで、自分の言葉で説明できる</td></tr>
+        <tr><td class="v"><span class="pill p-mid">中</span></td><td>ハンズオン・2回目以降で出る</td><td>画面のどこにあるかを示しながら説明できる</td></tr>
+        <tr><td class="v"><span class="pill p-low">低</span></td><td>運用・管理者向け、発展的な機能</td><td>質問されたら概要を答えられ、調べ先がわかる</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub">全体像のたとえ：エージェント＝新人スタッフ</h3>
+  <div class="metaphor">
+    <div><b>指示</b><span>業務マニュアルと心構え（どう振る舞うか）</span></div>
+    <div><b>ナレッジ</b><span>参照してよい資料棚（何を根拠に答えるか）</span></div>
+    <div><b>トピック</b><span>決まった手順書・台本（毎回同じ流れでやる仕事）</span></div>
+    <div><b>ツール</b><span>使ってよい道具や社内システム（コネクタ、フロー、MCP など）</span></div>
+    <div><b>生成オーケストレーション</b><span>本人の判断力（どの資料・手順・道具を使うか考える頭）</span></div>
+    <div><b>チャネル</b><span>働く場所（Teams、Web サイトなど）</span></div>
+  </div>
+
+  <div class="figure">
+    <svg viewBox="0 0 760 560" role="img" aria-label="AIが部品の説明を読んで使うものを選ぶ流れ">
+      <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-head"/></marker></defs>
+      <text x="24" y="30" class="f-title">AIが部品の「説明」を読んで、使うものを選ぶ</text>
+      <text x="24" y="50" class="f-sub">質問が届いてから回答するまで（標準ハーネス・生成オーケストレーションの場合）</text>
+      <rect x="220" y="68" width="320" height="48" rx="8" class="f-box"/>
+      <text x="380" y="97" text-anchor="middle" font-size="13" class="f-ink">ユーザーの質問（Teams・Web などのチャネル）</text>
+      <rect x="24" y="148" width="712" height="388" rx="8" class="f-frame"/>
+      <text x="40" y="172" font-size="13" font-weight="700" class="f-ink">エージェント</text>
+      <rect x="40" y="184" width="680" height="40" rx="8" class="f-band"/>
+      <text x="380" y="208" text-anchor="middle" font-size="13" class="f-ink">指示：役割・口調・やってよいこと／いけないこと（全体のルール）</text>
+      <rect x="180" y="240" width="400" height="56" rx="8" class="f-accent"/>
+      <text x="380" y="264" text-anchor="middle" font-size="15" font-weight="700" class="f-ink">生成オーケストレーション（判断役）</text>
+      <text x="380" y="284" text-anchor="middle" font-size="11.5" class="f-ink">部品ごとの「説明」を読み、使うものを選んで組み合わせる</text>
+      <g class="f-line">
+        <path d="M380 116V184" marker-end="url(#arrow)"/>
+        <path d="M380 224V240" marker-end="url(#arrow)"/>
+        <path d="M380 296V320"/>
+        <path d="M119 320H641"/>
+        <path d="M119 320V344" marker-end="url(#arrow)"/>
+        <path d="M293 320V344" marker-end="url(#arrow)"/>
+        <path d="M467 320V344" marker-end="url(#arrow)"/>
+        <path d="M641 320V344" marker-end="url(#arrow)"/>
+        <path d="M119 416V440H641"/>
+        <path d="M293 416V440"/>
+        <path d="M467 416V440"/>
+        <path d="M641 416V440"/>
+        <path d="M380 440V464" marker-end="url(#arrow)"/>
+      </g>
+      <rect x="40" y="344" width="158" height="72" rx="8" class="f-box"/>
+      <text x="119" y="368" text-anchor="middle" font-size="15" font-weight="700" class="f-ink">トピック</text>
+      <text x="119" y="388" text-anchor="middle" font-size="11.5" class="f-quiet">決まった台本</text>
+      <text x="119" y="404" text-anchor="middle" font-size="11.5" class="f-quiet">毎回同じ手順で対応</text>
+      <rect x="214" y="344" width="158" height="72" rx="8" class="f-box"/>
+      <text x="293" y="368" text-anchor="middle" font-size="15" font-weight="700" class="f-ink">ナレッジ</text>
+      <text x="293" y="388" text-anchor="middle" font-size="11.5" class="f-quiet">参照する資料棚</text>
+      <text x="293" y="404" text-anchor="middle" font-size="11.5" class="f-quiet">SharePoint・ファイル</text>
+      <rect x="388" y="344" width="158" height="72" rx="8" class="f-box"/>
+      <text x="467" y="368" text-anchor="middle" font-size="15" font-weight="700" class="f-ink">ツール</text>
+      <text x="467" y="388" text-anchor="middle" font-size="11.5" class="f-quiet">外部で動く道具</text>
+      <text x="467" y="404" text-anchor="middle" font-size="11.5" class="f-quiet">コネクタ・フロー・MCP</text>
+      <rect x="562" y="344" width="158" height="72" rx="8" class="f-box"/>
+      <text x="641" y="368" text-anchor="middle" font-size="15" font-weight="700" class="f-ink">他のエージェント</text>
+      <text x="641" y="388" text-anchor="middle" font-size="11.5" class="f-quiet">別の担当者に任せる</text>
+      <text x="641" y="404" text-anchor="middle" font-size="11.5" class="f-quiet">子・接続エージェント</text>
+      <rect x="180" y="464" width="400" height="56" rx="8" class="f-box"/>
+      <text x="380" y="488" text-anchor="middle" font-size="15" font-weight="700" class="f-ink">回答をまとめてユーザーへ返す</text>
+      <text x="380" y="508" text-anchor="middle" font-size="11.5" class="f-quiet">使った部品の結果をもとに、AIが文章にする</text>
+    </svg>
+  </div>
+  <p class="figcap">質問は指示に沿って生成オーケストレーションが受け取り、各部品の「説明」を手がかりにトピック・ナレッジ・ツール・他のエージェントから必要なものを選んで回答をまとめます<a class="ref" href="#ev6">[6]</a>。</p>
+</section>
+
+<section id="high">
+  <h2 class="sec"><span class="pill p-high">高</span> 初回講義で必ず説明する15語 <em>HIGH PRIORITY</em></h2>
+  <p class="lead">受講者が最初の1時間で必ず目にする用語です。<span class="new">NEW</span> は2026年に登場・変更された用語です。</p>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>用語（英語）</th><th>ひとことで言うと</th><th>講師が押さえるポイント</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="t"><b>エージェント</b><span class="en">Agent</span></td>
+          <td class="m">質問に答えたり、作業を代わりにやったりするAIアシスタント。Copilot Studio で作るものの単位。</td>
+          <td class="p">旧称は「コパイロット」「ボット」。古い記事は旧称で書かれているので注意。人と会話するものと、イベントをきっかけに自分で動くもの（自律エージェント）がある。<span class="nosrc">一般的な説明</span></td>
+        </tr>
+        <tr>
+          <td class="t"><b>ハーネス<span class="new">NEW</span></b><span class="en">Harness</span></td>
+          <td class="m">エージェントを動かす実行エンジン。AIモデル（頭脳）と設定（マニュアル）の間に立ち、いつモデルを呼ぶか、どのツールを使うかを仕切る。</td>
+          <td class="p">2026年8月から3種類。<strong>標準ハーネス</strong>（トピック中心で予測しやすい）、<strong>GitHub Copilot ハーネス</strong>（長く複雑な仕事を自分で計画。ファイル作成・スキル・メモリに対応）、<strong>Copilot チャット ハーネス</strong>（Microsoft 365 Copilot Chat の拡張）。作成後に別のハーネスへは移行できない。GitHub Copilot ハーネスは GitHub Copilot というサービスとは別物で、データはそちらに送られない。<a class="ref" href="#ev1">[1]</a><a class="ref" href="#ev2">[2]</a><a class="ref" href="#ev3">[3]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>指示</b><span class="en">Instructions</span></td>
+          <td class="m">エージェントの役割、口調、やってよいこと・いけないことを文章で書いたもの。</td>
+          <td class="p">最初に書く「業務マニュアル」。「引用を必ず付ける」と書くと根拠つきの回答が安定するなど、回答の質にも直結する。<a class="ref" href="#ev3">[3]</a><a class="ref" href="#ev9">[9]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>ナレッジ</b><span class="en">Knowledge</span></td>
+          <td class="m">エージェントが回答の根拠にする情報源。公開 Web サイト、SharePoint、アップロードしたファイル、Dataverse、コネクタ経由の社内データなど。</td>
+          <td class="p">「資料棚」。SharePoint などは、質問した人が見る権限のある内容だけが回答に使われる。Microsoft Learn の日本語訳では「知識」「サポート情報ソース」とも訳されているので混乱注意。<a class="ref" href="#ev9">[9]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>トピック</b><span class="en">Topic</span></td>
+          <td class="m">「この話題が来たらこの流れで対応する」という会話の台本。ノードを並べて作る。</td>
+          <td class="p">毎回同じ手順で対応させたいときに使う（例：休暇申請の受付）。AI任せにしない部分。標準ハーネスの機能。<a class="ref" href="#ev2">[2]</a><a class="ref" href="#ev6">[6]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>トリガー フレーズ</b><span class="en">Trigger phrases</span></td>
+          <td class="m">トピックを起動させるための例文（「休みを取りたい」「有給申請」など）。</td>
+          <td class="p">クラシック オーケストレーションで使う。生成オーケストレーションでは、代わりにトピックの「説明」で選ばれる。<a class="ref" href="#ev6">[6]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>説明</b><span class="en">Description</span></td>
+          <td class="m">トピック、ツール、ナレッジ、他のエージェントに付ける「これは何に使うか」の文章。</td>
+          <td class="p">生成オーケストレーションでAIが「どれを使うか」を決める<strong>最重要の手がかり</strong>。名前は具体的に、説明は1〜2文で、できないことも書く。似た説明が並ぶと選択が不安定になる。<a class="ref" href="#ev6">[6]</a><a class="ref" href="#ev7">[7]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>ツール</b><span class="en">Tools</span></td>
+          <td class="m">エージェントが外部システムで「行動」するための部品。メール送信、データ登録、天気の取得など。</td>
+          <td class="p">旧称は「アクション」。中身はコネクタ、エージェント フロー、プロンプト、REST API、MCP、コンピューター操作など。1エージェントあたり最大128個だが、25〜30個以内が推奨。<a class="ref" href="#ev7">[7]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>コネクタ</b><span class="en">Connector</span></td>
+          <td class="m">Outlook、Teams、Salesforce など外部サービスとつなぐための既製の接続口（Power Platform 共通）。</td>
+          <td class="p">既製のものが数千種類ある。自社システム用に自作するのがカスタム コネクタ。組織のデータ ポリシーで使えないものもある。<a class="ref" href="#ev7">[7]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>MCP（モデル コンテキスト プロトコル）</b><span class="en">Model Context Protocol</span></td>
+          <td class="m">AIと外部のツールやデータをつなぐ業界共通の規格。MCP サーバーにつなぐと、そのサーバーが持つツールをまとめて使える。</td>
+          <td class="p">「AI用のUSB-C」とたとえると伝わりやすい。Copilot Studio では「ツール」と「リソース」に対応し、「プロンプト」は未対応。<strong>生成オーケストレーションが必須</strong>。サーバー側でツールが増えると自動で反映される。<a class="ref" href="#ev8">[8]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>生成オーケストレーション</b><span class="en">Generative orchestration</span></td>
+          <td class="m">質問に対して、AIがトピック・ナレッジ・ツール・他のエージェントから最適なものを選び、組み合わせて回答する仕組み。</td>
+          <td class="p">新しいエージェントの既定。「営業時間を確認して、最寄りの店も探して」のような複数の依頼を一度に処理できる。足りない入力はAIが自動で質問してくれる。<a class="ref" href="#ev6">[6]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>クラシック オーケストレーション</b><span class="en">Classic orchestration</span></td>
+          <td class="m">トリガー フレーズに一番近いトピックを1つ選んで動かす従来方式。該当がなければナレッジで回答する。</td>
+          <td class="p">動きが読みやすいが柔軟性は低い。ツールはトピックの中からしか呼べない。「設定 &gt; 生成AI &gt; オーケストレーション」で切り替える。<a class="ref" href="#ev6">[6]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>テスト（テスト パネル）</b><span class="en">Test pane / Activity map</span></td>
+          <td class="m">作成画面で実際に話しかけて動作を確かめる場所。アクティビティ マップで、AIがどのトピックやツールを選んだかが見える。</td>
+          <td class="p">デモで「AIの頭の中」を見せるのに最適。会話履歴の影響で、同じ質問でも答えが変わることがある。GitHub Copilot ハーネスでは「プレビュー」タブにあたる。<a class="ref" href="#ev3">[3]</a><a class="ref" href="#ev6">[6]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>公開</b><span class="en">Publish</span></td>
+          <td class="m">作ったエージェントを利用者が使える状態にする操作。</td>
+          <td class="p">編集しただけでは利用者側に反映されず、変更のたびに再公開が必要。試用版ライセンスでは公開できない。<a class="ref" href="#ev12">[12]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>チャネル</b><span class="en">Channel</span></td>
+          <td class="m">エージェントを使ってもらう場所。Teams と Microsoft 365 Copilot、Web サイト、SharePoint など。</td>
+          <td class="p">チャネルごとに表示できるものが違う（例：Teams では引用は最大20件）。<a class="ref" href="#ev9">[9]</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="mid">
+  <h2 class="sec"><span class="pill p-mid">中</span> ハンズオンで出てくる22語 <em>MEDIUM PRIORITY</em></h2>
+  <p class="lead">画面のどこにあるかを指しながら説明できれば十分です。<strong>「スキル」と「メモリ」は、GitHub Copilot ハーネスを扱う講義なら「高」に格上げ</strong>してください。</p>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>用語（英語）</th><th>ひとことで言うと</th><th>講師が押さえるポイント</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="3">会話を組み立てる部品</td></tr>
+        <tr>
+          <td class="t"><b>ノード</b><span class="en">Node</span></td>
+          <td class="m">トピックの中の1ステップ。メッセージ、質問、条件分岐、変数の設定、ツール呼び出しなど。</td>
+          <td class="p">フローチャートの「箱」にあたる。「＋」ボタンで追加する。<a class="ref" href="#ev7">[7]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>変数</b><span class="en">Variable</span></td>
+          <td class="m">会話の中で情報を一時的に覚えておく入れ物。</td>
+          <td class="p">有効範囲が3種類。トピック変数（そのトピック内だけ）、グローバル変数（会話全体）、システム変数（ユーザー名など自動で入るもの）。<span class="nosrc">一般的な説明</span></td>
+        </tr>
+        <tr>
+          <td class="t"><b>エンティティ</b><span class="en">Entity</span></td>
+          <td class="m">ユーザーの発言から取り出したい情報の型。日付、数値、都市名、メール アドレスなど。</td>
+          <td class="p">準備済みのものと、自作（選択肢リスト、正規表現）がある。自作エンティティはツールやトピックの入力にはまだ使えず、質問ノードで使う。<a class="ref" href="#ev6">[6]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>スロット フィリング</b><span class="en">Slot filling</span></td>
+          <td class="m">ユーザーが最初の一言で言った情報を拾い、該当する質問を飛ばす仕組み。</td>
+          <td class="p">「明日の東京の天気」と言えば「どこの？」と聞き返さない。エンティティとセットで説明すると伝わりやすい。<span class="nosrc">一般的な説明</span></td>
+        </tr>
+        <tr>
+          <td class="t"><b>システム トピック</b><span class="en">System topics</span></td>
+          <td class="m">最初から入っている特別なトピック。会話の開始、フォールバック、会話のブースト、エスカレート、エラー時、会話のリセットなど。</td>
+          <td class="p">「会話の開始」で最初の挨拶を変えるのが定番のハンズオン。生成オーケストレーションでは「会話のブースト」はナレッジ検索に使われない。<a class="ref" href="#ev6">[6]</a><a class="ref" href="#ev9">[9]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>生成型の回答（生成回答ノード）</b><span class="en">Generative answers</span></td>
+          <td class="m">ナレッジを検索して、AIが文章で回答をまとめる機能。トピックの中にノードとして置くこともできる。</td>
+          <td class="p">トピックを全部作らなくても答えられるのが強み。特定の資料だけを検索させたいときにノードで使う。<a class="ref" href="#ev9">[9]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>根拠のない応答を許可する</b><span class="en">Allow ungrounded responses</span></td>
+          <td class="m">ナレッジやツールを使わず、AIの一般知識だけで答えてよいかの設定。</td>
+          <td class="p">オフにすると「資料にないことは答えない」に近づく。ただし引用が付かないと正しい答えも隠れることがある。「引用を必ず付ける」と指示に書くと安定する。<a class="ref" href="#ev9">[9]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>アダプティブ カード</b><span class="en">Adaptive Cards</span></td>
+          <td class="m">ボタンや入力欄つきのカード型の表示。</td>
+          <td class="p">申請フォームや結果一覧を見やすく出せる。Teams での見た目が強み。<a class="ref" href="#ev7">[7]</a></td>
+        </tr>
+
+        <tr class="grp"><td colspan="3">自動化とマルチエージェント</td></tr>
+        <tr>
+          <td class="t"><b>エージェント フロー</b><span class="en">Agent flows</span></td>
+          <td class="m">決まった手順を毎回同じように実行する自動化。Copilot Studio の中で作る。</td>
+          <td class="p">標準ハーネスのフロー。AIの気まぐれが入らない（決定的）ので、承認や記録などの定型処理に向く。ツールとしてエージェントに追加できる。<a class="ref" href="#ev5">[5]</a><a class="ref" href="#ev7">[7]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>ワークフロー<span class="new">NEW</span></b><span class="en">Workflows</span></td>
+          <td class="m">GitHub Copilot ハーネスで動く新しい自動化。AIアクションや人の承認を組み込める。</td>
+          <td class="p">トリガー（開始のきっかけ）＋アクション（やること）でできている。左メニューの「ワークフロー」から作る。アクションごとに容量を消費する。<a class="ref" href="#ev11">[11]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>Power Automate</b><span class="en">Power Automate</span></td>
+          <td class="m">Microsoft の業務自動化サービス。エージェント フローと同じ仕組みが土台にある。</td>
+          <td class="p">受講者が既に使っていることが多いので、「知っているフローの仲間」と紹介すると入りやすい。<span class="nosrc">一般的な説明</span></td>
+        </tr>
+        <tr>
+          <td class="t"><b>プロンプト</b><span class="en">Prompt</span></td>
+          <td class="m">決まった指示文でAIに1回だけ仕事をさせるツール。要約、分類、文章作成など。</td>
+          <td class="p">指示文・使うモデル・入力項目を決めて作る。「文章を渡すと決まった形で返してくれる部品」と説明する。<a class="ref" href="#ev7">[7]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>子エージェント</b><span class="en">Child agent</span></td>
+          <td class="m">エージェントの中に作る軽量のサブエージェント。</td>
+          <td class="p">ひとつのチームで管理し、単独で公開しないものに使う。「部署の中の担当者」のイメージ。<a class="ref" href="#ev10">[10]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>接続されたエージェント</b><span class="en">Connected agent</span></td>
+          <td class="m">別に作られた独立エージェントを呼び出して仕事を任せる仕組み。</td>
+          <td class="p">別チームが管理する、単独でも公開する、複数のエージェントで使い回す、というときに使う。「他部署への依頼」のイメージ。選択肢が30〜40を超えたら分割を検討。<a class="ref" href="#ev10">[10]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>トリガー（イベント トリガー）</b><span class="en">Event triggers</span></td>
+          <td class="m">「メールが届いたら」「毎朝9時に」など、人が話しかけなくてもエージェントを動かすきっかけ。</td>
+          <td class="p">これを使うと自律エージェントになる。トピックの「トリガー」と名前が似ているので区別して説明する。<a class="ref" href="#ev6">[6]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>スキル<span class="new">NEW</span></b><span class="en">Skills</span></td>
+          <td class="m">特定の仕事のやり方を Markdown（SKILL.md）でまとめた、使い回せる手順書パッケージ。</td>
+          <td class="p">GitHub Copilot ハーネスの機能で、公開仕様「Agent Skills」に準拠。ツールは外部とつなぐもの、スキルはやり方を教えるもの。標準ハーネスの「Azure Bot Service スキル」とは別物。<a class="ref" href="#ev4">[4]</a><a class="ref" href="#ev7">[7]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>メモリ<span class="new">NEW</span></b><span class="en">Memory</span></td>
+          <td class="m">過去のやり取りを覚えておき、次の会話に生かす機能。</td>
+          <td class="p">GitHub Copilot ハーネスの機能で、現在プレビュー。変数（その会話だけ）との違いを聞かれやすい。<a class="ref" href="#ev3">[3]</a><a class="ref" href="#ev13">[13]</a></td>
+        </tr>
+
+        <tr class="grp"><td colspan="3">環境・認証・課金・分析</td></tr>
+        <tr>
+          <td class="t"><b>環境</b><span class="en">Environment</span></td>
+          <td class="m">エージェントやデータを入れておく「部屋」。Power Platform 共通の単位。</td>
+          <td class="p">開発用・本番用で分けるのが基本。ハンズオン前に、受講者がどの環境を使うか決めておく。<span class="nosrc">一般的な説明</span></td>
+        </tr>
+        <tr>
+          <td class="t"><b>Dataverse</b><span class="en">Dataverse</span></td>
+          <td class="m">Power Platform のデータ保管場所（データベース）。</td>
+          <td class="p">エージェント自体もここに保存される。アップロードしたファイルもここに入る。ナレッジとしても使える。<a class="ref" href="#ev9">[9]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>認証</b><span class="en">Authentication</span></td>
+          <td class="m">この人は誰かを確かめる仕組み。</td>
+          <td class="p">エージェント全体の設定と、ツールごとの設定がある。ツールは「エンドユーザーの資格情報（使う人の権限）」か「作成者が指定した資格情報（作った人の権限）」を選ぶ。情報漏えいの質問はここに結びつく。<a class="ref" href="#ev7">[7]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>Copilot クレジット</b><span class="en">Copilot Credits</span></td>
+          <td class="m">Copilot Studio の利用量を数える共通の単位。会話やツール実行ごとに消費する。</td>
+          <td class="p">2025年9月1日に「メッセージ」から名称変更。月ごとに使い切りで繰り越しなし。Microsoft 365 Copilot ライセンス保有者が Teams や Copilot Chat で使う場合、一部の回答はカウントされない。料金の詳細は公式のライセンス ガイドで確認する。<a class="ref" href="#ev12">[12]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>分析</b><span class="en">Analytics</span></td>
+          <td class="m">公開後の利用状況（会話数、解決率、満足度など）を見る画面。</td>
+          <td class="p">「作って終わりではなく育てるもの」と伝える場面で使う。GitHub Copilot ハーネスでは「モニター」タブにあたる。<a class="ref" href="#ev3">[3]</a><a class="ref" href="#ev9">[9]</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="low">
+  <h2 class="sec"><span class="pill p-low">低</span> 質問されたら答えられればよい16語 <em>LOW PRIORITY</em></h2>
+  <p class="lead">管理者向けの設定や、発展的な機能の用語です。概要を一言で言えて、「詳しくは管理者／公式ドキュメントで」と誘導できれば十分です。</p>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>用語（英語）</th><th>ひとことで言うと</th><th>講師が押さえるポイント</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="3">管理・運用</td></tr>
+        <tr>
+          <td class="t"><b>ソリューション／ALM</b><span class="en">Solutions / Application lifecycle management</span></td>
+          <td class="m">エージェントやフローをまとめて別の環境へ運ぶ「箱」と、開発→テスト→本番と進める運用の考え方。</td>
+          <td class="p">「開発環境で作ったものを本番に移すには？」と聞かれたらこれ。<a class="ref" href="#ev10">[10]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>データ ポリシー（DLP）</b><span class="en">Data policies / Data loss prevention</span></td>
+          <td class="m">管理者が「このコネクタやツールは使用禁止」と決めるルール。</td>
+          <td class="p">ハンズオンで「ツールが選べない」ときの主な原因。情報アイコンで理由を確認できる。<a class="ref" href="#ev7">[7]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>マネージド環境</b><span class="en">Managed Environments</span></td>
+          <td class="m">環境単位で共有制限などの管理機能を強化する Power Platform の仕組み。</td>
+          <td class="p">企業のガバナンス担当が気にする用語。詳細は管理者向けドキュメントへ。<span class="nosrc">一般的な説明</span></td>
+        </tr>
+        <tr>
+          <td class="t"><b>Power Platform 管理センター</b><span class="en">Power Platform admin center</span></td>
+          <td class="m">環境、容量（クレジット）、ポリシーを管理する管理者向け画面。</td>
+          <td class="p">受講者自身は触らないことが多い。「容量を確認したい」ときの行き先。<a class="ref" href="#ev11">[11]</a><a class="ref" href="#ev12">[12]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>従量課金制</b><span class="en">Pay-as-you-go</span></td>
+          <td class="m">事前購入せず、使った分の Copilot クレジットを Azure サブスクリプションで月末に支払う方式。</td>
+          <td class="p">他に、前払いのクレジット パックと1年分の事前購入プランがある。<a class="ref" href="#ev12">[12]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>評価（テスト セット）</b><span class="en">Evaluation / Test sets</span></td>
+          <td class="m">質問と期待する答えのセットをまとめて流し、品質を測る仕組み。</td>
+          <td class="p">「指示を変えたら他の回答が壊れた」を防ぐために使う。GitHub Copilot ハーネスでは「評価」タブ。<a class="ref" href="#ev3">[3]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>コンテンツ モデレーション</b><span class="en">Content moderation</span></td>
+          <td class="m">有害な内容をどれだけ厳しく弾くかの設定。最小〜最高。</td>
+          <td class="p">既定は「高」。厳しくするほど答える量が減る。エージェント、トピック、プロンプトの各レベルで設定できる。<a class="ref" href="#ev9">[9]</a></td>
+        </tr>
+
+        <tr class="grp"><td colspan="3">発展的な機能</td></tr>
+        <tr>
+          <td class="t"><b>コンピューター操作</b><span class="en">Computer use</span></td>
+          <td class="m">API がないシステムでも、画面を見てクリックや入力をして操作するツール。</td>
+          <td class="p">「古い社内システムも動かせる？」と聞かれたらこれ。RPA の AI 版とたとえると伝わる。<a class="ref" href="#ev7">[7]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>REST API</b><span class="en">REST API</span></td>
+          <td class="m">自社や外部の API を、コネクタを作らず直接ツールとして追加する方法。</td>
+          <td class="p">開発部門との会話で出てくる。非エンジニア向けには「システム同士の窓口」と説明する。<a class="ref" href="#ev7">[7]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>モデルの選択</b><span class="en">Model selection</span></td>
+          <td class="m">エージェントやプロンプトの頭脳になるAIモデルを選ぶこと。</td>
+          <td class="p">モデルを変えると同じ設定でも結果が変わるので、変えたら再テスト。選べるモデルは頻繁に増えるので、講義では具体名を断言しない。<a class="ref" href="#ev3">[3]</a><a class="ref" href="#ev6">[6]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>Web 検索</b><span class="en">Web search</span></td>
+          <td class="m">Bing で公開 Web 全体を検索して回答に使う設定。</td>
+          <td class="p">ナレッジに登録した特定サイトだけを検索するのとは別。社内専用エージェントではオフにすることも多い。<a class="ref" href="#ev9">[9]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>テナント グラフ グラウンディング</b><span class="en">Tenant graph grounding with semantic search</span></td>
+          <td class="m">Microsoft 365 の検索技術（セマンティック インデックス）で、SharePoint などの検索精度を上げる設定。</td>
+          <td class="p">「SharePoint の資料をうまく拾ってくれない」ときの改善策。追加のクレジット消費があり、「Microsoft で認証」の設定が必要。<a class="ref" href="#ev9">[9]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>Power Fx</b><span class="en">Power Fx</span></td>
+          <td class="m">Excel の関数に似た書き方の数式言語。変数の加工や条件分岐に使う。</td>
+          <td class="p">「Excel 関数が書ければ読める」と伝えると安心される。<a class="ref" href="#ev7">[7]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>サンドボックス<span class="new">NEW</span></b><span class="en">Sandbox</span></td>
+          <td class="m">GitHub Copilot ハーネスで、各タスクを安全に実行する隔離された作業スペース。</td>
+          <td class="p">Word・Excel・PowerPoint・PDF の作成や計算はこの中で行われる。<a class="ref" href="#ev1">[1]</a><a class="ref" href="#ev13">[13]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>A2A プロトコル</b><span class="en">Agent2Agent protocol</span></td>
+          <td class="m">異なる会社のエージェント同士が会話するための共通規格。</td>
+          <td class="p">MCP が「AIと道具」、A2A が「AIとAI」をつなぐと整理すると分かりやすい。<a class="ref" href="#ev10">[10]</a></td>
+        </tr>
+        <tr>
+          <td class="t"><b>Microsoft Foundry</b><span class="en">Microsoft Foundry</span></td>
+          <td class="m">開発者向けのAIアプリ・エージェント開発基盤（旧 Azure AI Foundry）。</td>
+          <td class="p">「プロ開発者はこちら、業務部門は Copilot Studio」という位置づけ。Foundry のエージェントを接続する機能はプレビュー。<a class="ref" href="#ev10">[10]</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="pairs">
+  <h2 class="sec">受講者が混同しやすい用語ペア <em>13 PAIRS</em></h2>
+  <p class="lead">質問で一番多いのは「これとこれは何が違うの？」です。右端の列をそのまま言えるようにしておくと安心です。</p>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>ペア</th><th>違い</th><th>受講者への言い方</th></tr></thead>
+      <tbody>
+        <tr><td class="pair">トピック と ナレッジ</td><td class="m">トピックは決めた流れで対応する台本、ナレッジは答えを探すための資料。</td><td class="say"><q>必ず同じ手順でやらせたいならトピック、資料から答えてほしいならナレッジ</q></td></tr>
+        <tr><td class="pair">指示 と 説明</td><td class="m">指示はエージェント全体の振る舞い、説明は部品ごとの用途。</td><td class="say"><q>指示は本人へのマニュアル、説明は道具に貼るラベル</q></td></tr>
+        <tr><td class="pair">コネクタ と ツール</td><td class="m">コネクタは外部サービスとの接続口。その中の操作（メール送信など）をエージェントに持たせるとツールになる。</td><td class="say"><q>コネクタはコンセント、ツールはそこに挿した家電</q></td></tr>
+        <tr><td class="pair">ツール と MCP</td><td class="m">MCP はツールのつなぎ方の一種。MCP サーバー1つで複数のツールがまとめて入る。</td><td class="say"><q>MCP は道具箱ごとつなぐ共通規格。中の道具はサーバー側で増えても自動で使える</q></td></tr>
+        <tr><td class="pair">ツール と スキル</td><td class="m">ツールは外部システムで行動する部品、スキルは仕事のやり方をまとめた手順書。</td><td class="say"><q>ツールは手足、スキルはノウハウ</q></td></tr>
+        <tr><td class="pair">生成 と クラシック（オーケストレーション）</td><td class="m">生成は「説明」を読んでAIが部品を選び組み合わせる。クラシックは「トリガー フレーズ」と照合してトピックを1つ選ぶ。</td><td class="say"><q>自分で考えるベテランか、マニュアル通りの新人か</q></td></tr>
+        <tr><td class="pair">標準ハーネス と GitHub Copilot ハーネス</td><td class="m">標準は作り手が経路を設計して予測どおりに動かす。GitHub Copilot はゴールを渡して、AIが自分で計画・復旧する。後者はクレジットと応答時間が増えやすい。</td><td class="say"><q>短く決まった仕事は標準、長く複雑で資料作りまでやる仕事は GitHub Copilot</q></td></tr>
+        <tr><td class="pair">GitHub Copilot ハーネス と GitHub Copilot</td><td class="m">前者は Copilot Studio の実行基盤。技術の一部を共有するだけで、データが GitHub Copilot サービスに送られることはない。</td><td class="say"><q>名前が似ているだけで、開発者向けツールを契約する必要はありません</q></td></tr>
+        <tr><td class="pair">エージェント フロー と ワークフロー</td><td class="m">どちらも決まった手順の自動化。エージェント フローは標準ハーネス、ワークフローは GitHub Copilot ハーネス用。</td><td class="say"><q>中身は同じ発想。どちらのエンジンで作るかの違い</q></td></tr>
+        <tr><td class="pair">子エージェント と 接続されたエージェント</td><td class="m">子は親の中だけで使う軽量版。接続は単独でも公開できる独立したエージェント。</td><td class="say"><q>部署内の担当者か、他部署への依頼か</q></td></tr>
+        <tr><td class="pair">トピックのトリガー と イベント トリガー</td><td class="m">トピックのトリガーは会話中にトピックを起動するもの。イベント トリガーは会話なしでエージェント自体を動かすもの。</td><td class="say"><q>話しかけられて動くか、出来事で動くか</q></td></tr>
+        <tr><td class="pair">変数 と メモリ</td><td class="m">変数はその会話の間だけのメモ。メモリは会話をまたいで覚えておく機能（プレビュー）。</td><td class="say"><q>付箋と日記帳</q></td></tr>
+        <tr><td class="pair">Copilot Studio と Agent Builder</td><td class="m">Agent Builder は Microsoft 365 Copilot の中で手軽にエージェントを作る機能。ツール連携や公開先の自由度が高いのは Copilot Studio。<span class="nosrc">一般的な説明</span></td><td class="say"><q>自分やチーム用にさっと作るなら Agent Builder、業務システムとつなぐなら Copilot Studio</q></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">講義で外すと話がズレる注意点 <em>CAVEATS</em></h2>
+  <ul class="caveats">
+    <li>Copilot Studio は毎月のように用語や画面が変わります。この用語集は2026年10月3日時点の公式ドキュメントにもとづいています。講義の直前に、下の出典ページと実際の画面を確認してください。</li>
+    <li>Microsoft Learn の日本語版は機械翻訳のページが多く、「知識／ナレッジ」「接続されたエージェント／コネクテッドエージェント」のように、同じものが別の訳語で書かれています。迷ったら英語名で検索するのが確実です。</li>
+    <li>GitHub Copilot ハーネスは2026年8月に一般提供（GA）されました。ただしメモリや接続されたエージェントなど、その中の一部機能はまだプレビューです<a class="ref" href="#ev13">[13]</a>。プレビュー機能は本番利用を想定していません。</li>
+    <li>料金の具体的な数字は変わりやすいため載せていません。公式のライセンス ガイドで確認してください<a class="ref" href="#ev12">[12]</a>。</li>
+    <li>「一般的な説明」と付いた行は、Copilot Studio や Power Platform の基本的な説明で、今回あらためて公式ページで個別に確認したものではありません。</li>
+  </ul>
+</section>
+
+<section id="evidence">
+  <h2 class="sec">根拠 <em>SOURCES</em></h2>
+  <p class="lead">日付は、各ページのメタ情報にある最終更新日（ms.date）です。</p>
+
+  <div class="ev" id="ev1">
+    <div class="ev-n">[1]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/harnesses-overview">Copilot Studio のハーネス</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-09-21</span></div>
+      <p>ハーネスはモデルと設計の間にあるランタイム。GitHub Copilot ハーネス、標準ハーネス、Copilot チャット ハーネスの3種類と、それぞれの用途・課金・公開先の違い。GitHub Copilot ハーネスでは顧客データが GitHub Copilot サービスに送られないこと。</p>
+      <p class="url">https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/harnesses-overview</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev2">
+    <div class="ev-n">[2]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/guidance/choose-harness">Copilot Studio のエージェント ハーネスを比較する</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-09-30</span></div>
+      <p>標準ハーネスはトピックや変数で作り手が経路を設計し、GitHub Copilot ハーネスはオーケストレーターが次の行動を判断する。単純な用途で後者を使うとクレジットと遅延が増えること、移行は再構築として扱うこと。</p>
+      <p class="url">https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/guidance/choose-harness</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev3">
+    <div class="ev-n">[3]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/agents-experience/overview">GitHub Copilot Harness によるエージェント概要</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-09-21</span></div>
+      <p>構成要素（指示、知識、ツール、スキル、モデル、接続されたエージェント、メモリ）と、ビルド・プレビュー・評価・モニターの4タブ。ハーネス間の移行はできないこと。メモリはプレビュー。</p>
+      <p class="url">https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/agents-experience/overview</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev4">
+    <div class="ev-n">[4]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/agents-experience/skills-overview">エージェント向けのスキル概要</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-09-09</span></div>
+      <p>スキルは名前・説明・Markdown の指示セットで定義する再利用可能な機能。SKILL.md やパッケージ（.zip）のアップロード、空白から作成、AI で生成の3通りで追加できる。ツールとの違いの表。</p>
+      <p class="url">https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/agents-experience/skills-overview</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev5">
+    <div class="ev-n">[5]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/agents-experience/switch-experiences">標準ハーネス エージェントおよびエージェント フローにアクセス</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-06-23</span></div>
+      <p>ホームページの「新しい体験」トグルをオフにすると標準ハーネスのエージェントとエージェント フローにアクセスできること。</p>
+      <p class="url">https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/agents-experience/switch-experiences</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev6">
+    <div class="ev-n">[6]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/advanced-generative-actions">生成 AI でエージェントの動作を調整する（生成オーケストレーション）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-08-26</span></div>
+      <p>生成オーケストレーションとクラシック オーケストレーションの比較表。選択の最重要要素は説明であること、説明の書き方、入力の自動質問、会話のブーストが使われないなどの既知の制限、設定画面での切り替え方法。</p>
+      <p class="url">https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/advanced-generative-actions</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev7">
+    <div class="ev-n">[7]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/add-tools-custom-agent">カスタム エージェントにツールを追加する</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-10-01</span></div>
+      <p>ツールの種類（コネクタ、エージェント フロー、プロンプト、REST API、MCP、コンピューター操作）、ツールの説明と入力、認証方式（エンドユーザー／作成者指定）、データ ポリシーでブロックされたツール、最大128・推奨25〜30個の制限。</p>
+      <p class="url">https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/add-tools-custom-agent</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev8">
+    <div class="ev-n">[8]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/agent-extend-action-mcp">モデル コンテキスト プロトコルを使用してエージェントを拡張する</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-08-26</span></div>
+      <p>MCP のリソース・ツール・プロンプトのうち、Copilot Studio はツールとリソースに対応。サーバー側の変更が動的に反映されること。生成オーケストレーションが必須。</p>
+      <p class="url">https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/agent-extend-action-mcp</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev9">
+    <div class="ev-n">[9]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/knowledge-copilot-studio">知識源の概要（ナレッジ）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-07-21</span></div>
+      <p>対応するナレッジ ソースの一覧、根拠のない応答を許可する設定と引用の関係、Teams の引用上限、Web 検索、コンテンツ モデレーション、テナント グラフ グラウンディング、会話のブーストと生成回答ノード。</p>
+      <p class="url">https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/knowledge-copilot-studio</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev10">
+    <div class="ev-n">[10]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/authoring-add-other-agents">他のエージェントの概要を追加（子エージェント・接続されたエージェント）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-05-15</span></div>
+      <p>子エージェントと接続されたエージェントの使い分け、選択肢が30〜40を超えたら分割を検討、A2A プロトコル・Microsoft Foundry など外部エージェントとの接続（一部プレビュー）、エージェントごとの ALM。</p>
+      <p class="url">https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/authoring-add-other-agents</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev11">
+    <div class="ev-n">[11]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/workflows-experience/flows-overview">ワークフローの概要</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-09-15</span></div>
+      <p>ワークフローは GitHub Copilot ハーネスで動く決定的な自動化。トリガーとアクション、AI 機能やヒューマン・イン・ザ・ループのアクション、アクションごとの容量消費。</p>
+      <p class="url">https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/workflows-experience/flows-overview</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev12">
+    <div class="ev-n">[12]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/billing-licensing">標準ハーネス ライセンス（Copilot クレジット）</a></p>
+      <div class="ev-bar"><span class="tag official">公式</span><span class="date">最終更新 2026-08-03</span></div>
+      <p>2025年9月1日に共通通貨が「メッセージ」から「Copilot クレジット」へ。前払いパック・従量課金制・事前購入プラン、繰り越しなし、試用版では公開不可、Microsoft 365 Copilot ライセンス保有者のゼロ課金対象。</p>
+      <p class="url">https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/billing-licensing</p>
+    </div>
+  </div>
+
+  <div class="ev" id="ev13">
+    <div class="ev-n">[13]</div>
+    <div>
+      <p class="ev-title"><a href="https://www.microsoft.com/en-us/copilot/blog/copilot-studio/new-and-improved-github-copilot-harness-agent-skills-and-richer-context/">What's new in Copilot Studio, August 2026（英語）</a></p>
+      <div class="ev-bar"><span class="tag official">公式ブログ</span><span class="date unk">2026年8月（掲載日の詳細は未取得）</span></div>
+      <p>GitHub Copilot ハーネスの一般提供。スキル、メモリ（プレビュー）、接続されたエージェント（プレビュー）、ワークフローのツール化、各タスクが安全なサンドボックスで実行されること。</p>
+      <p class="url">https://www.microsoft.com/en-us/copilot/blog/copilot-studio/new-and-improved-github-copilot-harness-agent-skills-and-richer-context/</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>作成日：<span class="mono">2026-10-03</span>　／　対象：Microsoft Copilot Studio の講師向け用語</div>
+  <div>出典の日付（ページの最終更新日）</div>
+  <ul class="mono">
+    <li>[1] 2026-09-21　[2] 2026-09-30　[3] 2026-09-21　[4] 2026-09-09</li>
+    <li>[5] 2026-06-23　[6] 2026-08-26　[7] 2026-10-01　[8] 2026-08-26</li>
+    <li>[9] 2026-07-21　[10] 2026-05-15　[11] 2026-09-15　[12] 2026-08-03</li>
+    <li>[13] 2026年8月（日付の詳細は未取得）</li>
+  </ul>
+</footer>
+
+</div>
+</body>
+</html>
