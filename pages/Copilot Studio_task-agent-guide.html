@@ -1,0 +1,1010 @@
+<title>はじめてのタスク型エージェント</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=IBM+Plex+Mono:wght@400;500&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap">
+<style>
+/* Layout: 左に進み具合つきの目次、右に上から下へ進む手順。UIの文言はボタン風のチップで示す */
+:root{
+  --bg:#F3F5F8;
+  --surface:#FFFFFF;
+  --sunken:#EBEEF3;
+  --ink:#1B2029;
+  --muted:#5A6272;
+  --line:#D9DEE6;
+  --accent:#B83E0B;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#FFF0E6;
+  --accent-line:#F2C3A6;
+  --ok:#1D7349;
+  --ok-soft:#E5F4EC;
+  --warn:#8A5A00;
+  --warn-soft:#FFF5DB;
+  --chip:#E7EBF1;
+  --chip-ink:#1B2029;
+  --font-display:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic UI","Meiryo",sans-serif;
+  --font-body:"BIZ UDPGothic","Hiragino Sans","Yu Gothic UI","Meiryo",sans-serif;
+  --font-mono:"IBM Plex Mono","BIZ UDGothic",ui-monospace,"Consolas",monospace;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#13161B; --surface:#1B1F26; --sunken:#171A20; --ink:#E7EAF0; --muted:#A2AAB8; --line:#2D333D;
+    --accent:#F08A4E; --accent-ink:#1B1006; --accent-soft:#33211A; --accent-line:#6B3A20;
+    --ok:#5CC892; --ok-soft:#173327; --warn:#E8B64A; --warn-soft:#30280F;
+    --chip:#272C35; --chip-ink:#E7EAF0;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#13161B; --surface:#1B1F26; --sunken:#171A20; --ink:#E7EAF0; --muted:#A2AAB8; --line:#2D333D;
+  --accent:#F08A4E; --accent-ink:#1B1006; --accent-soft:#33211A; --accent-line:#6B3A20;
+  --ok:#5CC892; --ok-soft:#173327; --warn:#E8B64A; --warn-soft:#30280F;
+  --chip:#272C35; --chip-ink:#E7EAF0;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15.5px;line-height:1.85;padding-inline:16px;padding-block:0 64px}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.35;margin:0}
+p{margin:0}
+code,.mono{font-family:var(--font-mono);font-size:.92em}
+
+.wrap{max-width:1120px;margin:0 auto}
+
+/* ---------- header ---------- */
+.masthead{padding-block:40px 28px;display:grid;gap:14px;max-width:780px}
+.eyebrow{font-size:12.5px;letter-spacing:.12em;color:var(--accent);font-weight:700}
+.masthead h1{font-size:clamp(28px,5vw,40px);font-weight:900;letter-spacing:.01em}
+.lead{color:var(--muted);font-size:16px;max-width:62ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted);padding-top:4px}
+.meta b{color:var(--ink);font-weight:700}
+
+/* ---------- page grid ---------- */
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:48px;align-items:start}
+.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);font-size:13.5px}
+.toc-inner{display:grid;gap:14px}
+.progress{display:grid;gap:6px}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.bar{height:6px;background:var(--chip);border-radius:99px;overflow:hidden}
+.bar span{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .3s ease}
+.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px;border-left:1px solid var(--line)}
+.toc li a{display:flex;gap:8px;align-items:baseline;padding:4px 10px;color:var(--muted);text-decoration:none;margin-left:-1px;border-left:2px solid transparent}
+.toc li a:hover{color:var(--ink)}
+.toc li a.active{color:var(--ink);border-left-color:var(--accent);font-weight:700}
+.toc .n{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);min-width:2.2em;font-variant-numeric:tabular-nums}
+.toc li a.done .n{color:var(--ok)}
+.toc-mobile{display:none}
+
+main{min-width:0;display:grid;gap:56px;max-width:780px}
+section{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;scroll-margin-top:24px}
+section>*,.mock-sec>*,.panel>*,.steps>li>div>*{min-width:0}
+.mock-sec{grid-template-columns:minmax(0,1fr)}
+.sec-head{display:grid;gap:6px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.sec-kicker{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;color:var(--accent)}
+.sec-head h2{font-size:24px;font-weight:900}
+.sec-head .sub{color:var(--muted);font-size:14.5px}
+h3{font-size:17px;font-weight:700}
+
+/* step header with done checkbox */
+.step-head{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:end;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.step-head .titles{display:grid;gap:6px;min-width:0}
+.step-head h2{font-size:24px;font-weight:900}
+.done-toggle{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;user-select:none;padding:6px 12px;border:1px solid var(--line);border-radius:99px;background:var(--surface)}
+.done-toggle input{accent-color:var(--ok);width:16px;height:16px;margin:0}
+.done-toggle:has(input:checked){border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+
+/* ---------- UI chip & path ---------- */
+.ui{display:inline-block;font-family:var(--font-body);font-size:.9em;font-weight:700;background:var(--chip);color:var(--chip-ink);border:1px solid var(--line);border-radius:6px;padding:0 .5em;line-height:1.7;-webkit-box-decoration-break:clone;box-decoration-break:clone;overflow-wrap:anywhere}
+.path{display:flex;flex-wrap:wrap;align-items:center;gap:6px 4px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);font-size:14px}
+.path .sep{color:var(--muted);padding-inline:2px}
+.path .label{font-size:12px;color:var(--muted);margin-right:6px;letter-spacing:.05em}
+
+/* ---------- ordered steps ---------- */
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:s}
+.steps>li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;counter-increment:s}
+.steps>li::before{content:counter(s);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--surface);border:1.5px solid var(--accent);color:var(--accent);font-family:var(--font-mono);font-weight:500;font-size:13px;margin-top:1px}
+.steps>li>div{min-width:0;display:grid;gap:8px}
+
+/* ---------- callouts ---------- */
+.note{display:grid;gap:6px;padding:14px 16px;border-radius:var(--radius);background:var(--sunken);border:1px solid var(--line);font-size:14.5px}
+.note .tag{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted)}
+.note.tip{background:var(--ok-soft);border-color:transparent}
+.note.tip .tag{color:var(--ok)}
+.note.warn{background:var(--warn-soft);border-color:transparent}
+.note.warn .tag{color:var(--warn)}
+.note.why{background:var(--accent-soft);border-color:var(--accent-line)}
+.note.why .tag{color:var(--accent)}
+
+/* ---------- copy block ---------- */
+.copy{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden}
+.copy-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--sunken);font-size:12.5px;color:var(--muted)}
+.copy-btn{font:inherit;font-size:12.5px;font-weight:700;color:var(--accent);background:transparent;border:1px solid var(--accent-line);border-radius:6px;padding:3px 10px;cursor:pointer}
+.copy-btn:hover{background:var(--accent-soft)}
+.copy pre{margin:0;padding:14px 16px;white-space:pre-wrap;word-break:break-word;font-family:var(--font-body);font-size:14.5px;line-height:1.8}
+
+/* ---------- tables ---------- */
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12.5px;color:var(--muted);font-weight:700;background:var(--sunken);letter-spacing:.04em}
+tr:last-child td{border-bottom:0}
+td.k{font-weight:700;white-space:nowrap}
+
+/* ---------- overview: chat + flow ---------- */
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;align-content:start;min-width:0}
+.panel-title{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.06em}
+.chat{display:grid;gap:10px;font-size:14px;line-height:1.7}
+.msg{max-width:88%;padding:8px 12px;border-radius:12px}
+.msg.u{justify-self:end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:4px}
+.msg.a{justify-self:start;background:var(--sunken);border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg.sys{justify-self:stretch;max-width:none;border:1.5px dashed var(--accent-line);background:var(--accent-soft);font-size:13px;border-radius:8px}
+.msg.sys .btns{display:flex;gap:6px;margin-top:6px}
+.fake-btn{font-size:12px;font-weight:700;padding:2px 10px;border-radius:6px;border:1px solid var(--line);background:var(--surface)}
+.fake-btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chat-foot{font-size:12px;color:var(--muted)}
+
+.flow{display:grid;gap:0;justify-items:stretch}
+.node{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--surface);display:grid;gap:2px;font-size:13.5px}
+.node .t{font-weight:700;font-size:14px}
+.node .d{color:var(--muted);font-size:12.5px;line-height:1.6}
+.node.hi{border-color:var(--accent);background:var(--accent-soft)}
+.node.hi .t{color:var(--accent)}
+.arrow{display:grid;justify-items:center;height:26px;color:var(--muted);font-size:11.5px}
+.arrow::before{content:"";width:1.5px;height:14px;background:var(--line)}
+.arrow::after{content:"";width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--muted)}
+.node.alt{border-style:dashed;border-color:var(--muted);background:transparent}
+.msg-tag{display:block;margin-top:4px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.03em}
+
+/* topic canvas mock (authoring canvas) */
+.canvas{border:1px solid var(--line);border-radius:12px;padding:20px 16px;background-color:var(--sunken);background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:16px 16px;display:grid;justify-items:center;overflow-x:auto}
+.cflow{display:grid;justify-items:center;width:100%;max-width:520px}
+.cnode{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:13.5px;line-height:1.65}
+.cnode .ch{display:flex;justify-content:space-between;gap:8px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--muted);background:var(--sunken);border-bottom:1px solid var(--line);letter-spacing:.04em}
+.cnode .ch em{font-style:normal;color:var(--accent)}
+.cnode .cb{padding:8px 12px;display:grid;gap:6px}
+.cnode .cb .small{font-size:12px;color:var(--muted)}
+.cnode.trig{border-color:var(--accent)}
+.cnode.trig .ch{background:var(--accent-soft);color:var(--accent)}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opts span{font-size:12px;font-weight:700;border:1px solid var(--accent-line);color:var(--accent);border-radius:99px;padding:0 10px;line-height:1.9}
+.cbranch{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;width:100%}
+.cbranch>div{display:grid;justify-items:center;align-content:start;min-width:0}
+.cond{font-size:11.5px;font-weight:700;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:0 10px;line-height:1.9;text-align:center}
+.duo{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+/* three types */
+.types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.type{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;background:var(--surface);display:grid;gap:4px;align-content:start}
+.type .en{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);letter-spacing:.04em}
+.type .jp{font-weight:700;font-size:15px}
+.type .d{font-size:13px;color:var(--muted);line-height:1.65}
+.type.now{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.type.now .en{color:var(--accent)}
+.badge{justify-self:start;font-size:11px;font-weight:700;color:var(--accent-ink);background:var(--accent);border-radius:99px;padding:0 8px;line-height:1.8}
+
+/* glossary */
+.gloss{display:grid;gap:0;margin:0;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden}
+.gloss>div{display:grid;grid-template-columns:200px minmax(0,1fr);gap:16px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.gloss>div:last-child{border-bottom:0}
+.gloss dt{font-weight:700}
+.gloss dd{margin:0;color:var(--ink);font-size:14.5px}
+.gloss dd .ex{display:block;color:var(--muted);font-size:13px}
+
+/* checklist */
+.check{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.check li label{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px;align-items:start;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.check li input{accent-color:var(--ok);width:16px;height:16px;margin:5px 0 0}
+.check li label:has(input:checked){border-color:var(--ok)}
+.check li label:has(input:checked) .ct{color:var(--muted)}
+.ct small{display:block;color:var(--muted);font-size:13px;line-height:1.6}
+
+/* tool config mock */
+.mock{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.mock-top{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line)}
+.mock-top .name{font-weight:700}
+.switch{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.switch i{width:30px;height:16px;border-radius:99px;background:var(--accent);position:relative;display:inline-block}
+.switch i::after{content:"";position:absolute;right:2px;top:2px;width:12px;height:12px;border-radius:50%;background:var(--surface)}
+.mock-sec{padding:14px 16px;border-bottom:1px solid var(--line);display:grid;gap:10px}
+.mock-sec:last-child{border-bottom:0}
+.mock-sec h4{margin:0;font-size:13px;letter-spacing:.06em;color:var(--muted);font-family:var(--font-body)}
+.field{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;font-size:14px;align-items:start}
+.field .fl{color:var(--muted);font-size:13px;padding-top:2px}
+.field .fv{min-width:0}
+.input-like{border:1px solid var(--line);border-radius:6px;padding:4px 10px;background:var(--sunken);font-size:13.5px;word-break:break-word}
+.opt{display:flex;gap:10px;align-items:baseline;font-size:13.5px}
+.opt .val{font-weight:700;color:var(--accent);white-space:nowrap}
+.method{display:inline-block;font-size:12px;font-weight:700;border-radius:99px;padding:0 9px;line-height:1.9;white-space:nowrap}
+.method.ai{background:var(--ok-soft);color:var(--ok)}
+.method.fix{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-line)}
+
+/* troubleshooting */
+.trouble{display:grid;gap:10px}
+.trouble details{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.trouble summary{cursor:pointer;padding:12px 16px;font-weight:700;list-style:none;display:flex;gap:10px;align-items:baseline}
+.trouble summary::-webkit-details-marker{display:none}
+.trouble summary::before{content:"＋";color:var(--accent);font-family:var(--font-mono);font-weight:500}
+.trouble details[open] summary::before{content:"－"}
+.trouble .body{padding:0 16px 14px 42px;display:grid;gap:6px;font-size:14.5px}
+.trouble .body b{color:var(--muted);font-size:12.5px;letter-spacing:.04em}
+
+/* lecturer notes */
+.points{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.points li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.points .pn{font-family:var(--font-display);font-weight:900;font-size:22px;color:var(--accent);line-height:1.2}
+.points h3{font-size:15.5px;margin-bottom:4px}
+.points p{font-size:14.5px;color:var(--ink)}
+
+.sources{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:14px}
+.sources li{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.sources .what{color:var(--muted);font-size:12.5px}
+
+footer{max-width:1120px;margin:56px auto 0;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+
+/* ---------- responsive ---------- */
+@media (max-width:960px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .toc{display:none}
+  .toc-mobile{display:block;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:28px}
+  .toc-mobile summary{padding:12px 16px;cursor:pointer;font-weight:700;font-size:14px}
+  .toc-mobile ol{margin:0;padding:0 16px 14px 36px;font-size:14px;display:grid;gap:4px}
+  main{max-width:none}
+}
+@media (max-width:680px){
+  .two{grid-template-columns:minmax(0,1fr)}
+  .types{grid-template-columns:minmax(0,1fr)}
+  .cbranch{grid-template-columns:minmax(0,1fr)}
+  .gloss>div{grid-template-columns:minmax(0,1fr);gap:2px}
+  .field{grid-template-columns:minmax(0,1fr);gap:4px}
+  .masthead{padding-block:28px 20px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">COPILOT STUDIO ハンズオン手順書 ／ 標準ハーネス</div>
+    <h1>はじめてのタスク型エージェント</h1>
+    <p class="lead">チャットで受けた備品申請を、SharePoint のリストに自動で登録するエージェントを 1 つ作ります。「調べて答える」エージェントから一歩進んで、「頼まれた作業を実行する」エージェントの作り方を手を動かして覚えるための手順書です。作業の実行は AI に任せるツールで、毎回同じにしたい案内はトピックで作り、両方の使い分けまで体験します。</p>
+    <div class="meta">
+      <span>所要時間 <b>約75分</b>（リスト準備 15分＋作成 60分）</span>
+      <span>題材 <b>備品申請の受付</b></span>
+      <span>使う機能 <b>ツール（SharePoint「項目の作成」）＋トピック</b></span>
+      <span>内容の確認日 <b class="mono">2026-10-03</b></span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="目次">
+      <div class="toc-inner">
+        <div class="progress">
+          <div class="progress-label"><span>進み具合</span><span id="prog-text">0 / 9</span></div>
+          <div class="bar"><span id="prog-bar"></span></div>
+        </div>
+        <ol id="toc-list">
+          <li><a href="#overview"><span class="n">00</span>作るもの</a></li>
+          <li><a href="#words"><span class="n">--</span>先に押さえる言葉</a></li>
+          <li><a href="#prep" data-step="prep"><span class="n">準備</span>事前準備</a></li>
+          <li><a href="#s1" data-step="s1"><span class="n">01</span>標準ハーネスを選ぶ</a></li>
+          <li><a href="#s2" data-step="s2"><span class="n">02</span>エージェントを作る</a></li>
+          <li><a href="#s3" data-step="s3"><span class="n">03</span>名前と指示を整える</a></li>
+          <li><a href="#s4" data-step="s4"><span class="n">04</span>ツールを追加する</a></li>
+          <li><a href="#s5" data-step="s5"><span class="n">05</span>ツールを設定する</a></li>
+          <li><a href="#s6" data-step="s6"><span class="n">06</span>テストする</a></li>
+          <li><a href="#s7" data-step="s7"><span class="n">07</span>トピックを足す</a></li>
+          <li><a href="#s8" data-step="s8"><span class="n">08</span>発行して使う</a></li>
+          <li><a href="#extra"><span class="n">＋</span>発展：メール通知</a></li>
+          <li><a href="#trouble"><span class="n">？</span>つまずきポイント</a></li>
+          <li><a href="#lecture"><span class="n">講</span>講師メモ</a></li>
+          <li><a href="#sources"><span class="n">出</span>参考リンク</a></li>
+        </ol>
+      </div>
+    </nav>
+
+    <main>
+      <details class="toc-mobile">
+        <summary>目次</summary>
+        <ol>
+          <li><a href="#overview">作るもの</a></li>
+          <li><a href="#words">先に押さえる言葉</a></li>
+          <li><a href="#prep">事前準備</a></li>
+          <li><a href="#s1">STEP 1 標準ハーネスを選ぶ</a></li>
+          <li><a href="#s2">STEP 2 エージェントを作る</a></li>
+          <li><a href="#s3">STEP 3 名前と指示を整える</a></li>
+          <li><a href="#s4">STEP 4 ツールを追加する</a></li>
+          <li><a href="#s5">STEP 5 ツールを設定する</a></li>
+          <li><a href="#s6">STEP 6 テストする</a></li>
+          <li><a href="#s7">STEP 7 トピックを足す</a></li>
+          <li><a href="#s8">STEP 8 発行して使う</a></li>
+          <li><a href="#extra">発展：メール通知</a></li>
+          <li><a href="#trouble">つまずきポイント</a></li>
+          <li><a href="#lecture">講師メモ</a></li>
+          <li><a href="#sources">参考リンク</a></li>
+        </ol>
+      </details>
+
+      <!-- ===================== OVERVIEW ===================== -->
+      <section id="overview">
+        <div class="sec-head">
+          <div class="sec-kicker">OVERVIEW</div>
+          <h2>作るもの</h2>
+          <p class="sub">ユーザーが話しかけるだけで、エージェントが足りない情報を聞き返し、最後に SharePoint のリストへ 1 行追加します。</p>
+        </div>
+
+        <div class="types" aria-label="Microsoft のエージェント 3 分類">
+          <div class="type">
+            <span class="en">RETRIEVAL</span>
+            <span class="jp">情報取得型</span>
+            <span class="d">社内資料などを調べて答える。データは読むだけ。</span>
+          </div>
+          <div class="type now">
+            <span class="badge">今回</span>
+            <span class="en">TASK</span>
+            <span class="jp">タスク実行型</span>
+            <span class="d">ユーザーに頼まれて、登録・送信などの操作を代わりに実行する。</span>
+          </div>
+          <div class="type">
+            <span class="en">AUTONOMOUS</span>
+            <span class="jp">自律型</span>
+            <span class="d">トリガー（メール受信など）をきっかけに、人が話しかけなくても動く。</span>
+          </div>
+        </div>
+
+        <div class="two">
+          <div class="panel">
+            <div class="panel-title">完成したときの会話イメージ</div>
+            <div class="chat">
+              <div class="msg a">こんにちは、備品申請アシスタントです。業務で使う備品の申請を受け付けます。<span class="msg-tag">トピック「会話の開始」</span></div>
+              <div class="msg u">ワイヤレスマウスを2個申請したいです</div>
+              <div class="msg a">承知しました。申請理由と、いつまでに必要かを教えてください。</div>
+              <div class="msg u">在宅勤務用です。10月20日までにほしいです</div>
+              <div class="msg sys">ツール実行前の確認<br>「備品申請を登録」を実行します。品名：ワイヤレスマウス／数量：2／申請理由：在宅勤務用／希望納期：2026/10/20
+                <div class="btns"><span class="fake-btn primary">確認</span><span class="fake-btn">キャンセル</span></div>
+              </div>
+              <div class="msg a">備品申請を登録しました。担当者からの連絡をお待ちください。<span class="msg-tag">ツール「備品申請を登録」</span></div>
+            </div>
+            <p class="chat-foot">※ 文面は AI が毎回生成するので変わります。確認の表示方法も画面によって異なります。</p>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">裏側で起きていること</div>
+            <div class="flow">
+              <div class="node"><span class="t">ユーザー</span><span class="d">Teams や Microsoft 365 Copilot で話しかける</span></div>
+              <div class="arrow"></div>
+              <div class="node"><span class="t">エージェント（指示）</span><span class="d">「申請の受付係」として何を聞き、いつツールを使うかを判断</span></div>
+              <div class="arrow"></div>
+              <div class="node hi"><span class="t">ツール「備品申請を登録」</span><span class="d">SharePoint コネクタの「項目の作成」。ここがタスク型の本体</span></div>
+              <div class="arrow"></div>
+              <div class="node"><span class="t">SharePoint リスト「備品申請」</span><span class="d">新しい行が 1 件増える</span></div>
+              <div class="arrow"></div>
+              <div class="node"><span class="t">完了メッセージ</span><span class="d">登録できたことをユーザーに伝える</span></div>
+            </div>
+            <div class="node alt"><span class="t">別ルート：ルールを聞かれたとき</span><span class="d">エージェントがトピック「申請ルールの案内」を選び、決まった文章とボタンで案内する。「申請する」を押すと上の流れに合流</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== WORDS ===================== -->
+      <section id="words">
+        <div class="sec-head">
+          <div class="sec-kicker">VOCABULARY</div>
+          <h2>先に押さえる 6 つの言葉</h2>
+          <p class="sub">画面に何度も出てくる言葉です。ここだけ分かれば手順で迷いにくくなります。</p>
+        </div>
+        <dl class="gloss">
+          <div><dt>ツール</dt><dd>エージェントが使える「道具」。メール送信、リストへの登録など、1 つの操作が 1 つのツールです。<span class="ex">タスク型エージェント ＝ ツールを持たせたエージェント、と考えるとシンプルです。</span></dd></div>
+          <div><dt>コネクタ</dt><dd>SharePoint や Outlook などのサービスとつなぐための「差し込み口」。中に「項目の作成」「メールの送信」などのツールが入っています。<span class="ex">SharePoint や Outlook は標準コネクタで、Copilot Studio のすべてのプランで使えます。</span></dd></div>
+          <div><dt>接続</dt><dd>コネクタに「誰のアカウントでつなぐか」を登録したもの。初回にサインインを求められるのはこのためです。</dd></div>
+          <div><dt>生成オーケストレーション</dt><dd>会話の内容を見て、AI が「今どのツールを使うか」を自動で決める仕組み。既定でオンになっています。<span class="ex">AI は主にツールの「名前」と「説明」を手がかりに判断します。</span></dd></div>
+          <div><dt>AI による動的入力</dt><dd>ツールに渡す値（品名・数量など）を、AI が会話から拾ってくる設定。足りなければ AI がユーザーに質問してくれます。<span class="ex">反対に、毎回同じ値でよいものは「カスタム値」で固定します。</span></dd></div>
+          <div><dt>トピック</dt><dd>「この話題が来たら、この順番で、この文章を返す」という会話の台本。メッセージ・質問・分岐などの部品（ノード）を上から並べて作ります。<span class="ex">AI に任せるツールと違い、作ったとおりに毎回同じ動きをします。</span></dd></div>
+        </dl>
+      </section>
+
+      <!-- ===================== PREP ===================== -->
+      <section id="prep">
+        <div class="step-head">
+          <div class="titles">
+            <div class="sec-kicker">PREPARATION</div>
+            <h2>事前準備</h2>
+          </div>
+          <label class="done-toggle"><input type="checkbox" id="done-prep" data-step="prep"> この準備が終わった</label>
+        </div>
+
+        <ul class="check">
+          <li><label><input type="checkbox" id="pre-1"><span class="ct">Copilot Studio にサインインできる<small><span class="mono">copilotstudio.microsoft.com</span> を開いてホーム画面が出ればOK。試用版ライセンスでも作成とテストまではできますが、発行（STEP 8）はできません。</small></span></label></li>
+          <li><label><input type="checkbox" id="pre-2"><span class="ct">作業する環境が決まっている<small>画面右上の環境名を確認します。講義では「全員この環境で作る」と最初に指定しておくと迷子が減ります。</small></span></label></li>
+          <li><label><input type="checkbox" id="pre-3"><span class="ct">SharePoint サイトに編集権限がある<small>リストを作れて、アイテムを追加できる権限（メンバー以上）が必要です。</small></span></label></li>
+          <li><label><input type="checkbox" id="pre-4"><span class="ct">下の表のとおりに「備品申請」リストを作った<small>作り方はこの下を参照。</small></span></label></li>
+          <li><label><input type="checkbox" id="pre-5"><span class="ct">サイトの URL を控えた<small>例：<span class="mono">https://contoso.sharepoint.com/sites/soumu</span>　リストの URL ではなく、<b>サイトのところまで</b>をメモします。</small></span></label></li>
+        </ul>
+
+        <h3>SharePoint リスト「備品申請」の作り方</h3>
+        <ol class="steps">
+          <li><div><p>SharePoint サイトを開き、<span class="ui">＋ 新規</span> → <span class="ui">リスト</span> → <span class="ui">空白のリスト</span> を選びます。</p></div></li>
+          <li><div><p>名前に <b>備品申請</b> と入れて作成します。</p></div></li>
+          <li><div><p><span class="ui">＋ 列の追加</span> で、下の表の列を作ります。最初からある「タイトル」列は、列名を「品名」に変えて使います。</p></div></li>
+        </ol>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>列名</th><th>列の種類</th><th>入る値の例</th><th>メモ</th></tr></thead>
+            <tbody>
+              <tr><td class="k">品名</td><td>1行テキスト</td><td>ワイヤレスマウス</td><td>元の「タイトル」列を名前変更。必須の列です</td></tr>
+              <tr><td class="k">数量</td><td>数値</td><td>2</td><td></td></tr>
+              <tr><td class="k">申請理由</td><td>複数行テキスト</td><td>在宅勤務用</td><td></td></tr>
+              <tr><td class="k">希望納期</td><td>日付と時刻</td><td>2026/10/20</td><td>「時刻を含める」はオフ</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note tip">
+          <span class="tag">コツ</span>
+          <p>最初の 1 本では「選択肢」「ユーザーまたはグループ」「参照」の列は避けるのがおすすめです。値の渡し方が少し特殊で、つまずきやすいところです。テキスト・数値・日付だけで成功体験を作ってから広げましょう。</p>
+        </div>
+        <div class="note">
+          <span class="tag">任意のひと手間</span>
+          <p>列は最初に英語名（Quantity など）で作ってから日本語名に変えると、裏側の名前（内部名）がきれいになり、後で Power Automate などから扱うときに楽です。</p>
+        </div>
+      </section>
+
+      <!-- ===================== STEP 1 ===================== -->
+      <section id="s1">
+        <div class="step-head">
+          <div class="titles">
+            <div class="sec-kicker">STEP 1</div>
+            <h2>標準ハーネスを選ぶ</h2>
+          </div>
+          <label class="done-toggle"><input type="checkbox" id="done-s1" data-step="s1"> 完了</label>
+        </div>
+        <p>2026 年の Copilot Studio には、エージェントを動かす仕組み（ハーネス）が複数あります。ホームを開いた直後は新しい「GitHub Copilot ハーネス」側の画面になっていることがあるので、今回使う<b>標準ハーネス</b>に切り替えます。</p>
+        <ol class="steps">
+          <li><div><p>Copilot Studio の <span class="ui">ホーム</span> を開きます。</p></div></li>
+          <li><div><p>ホーム画面の <span class="ui">新しい体験</span> の切り替えを<b>オフ</b>にします。フィードバックのパネルが出たら <span class="ui">提出</span> で閉じます。</p>
+            <p>または、ホームの <span class="ui">その他の構築方法</span> から標準ハーネスのエージェントを作ることもできます。</p></div></li>
+        </ol>
+        <div class="note why">
+          <span class="tag">なぜ標準ハーネス？</span>
+          <p>標準ハーネスは、決めたルールやトピックに沿って動くので、毎回の動きが読みやすいのが特長です。社内ヘルプデスクや「決まった手続きの受付」のような、型が決まった業務に向いています。複雑な多段階の業務を AI に考えさせたい場合は GitHub Copilot ハーネスが候補になりますが、画面も課金の考え方も別物です。</p>
+        </div>
+        <div class="note warn">
+          <span class="tag">画面の表記について</span>
+          <p>日本語 UI は機械翻訳のため、ボタン名が少し違って見えることがあります（例：「新しい体験」が「新しいエクスペリエンス」）。意味の近いものを選べば大丈夫です。英語表示の場合の名前も一部カッコで併記しています。</p>
+        </div>
+      </section>
+
+      <!-- ===================== STEP 2 ===================== -->
+      <section id="s2">
+        <div class="step-head">
+          <div class="titles">
+            <div class="sec-kicker">STEP 2</div>
+            <h2>エージェントを作る</h2>
+          </div>
+          <label class="done-toggle"><input type="checkbox" id="done-s2" data-step="s2"> 完了</label>
+        </div>
+        <ol class="steps">
+          <li><div><p>ホームの「エージェントに何をしてほしいか」を書く入力欄に、下の文章を貼り付けて送信します（最大 1,024 文字）。</p>
+            <div class="copy">
+              <div class="copy-bar"><span>エージェントの説明（ホームに貼る）</span><button class="copy-btn" type="button" data-copy="c-desc">コピー</button></div>
+              <pre id="c-desc">社内の備品申請を受け付けて、SharePoint の「備品申請」リストに登録するエージェント。ユーザーから品名・数量・申請理由・希望納期を聞き取り、そろったら登録する。</pre>
+            </div>
+          </div></li>
+          <li><div><p>エージェントの <span class="ui">概要</span> ページが開きます。AI が名前・説明・指示を自動で作り、ナレッジやツールの候補も出してくれます。</p></div></li>
+          <li><div><p>候補のナレッジやツールは、<b>今回はすべて追加せずに進めます</b>。必要なツールは STEP 4 で自分で選びます。</p></div></li>
+        </ol>
+        <div class="note">
+          <span class="tag">入力欄が見当たらないとき</span>
+          <p>環境が自然言語での作成に対応していない場合は、説明を書く欄が表示されません。左側の <span class="ui">エージェント</span> から新しいエージェントを作成し、名前などを手で入れて進めてください。</p>
+        </div>
+      </section>
+
+      <!-- ===================== STEP 3 ===================== -->
+      <section id="s3">
+        <div class="step-head">
+          <div class="titles">
+            <div class="sec-kicker">STEP 3</div>
+            <h2>名前と指示を整える</h2>
+          </div>
+          <label class="done-toggle"><input type="checkbox" id="done-s3" data-step="s3"> 完了</label>
+        </div>
+        <p>AI が作った内容をベースに、<span class="ui">概要</span> ページで次のように書き換えます。各欄の <span class="ui">編集</span> から変更して <span class="ui">保存</span> します。</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>項目</th><th>入れる内容</th></tr></thead>
+            <tbody>
+              <tr><td class="k">名前</td><td>備品申請アシスタント</td></tr>
+              <tr><td class="k">説明</td><td>備品の申請を受け付けて、SharePoint の備品申請リストに登録します。</td></tr>
+              <tr><td class="k">指示</td><td>下の文章をそのまま貼り付け</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="copy">
+          <div class="copy-bar"><span>指示（概要ページの「指示」に貼る）</span><button class="copy-btn" type="button" data-copy="c-inst">コピー</button></div>
+<pre id="c-inst">あなたは社内の備品申請を受け付ける担当者です。
+
+# やること
+- ユーザーから「品名」「数量」「申請理由」「希望納期」の4つを聞き取ってください。
+- 足りない項目があれば、まとめて質問せず、1〜2項目ずつ聞いてください。
+- 希望納期は「2026/10/20」のように年月日の形で確認してください。
+- 4つがそろったら「備品申請を登録」ツールを使って登録してください。
+- 登録できたら、登録した内容を箇条書きで示し、「担当者から連絡があります」と伝えてください。
+
+# やらないこと
+- 備品申請以外の相談には、対応範囲外であることを丁寧に伝え、総務窓口に問い合わせるよう案内してください。
+- 在庫や承認の結果について、推測で答えないでください。</pre>
+        </div>
+        <div class="note why">
+          <span class="tag">ポイント</span>
+          <p>指示の中にツール名（備品申請を登録）をそのまま書いておくと、AI が「ここでこのツールを使う」と判断しやすくなります。STEP 5 でツールの名前をこれと同じにします。</p>
+        </div>
+        <div class="note">
+          <span class="tag">確認</span>
+          <p>エージェントの <span class="ui">設定</span> で、生成オーケストレーション（生成 AI に応答方法を決めさせる設定）がオンになっていることを確認します。既定でオンです。オフだと、ツールを会話の流れで自動的に使えません。</p>
+        </div>
+      </section>
+
+      <!-- ===================== STEP 4 ===================== -->
+      <section id="s4">
+        <div class="step-head">
+          <div class="titles">
+            <div class="sec-kicker">STEP 4</div>
+            <h2>ツールを追加する</h2>
+          </div>
+          <label class="done-toggle"><input type="checkbox" id="done-s4" data-step="s4"> 完了</label>
+        </div>
+        <p>ここからがタスク型の本番です。SharePoint コネクタの中にある「項目の作成」ツールを、エージェントに持たせます。</p>
+        <div class="path" role="group" aria-label="操作の順番">
+          <span class="label">クリック順</span>
+          <span class="ui">ツール</span><span class="sep">›</span>
+          <span class="ui">ツールの追加</span><span class="sep">›</span>
+          <span class="ui">コネクタ</span><span class="sep">›</span>
+          <span class="ui">「SharePoint」で検索</span><span class="sep">›</span>
+          <span class="ui">項目の作成</span><span class="sep">›</span>
+          <span class="ui">追加と構成</span>
+        </div>
+        <ol class="steps">
+          <li><div><p>エージェントの上部メニューから <span class="ui">ツール</span> ページを開き、<span class="ui">ツールの追加</span> を選びます。</p></div></li>
+          <li><div><p><span class="ui">コネクタ</span> を選び、検索ボックスに <b>SharePoint</b> と入力します。</p></div></li>
+          <li><div><p>SharePoint のツール一覧から <span class="ui">項目の作成</span>（英語表示では Create item）を選びます。<span class="ui">ツールの追加</span> のウィンドウが開きます。</p></div></li>
+          <li><div><p>接続がまだない場合は <span class="ui">新しい接続の作成</span> を選び、自分のアカウントでサインインします。</p></div></li>
+          <li><div><p><span class="ui">追加と構成</span> を選びます。ツールの設定ページが開いたら STEP 5 へ進みます。</p></div></li>
+        </ol>
+        <div class="note warn">
+          <span class="tag">SharePoint がグレーで選べないとき</span>
+          <p>組織のデータポリシー（DLP）でコネクタが制限されています。ツール横の情報アイコンで理由を確認し、管理者に相談してください。講義の前に、受講者の環境で選べるかを必ず確認しておきましょう。</p>
+        </div>
+      </section>
+
+      <!-- ===================== STEP 5 ===================== -->
+      <section id="s5">
+        <div class="step-head">
+          <div class="titles">
+            <div class="sec-kicker">STEP 5</div>
+            <h2>ツールを設定する</h2>
+          </div>
+          <label class="done-toggle"><input type="checkbox" id="done-s5" data-step="s5"> 完了</label>
+        </div>
+        <p>ツールの設定ページは <b>詳細・入力・完了</b> の 3 つに分かれています。下が設定後の状態のイメージです。オレンジの文字が変更するところです。</p>
+
+        <div class="mock" aria-label="ツール設定ページのイメージ">
+          <div class="mock-top">
+            <span class="name">備品申請を登録</span>
+            <span class="switch"><i></i>有効</span>
+          </div>
+          <div class="mock-sec">
+            <h4>詳細</h4>
+            <div class="field"><span class="fl">名前</span><span class="fv"><span class="input-like">備品申請を登録</span></span></div>
+            <div class="field"><span class="fl">説明</span><span class="fv"><span class="input-like">ユーザーの備品申請（品名・数量・申請理由・希望納期）を、SharePoint の「備品申請」リストに新しい項目として登録する。4つの項目がそろったときに使う。</span></span></div>
+            <div class="field"><span class="fl">ツールを使うタイミング</span><span class="fv opt"><span class="val">オン</span><span>エージェントがツール使用のタイミングを動的に決定できるようにする</span></span></div>
+            <div class="field"><span class="fl">実行前の確認</span><span class="fv opt"><span class="val">はい</span><span>実行する前にエンド ユーザーに質問する</span></span></div>
+            <div class="field"><span class="fl">認証</span><span class="fv opt"><span class="val" style="color:var(--muted)">既定のまま</span><span>エンドユーザーの資格情報</span></span></div>
+          </div>
+          <div class="mock-sec">
+            <h4>入力</h4>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>入力</th><th>入力の手法</th><th>値</th></tr></thead>
+                <tbody>
+                  <tr><td class="k">サイトのアドレス</td><td><span class="method fix">カスタム値</span></td><td class="mono">https://contoso.sharepoint.com/sites/soumu</td></tr>
+                  <tr><td class="k">リスト名</td><td><span class="method fix">カスタム値</span></td><td>備品申請</td></tr>
+                  <tr><td class="k">品名（タイトル）</td><td><span class="method ai">AI による動的入力</span></td><td>会話から自動で入る</td></tr>
+                  <tr><td class="k">数量</td><td><span class="method ai">AI による動的入力</span></td><td>会話から自動で入る</td></tr>
+                  <tr><td class="k">申請理由</td><td><span class="method ai">AI による動的入力</span></td><td>会話から自動で入る</td></tr>
+                  <tr><td class="k">希望納期</td><td><span class="method ai">AI による動的入力</span></td><td>会話から自動で入る</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="mock-sec">
+            <h4>完了</h4>
+            <div class="field"><span class="fl">実行後</span><span class="fv opt"><span class="val" style="color:var(--muted)">既定のまま</span><span>応答しない（エージェントがツールの結果を自分の返答に組み込む）</span></span></div>
+          </div>
+        </div>
+
+        <h3>設定の手順</h3>
+        <ol class="steps">
+          <li><div><p><b>詳細</b>：名前を <b>備品申請を登録</b> に変え、説明に下の文章を貼ります。</p>
+            <div class="copy">
+              <div class="copy-bar"><span>ツールの説明</span><button class="copy-btn" type="button" data-copy="c-tool">コピー</button></div>
+              <pre id="c-tool">ユーザーの備品申請（品名・数量・申請理由・希望納期）を、SharePoint の「備品申請」リストに新しい項目として登録する。4つの項目がそろったときに使う。</pre>
+            </div>
+          </div></li>
+          <li><div><p><b>詳細</b>の中の設定を確認します。<span class="ui">エージェントがツール使用のタイミングを動的に決定できるようにする</span> はオンのまま、<span class="ui">実行する前にエンド ユーザーに質問する</span> は <b>はい</b> に変えます。認証は既定（エンドユーザーの資格情報）のままにします。</p></div></li>
+          <li><div><p><b>入力</b>：「サイトのアドレス」の入力の手法を <span class="ui">カスタム値</span> にして、事前準備で控えたサイトの URL を入れます。「リスト名」も <span class="ui">カスタム値</span> にして <b>備品申請</b> を選びます（または入力します）。</p></div></li>
+          <li><div><p>リストを指定すると、品名・数量などの列が入力として並びます。これらは既定の <span class="ui">AI による動的入力</span> のままにします。</p></div></li>
+          <li><div><p><b>完了</b>：<span class="ui">実行後</span> は既定のままで OK です。右上の <span class="ui">保存</span> を押します。</p></div></li>
+        </ol>
+
+        <div class="note why">
+          <span class="tag">なぜサイトとリストは固定する？</span>
+          <p>「AI による動的入力」のままだと、AI がユーザーに「登録先のサイト URL を教えてください」と聞いてしまいます。毎回同じでよい値はカスタム値で固定し、ユーザーにしか分からない値（品名や数量）だけを AI に集めさせるのが基本の形です。</p>
+        </div>
+        <div class="note why">
+          <span class="tag">なぜ「実行前の確認」をはいにする？</span>
+          <p>タスク型はデータを書き込みます。読み取りだけのナレッジ型と違い、間違えると実データに残ります。登録や送信のように取り消しにくい操作は、実行前にユーザーの確認をはさむのが安全です。指示文で「確認して」と頼むより、ツールの設定で確認させる方が確実です。</p>
+        </div>
+        <div class="note">
+          <span class="tag">列の入力が出てこないとき</span>
+          <p>サイトのアドレスかリスト名が正しく入っていない可能性があります。サイト URL がリストの URL になっていないか確認し、いったん保存してページを再読み込みしてください。</p>
+        </div>
+      </section>
+
+      <!-- ===================== STEP 6 ===================== -->
+      <section id="s6">
+        <div class="step-head">
+          <div class="titles">
+            <div class="sec-kicker">STEP 6</div>
+            <h2>テストする</h2>
+          </div>
+          <label class="done-toggle"><input type="checkbox" id="done-s6" data-step="s6"> 完了</label>
+        </div>
+        <ol class="steps">
+          <li><div><p>右側のテストパネルを開き、上部の <span class="ui">新しいテスト セッションの開始</span> アイコンで会話をリセットします。設定を変えたら毎回リセットするのが鉄則です。</p></div></li>
+          <li><div><p>「<b>ワイヤレスマウスを2個申請したいです</b>」と送ります。エージェントが申請理由と希望納期を聞き返してくれば、AI による動的入力が働いています。</p></div></li>
+          <li><div><p>理由と納期を答えると、ツール実行前の確認が出ます。内容を見て確定します。</p></div></li>
+          <li><div><p>初回は接続の確認（サインインや接続の許可）が表示されることがあります。画面の案内に従って許可し、もう一度実行します。</p></div></li>
+          <li><div><p>SharePoint の「備品申請」リストを開き、新しい行が増えていれば成功です。</p></div></li>
+        </ol>
+
+        <h3>試しておきたい 4 パターン</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>話しかけ方</th><th>期待する動き</th></tr></thead>
+            <tbody>
+              <tr><td>「モニター1台、資料作成用、11/5まで」と一度に全部言う</td><td>聞き返さずに確認へ進む</td></tr>
+              <tr><td>「マウスがほしい」とだけ言う</td><td>数量・理由・納期を少しずつ聞き返す</td></tr>
+              <tr><td>確認で「キャンセル」を選ぶ</td><td>リストに何も増えない</td></tr>
+              <tr><td>「有給の残り日数は？」と聞く</td><td>対応範囲外と伝えて、総務窓口を案内する</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note tip">
+          <span class="tag">デモのコツ</span>
+          <p>テストパネルの横に SharePoint のリストを並べて開いておき、確認を押した直後にリストを更新すると、「チャットから実データが書き込まれた」瞬間を見せられます。どのツールがどの順番で呼ばれたかは、テストパネルのアクティビティ表示（アクティビティ マップ）でも確認できます。</p>
+        </div>
+      </section>
+
+      <!-- ===================== STEP 7 TOPICS ===================== -->
+      <section id="s7">
+        <div class="step-head">
+          <div class="titles">
+            <div class="sec-kicker">STEP 7</div>
+            <h2>トピックで決まった動きを足す</h2>
+          </div>
+          <label class="done-toggle"><input type="checkbox" id="done-s7" data-step="s7"> 完了</label>
+        </div>
+        <p>ここまでは、ツールを使うタイミングも聞き取り方も AI に任せてきました。このSTEPでは、<b>毎回同じ動きをさせたい部分</b>をトピックで作ります。最初のあいさつと、申請ルールの案内の 2 つです。</p>
+
+        <div class="types duo">
+          <div class="type">
+            <span class="en">TOOL</span>
+            <span class="jp">ツール（STEP 4〜6）</span>
+            <span class="d">必要な情報を AI が会話から拾って、操作を実行する。聞き方や言い回しは毎回少しずつ変わる。</span>
+          </div>
+          <div class="type now">
+            <span class="badge">このSTEP</span>
+            <span class="en">TOPIC</span>
+            <span class="jp">トピック</span>
+            <span class="d">作った台本のとおりに進む。文章もボタンも分岐も毎回同じ。</span>
+          </div>
+        </div>
+
+        <h3>7-A　最初のあいさつを変える（システムトピック「会話の開始」）</h3>
+        <ol class="steps">
+          <li><div><p>上部メニューの <span class="ui">トピック</span> を開き、<span class="ui">システム</span> の一覧から <span class="ui">会話の開始</span> を選びます。テストパネルでエージェントの最初のメッセージをクリックしても開けます。</p></div></li>
+          <li><div><p>キャンバスの <span class="ui">メッセージ</span> ノードの文章を、下の文章に置き換えて <span class="ui">保存</span> します。</p>
+            <div class="copy">
+              <div class="copy-bar"><span>あいさつの文章</span><button class="copy-btn" type="button" data-copy="c-greet">コピー</button></div>
+              <pre id="c-greet">こんにちは、備品申請アシスタントです。業務で使う備品の申請を受け付けます。
+「ワイヤレスマウスを2個申請したい」のように話しかけてください。
+申請のルールを知りたいときは「申請のルールを教えて」と聞いてください。</pre>
+            </div>
+          </div></li>
+          <li><div><p>テストパネルの <span class="ui">新しいテスト セッションの開始</span> を押し、あいさつが変わったことを確認します。</p></div></li>
+        </ol>
+        <div class="note">
+          <span class="tag">Microsoft 365 Copilot では表示されない</span>
+          <p>Microsoft 365 Copilot のチャネルは「会話の開始」トピックに対応していないため、あいさつは出ません（Teams では出ます）。Copilot 側では、<span class="ui">概要</span> ページの <span class="ui">提案プロンプト</span> に「マウスを申請したい」「申請のルールを教えて」などを登録しておくと、会話のきっかけになります。</p>
+        </div>
+
+        <h3>7-B　ルール案内のトピックを作る</h3>
+        <p>完成形はこの形です。上から順に、トリガー → メッセージ → 質問 → 選んだボタンごとの返事、と進みます。</p>
+
+        <div class="canvas" aria-label="トピック「申請ルールの案内」の完成イメージ">
+          <div class="cflow">
+            <div class="cnode trig">
+              <div class="ch"><span>トリガー</span><em>エージェントが選択する</em></div>
+              <div class="cb"><span class="small">説明</span><span>ユーザーが備品申請のルール、申請できるもの、承認の要否、届くまでの日数などを質問したときに使う。</span></div>
+            </div>
+            <div class="arrow"></div>
+            <div class="cnode">
+              <div class="ch"><span>メッセージ</span></div>
+              <div class="cb"><span>備品申請のルールです。<br>・申請できるのは業務で使う備品です<br>・1点3万円以上は上長の承認が必要です<br>・届くまでの目安は申請から5営業日です</span></div>
+            </div>
+            <div class="arrow"></div>
+            <div class="cnode">
+              <div class="ch"><span>質問</span><em>複数選択式オプション</em></div>
+              <div class="cb"><span>このまま申請を始めますか？</span><div class="opts"><span>申請する</span><span>今回はやめておく</span></div><span class="small">保存先の変数：StartRequest</span></div>
+            </div>
+            <div class="arrow"></div>
+            <div class="cbranch">
+              <div>
+                <span class="cond">「申請する」のとき</span>
+                <div class="arrow"></div>
+                <div class="cnode"><div class="ch"><span>メッセージ</span></div><div class="cb"><span>では、申請したい品名と数量を教えてください。</span></div></div>
+              </div>
+              <div>
+                <span class="cond">「今回はやめておく」のとき</span>
+                <div class="arrow"></div>
+                <div class="cnode"><div class="ch"><span>メッセージ</span></div><div class="cb"><span>承知しました。必要になったら、いつでも声をかけてください。</span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ol class="steps">
+          <li><div><p><span class="ui">トピック</span> › <span class="ui">トピックの追加</span> › <span class="ui">最初から</span>（英語表示では From blank）を選びます。</p></div></li>
+          <li><div><p>上部の <span class="ui">詳細</span> を開き、トピック名を <b>申請ルールの案内</b> にします。トピック名にピリオド（.）は使わないでください。後でソリューションとして書き出せなくなります。</p></div></li>
+          <li><div><p><b>トリガー</b>ノードが <span class="ui">エージェントが選択する</span> になっていることを確認し、説明に下の文章を入れます。生成オーケストレーションでは、キーワードではなくこの説明を読んで AI がトピックを選びます。</p>
+            <div class="copy">
+              <div class="copy-bar"><span>トリガーの説明</span><button class="copy-btn" type="button" data-copy="c-trig">コピー</button></div>
+              <pre id="c-trig">ユーザーが備品申請のルール、申請できるもの、承認の要否、届くまでの日数などを質問したときに使う。</pre>
+            </div>
+          </div></li>
+          <li><div><p>トリガーの下の <span class="ui">＋</span>（ノードの追加）から <span class="ui">メッセージを送信</span> を選び、ルールの文章を入れます。</p>
+            <div class="copy">
+              <div class="copy-bar"><span>ルールの文章（例：自社のルールに書き換えて使います）</span><button class="copy-btn" type="button" data-copy="c-rule">コピー</button></div>
+              <pre id="c-rule">備品申請のルールです。
+・申請できるのは、業務で使う備品です。
+・1点3万円以上の備品は、上長の承認が必要です。
+・届くまでの目安は、申請から5営業日です。
+・申請の状況は、総務部からメールでお知らせします。</pre>
+            </div>
+          </div></li>
+          <li><div><p>その下に <span class="ui">＋</span> › <span class="ui">質問する</span> を追加します。質問文は「このまま申請を始めますか？」、<span class="ui">識別</span> は <span class="ui">複数選択式オプション</span> にして、<span class="ui">ユーザーのオプション</span> に「申請する」「今回はやめておく」を追加します。</p></div></li>
+          <li><div><p><span class="ui">ユーザーの応答に名前を付けて保存</span> の変数名を選び、<b>StartRequest</b> に変更します。後から見て何の値か分かる名前にするのが基本です。</p></div></li>
+          <li><div><p>選択肢ごとに分岐ができるので、それぞれの下に <span class="ui">メッセージを送信</span> を追加し、上の完成イメージの文章を入れます。分岐ができていない場合は <span class="ui">条件を追加</span> で「StartRequest が 申請する に等しい」という条件を作ります。</p></div></li>
+          <li><div><p>右上の <span class="ui">保存</span> を押します。</p></div></li>
+        </ol>
+
+        <h3>テストする</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>話しかけ方</th><th>期待する動き</th></tr></thead>
+            <tbody>
+              <tr><td>「申請のルールを教えて」</td><td>ルールの文章が<b>そのまま</b>出て、ボタンが 2 つ表示される</td></tr>
+              <tr><td>「申請する」を押して「モニターを1台」と送る</td><td>申請の聞き取りに戻り、最後はツール「備品申請を登録」が動く</td></tr>
+              <tr><td>「今回はやめておく」を押す</td><td>あいさつして終わる。リストには何も増えない</td></tr>
+              <tr><td>「何日くらいで届く？」</td><td>このトピックが選ばれて、ルールの文章が出る</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note why">
+          <span class="tag">なぜルールはトピックで作る？</span>
+          <p>指示文に書いたルールは、AI が自分の言葉に言い換えて答えます。社内ルールのように一字一句変えたくない内容は、トピックのメッセージにしておくと毎回同じ文章が出ます。「柔軟さが欲しいところは AI、正確さが欲しいところはトピック」と覚えると使い分けやすいです。</p>
+        </div>
+        <div class="note tip">
+          <span class="tag">コツ</span>
+          <p>トピックの説明とツールの説明が似ていると、AI がどちらを使うか迷います。トピックは「ルールを質問したとき」、ツールは「4 つの項目がそろったとき」のように、使う場面をはっきり分けて書きます。</p>
+        </div>
+      </section>
+
+      <!-- ===================== STEP 8 PUBLISH ===================== -->
+      <section id="s8">
+        <div class="step-head">
+          <div class="titles">
+            <div class="sec-kicker">STEP 8</div>
+            <h2>発行して Teams・Copilot で使う</h2>
+          </div>
+          <label class="done-toggle"><input type="checkbox" id="done-s8" data-step="s8"> 完了</label>
+        </div>
+        <ol class="steps">
+          <li><div><p>画面上部の <span class="ui">発行</span> を選び、確認メッセージでもう一度 <span class="ui">発行</span> を選びます。緑のバナーが出れば成功です。</p></div></li>
+          <li><div><p>上部メニューの <span class="ui">チャネル</span> を開き、<span class="ui">Teams と Microsoft 365 Copilot</span> のタイルを選びます。</p></div></li>
+          <li><div><p><span class="ui">エージェントを Microsoft 365 Copilot で利用可能にする</span> にチェックが入っていることを確認し、<span class="ui">チャネルを追加</span> を選びます。</p></div></li>
+          <li><div><p><span class="ui">Teams でエージェントを表示</span> を選び、Teams 側で <span class="ui">追加</span> を押します。Teams と Microsoft 365 Copilot の両方に入ります。</p></div></li>
+          <li><div><p>Microsoft 365 Copilot では、入力欄で <b>@</b> を打ってエージェントを選んでから話しかけます。</p></div></li>
+        </ol>
+        <div class="note warn">
+          <span class="tag">ほかの人に使ってもらう前に</span>
+          <p>認証が「エンドユーザーの資格情報」なので、リストへの書き込みは<b>使う人本人の権限</b>で行われます。使う人全員に「備品申請」リストの編集権限が必要です。あわせて、エージェント自体の共有設定も必要です。</p>
+        </div>
+        <div class="note">
+          <span class="tag">直したのに反映されないとき</span>
+          <p>修正後は必ず再発行します。Teams では古い会話が続いていると前の動きのままになるので、チャットで <b>やり直す</b> と送って新しい会話にしてください。</p>
+        </div>
+      </section>
+
+      <!-- ===================== EXTRA ===================== -->
+      <section id="extra">
+        <div class="sec-head">
+          <div class="sec-kicker">OPTIONAL</div>
+          <h2>発展：登録後に確認メールを送る</h2>
+          <p class="sub">ツールを 2 つにすると、AI が順番を考えて使い分ける様子を見せられます。時間に余裕があるときの追加演習です。</p>
+        </div>
+        <ol class="steps">
+          <li><div><p><span class="ui">ツール</span> › <span class="ui">ツールの追加</span> › <span class="ui">コネクタ</span> で <b>Office 365 Outlook</b> を検索し、<span class="ui">メールの送信 (V2)</span> を追加します。</p></div></li>
+          <li><div><p>名前を <b>申請確認メールを送信</b>、説明を「備品申請の登録が完了した後に、申請内容を記載した確認メールを送る」にします。実行前の確認は <b>はい</b> にします。</p></div></li>
+          <li><div><p>入力の「宛先」は、ハンズオン中は <span class="ui">カスタム値</span> で自分のメールアドレスに固定します。「件名」「本文」は AI による動的入力のままにします。</p></div></li>
+          <li><div><p>STEP 3 の指示の「やること」に、次の 1 行を足します。</p>
+            <div class="copy">
+              <div class="copy-bar"><span>指示に追加する 1 行</span><button class="copy-btn" type="button" data-copy="c-mail">コピー</button></div>
+              <pre id="c-mail">- 登録が完了したら「申請確認メールを送信」ツールで、申請内容を記載した確認メールを送ってください。</pre>
+            </div>
+          </div></li>
+          <li><div><p>テストで「登録 → メール送信」の順に 2 つのツールが動けば完成です。</p></div></li>
+        </ol>
+      </section>
+
+      <!-- ===================== TROUBLE ===================== -->
+      <section id="trouble">
+        <div class="sec-head">
+          <div class="sec-kicker">TROUBLESHOOTING</div>
+          <h2>つまずきポイント</h2>
+          <p class="sub">受講者から出そうな「動かない」をまとめました。症状をクリックすると原因と対処が開きます。</p>
+        </div>
+        <div class="trouble">
+          <details><summary>画面が手順と違う（スキルやメモリなどのメニューがある）</summary>
+            <div class="body"><b>原因</b><p>新しい体験（GitHub Copilot ハーネス）の画面を開いています。</p><b>対処</b><p>ホームの「新しい体験」をオフにするか、「その他の構築方法」から作り直します（STEP 1）。</p></div></details>
+          <details><summary>ツールの追加で SharePoint がグレーになって選べない</summary>
+            <div class="body"><b>原因</b><p>組織のデータポリシー（DLP）でコネクタが制限されています。</p><b>対処</b><p>情報アイコンで理由を確認し、管理者に相談します。講義前の環境チェック項目に入れておきます。</p></div></details>
+          <details><summary>品名や数量などの入力欄が出てこない</summary>
+            <div class="body"><b>原因</b><p>サイトのアドレスかリスト名が未確定、または間違っています。</p><b>対処</b><p>サイト URL は「/sites/〇〇」まで。カスタム値で入れ直して保存し、ページを再読み込みします。</p></div></details>
+          <details><summary>エージェントが「サイトの URL を教えて」と聞いてくる</summary>
+            <div class="body"><b>原因</b><p>サイトのアドレスやリスト名が「AI による動的入力」のままです。</p><b>対処</b><p>どちらもカスタム値で固定します（STEP 5）。</p></div></details>
+          <details><summary>ツールを使わず、普通の返事だけで終わる</summary>
+            <div class="body"><b>原因</b><p>ツールの説明があいまい、「動的に決定」がオフ、または生成オーケストレーションがオフになっています。</p><b>対処</b><p>説明に「何をするか」「いつ使うか」を具体的に書き、指示にツール名を入れます。設定のオン・オフも確認し、テストセッションをリセットして試します。</p></div></details>
+          <details><summary>ルールを聞いても、トピックではなく AI が自分の言葉で答える</summary>
+            <div class="body"><b>原因</b><p>トリガーが「エージェントが選択する」になっていない、説明があいまい、またはトピックを保存していません。</p><b>対処</b><p>トリガーと説明を確認して保存し、テストセッションをリセットしてから試します。説明には「どんな質問のときに使うか」を具体的に並べます。</p></div></details>
+          <details><summary>ボタンを押したあと、何も返ってこない</summary>
+            <div class="body"><b>原因</b><p>選んだ選択肢の分岐の下にメッセージノードがありません。</p><b>対処</b><p>「申請する」「今回はやめておく」の両方の分岐にメッセージを置きます（STEP 7-B の手順 7）。</p></div></details>
+          <details><summary>実行するとアクセス権のエラーになる</summary>
+            <div class="body"><b>原因</b><p>テストしている人がリストの編集権限を持っていません（エンドユーザーの資格情報で書き込むため）。</p><b>対処</b><p>リストまたはサイトの編集権限を付与します。</p></div></details>
+          <details><summary>日付や数量が思った値で入らない</summary>
+            <div class="body"><b>原因</b><p>「来週の金曜」「2、3個」のようなあいまいな表現を AI が解釈しきれていません。</p><b>対処</b><p>指示に「希望納期は年月日の形で確認する」「数量は数字で確認する」と書きます。</p></div></details>
+          <details><summary>Teams で直した内容が反映されない</summary>
+            <div class="body"><b>原因</b><p>再発行していない、または古い会話が続いています。</p><b>対処</b><p>再発行してから、Teams のチャットで「やり直す」と送ります。</p></div></details>
+        </div>
+      </section>
+
+      <!-- ===================== LECTURE ===================== -->
+      <section id="lecture">
+        <div class="sec-head">
+          <div class="sec-kicker">FOR THE INSTRUCTOR</div>
+          <h2>講師メモ</h2>
+          <p class="sub">説明するときに押さえたいところと、当日を楽にする段取りです。</p>
+        </div>
+        <ol class="points">
+          <li><span class="pn">1</span><div><h3>ナレッジ型は「読む」、タスク型は「書く・動かす」</h3><p>違いはツールを持っているかどうかだけです。ナレッジ型で作ったエージェントにツールを 1 つ足せば、それがタスク型になる、と伝えると受講者の頭の中がつながります。</p></div></li>
+          <li><span class="pn">2</span><div><h3>ツールの「名前」と「説明」は AI への説明書</h3><p>AI はツールの名前と説明を読んで「今これを使うべきか」を判断します。説明は人間向けのメモではなく、AI への指示だと考えて具体的に書いてもらいます。</p></div></li>
+          <li><span class="pn">3</span><div><h3>書き込み系は「実行前に確認」をオンに</h3><p>指示文での確認は AI の判断次第ですが、ツール設定の確認は仕組みとして必ずはさまります。業務で使うときの安全装置として紹介します。</p></div></li>
+          <li><span class="pn">4</span><div><h3>認証は 2 種類</h3><p>エンドユーザーの資格情報（既定）は「使う人の権限で書き込む」ので、見せてはいけないデータに触れにくく安全です。作成者が指定した資格情報は「作成者の権限で書き込む」ので、全員に権限を配らずに済む一方、作成者の権限の範囲で誰でも操作できてしまう点に注意が必要です。</p></div></li>
+          <li><span class="pn">5</span><div><h3>AI に任せるか、トピックで決めるか</h3><p>標準ハーネスの強みは、AI の柔軟さとトピックの確実さを 1 つのエージェントの中で組み合わせられることです。聞き取りや判断は AI、ルール案内や定型の手続きはトピック、と役割を分けて説明します。慣れてきたら、トピックの中から <span class="ui">ツールの追加</span> でツールを直接呼び出し、質問ノードで聞く順番まで固定した「がっちり型」の申請フローも作れます。</p></div></li>
+        </ol>
+
+        <h3>当日の段取り</h3>
+        <ul class="check">
+          <li><label><input type="checkbox" id="lec-1"><span class="ct">「備品申請」リストは講師が 1 つ用意し、受講者全員に編集権限を付けておく<small>リスト作成を省けば、ハンズオンは STEP 1〜6 で約 30 分、トピック（STEP 7）まで入れて約 45 分が目安です。時間が足りないときは STEP 7-A（あいさつ）だけにして、7-B はデモで見せる手もあります。全員の申請が 1 つのリストに集まるので、最後に一覧を見せると盛り上がります。</small></span></label></li>
+          <li><label><input type="checkbox" id="lec-2"><span class="ct">受講者の環境で SharePoint コネクタが選べるか、事前に 1 人分試す</span></label></li>
+          <li><label><input type="checkbox" id="lec-3"><span class="ct">サイト URL・リスト名・指示文・ツールの説明は、コピーできる形で配布する<small>この手順書のコピーボタンをそのまま使えます。打ち間違いのトラブルがほぼなくなります。</small></span></label></li>
+          <li><label><input type="checkbox" id="lec-4"><span class="ct">クレジット消費の扱いを最新の公式情報で確認しておく<small>Microsoft 365 Copilot ライセンスを持つ人が Microsoft 365 の中で対話的に使う分は、ツール呼び出しを含めて追加課金なしと案内されています（公正利用の範囲内）。ライセンスのない人の利用や、トリガーによる自律実行はクレジットを消費します。無償版ユーザーに展開する場合は試算をしておきましょう。</small></span></label></li>
+        </ul>
+      </section>
+
+      <!-- ===================== SOURCES ===================== -->
+      <section id="sources">
+        <div class="sec-head">
+          <div class="sec-kicker">REFERENCES</div>
+          <h2>参考リンク</h2>
+          <p class="sub">いずれも 2026-10-03 に内容を確認。Copilot Studio は更新が速いので、講義の前に一度見直してください。</p>
+        </div>
+        <ul class="sources">
+          <li><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/fundamentals-get-started" target="_blank" rel="noopener">クイックスタート：標準ハーネスでエージェントを作成・展開する</a><span class="what">作成・テスト・発行の基本</span></li>
+          <li><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/harnesses-overview" target="_blank" rel="noopener">Copilot Studio のハーネス</a><span class="what">標準／GitHub Copilot／Copilot チャットの違い</span></li>
+          <li><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/agents-experience/switch-experiences" target="_blank" rel="noopener">標準ハーネスのエージェントへのアクセス</a><span class="what">「新しい体験」の切り替え</span></li>
+          <li><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/add-tools-custom-agent" target="_blank" rel="noopener">カスタム エージェントにツールを追加する</a><span class="what">詳細・入力・完了の設定項目</span></li>
+          <li><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/advanced-connectors" target="_blank" rel="noopener">Power Platform コネクタをツールとして活用する</a><span class="what">コネクタ追加と資格情報</span></li>
+          <li><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/authoring-create-edit-topics" target="_blank" rel="noopener">トピックの作成と編集</a><span class="what">トピックの追加・ノードの種類</span></li>
+          <li><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/authoring-triggers" target="_blank" rel="noopener">トピックのトリガーを設定する</a><span class="what">「エージェントが選択する」と説明の役割</span></li>
+          <li><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/authoring-ask-a-question" target="_blank" rel="noopener">質問ノードを使う</a><span class="what">複数選択式オプションと変数</span></li>
+          <li><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/publication-add-bot-to-microsoft-teams" target="_blank" rel="noopener">Teams と Microsoft 365 Copilot のエージェントを接続して構成する</a><span class="what">発行後の展開</span></li>
+          <li><a href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/billing-licensing" target="_blank" rel="noopener">Copilot Studio のライセンス</a><span class="what">クレジットと M365 Copilot ライセンスの関係</span></li>
+          <li><a href="https://www.microsoft.com/en-us/microsoft-copilot/copilot-101/how-do-ai-agents-work" target="_blank" rel="noopener">How do AI agents work?（Microsoft）</a><span class="what">Retrieval / Task / Autonomous の 3 分類</span></li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <footer>Copilot Studio（標準ハーネス）の公開ドキュメントをもとに作成。画面の表記はテナントの言語設定や更新時期により異なる場合があります。</footer>
+</div>
+
+<script>
+(function(){
+  var KEY = "task-agent-guide-progress-v2";
+  var steps = ["prep","s1","s2","s3","s4","s5","s6","s7","s8"];
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch(e) { state = {}; }
+
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {} }
+
+  function render(){
+    var done = steps.filter(function(s){ return state["done-"+s]; }).length;
+    var total = steps.length;
+    var t = document.getElementById("prog-text");
+    var b = document.getElementById("prog-bar");
+    if (t) t.textContent = done + " / " + total;
+    if (b) b.style.width = (done/total*100) + "%";
+    document.querySelectorAll("#toc-list a[data-step]").forEach(function(a){
+      a.classList.toggle("done", !!state["done-"+a.getAttribute("data-step")]);
+    });
+  }
+
+  document.querySelectorAll('input[type="checkbox"]').forEach(function(cb){
+    if (state[cb.id]) cb.checked = true;
+    cb.addEventListener("change", function(){
+      state[cb.id] = cb.checked;
+      save(); render();
+    });
+  });
+  render();
+
+  // copy buttons
+  document.querySelectorAll(".copy-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var el = document.getElementById(btn.getAttribute("data-copy"));
+      if (!el) return;
+      var text = el.innerText;
+      function ok(){ btn.textContent = "コピーしました"; setTimeout(function(){ btn.textContent = "コピー"; }, 1600); }
+      function fallback(){
+        var r = document.createRange(); r.selectNodeContents(el);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        btn.textContent = "選択しました（Ctrl+C）";
+        setTimeout(function(){ btn.textContent = "コピー"; }, 2200);
+      }
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(ok, fallback);
+        } else { fallback(); }
+      } catch(e) { fallback(); }
+    });
+  });
+
+  // active section in toc
+  var links = Array.prototype.slice.call(document.querySelectorAll("#toc-list a"));
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute("href").slice(1)] = a; });
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting) {
+          links.forEach(function(l){ l.classList.remove("active"); });
+          var a = map[en.target.id]; if (a) a.classList.add("active");
+        }
+      });
+    }, { rootMargin: "-20% 0px -70% 0px" });
+    document.querySelectorAll("main section[id]").forEach(function(s){ io.observe(s); });
+  }
+})();
+</script>
