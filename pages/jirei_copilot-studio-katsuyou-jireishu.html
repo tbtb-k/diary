@@ -85,6 +85,30 @@ b{font-weight:700}
 .nav a .mk{font-size:11px}
 .nav a:hover{background:var(--sheet);border-color:var(--rule);color:var(--ink)}
 @media (max-width:560px){.brand .txt{display:none}}
+.pdf-btn{flex:none;display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:0;border-radius:999px;cursor:pointer;
+  background:var(--spark);color:#fff;font:700 13px/1.2 var(--f-body);white-space:nowrap}
+.pdf-btn .ic-svg{font-size:15px}
+.pdf-btn:hover{filter:brightness(1.06)}
+@media (max-width:420px){.pdf-btn{padding:6px 11px}}
+
+/* PDF出力の案内（画面のみ） */
+.pdf-dlg{width:min(460px,calc(100vw - 32px));border:1px solid var(--rule);border-radius:16px;padding:22px 22px 18px;
+  background:var(--sheet);color:var(--ink);box-shadow:0 24px 60px -20px rgba(0,0,0,.45)}
+.pdf-dlg::backdrop{background:rgba(11,15,23,.45)}
+.pdf-dlg h2{display:flex;align-items:center;gap:8px;font-size:18px;margin-bottom:8px}
+.pdf-dlg h2 .ic-svg{color:var(--spark);font-size:20px}
+.pd-lead{font-size:13.5px;line-height:1.7;color:var(--sub)}
+.pd-lead b{color:var(--ink)}
+.pd-steps{counter-reset:p;display:grid;gap:8px;margin:14px 0 12px}
+.pd-steps li{counter-increment:p;position:relative;padding:9px 12px 9px 40px;border-radius:10px;background:var(--wash);font-size:13px;line-height:1.6}
+.pd-steps li::before{content:counter(p);position:absolute;left:12px;top:10px;width:20px;height:20px;border-radius:50%;
+  background:var(--ink);color:var(--sheet);font:800 11px/20px var(--f-label);text-align:center}
+.pd-steps small{display:block;font-size:11.5px;color:var(--faint)}
+.pd-note{font-size:11.5px;line-height:1.65;color:var(--faint)}
+.pd-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.pd-actions button{flex:1 1 140px;padding:10px 14px;border-radius:10px;font:700 14px/1.2 var(--f-body);cursor:pointer}
+.pd-go{border:0;background:var(--spark);color:#fff}
+.pd-cancel{border:1px solid var(--rule);background:var(--sheet);color:var(--ink)}
 
 /* ───────── 紙面 ───────── */
 .book{display:grid;justify-items:center;gap:28px;padding-block:28px 72px;padding-inline:16px}
@@ -475,7 +499,7 @@ b{font-weight:700}
 @media print{
   html{scroll-behavior:auto}
   body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .topbar{display:none}
+  .topbar,.pdf-dlg{display:none}
   .book{display:block;padding:0}
   .sheet{width:210mm;max-width:none;height:297mm;min-height:0;margin:0;border-radius:0;box-shadow:none;
     break-after:page;break-inside:avoid}
@@ -508,7 +532,7 @@ b{font-weight:700}
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-inst" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M8.5 10h7M8.5 13.5h7M8.5 17h4"/></symbol><symbol id="i-know" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5c-.8 0-1.5-.7-1.5-1.5z"/><path d="M13 4h5.5c.8 0 1.5.7 1.5 1.5v13c0 .8-.7 1.5-1.5 1.5H13z"/><path d="M7 8h1.5M16 8h1.5M7 11h1.5M16 11h1.5"/></symbol><symbol id="i-topic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="19" r="2.2"/><path d="M12 7.2v3.6M12 10.8c-4 0-6 2.2-6 6M12 10.8c4 0 6 2.2 6 6"/></symbol><symbol id="i-tool" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 3.5a4.5 4.5 0 0 0-4.2 6.1L4.6 16.3a2 2 0 1 0 2.9 2.9l6.7-6.7a4.5 4.5 0 0 0 6.1-4.2l-2.7 2.7-2.6-.5-.5-2.6z"/></symbol><symbol id="i-trig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 5 13.5h6L10 21l8-10.5h-6z"/></symbol><symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M8.2 11l7.6-4M8.2 13l7.6 4"/></symbol><symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></symbol><symbol id="i-agent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="8" width="15" height="11" rx="3.5"/><path d="M12 8V5.2"/><circle cx="12" cy="4" r="1.2"/><path d="M9.5 13.2v.6M14.5 13.2v.6"/></symbol><symbol id="i-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 5h15v10.5H10l-4.5 4v-4h-1z"/><path d="m9 10.3 2 2 4-4"/></symbol><symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="m8.3 12.3 2.6 2.6 5-5.2"/></symbol><symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 15.5h5"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol><symbol id="i-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 2.8 19.5h18.4z"/><path d="M12 10v4.5M12 17.2v.1"/></symbol><symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8 12 4l8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></symbol><symbol id="i-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><circle cx="17" cy="9.5" r="2.4"/><path d="M3.5 19c.6-3 2.8-4.7 5.5-4.7s4.9 1.7 5.5 4.7M15 14.6c2.4-.3 4.6 1.1 5.3 4.4"/></symbol><symbol id="i-loop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4.5h-4.5"/></symbol><symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.3 3 7.7 7 9.5 4-1.8 7-5.2 7-9.5V6z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol><symbol id="i-gauge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16a8 8 0 1 1 16 0"/><path d="m12 16 4-5"/><path d="M4 19h16"/></symbol><symbol id="i-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5 8.5 12C10 7 13.5 4 19.5 4.5 20 10.5 17 14 12 15.5z"/><path d="M8.5 12 5 11.5 7 8.5h4M12 15.5l.5 3.5 3-2v-4"/><circle cx="15" cy="9" r="1.4"/></symbol><symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4.5h11l-2 3.5 2 3.5H5"/></symbol></svg>
-<header class="topbar"><div class="topbar-in"><a class="brand" href="#cover"><span class="dots"><span class="mk lv1" aria-hidden="true"></span><span class="mk lv2" aria-hidden="true"></span><span class="mk lv3" aria-hidden="true"></span></span><span class="txt">Copilot Studio 活用事例集</span></a><nav class="nav" aria-label="ページ内の移動"><a href="#toc">目次</a><a href="#level-1"><span class="mk lv1" aria-hidden="true"></span>初級</a><a href="#level-2"><span class="mk lv2" aria-hidden="true"></span>中級</a><a href="#level-3"><span class="mk lv3" aria-hidden="true"></span>上級</a><a href="#matrix">早見表</a><a href="#sheet">シート</a></nav></div></header>
+<header class="topbar"><div class="topbar-in"><a class="brand" href="#cover"><span class="dots"><span class="mk lv1" aria-hidden="true"></span><span class="mk lv2" aria-hidden="true"></span><span class="mk lv3" aria-hidden="true"></span></span><span class="txt">Copilot Studio 活用事例集</span></a><nav class="nav" aria-label="ページ内の移動"><a href="#toc">目次</a><a href="#level-1"><span class="mk lv1" aria-hidden="true"></span>初級</a><a href="#level-2"><span class="mk lv2" aria-hidden="true"></span>中級</a><a href="#level-3"><span class="mk lv3" aria-hidden="true"></span>上級</a><a href="#matrix">早見表</a><a href="#sheet">シート</a></nav><button class="pdf-btn" type="button" id="pdf-btn" aria-haspopup="dialog"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg><span>PDF出力</span></button></div></header>
 <main class="book">
 
 <section class="sheet cover" id="cover" aria-label="表紙">
@@ -1132,5 +1156,37 @@ b{font-weight:700}
   <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.26<i> / 26</i></span></footer>
 </section>
 </main>
+
+<dialog class="pdf-dlg" id="pdf-dlg" aria-labelledby="pdf-dlg-h">
+  <h2 id="pdf-dlg-h"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg>PDFで保存する</h2>
+  <p class="pd-lead">このあと開く印刷画面で、次のように選ぶと、配布用と同じ <b>A4・26ページ</b> の PDF になります。</p>
+  <ol class="pd-steps">
+    <li><b>送信先（プリンター）</b>で「PDF に保存」を選びます<small>Microsoft Edge では「PDF として保存」です</small></li>
+    <li><b>用紙サイズ</b>は A4、<b>倍率</b>は 100%（既定のまま）にします</li>
+    <li>色がうすいときは、詳細設定の<b>「背景のグラフィック」</b>にチェックを入れます</li>
+  </ol>
+  <p class="pd-note">Google Chrome または Microsoft Edge での利用がおすすめです。紙に印刷するときは、送信先でプリンターを選びます（両面印刷なら13枚です）。</p>
+  <div class="pd-actions">
+    <button type="button" class="pd-go" id="pdf-go">印刷画面を開く</button>
+    <button type="button" class="pd-cancel" id="pdf-cancel">閉じる</button>
+  </div>
+</dialog>
+<script>
+/* 「PDF出力」ボタン：案内を出してから、ブラウザの印刷画面（PDF に保存）を開く */
+(() => {
+  const btn = document.getElementById("pdf-btn"), dlg = document.getElementById("pdf-dlg");
+  if (!btn || !dlg) return;
+  const openPrint = async () => {
+    try { await document.fonts.ready; } catch (_) {}
+    setTimeout(() => window.print(), 60);
+  };
+  btn.addEventListener("click", () => {
+    if (typeof dlg.showModal === "function") dlg.showModal(); else openPrint();
+  });
+  document.getElementById("pdf-go").addEventListener("click", () => { dlg.close(); openPrint(); });
+  document.getElementById("pdf-cancel").addEventListener("click", () => dlg.close());
+  dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+})();
+</script>
 </body>
 </html>
