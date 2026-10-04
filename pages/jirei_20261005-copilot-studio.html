@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（AGCO）。2026年10月5日作成。公開情報（Microsoft 顧客事例）をもとにまとめています。">
+<title>約2,000人が作り手になった AGCO では、品質レビューが数週間から約1時間になりました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月5日／製造（AGCO）・品質管理と社員による AI 開発</p>
+
+  <h1>約2,000人が作り手になった AGCO では、品質レビューが数週間から約1時間になりました</h1>
+
+  <div class="lead">
+    <p>農業機械メーカーの AGCO では、社員が個人のデバイスで AI を試しており、管理できない利用が広がるおそれがありました。製造の品質や保証の確認も、複数チームのレビューに数週間かかっていました。</p>
+    <p>そこで Copilot Studio（エージェントを作るツール）を使い、社員が自分でエージェントを作れる体制を、専門家の支援つきで整えました。</p>
+    <p>品質レビューは、数週間から「約1時間」になったと公表されています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>ひとつの問題を確認するのに、複数の部署へ連絡し、データの確認と合意を待つ。そのあいだに数週間たってしまう。どの職場にもある場面です。</p>
+  <p>AGCO でも、品質や保証のプロセスで、複数のチームがデータを確認し、判断をそろえるのに数週間から数か月かかることがありました。社員が AI に関心を持つ一方で、バラバラのツールを個人で使うことも課題でした。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、社内の情報を使って仕事を進めるエージェントを、あまりコードを書かずに作れる Microsoft のツールです。AGCO は、プログラマー以外の社員が作る「市民開発」と、専門家による管理を組み合わせました。</p>
+  <p>作られた例は、品質の問題を解釈・確認して先へ進める「品質フレームワーク」エージェント、契約書を見て AI やコスト削減の機会を探す「サプライヤー」エージェント、研究データと営業のガイドを合わせて使える「アグロノミー（農学）」エージェントです。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="社員がエージェントを作って広げる流れ">
+      <li><div class="box">希望者が<br>作り手に</div></li>
+      <li><div class="box">困りごとを<br>見つける</div></li>
+      <li><div class="box">専門家と<br>エージェントを作る</div></li>
+      <li><div class="box">改善しながら<br>広げる</div></li>
+    </ol>
+    <figcaption>社員がエージェントを作って広げる流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>最初に900人以上の社員が、市民開発者（現場で自分のエージェントを作る人）に手を挙げました。</li>
+    <li>社員が現場の困りごとを出し、AI の担当者や Microsoft の専門家が、ふさわしい解決策づくりを手伝います。Microsoft Teams の支援コミュニティを使っています。</li>
+    <li>作ったエージェントは、改善のグループ（コホート）の中で最適化されます。出典では、数百のエージェントが作成済み、さらに数百が改善中とされています。</li>
+  </ol>
+  <p class="src-note">※ 出典は取り組みの全体像を紹介する内容です。各エージェントの設定や指示文は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>品質や保証の確認で、複数チームのレビューに数週間から数か月かかっていました。AI は社員が個別に試す状態でした。</p></div>
+    <div class="after"><h3>いま</h3><p>品質レビューが約1時間になりました。作り手は全社で約2,000人に広がり、数百のエージェントが動いています。</p></div>
+  </div>
+  <p>「数週間から約1時間」と、作り手が約2,000人という数字は、AGCO の事例として Microsoft が公表したものです。時間の測り方の詳細は公表されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>確認や連絡に時間がかかっている業務を1つ選び、どこで待ちが生じているかを書き出します。</li>
+    <li>社内に Copilot Studio を使える人がいるか確認します。いなければ、情報システム部門に相談します。</li>
+    <li>数人の小さなグループで、1つのエージェントを試します。効果と問題点を共有し、広げるかどうかを決めます。</li>
+  </ol>
+  <p>必要なもの：Copilot Studio のライセンスと、管理者の許可です。使えるかどうかや範囲は、会社の契約や設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>自由に作ることと、管理することの両立</strong>
+    <p>AGCO は、社員の関心を生かしながら、管理されないツールが増えるのを防ぐことを課題としていました。そのため、作り手を専門家の支援とコミュニティでサポートしています。</p>
+  </div>
+  <p>社内で真似するときも、読ませてよいデータの範囲と、公開してよい相手を先に決めましょう。契約書など重要な文書を扱う場合は、AI の答えを人が必ず確認してください。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例は、時間がかかる原因が「作業」ではなく「複数チームの確認待ち」にあることを示しています。AI を入れる前に、どこで待っているかを見つけることが、効果につながります。</p>
+  <p>自分の職場に置き換えると、複数の部署が順番に確認する申請や点検のプロセスで、最初の確認だけを AI に任せる形から試せそうです。最終判断は人が行う前提にしましょう。</p>
+
+  <footer>
+    <p>出典：Microsoft 顧客事例「AGCO Corporation」（2026年7月6日公開）。記事タイトルは正確に確認できていないため、企業名で記載しています。<br>
+    <a href="https://www.microsoft.com/en/customers/story/26836-agco-corp-word">https://www.microsoft.com/en/customers/story/26836-agco-corp-word</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月5日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

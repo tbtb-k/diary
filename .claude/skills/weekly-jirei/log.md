@@ -12,17 +12,16 @@
 | 2026-10-02 | Copilot Studio | Premera Blue Cross | pages/jirei_20261002-copilot-studio.html | https://www.microsoft.com/en/customers/story/26405-premera-blue-cross-microsoft-365 |
 | 2026-10-03 | Agent Builder | 人事院 | pages/jirei_20261003-agent-builder.html | https://www.microsoft.com/ja-jp/customers/story/26988-national-personnel-authority-microsoft-365-copilot |
 | 2026-10-03 | Copilot Studio | りそなグループ | pages/jirei_20261003-copilot-studio.html | https://www.microsoft.com/ja-jp/customers/story/26717-resona-holdings-microsoft-copilot-studio |
+| 2026-10-05 | Agent Builder | Microsoft（社内・Inside Track） | pages/jirei_20261005-agent-builder.html | https://www.microsoft.com/insidetrack/blog/how-our-employees-are-extending-enterprise-ai-with-custom-retrieval-agents/ |
+| 2026-10-05 | Copilot Studio | AGCO | pages/jirei_20261005-copilot-studio.html | https://www.microsoft.com/en/customers/story/26836-agco-corp-word |
 
 ## ネタ帳（候補）
 
 使う前に必ず本文を WebFetch で読み直してください。「本文確認済み」はカッコ内の公開日の記事を、実際に開いて中身を読んだもの、「未確認」は検索結果の要約だけで見つけたものです。使った候補はここから消し、「掲載済み」に移します。
 
-- **Copilot Studio**｜AGCO（2026-07-06 公開、本文確認済み）
-  https://www.microsoft.com/en/customers/story/26836-agco-corp-word
-  社員約2,000人がエージェントの作り手に。一部の品質レビューが数週間 → 約1時間。個別エージェントの詳細は薄め。
 - **Copilot Studio**｜Capita（2025-09-10 公開、本文確認済み）
   https://www.microsoft.com/en/customers/story/25164-capita-microsoft-copilot-studio/
-  継続的改善の責任者のチームが Copilot Studio で、毎日数千通のメールを仕分けるエージェントを作成。返信までの時間が60%短縮。
+  メール仕分けエージェント（返信時間60%短縮）、70,000件のエージェント利用。詳細は薄め。
 - **Copilot Studio**｜OBC（2026-04-06 公開、本文は一部確認）
   https://www.microsoft.com/ja-jp/customers/story/26323-obc-microsoft-365-copilot
   Copilot Studio での内製開発が中心。Agent Builder 枠には不向き（下の「見送り」参照）。
@@ -33,11 +32,12 @@
   https://www.microsoft.com/en/customers/story/26256-coca-cola-andina-microsoft-copilot-studio
 - **Copilot Studio**｜Unifi（未確認）
   https://www.microsoft.com/en/customers/story/26265-unifi-microsoft-copilot-studio
-- **Agent Builder（旧称 Copilot Studio agent builder）**｜Microsoft 社内の検索エージェント（2025-03-20 公開、本文確認済み）
-  https://www.microsoft.com/insidetrack/blog/how-our-employees-are-extending-enterprise-ai-with-custom-retrieval-agents/
-  数字が少ないので、ほかに候補がないときの予備。
 - **Agent Builder?**｜Hiscox（未確認）
   社員約3,500人が6,000体以上のエージェントを作成、3時間 → 約20分の例あり（検索要約）。一次情報の ukstories.microsoft.com は、ネットワーク許可後も相手のサイト側（Cloudflare）に断られて読めません（2026-10-02）。
+
+- **Agent Builder?**｜キリングループ（2026-05-12 公開、本文確認済み）
+  https://www.microsoft.com/ja-jp/customers/story/26435-kirin-holdings-company-microsoft-365-copilot
+  Agent Builder は一言のみ（「習熟はそこまで難しくない」）。Copilot 普及施策の事例としては厚い。Agent Builder 枠には弱い。
 
 ### 見送り（Agent Builder 枠としては記事にならない。読み直さなくてよい）
 
@@ -52,3 +52,4 @@
 - 2026-10-02：環境のネットワークを Custom（`*.microsoft.com`・`*.itmedia.co.jp`・`xtech.nikkei.com` を追加）に変更。learn.microsoft.com・techcommunity・TechTarget ジャパン・日経クロステックは読めるようになった。news.microsoft.com と ukstories.microsoft.com は相手側の Cloudflare に断られる。
 - 2026-10-02：Agent Builder 枠は HCLTech（techcommunity の Microsoft ブログ）。WebFetch は本文を返さなかったため、`curl -sL --compressed -A "Mozilla/5.0"` で取得し、HTML 内の JSON の body から本文を読んだ。HCLTech は社内展開（採用促進）の事例で、個別エージェントの中身の話ではない。
 - 2026-10-03：Agent Builder 枠は人事院（ja-jp の顧客事例を WebFetch で読めた。検索の候補にはほかに SCSK・キリン等があるが未確認）。Copilot Studio 枠はネタ帳のりそなグループ。ブロックされたホストはなし。日本時間では実行日が10-03（偶数日の前日の奇数ではない）だった。
+- 2026-10-05：Agent Builder 枠は Microsoft Inside Track（2025-03-20、予備だったもの。数字なし）。ja-jp 顧客事例の検索では INPEX・SCSK・キリンを読んだが、Agent Builder と明記された具体例がなく見送り。Agent Builder 枠の新しい事例は枯渇気味。Copilot Studio 枠は AGCO。ブロックされたホストなし（curl で ja-jp ページは本文が取れなかったので WebFetch を使用）。
