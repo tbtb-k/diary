@@ -654,35 +654,86 @@ b{font-weight:700}
   .copy-btn{display:none}
 }
 
+/* 担当者にお願いすること */
+.g-ask{margin:-4px 0 14px;padding:9px 14px;border:1.5px dashed var(--lv);border-radius:10px}
+.case .g-ask h3{color:var(--lv-ink)}
+.case .g-ask h3::before{display:none}
+.g-ask h3 .ic-svg{font-size:15px}
+.g-ask li{position:relative;padding-left:14px;font-size:12px;line-height:1.6}
+.g-ask li + li{margin-top:2px}
+.g-ask li::before{content:"";position:absolute;left:1px;top:.65em;width:6px;height:6px;border-radius:50%;background:var(--lv)}
+
+/* ポイント */
+.g-notes{margin-top:12px;padding:10px 14px;border-radius:10px;background:var(--lv-soft)}
+.case .g-notes h3{color:var(--lv-ink)}
+.case .g-notes h3::before{display:none}
+.g-notes h3 .ic-svg{font-size:15px}
+.g-notes li{position:relative;padding-left:14px;font-size:12px;line-height:1.65}
+.g-notes li + li{margin-top:4px}
+.g-notes li::before{content:"";position:absolute;left:1px;top:.65em;width:6px;height:6px;border-radius:50%;background:var(--lv)}
+
+/* 2ページの事例 */
+.g-next-page{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:10px;font-size:11.5px;color:var(--faint)}
+.g-next-page .ic-svg{font-size:13px}
+.g-cont{display:flex;align-items:center;gap:10px;padding-bottom:10px;margin-bottom:16px;border-bottom:2px solid var(--lv);
+  font-size:17px;font-weight:700}
+.g-cont .n{font-family:var(--f-display);font-weight:400;font-size:22px;color:var(--lv)}
+.g-cont em{font-style:normal;font-size:11px;font-weight:700;color:var(--lv-ink);background:var(--lv-soft);padding:2px 9px;border-radius:999px}
+.g-page2 .g-bottom{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.guide .harness .ref-tag{margin:3px 0 0}
+
+/* 参考情報のページは件数が多いので詰める */
+#sources .refs{gap:6px 20px}
+#sources .refs li{font-size:11.5px;line-height:1.45}
+#sources .refs .meta{font-size:10.5px}
+
+/* 2ページ目のメモ欄（残りの高さいっぱいに広げる） */
+.g-page2{display:flex;flex-direction:column}
+.g-memo{flex:1 1 auto;display:flex;flex-direction:column;margin-top:14px;min-height:110px}
+.case .g-memo h3{margin-bottom:6px}
+.memo-lines{flex:1 1 auto;min-height:90px;border:1px solid var(--rule);border-radius:10px;
+  background:repeating-linear-gradient(to bottom, transparent 0 29px, var(--rule) 29px 30px);background-origin:content-box;padding:4px 12px}
+
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-inst" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M8.5 10h7M8.5 13.5h7M8.5 17h4"/></symbol><symbol id="i-know" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5c-.8 0-1.5-.7-1.5-1.5z"/><path d="M13 4h5.5c.8 0 1.5.7 1.5 1.5v13c0 .8-.7 1.5-1.5 1.5H13z"/><path d="M7 8h1.5M16 8h1.5M7 11h1.5M16 11h1.5"/></symbol><symbol id="i-topic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="19" r="2.2"/><path d="M12 7.2v3.6M12 10.8c-4 0-6 2.2-6 6M12 10.8c4 0 6 2.2 6 6"/></symbol><symbol id="i-tool" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 3.5a4.5 4.5 0 0 0-4.2 6.1L4.6 16.3a2 2 0 1 0 2.9 2.9l6.7-6.7a4.5 4.5 0 0 0 6.1-4.2l-2.7 2.7-2.6-.5-.5-2.6z"/></symbol><symbol id="i-trig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 5 13.5h6L10 21l8-10.5h-6z"/></symbol><symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M8.2 11l7.6-4M8.2 13l7.6 4"/></symbol><symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></symbol><symbol id="i-agent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="8" width="15" height="11" rx="3.5"/><path d="M12 8V5.2"/><circle cx="12" cy="4" r="1.2"/><path d="M9.5 13.2v.6M14.5 13.2v.6"/></symbol><symbol id="i-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 5h15v10.5H10l-4.5 4v-4h-1z"/><path d="m9 10.3 2 2 4-4"/></symbol><symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="m8.3 12.3 2.6 2.6 5-5.2"/></symbol><symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 15.5h5"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol><symbol id="i-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 2.8 19.5h18.4z"/><path d="M12 10v4.5M12 17.2v.1"/></symbol><symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8 12 4l8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></symbol><symbol id="i-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><circle cx="17" cy="9.5" r="2.4"/><path d="M3.5 19c.6-3 2.8-4.7 5.5-4.7s4.9 1.7 5.5 4.7M15 14.6c2.4-.3 4.6 1.1 5.3 4.4"/></symbol><symbol id="i-loop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4.5h-4.5"/></symbol><symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.3 3 7.7 7 9.5 4-1.8 7-5.2 7-9.5V6z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol><symbol id="i-gauge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16a8 8 0 1 1 16 0"/><path d="m12 16 4-5"/><path d="M4 19h16"/></symbol><symbol id="i-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5 8.5 12C10 7 13.5 4 19.5 4.5 20 10.5 17 14 12 15.5z"/><path d="M8.5 12 5 11.5 7 8.5h4M12 15.5l.5 3.5 3-2v-4"/><circle cx="15" cy="9" r="1.4"/></symbol><symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4.5h11l-2 3.5 2 3.5H5"/></symbol></svg>
-<header class="topbar"><div class="topbar-in"><a class="brand" href="#cover"><span class="dots"><span class="mk lv1" aria-hidden="true"></span><span class="mk lv2" aria-hidden="true"></span><span class="mk lv3" aria-hidden="true"></span></span><span class="txt">Copilot Studio 作り方ガイド</span></a><nav class="nav" aria-label="ページ内の移動"><a href="#howto">使い方</a><a href="#guide-01"><span class="mk lv1" aria-hidden="true"></span>初級</a><a href="#sources">参考情報</a><a href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html">事例集へ</a></nav><button class="pdf-btn" type="button" id="pdf-btn" aria-haspopup="dialog"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg><span>PDF出力</span></button></div></header>
+<header class="topbar"><div class="topbar-in"><a class="brand" href="#cover"><span class="dots"><span class="mk lv1" aria-hidden="true"></span><span class="mk lv2" aria-hidden="true"></span><span class="mk lv3" aria-hidden="true"></span></span><span class="txt">Copilot Studio 作り方ガイド</span></a><nav class="nav" aria-label="ページ内の移動"><a href="#toc">目次</a><a href="#guide-01"><span class="mk lv1" aria-hidden="true"></span>初級</a><a href="#guide-06"><span class="mk lv2" aria-hidden="true"></span>中級</a><a href="#guide-11"><span class="mk lv3" aria-hidden="true"></span>上級</a><a href="#sources">参考情報</a><a href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html">事例集へ</a></nav><button class="pdf-btn" type="button" id="pdf-btn" aria-haspopup="dialog"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg><span>PDF出力</span></button></div></header>
 <main class="book">
 
 <section class="sheet cover" id="cover" aria-label="表紙">
   <div class="cover-top"><span>COPILOT STUDIO CASEBOOK ・ HOW-TO</span><span>2026.10 EDITION</span></div>
   <h1><span class="l1 small">Copilot Studio 活用事例集 別冊</span><span class="l2">作り方ガイド</span></h1>
   <p class="cover-sub">事例集のモデルケースを、<b>実際に作るための手順書</b>です。<br>準備するもの、作る手順、指示の例、テストの質問までまとめました。</p>
-  <nav class="route" aria-label="作り方がのっている事例"><div class="r-row lv1 first"><span class="r-start">START</span><span class="turn t-r-top"></span><a class="st" href="#guide-01"><span class="mkr"><span>01</span></span><span class="nm">規程Q&amp;A</span></a><a class="st" href="#guide-02"><span class="mkr"><span>02</span></span><span class="nm">入社ガイド</span></a><a class="st" href="#guide-03"><span class="mkr"><span>03</span></span><span class="nm">ITヘルプ</span></a><a class="st" href="#guide-04"><span class="mkr"><span>04</span></span><span class="nm">製品資料ナビ</span></a><a class="st" href="#guide-05"><span class="mkr"><span>05</span></span><span class="nm">現場マニュアル</span></a></div><div class="r-row lv2 rev"><span class="turn t-r-bot"></span><span class="turn t-l-top"></span><span class="st off" aria-disabled="true"><span class="mkr"><span>06</span></span><span class="nm">備品申請</span></span><span class="st off" aria-disabled="true"><span class="mkr"><span>07</span></span><span class="nm">受付票</span></span><span class="st off" aria-disabled="true"><span class="mkr"><span>08</span></span><span class="nm">会議ToDo</span></span><span class="st off" aria-disabled="true"><span class="mkr"><span>09</span></span><span class="nm">出張申請</span></span><span class="st off" aria-disabled="true"><span class="mkr"><span>10</span></span><span class="nm">Webチャット</span></span></div><div class="r-row lv3 last"><span class="turn t-l-bot"></span><span class="r-goal">GOAL</span><span class="st off" aria-disabled="true"><span class="mkr"><span>11</span></span><span class="nm">メール仕分け</span></span><span class="st off" aria-disabled="true"><span class="mkr"><span>12</span></span><span class="nm">請求書照合</span></span><span class="st off" aria-disabled="true"><span class="mkr"><span>13</span></span><span class="nm">画面操作</span></span><span class="st off" aria-disabled="true"><span class="mkr"><span>14</span></span><span class="nm">総合窓口</span></span><span class="st off" aria-disabled="true"><span class="mkr"><span>15</span></span><span class="nm">在庫・納期</span></span></div></nav>
-  <p class="cover-have"><span class="dot-on"></span>色のついた事例（01〜05）の作り方を収録しています</p>
+  <nav class="route" aria-label="作り方がのっている事例"><div class="r-row lv1 first"><span class="r-start">START</span><span class="turn t-r-top"></span><a class="st" href="#guide-01"><span class="mkr"><span>01</span></span><span class="nm">規程Q&amp;A</span></a><a class="st" href="#guide-02"><span class="mkr"><span>02</span></span><span class="nm">入社ガイド</span></a><a class="st" href="#guide-03"><span class="mkr"><span>03</span></span><span class="nm">ITヘルプ</span></a><a class="st" href="#guide-04"><span class="mkr"><span>04</span></span><span class="nm">製品資料ナビ</span></a><a class="st" href="#guide-05"><span class="mkr"><span>05</span></span><span class="nm">現場マニュアル</span></a></div><div class="r-row lv2 rev"><span class="turn t-r-bot"></span><span class="turn t-l-top"></span><a class="st" href="#guide-06"><span class="mkr"><span>06</span></span><span class="nm">備品申請</span></a><a class="st" href="#guide-07"><span class="mkr"><span>07</span></span><span class="nm">受付票</span></a><a class="st" href="#guide-08"><span class="mkr"><span>08</span></span><span class="nm">会議ToDo</span></a><a class="st" href="#guide-09"><span class="mkr"><span>09</span></span><span class="nm">出張申請</span></a><a class="st" href="#guide-10"><span class="mkr"><span>10</span></span><span class="nm">Webチャット</span></a></div><div class="r-row lv3 last"><span class="turn t-l-bot"></span><span class="r-goal">GOAL</span><a class="st" href="#guide-11"><span class="mkr"><span>11</span></span><span class="nm">メール仕分け</span></a><a class="st" href="#guide-12"><span class="mkr"><span>12</span></span><span class="nm">請求書照合</span></a><a class="st" href="#guide-13"><span class="mkr"><span>13</span></span><span class="nm">画面操作</span></a><a class="st" href="#guide-14"><span class="mkr"><span>14</span></span><span class="nm">総合窓口</span></a><a class="st" href="#guide-15"><span class="mkr"><span>15</span></span><span class="nm">在庫・納期</span></a></div></nav>
+  <p class="cover-have"><span class="dot-on"></span>全15事例の作り方を収録しています。駅を押すと、その事例のページに移ります</p>
   <p class="cover-note">手順の例に出てくる名称や数字（○○など）は架空のものです。特定の企業・団体・個人や、実際の案件の情報は含みません。</p>
-  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.01<i> / 8</i></span></footer>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.01<i> / 25</i></span></footer>
 </section>
 <section class="sheet page g-intro" id="howto" aria-labelledby="h-howto">
   <div class="ptitle"><span class="en">HOW TO USE</span><h2 id="h-howto">このガイドの使い方</h2></div>
   <p class="page-lead">活用事例集の「つくり方」を、もう少しくわしくした手順書です。1つの事例を1ページにまとめ、上から順に進めると、試作から公開までたどれます。</p>
   <div class="g-howto">
-    <div><h3 class="sub-h">ページの見方</h3><ol class="an-list compact"><li><span class="an-n">1</span><b>準備するもの・作る前に確認</b></li><li><span class="an-n">2</span><b>作る手順</b></li><li><span class="an-n">3</span><b>指示の例（コピーして使えます）</b></li><li><span class="an-n">4</span><b>テストの質問</b></li><li><span class="an-n">5</span><b>うまくいかないとき</b></li></ol></div>
+    <div><h3 class="sub-h">ページの見方</h3><ol class="an-list compact"><li><span class="an-n">1</span><b>準備するもの・作る前に確認</b></li><li><span class="an-n">2</span><b>担当者にお願いすること（中級・上級の一部）</b></li><li><span class="an-n">3</span><b>作る手順</b></li><li><span class="an-n">4</span><b>指示の例（コピーして使えます）</b></li><li><span class="an-n">5</span><b>テストの質問</b></li><li><span class="an-n">6</span><b>うまくいかないとき・ポイント</b></li></ol></div>
     <div><h3 class="sub-h">画面の表記</h3><p class="g-ui-note"><span class="ui">ナレッジの追加</span> のような囲みは、画面のボタンや項目の名前です。日本語の画面に合わせています。更新などで表記が少しちがうときは、近い名前の項目を探してください。</p></div>
   </div>
   <h3 class="sub-h">作る前の共通チェック</h3>
   <ul class="points g-checks"><li><span class="pi"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span><div><h3>作る場所に入れるか</h3><p>Copilot Studio は copilotstudio.microsoft.com にサインインし、作業用の環境を選びます。エージェント ビルダーは Microsoft 365 Copilot の <span class="ui">新しいエージェント</span> から始めます。</p></div></li><li><span class="pi"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg></span><div><h3>載せる資料の公開範囲</h3><p>使う人は、資料の中身を聞き出せる前提で選びます。社外秘の資料や個人情報は載せません。</p></div></li><li><span class="pi"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gauge"/></svg></span><div><h3>ライセンスと利用量</h3><p>使える機能や利用量（Copilot クレジット）の扱いは、契約や設定で変わります。わからないときは管理者に確かめます。</p></div></li><li><span class="pi"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg></span><div><h3>共有と公開のルール</h3><p>組織全体に公開するときは、管理者の承認が必要なことがあります。まずは自分とチームで試します。</p></div></li></ul>
-  <h3 class="sub-h">目次</h3>
-  <div class="g-toc"><a class="toc-item lv1" href="#guide-01"><span class="n">01</span><span class="t">社内規程アシスタントの作り方<span class="d">Copilot Studio（スタンダード ハーネス）｜総務・人事</span></span><span class="p">03</span></a><a class="toc-item lv1" href="#guide-02"><span class="n">02</span><span class="t">入社・異動ガイドの作り方<span class="d">エージェント ビルダー（Microsoft 365 Copilot）｜人事・受け入れ部署</span></span><span class="p">04</span></a><a class="toc-item lv1" href="#guide-03"><span class="n">03</span><span class="t">ITヘルプデスクの作り方<span class="d">Copilot Studio（スタンダード ハーネス）｜情報システム</span></span><span class="p">05</span></a><a class="toc-item lv1" href="#guide-04"><span class="n">04</span><span class="t">製品資料ナビの作り方<span class="d">エージェント ビルダー（Microsoft 365 Copilot）｜営業・企画</span></span><span class="p">06</span></a><a class="toc-item lv1" href="#guide-05"><span class="n">05</span><span class="t">現場マニュアルナビの作り方<span class="d">Copilot Studio（スタンダード ハーネス）｜製造・店舗などの現場</span></span><span class="p">07</span></a></div>
-  <p class="g-later">中級・上級（06〜15）の作り方は、順次追加します。</p>
-  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.02<i> / 8</i></span></footer>
+  <p class="g-later">事例によって、1ページか2ページで構成しています。2ページの事例は、2ページ目に指示の例・テストの質問・うまくいかないときと、メモ欄をまとめています。</p>
+  <h3 class="sub-h">おすすめの進め方</h3>
+  <ul class="g-about">
+    <li>まず 01 を作ってみてください。ほかの事例の「01 と同じく」の手順が、そのままわかるようになります。</li>
+    <li>中級には、01 や 03 のエージェントに機能を足す事例があります（07・09）。先に初級を作っておくと進めやすくなります。</li>
+    <li>上級は、管理者やシステム担当と一緒に、テスト用の環境で試してから広げます。</li>
+  </ul>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.02<i> / 25</i></span></footer>
+</section>
+<section class="sheet page toc" id="toc" aria-labelledby="h-toc">
+  <div class="ptitle"><span class="en">CONTENTS</span><h2 id="h-toc">目次</h2></div>
+  <div class="toc-mini"><a href="#howto"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span>このガイドの使い方</span><span class="p">02</span></a>
+    <a href="#sources"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg><span>参考情報</span><span class="p">25</span></a></div>
+  <div class="toc-group lv1"><a class="toc-lv" href="#guide-01"><span class="mk lv1" aria-hidden="true"></span><b>初級</b><span>資料をわたして、答えてもらう</span></a><a class="toc-item lv1" href="#guide-01"><span class="n">01</span><span class="t">社内規程アシスタントの作り方<span class="d">Copilot Studio（スタンダード ハーネス）｜総務・人事</span></span><span class="p">04</span></a><a class="toc-item lv1" href="#guide-02"><span class="n">02</span><span class="t">入社・異動ガイドの作り方<span class="d">エージェント ビルダー（Microsoft 365 Copilot）｜人事・受け入れ部署</span></span><span class="p">05</span></a><a class="toc-item lv1" href="#guide-03"><span class="n">03</span><span class="t">ITヘルプデスクの作り方<span class="d">Copilot Studio（スタンダード ハーネス）｜情報システム</span></span><span class="p">06</span></a><a class="toc-item lv1" href="#guide-04"><span class="n">04</span><span class="t">製品資料ナビの作り方<span class="d">エージェント ビルダー（Microsoft 365 Copilot）｜営業・企画</span></span><span class="p">07</span></a><a class="toc-item lv1" href="#guide-05"><span class="n">05</span><span class="t">現場マニュアルナビの作り方<span class="d">Copilot Studio（スタンダード ハーネス）｜製造・店舗などの現場</span></span><span class="p">08</span></a></div><div class="toc-group lv2"><a class="toc-lv" href="#guide-06"><span class="mk lv2" aria-hidden="true"></span><b>中級</b><span>会話の流れを決めて、手続きまで任せる</span></a><a class="toc-item lv2" href="#guide-06"><span class="n">06</span><span class="t">備品申請の受付係の作り方<span class="d">Copilot Studio（スタンダード ハーネス）｜総務｜2ページ</span></span><span class="p">09</span></a><a class="toc-item lv2" href="#guide-07"><span class="n">07</span><span class="t">ヘルプデスクの受付票づくりの作り方<span class="d">Copilot Studio（スタンダード ハーネス）｜情報システム</span></span><span class="p">11</span></a><a class="toc-item lv2" href="#guide-08"><span class="n">08</span><span class="t">会議メモ整理係の作り方<span class="d">Copilot Studio（スタンダード ハーネス）｜全部署</span></span><span class="p">12</span></a><a class="toc-item lv2" href="#guide-09"><span class="n">09</span><span class="t">出張申請チェッカーの作り方<span class="d">Copilot Studio（スタンダード ハーネス）｜総務・経理｜2ページ</span></span><span class="p">13</span></a><a class="toc-item lv2" href="#guide-10"><span class="n">10</span><span class="t">お客様向けWebチャットの作り方<span class="d">Copilot Studio（スタンダード ハーネス）｜カスタマーサポート｜2ページ</span></span><span class="p">15</span></a></div><div class="toc-group lv3"><a class="toc-lv" href="#guide-11"><span class="mk lv3" aria-hidden="true"></span><b>上級</b><span>話しかけなくても動き、システムをまたいで働く</span></a><a class="toc-item lv3" href="#guide-11"><span class="n">11</span><span class="t">メール仕分け係の作り方<span class="d">Copilot Studio（スタンダード ハーネス）｜カスタマーサポート・営業事務｜2ページ</span></span><span class="p">17</span></a><a class="toc-item lv3" href="#guide-12"><span class="n">12</span><span class="t">請求書照合エージェントの作り方<span class="ref-tag">参考</span><span class="d">Copilot Studio（GitHub Copilot ハーネス）｜経理</span></span><span class="p">19</span></a><a class="toc-item lv3" href="#guide-13"><span class="n">13</span><span class="t">画面操作の転記係の作り方<span class="d">Copilot Studio（スタンダード ハーネス）｜事務センター・業務部門｜2ページ</span></span><span class="p">20</span></a><a class="toc-item lv3" href="#guide-14"><span class="n">14</span><span class="t">社内の総合窓口の作り方<span class="d">Copilot Studio（スタンダード ハーネス）｜全社・推進チーム</span></span><span class="p">22</span></a><a class="toc-item lv3" href="#guide-15"><span class="n">15</span><span class="t">在庫・納期アシスタントの作り方<span class="d">Copilot Studio（スタンダード ハーネス）｜営業・受注｜2ページ</span></span><span class="p">23</span></a></div>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.03<i> / 25</i></span></footer>
 </section>
 <article class="sheet case guide lv1" id="guide-01" aria-labelledby="h-guide-01">
   <div class="tab">初級</div>
@@ -697,10 +748,12 @@ b{font-weight:700}
   <h2 class="case-title" id="h-guide-01">社内規程アシスタントの作り方</h2>
   <p class="g-goal"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span><b>完成すると</b>規程の質問に、資料名と条番号つきで答えるエージェントを作ります。</span>
     <a class="g-book" href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html#case-01">事例集 p.06<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  
   <div class="g-top">
     <section class="g-prep"><h3>準備するもの</h3><ul><li>規程のファイル（文字を選択できる Word・PDF）</li><li>作業する Power Platform 環境</li><li>資料にない質問の案内先（例：総務部の窓口）</li></ul></section>
     <section class="g-check"><h3>作る前に確認</h3><ul><li>Copilot Studio にサインインして、作業用の環境を選べるか</li><li>載せてよい資料か（使う人は中身を聞き出せる前提で選ぶ）</li></ul></section>
   </div>
+  
   <section class="g-steps"><h3>作る手順</h3><ol><li><b>作り始める</b><span>Copilot Studio の <span class="ui">ホーム</span> で <span class="ui">新しいエクスペリエンス</span> をオフにし、作りたいものを一文で入力して送ります</span></li><li><b>名前と指示を整える</b><span><span class="ui">概要</span> で名前を直し、下の「指示の例」を貼り付けて保存します</span></li><li><b>規程を入れる</b><span><span class="ui">ナレッジの追加</span> から規程ファイルをアップロードし、どんな質問で読む資料かを説明に書いて <span class="ui">エージェントに追加</span> を押します。取り込みには数分かかります</span></li><li><b>資料の外は答えないようにする</b><span><span class="ui">設定</span> の <span class="ui">生成 AI</span> で、<span class="ui">一般知識の使用</span> と <span class="ui">Web 検索</span> をオフにします</span></li><li><b>試す</b><span><span class="ui">エージェントのテスト</span> で下の「テストの質問」を聞きます。設定を変えたら、新しいテスト セッションで試します</span></li><li><b>Teams に出す</b><span><span class="ui">公開</span> で公開し、<span class="ui">チャネル</span> の <span class="ui">Teams と Microsoft Copilot</span> で <span class="ui">チャネルを追加</span> を押して、自分の Teams に追加します</span></li><li><b>ほかの人に広げる</b><span>使う人に共有し、<span class="ui">可用性オプション</span> からリンクを配ります。組織全体には管理者の承認が要ります</span></li></ol></section>
   <div class="g-bottom">
     <section class="g-instr"><div class="g-h"><h3>指示の例</h3><button type="button" class="copy-btn" aria-label="指示の例をコピー">コピー</button></div>
@@ -714,7 +767,8 @@ b{font-weight:700}
       <table><thead><tr><th scope="col">聞く質問</th><th scope="col">こう答えれば OK</th></tr></thead><tbody><tr><td class="q">有給は何日前までに申請すればいい？</td><td>就業規則から、条番号つきで答える</td></tr><tr><td class="q">国内出張の日当はいくら？</td><td>旅費規程から答える</td></tr><tr><td class="q">来年の社員旅行はどこ？</td><td>「記載がない」と窓口を案内する</td></tr></tbody></table></section>
   </div>
   <section class="g-trouble"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>うまくいかないとき</h3><table><tbody><tr><th scope="row">「分からない」ばかり返る</th><td>取り込みが終わっていません。数分待ち、新しいテストセッションで聞き直します</td></tr><tr><th scope="row">資料にないことまで答える</th><td>一般知識と Web 検索がオフになっているか確かめます</td></tr><tr><th scope="row">Teams で古い答えのまま</th><td>公開した内容は新しい会話から反映されます。Teams では1時間ほどかかることがあります</td></tr></tbody></table></section>
-  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.03<i> / 8</i></span></footer>
+  
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.04<i> / 25</i></span></footer>
 </article>
 <article class="sheet case guide lv1" id="guide-02" aria-labelledby="h-guide-02">
   <div class="tab">初級</div>
@@ -729,10 +783,12 @@ b{font-weight:700}
   <h2 class="case-title" id="h-guide-02">入社・異動ガイドの作り方</h2>
   <p class="g-goal"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span><b>完成すると</b>新しく来た人が Copilot Chat で、手続きや社内用語を聞けるエージェントを作ります。</span>
     <a class="g-book" href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html#case-02">事例集 p.07<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  
   <div class="g-top">
     <section class="g-prep"><h3>準備するもの</h3><ul><li>案内資料をまとめた SharePoint のサイト</li><li>担当窓口の連絡先の一覧</li><li>共有する相手（受け入れ部署・新しく来た人）</li></ul></section>
     <section class="g-check"><h3>作る前に確認</h3><ul><li>Microsoft 365 Copilot に <span class="ui">新しいエージェント</span> が表示されるか</li><li>共有する相手が、そのサイトを閲覧できるか（サイト管理者に確認）</li></ul></section>
   </div>
+  
   <section class="g-steps"><h3>作る手順</h3><ol><li><b>資料をまとめる</b><span>入社手続き・用語集・システム一覧を、SharePoint の1つのサイトにまとめます。古い資料は外します</span></li><li><b>作り始める</b><span>Microsoft 365 Copilot で <span class="ui">新しいエージェント</span> を選び、<span class="ui">スキップして構成</span> で設定画面を開きます。言葉で説明して作ることもできます</span></li><li><b>基本情報を入れる</b><span><span class="ui">構成</span> で名前（30文字まで）・説明・指示を入れます。指示は下の例を参考にします</span></li><li><b>ナレッジを入れる</b><span><span class="ui">ナレッジ</span> に、まとめた SharePoint のサイトを追加します</span></li><li><b>質問の例を出す</b><span><span class="ui">スターター プロンプト</span> に「経費精算のやり方は？」など、よくある質問を登録します</span></li><li><b>試す</b><span><span class="ui">試してみる</span> で、下の「テストの質問」を聞きます。直したら、もう一度試します</span></li><li><b>作成して共有する</b><span><span class="ui">作成</span> で作成し、<span class="ui">共有</span> で相手を <span class="ui">チャット可能</span> として追加します。チャット用のリンクも配れます</span></li></ol></section>
   <div class="g-bottom">
     <section class="g-instr"><div class="g-h"><h3>指示の例</h3><button type="button" class="copy-btn" aria-label="指示の例をコピー">コピー</button></div>
@@ -745,7 +801,8 @@ b{font-weight:700}
       <table><thead><tr><th scope="col">聞く質問</th><th scope="col">こう答えれば OK</th></tr></thead><tbody><tr><td class="q">経費精算はどのシステムでやるの？</td><td>システム名と、手順がのっている資料を示す</td></tr><tr><td class="q">「稟議」ってなに？</td><td>用語集をもとに、やさしく説明する</td></tr><tr><td class="q">来月の歓迎会はいつ？</td><td>資料にないため、窓口を案内する</td></tr></tbody></table></section>
   </div>
   <section class="g-trouble"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>うまくいかないとき</h3><table><tbody><tr><th scope="row">共有した人に答えが出ない</th><td>その人がサイトを閲覧できるか確かめます。サイト全体の権限は自動で共有されないため、サイト管理者に付けてもらいます</td></tr><tr><th scope="row">直した内容が反映されない</th><td>編集したあと、右上の <span class="ui">更新</span> を押します。反映まで数分かかります</td></tr><tr><th scope="row">Teams のチャットに追加できない</th><td>エージェント ビルダーで作ったエージェントは、Teams のグループチャットや1対1のチャットでは使えません。Copilot Chat から使います</td></tr></tbody></table></section>
-  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.04<i> / 8</i></span></footer>
+  
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.05<i> / 25</i></span></footer>
 </article>
 <article class="sheet case guide lv1" id="guide-03" aria-labelledby="h-guide-03">
   <div class="tab">初級</div>
@@ -760,10 +817,12 @@ b{font-weight:700}
   <h2 class="case-title" id="h-guide-03">ITヘルプデスクの作り方</h2>
   <p class="g-goal"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span><b>完成すると</b>よくある IT の問い合わせに、手順書をもとに番号つきで答えるエージェントを作ります。</span>
     <a class="g-book" href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html#case-03">事例集 p.08<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  
   <div class="g-top">
     <section class="g-prep"><h3>準備するもの</h3><ul><li>問い合わせ上位10件の手順書</li><li>情報システム窓口の連絡先</li></ul></section>
     <section class="g-check"><h3>作る前に確認</h3><ul><li>手順書の画面や手順が最新か（更新日を見る）</li><li>管理者向けの設定値など、一般の社員に見せない情報が入っていないか</li></ul></section>
   </div>
+  
   <section class="g-steps"><h3>作る手順</h3><ol><li><b>作り始める</b><span>01 と同じく、<span class="ui">ホーム</span> で <span class="ui">新しいエクスペリエンス</span> をオフにし、作りたいものを一文で入力して送ります</span></li><li><b>指示を入れる</b><span><span class="ui">概要</span> で、下の「指示の例」を貼り付けます。窓口の連絡先は自分の職場のものに直します</span></li><li><b>手順書を入れる</b><span><span class="ui">ナレッジの追加</span> で手順書を追加します。SharePoint のフォルダーでも追加できます。説明に、対象のトラブルを書きます</span></li><li><b>資料の外は答えないようにする</b><span>01 と同じく、一般知識と Web 検索をオフにします</span></li><li><b>最初のあいさつを変える</b><span>テストチャットのあいさつ文を選ぶと <span class="ui">会話の開始</span> が開きます。「パスワード」「VPN」など聞ける内容の例を書いて保存します</span></li><li><b>質問の例を出す</b><span><span class="ui">概要</span> の <span class="ui">提案されたプロンプト</span> に、よくある質問を10件まで登録します。Teams と Copilot で表示され、テストチャットには出ません</span></li><li><b>試して公開する</b><span>下の「テストの質問」で試し、01 と同じ流れで Teams に出します</span></li></ol></section>
   <div class="g-bottom">
     <section class="g-instr"><div class="g-h"><h3>指示の例</h3><button type="button" class="copy-btn" aria-label="指示の例をコピー">コピー</button></div>
@@ -776,7 +835,8 @@ b{font-weight:700}
       <table><thead><tr><th scope="col">聞く質問</th><th scope="col">こう答えれば OK</th></tr></thead><tbody><tr><td class="q">VPN につながらない</td><td>手順書の手順を、番号つきで示す</td></tr><tr><td class="q">プリンターを追加したい</td><td>手順と、参照した手順書名を示す</td></tr><tr><td class="q">新しいPCがほしい</td><td>手順書にないため、窓口を案内する</td></tr></tbody></table></section>
   </div>
   <section class="g-trouble"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>うまくいかないとき</h3><table><tbody><tr><th scope="row">Copilot であいさつが出ない</th><td>Microsoft 365 Copilot では <span class="ui">会話の開始</span> が使えません。<span class="ui">提案されたプロンプト</span> で聞ける内容を伝えます</td></tr><tr><th scope="row">手順が古い</th><td>手順書を新しくします。SharePoint に置いた手順書なら、更新が答えにも反映されます</td></tr><tr><th scope="row">解決しない問い合わせを記録したい</th><td>受付票を作るツールを足します。くわしくは 07 の作り方を見てください</td></tr></tbody></table></section>
-  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.05<i> / 8</i></span></footer>
+  
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.06<i> / 25</i></span></footer>
 </article>
 <article class="sheet case guide lv1" id="guide-04" aria-labelledby="h-guide-04">
   <div class="tab">初級</div>
@@ -791,10 +851,12 @@ b{font-weight:700}
   <h2 class="case-title" id="h-guide-04">製品資料ナビの作り方</h2>
   <p class="g-goal"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span><b>完成すると</b>営業担当が、製品の特長や仕様を資料名つきで確かめられるエージェントを作ります。</span>
     <a class="g-book" href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html#case-04">事例集 p.09<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  
   <div class="g-top">
     <section class="g-prep"><h3>準備するもの</h3><ul><li>最新版の製品資料をまとめた SharePoint のフォルダー</li><li>価格や契約についての問い合わせ先</li></ul></section>
     <section class="g-check"><h3>作る前に確認</h3><ul><li>フォルダーに、古い版や社外に出せない資料が混ざっていないか</li><li>営業チームが、そのフォルダーを閲覧できるか</li></ul></section>
   </div>
+  
   <section class="g-steps"><h3>作る手順</h3><ol><li><b>資料を整える</b><span>最新版の製品資料を1つのフォルダーに集め、古い版は別の場所へ移します</span></li><li><b>作り始める</b><span>Microsoft 365 Copilot で <span class="ui">新しいエージェント</span> を選び、「営業向けに、製品資料から特長や仕様を答えるエージェント」のように説明します</span></li><li><b>設定を確かめる</b><span><span class="ui">構成</span> で、できあがった名前・説明・指示を確かめ、下の「指示の例」を参考に直します</span></li><li><b>ナレッジを入れる</b><span><span class="ui">ナレッジ</span> に、製品資料のフォルダーを追加します</span></li><li><b>試す</b><span><span class="ui">試してみる</span> で、下の「テストの質問」を聞きます。価格を聞いて、担当部署が案内されるかも確かめます</span></li><li><b>作成して共有する</b><span><span class="ui">作成</span> で作成し、<span class="ui">共有</span> で営業チームを <span class="ui">チャット可能</span> として追加します</span></li><li><b>あとから直す</b><span>資料や指示を変えたら、右上の <span class="ui">更新</span> で反映します</span></li></ol></section>
   <div class="g-bottom">
     <section class="g-instr"><div class="g-h"><h3>指示の例</h3><button type="button" class="copy-btn" aria-label="指示の例をコピー">コピー</button></div>
@@ -807,7 +869,8 @@ b{font-weight:700}
       <table><thead><tr><th scope="col">聞く質問</th><th scope="col">こう答えれば OK</th></tr></thead><tbody><tr><td class="q">製品Aと製品Bのちがいを3行で教えて</td><td>資料名つきで、3行にまとめる</td></tr><tr><td class="q">製品Aの対応OSは？</td><td>仕様書をもとに答える</td></tr><tr><td class="q">製品Aはいくらまで値引きできる？</td><td>答えずに、担当部署を案内する</td></tr></tbody></table></section>
   </div>
   <section class="g-trouble"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>うまくいかないとき</h3><table><tbody><tr><th scope="row">古い情報が出る</th><td>古い版がフォルダーに残っていないか確かめます</td></tr><tr><th scope="row">共有した人に答えが出ない</th><td>資料の閲覧権限を確かめます。共有できなかったファイルは、SharePoint で個別に権限を付けます</td></tr><tr><th scope="row">在庫など最新の数字も答えたい</th><td>エージェント ビルダーでは外部とつなげません。Copilot Studio にコピーしてツールを足します（15 を参照）</td></tr></tbody></table></section>
-  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.06<i> / 8</i></span></footer>
+  
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.07<i> / 25</i></span></footer>
 </article>
 <article class="sheet case guide lv1" id="guide-05" aria-labelledby="h-guide-05">
   <div class="tab">初級</div>
@@ -822,10 +885,12 @@ b{font-weight:700}
   <h2 class="case-title" id="h-guide-05">現場マニュアルナビの作り方</h2>
   <p class="g-goal"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span><b>完成すると</b>現場の人がスマートフォンの Teams から、設備の手順と注意点を確かめられるエージェントを作ります。</span>
     <a class="g-book" href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html#case-05">事例集 p.10<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  
   <div class="g-top">
     <section class="g-prep"><h3>準備するもの</h3><ul><li>文字を選択できるマニュアル（PDF など）</li><li>設備名・作業名の一覧</li><li>現場で試してくれる人</li></ul></section>
     <section class="g-check"><h3>作る前に確認</h3><ul><li>スキャンした画像だけの PDF ではないか（開いて文字を選べるか確かめる）</li><li>現場の人が、スマートフォンの Teams を使えるか</li></ul></section>
   </div>
+  
   <section class="g-steps"><h3>作る手順</h3><ol><li><b>作り始める</b><span>01 と同じく、<span class="ui">ホーム</span> で <span class="ui">新しいエクスペリエンス</span> をオフにし、作りたいものを一文で入力して送ります</span></li><li><b>指示を入れる</b><span><span class="ui">概要</span> で、下の「指示の例」を貼り付けます。安全の注意を最初に伝えることが大切です</span></li><li><b>マニュアルを入れる</b><span><span class="ui">ナレッジの追加</span> でマニュアルを追加し、説明に設備名と作業名を書きます</span></li><li><b>資料の外は答えないようにする</b><span>01 と同じく、一般知識と Web 検索をオフにします</span></li><li><b>試す</b><span>下の「テストの質問」で、注意が最初に出るか、参照ページが示されるかを確かめます</span></li><li><b>スマートフォンに届ける</b><span><span class="ui">公開</span> で公開し、Teams のチャネルを追加します。スマートフォンの Teams ではインストール用のリンクが使えないため、<span class="ui">可用性オプション</span> の <span class="ui">チームメイトと共有ユーザーに表示</span> で Teams のアプリストアに表示します</span></li><li><b>現場で育てる</b><span>現場の人に使ってもらい、聞き方のくせに合わせて、指示や資料の説明を直します</span></li></ol></section>
   <div class="g-bottom">
     <section class="g-instr"><div class="g-h"><h3>指示の例</h3><button type="button" class="copy-btn" aria-label="指示の例をコピー">コピー</button></div>
@@ -839,13 +904,399 @@ b{font-weight:700}
       <table><thead><tr><th scope="col">聞く質問</th><th scope="col">こう答えれば OK</th></tr></thead><tbody><tr><td class="q">設備Xの日常点検の手順は？</td><td>【注意】→ 手順 → 参照ページの順で答える</td></tr><tr><td class="q">設備Xから異音がする</td><td>該当する箇所を示す。なければ責任者への確認を案内する</td></tr><tr><td class="q">設備Yの部品はどこで買える？</td><td>マニュアルにないため、責任者を案内する</td></tr></tbody></table></section>
   </div>
   <section class="g-trouble"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>うまくいかないとき</h3><table><tbody><tr><th scope="row">答えが出ない・おかしな文字になる</th><td>画像だけの PDF は読み取れないことがあります。元のデータを探すか、作り直します</td></tr><tr><th scope="row">スマートフォンで見つからない</th><td>Teams のアプリストアに表示する設定（<span class="ui">チームメイトと共有ユーザーに表示</span>）を確かめます</td></tr><tr><th scope="row">答えが長くて読みにくい</th><td>指示に「3行以内で」など、答えの長さを書き足します</td></tr></tbody></table></section>
-  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.07<i> / 8</i></span></footer>
+  
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.08<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv2" id="guide-06" aria-labelledby="h-guide-06">
+  <div class="tab">中級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">06</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>中級</span><span class="dept">総務</span></p>
+      <p class="agent-name">備品申請の受付係</p>
+    </div>
+    <p class="harness"><span>作る場所</span>Copilot Studio<small>スタンダード ハーネス</small></p>
+  </header>
+  <h2 class="case-title" id="h-guide-06">備品申請の受付係の作り方</h2>
+  <p class="g-goal"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span><b>完成すると</b>「備品がほしい」と話しかけると、品目・数量・理由を聞き取り、リストに登録して担当者に知らせるエージェントを作ります。</span>
+    <a class="g-book" href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html#case-06">事例集 p.12<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  
+  <div class="g-top">
+    <section class="g-prep"><h3>準備するもの</h3><ul><li>申請を記録する SharePoint リスト（品目・数量・理由・申請者・状況の列）</li><li>通知先の Teams チャネル</li><li>品目の分類（1つの質問につき6個まで）</li></ul></section>
+    <section class="g-check"><h3>作る前に確認</h3><ul><li>リストに項目を追加できる権限があるか</li><li>登録を「使う人」と「作った人」のどちらの権限で行うか</li><li>管理者の設定で、SharePoint と Teams のコネクタが使えるか</li></ul></section>
+  </div>
+  
+  <section class="g-steps"><h3>作る手順</h3><ol><li><b>作り始める</b><span>01 と同じく、<span class="ui">ホーム</span> で <span class="ui">新しいエクスペリエンス</span> をオフにし、作りたいものを一文で入力して送ります</span></li><li><b>トピックを作る</b><span><span class="ui">トピック</span> で <span class="ui">トピックを追加</span> を選び、空白から作ります。トピックの説明に「備品の申請を受け付ける」と書きます</span></li><li><b>聞き取りを組む</b><span><span class="ui">ノードの追加</span>（＋）から質問のノードを足し、品目（<span class="ui">複数選択式オプション</span>）・数量・理由の順に聞きます。答えは変数に保存されます</span></li><li><b>内容を確かめる</b><span><span class="ui">メッセージ</span> のノードで聞き取った内容を見せ、質問のノードで「この内容で申請しますか？」と確かめます</span></li><li><b>リストに登録する</b><span><span class="ui">ノードの追加</span> → <span class="ui">ツールの追加</span> → <span class="ui">コネクタ</span> で SharePoint の「項目の作成」を選び、接続を作って、各列に変数を割り当てます</span></li><li><b>担当者に知らせる</b><span>同じように Teams の「チャットまたはチャネルでメッセージを投稿する」を足し、通知先のチャネルと文面を決めます</span></li><li><b>試して公開する</b><span><span class="ui">エージェントのテスト</span> で一通り申請し、リストと Teams に届くのを確かめてから、01 と同じ流れで Teams に出します</span></li></ol></section>
+  <p class="g-next-page">指示の例・テストの質問・うまくいかないときは、次のページです<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></p>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.09<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv2 g-page2" id="guide-06-2" aria-label="備品申請の受付係の作り方（つづき）">
+  <div class="tab">中級</div>
+  <p class="g-cont"><span class="n">06</span>備品申請の受付係の作り方<em>つづき</em></p>
+  <div class="g-bottom">
+    <section class="g-instr"><div class="g-h"><h3>指示の例</h3><button type="button" class="copy-btn" aria-label="指示の例をコピー">コピー</button></div>
+      <div class="instr-box"><pre>あなたは総務の備品申請の受付係です。
+・備品の申請を頼まれたら、備品申請のトピックで受け付けてください。
+・申請と関係のない質問には、総務部の窓口（連絡先：○○）を案内してください。</pre></div>
+      <p class="g-hint">○○ や部署名は、自分の職場に合わせて直します。</p></section>
+    <section class="g-tests"><h3>テストの質問</h3>
+      <table><thead><tr><th scope="col">聞く質問</th><th scope="col">こう答えれば OK</th></tr></thead><tbody><tr><td class="q">マウスを申請したい</td><td>品目を選択肢で聞かれる</td></tr><tr><td class="q">（最後まで答えて）はい</td><td>リストに1行増え、Teams に通知が届く</td></tr><tr><td class="q">有給はあと何日？</td><td>申請と関係ないため、窓口を案内する</td></tr></tbody></table></section>
+  </div>
+  <section class="g-trouble"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>うまくいかないとき</h3><table><tbody><tr><th scope="row">選択肢が出ない・多すぎる</th><td>Teams では、選択肢は1つの質問につき6個までです。分類を2段階に分けます</td></tr><tr><th scope="row">登録でエラーになる</th><td>接続のサインインが切れていないか、リストの列名と種類が割り当てと合っているかを確かめます</td></tr><tr><th scope="row">ほかの人が使うと登録できない</th><td>ツールが使う人の資格情報で動くときは、その人にリストの権限が要ります。作成者の資格情報にするか、権限を付けます</td></tr></tbody></table></section>
+  <section class="g-notes"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-rocket"/></svg>ポイント</h3><ul><li>質問の答えは変数に入ります。「品目」「数量」のように、あとで見てわかる名前に変えておくと、登録の設定が楽になります。</li><li>まずは自分の Teams だけで試し、リストと通知の内容を担当者に見てもらってから広げます。</li></ul></section>
+  <section class="g-memo" aria-label="メモ"><h3>メモ</h3><div class="memo-lines"></div></section>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.10<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv2" id="guide-07" aria-labelledby="h-guide-07">
+  <div class="tab">中級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">07</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>中級</span><span class="dept">情報システム</span></p>
+      <p class="agent-name">ヘルプデスクの受付票づくり</p>
+    </div>
+    <p class="harness"><span>作る場所</span>Copilot Studio<small>スタンダード ハーネス</small></p>
+  </header>
+  <h2 class="case-title" id="h-guide-07">ヘルプデスクの受付票づくりの作り方</h2>
+  <p class="g-goal"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span><b>完成すると</b>03 の ITヘルプデスクに、手順で解決しなかったときだけ受付票を登録するツールを足します。</span>
+    <a class="g-book" href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html#case-07">事例集 p.13<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  
+  <div class="g-top">
+    <section class="g-prep"><h3>準備するもの</h3><ul><li>03 で作ったエージェント</li><li>受付票を記録する SharePoint リスト（または管理システムのコネクタ）</li><li>受付番号の付け方</li></ul></section>
+    <section class="g-check"><h3>作る前に確認</h3><ul><li>受付票に記録してよい情報の範囲（社内のルール）</li><li>管理者の設定で、使うコネクタが使えるか</li></ul></section>
+  </div>
+  
+  <section class="g-steps"><h3>作る手順</h3><ol><li><b>03 を開く</b><span><span class="ui">エージェント</span> から、03 で作った ITヘルプデスクを開きます</span></li><li><b>ツールを足す</b><span><span class="ui">ツール</span> → <span class="ui">ツールの追加</span> → <span class="ui">コネクタ</span> で、SharePoint の「項目の作成」（または管理システムのコネクタ）を選び、<span class="ui">追加と構成</span> を押します</span></li><li><b>使う場面を書く</b><span>ツールの <span class="ui">詳細</span> の説明に「手順を案内しても解決しなかったときに、受付票を登録する」と、使う場面を具体的に書きます</span></li><li><b>入力を整える</b><span><span class="ui">入力</span> で、端末・症状・緊急度は <span class="ui">AI による動的入力</span> のままにします。足りない情報は、AI が質問を作って聞き取ります</span></li><li><b>登録前に確かめる</b><span>実行前に利用者へ確認する設定をオンにします。登録の前に、内容が表示されるようになります</span></li><li><b>番号を伝える</b><span><span class="ui">完了</span> で、登録したあとに受付番号を伝える応答を設定します</span></li><li><b>試して公開する</b><span>下の「テストの質問」で、解決したときは登録しないことも確かめてから公開します</span></li></ol></section>
+  <div class="g-bottom">
+    <section class="g-instr"><div class="g-h"><h3>指示に足す例</h3><button type="button" class="copy-btn" aria-label="指示に足す例をコピー">コピー</button></div>
+      <div class="instr-box"><pre>（03 の指示に、次の3行を足します）
+・手順を試しても解決しないと言われたら、受付票の登録ツールを使ってください。
+・登録の前に、端末・症状・緊急度を確かめてください。
+・登録したら、受付番号を伝えてください。</pre></div>
+      <p class="g-hint">○○ や部署名は、自分の職場に合わせて直します。</p></section>
+    <section class="g-tests"><h3>テストの質問</h3>
+      <table><thead><tr><th scope="col">聞く質問</th><th scope="col">こう答えれば OK</th></tr></thead><tbody><tr><td class="q">VPN につながらない</td><td>まず手順を案内する（まだ登録しない）</td></tr><tr><td class="q">手順を試したけど直らない</td><td>端末と症状を聞き、登録の確認を出す</td></tr><tr><td class="q">（確認で）はい</td><td>受付番号を伝え、リストに1行増える</td></tr></tbody></table></section>
+  </div>
+  <section class="g-trouble"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>うまくいかないとき</h3><table><tbody><tr><th scope="row">関係ない場面で登録しようとする</th><td>ツールの説明と指示の両方に「解決しなかったときだけ」と書きます</td></tr><tr><th scope="row">聞き取りが多すぎる・足りない</th><td>入力ごとの説明を具体的にします。毎回同じ値は <span class="ui">カスタム値</span> で決めておきます</td></tr><tr><th scope="row">登録できない人がいる</th><td>ツールの認証が、使う人と作成者のどちらの資格情報かを確かめます</td></tr></tbody></table></section>
+  
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.11<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv2" id="guide-08" aria-labelledby="h-guide-08">
+  <div class="tab">中級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">08</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>中級</span><span class="dept">全部署</span></p>
+      <p class="agent-name">会議メモ整理係</p>
+    </div>
+    <p class="harness"><span>作る場所</span>Copilot Studio<small>スタンダード ハーネス</small></p>
+  </header>
+  <h2 class="case-title" id="h-guide-08">会議メモ整理係の作り方</h2>
+  <p class="g-goal"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span><b>完成すると</b>会議メモを貼り付けると、決定事項と ToDo を整理し、確かめたうえで Planner に登録するエージェントを作ります。</span>
+    <a class="g-book" href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html#case-08">事例集 p.14<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  
+  <div class="g-top">
+    <section class="g-prep"><h3>準備するもの</h3><ul><li>タスクを登録する Planner のプラン</li><li>試すための会議メモの例（架空のもの）</li><li>担当者の書き方のルール（部署名・氏名など）</li></ul></section>
+    <section class="g-check"><h3>作る前に確認</h3><ul><li>会議メモを AI で扱ってよいか（社内のルール）</li><li>使う人が、そのプランのメンバーに入っているか</li></ul></section>
+  </div>
+  
+  <section class="g-steps"><h3>作る手順</h3><ol><li><b>作り始める</b><span>01 と同じく、<span class="ui">ホーム</span> で <span class="ui">新しいエクスペリエンス</span> をオフにして作り始めます</span></li><li><b>プロンプトを作る</b><span><span class="ui">ツール</span> → <span class="ui">ツールの追加</span> → <span class="ui">新しいツール</span> → <span class="ui">プロンプト</span> を選びます。「会議メモから決定事項・ToDo・担当・期限を取り出して表にする。書かれていなければ未定」と書き、入力に会議メモを設定します</span></li><li><b>プロンプトを試す</b><span>プロンプトの画面で会議メモの例を入れて試し、取り出し方を直します。保存して <span class="ui">追加と構成</span> を押します</span></li><li><b>Planner をつなぐ</b><span><span class="ui">ツールの追加</span> → <span class="ui">コネクタ</span> で Planner の「タスクの作成」を選び、接続を作ります。登録先のプランは <span class="ui">カスタム値</span> で決めておきます</span></li><li><b>登録前に確かめる</b><span>Planner のツールで、実行前に利用者へ確認する設定をオンにします</span></li><li><b>指示を書く</b><span><span class="ui">概要</span> の指示に、下の例を貼ります。整理 → 一覧を見せる → 確かめてから登録、の順番です</span></li><li><b>試して公開する</b><span>架空の会議メモで最後まで試してから、01 と同じ流れで Teams に出します</span></li></ol></section>
+  <div class="g-bottom">
+    <section class="g-instr"><div class="g-h"><h3>指示の例</h3><button type="button" class="copy-btn" aria-label="指示の例をコピー">コピー</button></div>
+      <div class="instr-box"><pre>あなたは会議メモの整理係です。
+・会議メモを受け取ったら、まずプロンプトのツールで決定事項と ToDo を一覧にして見せてください。
+・担当や期限が書かれていない項目は「未定」と表示してください。
+・利用者が確かめてから、ToDo を1件ずつ Planner に登録してください。</pre></div>
+      <p class="g-hint">○○ や部署名は、自分の職場に合わせて直します。</p></section>
+    <section class="g-tests"><h3>テストの質問</h3>
+      <table><thead><tr><th scope="col">聞く質問</th><th scope="col">こう答えれば OK</th></tr></thead><tbody><tr><td class="q">（架空の会議メモを貼る）</td><td>決定事項と ToDo の一覧が出る</td></tr><tr><td class="q">担当が書かれていない ToDo</td><td>担当が「未定」と表示される</td></tr><tr><td class="q">登録して</td><td>確認のあと、Planner にタスクが増える</td></tr></tbody></table></section>
+  </div>
+  <section class="g-trouble"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>うまくいかないとき</h3><table><tbody><tr><th scope="row">発言の意図を取りちがえる</th><td>プロンプトに「推測しない」「書かれていないことは未定にする」を足します</td></tr><tr><th scope="row">登録先がちがう</th><td>Planner のツールの入力で、プランを <span class="ui">カスタム値</span> にしているか確かめます</td></tr><tr><th scope="row">長いメモで途中が抜ける</th><td>議題ごとに分けて貼ってもらいます</td></tr></tbody></table></section>
+  
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.12<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv2" id="guide-09" aria-labelledby="h-guide-09">
+  <div class="tab">中級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">09</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>中級</span><span class="dept">総務・経理</span></p>
+      <p class="agent-name">出張申請チェッカー</p>
+    </div>
+    <p class="harness"><span>作る場所</span>Copilot Studio<small>スタンダード ハーネス</small></p>
+  </header>
+  <h2 class="case-title" id="h-guide-09">出張申請チェッカーの作り方</h2>
+  <p class="g-goal"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span><b>完成すると</b>出張の内容を聞き取り、旅費規程の上限と比べてから、上長の承認に回すエージェントを作ります。</span>
+    <a class="g-book" href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html#case-09">事例集 p.15<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  
+  <div class="g-top">
+    <section class="g-prep"><h3>準備するもの</h3><ul><li>01 で作った社内規程アシスタント（旅費規程のナレッジ）</li><li>宿泊費などの上限額（規程の数字）</li><li>承認する人（上長）を決める方法</li></ul></section>
+    <section class="g-check"><h3>作る前に確認</h3><ul><li>エージェント フローを使ってよいか、利用量の扱いを管理者に確かめたか</li><li>承認する人が、Teams やメールで承認の依頼を受け取れるか</li></ul></section>
+  </div>
+  
+  <section class="g-steps"><h3>作る手順</h3><ol><li><b>01 を開く</b><span><span class="ui">エージェント</span> から、01 で作った社内規程アシスタントを開きます</span></li><li><b>トピックを作る</b><span><span class="ui">トピック</span> で <span class="ui">トピックを追加</span> を選び、空白から作ります。説明に「出張の申請を受け付ける」と書きます</span></li><li><b>内容を聞き取る</b><span>質問のノードで、行き先・日程・宿泊費（数値）を聞きます</span></li><li><b>上限と比べる</b><span>規程の上限額を変数に入れておき、条件のノードで宿泊費と比べます。こえたときは、理由を聞く質問を足します。規程が変わったら、この数字も直します</span></li><li><b>承認のフローを作る</b><span><span class="ui">ツール</span> → <span class="ui">ツールの追加</span> → <span class="ui">新しいツール</span> → <span class="ui">エージェント フロー</span> で作ります。トリガーは「エージェントがフローを呼び出したとき」で、申請の内容を入力にします</span></li><li><b>先に返事をする</b><span>フローでは、まず「エージェントに応答」で「承認を依頼しました」と返します。エージェントへの応答は100秒以内という決まりがあるためです</span></li><li><b>承認を待って知らせる</b><span>続けて承認のアクション（「開始して承認を待機」など）で上長に依頼し、結果を Teams やメールで申請した人に知らせます。保存して公開します</span></li><li><b>トピックから呼ぶ</b><span>トピックの確認のあとに <span class="ui">ノードの追加</span> → <span class="ui">ツールの追加</span> でフローを選び、聞き取った変数を渡します</span></li><li><b>試して公開する</b><span>上限内・上限超えの両方で試し、承認の依頼と結果の通知が届くのを確かめてから公開します</span></li></ol></section>
+  <p class="g-next-page">指示の例・テストの質問・うまくいかないときは、次のページです<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></p>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.13<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv2 g-page2" id="guide-09-2" aria-label="出張申請チェッカーの作り方（つづき）">
+  <div class="tab">中級</div>
+  <p class="g-cont"><span class="n">09</span>出張申請チェッカーの作り方<em>つづき</em></p>
+  <div class="g-bottom">
+    <section class="g-instr"><div class="g-h"><h3>指示に足す例</h3><button type="button" class="copy-btn" aria-label="指示に足す例をコピー">コピー</button></div>
+      <div class="instr-box"><pre>（01 の指示に、次の3行を足します）
+・出張の申請を頼まれたら、出張申請のトピックで受け付けてください。
+・上限額やルールの説明は、旅費規程をもとに答えてください。
+・承認するかどうかは判断せず、上長の承認に回してください。</pre></div>
+      <p class="g-hint">○○ や部署名は、自分の職場に合わせて直します。</p></section>
+    <section class="g-tests"><h3>テストの質問</h3>
+      <table><thead><tr><th scope="col">聞く質問</th><th scope="col">こう答えれば OK</th></tr></thead><tbody><tr><td class="q">来週、1泊で出張したい</td><td>行き先・日程・宿泊費を順に聞く</td></tr><tr><td class="q">（上限内の金額で）依頼する</td><td>「承認を依頼しました」と返り、上長に依頼が届く</td></tr><tr><td class="q">（上限をこえる金額）</td><td>理由を聞いてから承認に回す</td></tr></tbody></table></section>
+  </div>
+  <section class="g-trouble"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>うまくいかないとき</h3><table><tbody><tr><th scope="row">フローがツールの一覧に出ない</th><td>トリガーが「エージェントがフローを呼び出したとき」で、「エージェントに応答」があり、公開されているかを確かめます</td></tr><tr><th scope="row">途中でタイムアウトする</th><td>承認を待つ前に「エージェントに応答」で返しているか確かめます。応答は100秒以内が決まりです</td></tr><tr><th scope="row">結果の通知が届かない</th><td>フローの実行履歴で、承認のあとの通知のアクションまで進んでいるかを見ます</td></tr></tbody></table></section>
+  <section class="g-notes"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-rocket"/></svg>ポイント</h3><ul><li>承認の判断は人が行います。エージェントは、規程と照らした確認と、依頼の取り次ぎまでを受け持ちます。</li><li>エージェント フローは、実行したアクションの数に応じて利用量を使います。テストでの実行は利用量に数えられません。</li></ul></section>
+  <section class="g-memo" aria-label="メモ"><h3>メモ</h3><div class="memo-lines"></div></section>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.14<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv2" id="guide-10" aria-labelledby="h-guide-10">
+  <div class="tab">中級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">10</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>中級</span><span class="dept">カスタマーサポート</span></p>
+      <p class="agent-name">お客様向けWebチャット</p>
+    </div>
+    <p class="harness"><span>作る場所</span>Copilot Studio<small>スタンダード ハーネス</small></p>
+  </header>
+  <h2 class="case-title" id="h-guide-10">お客様向けWebチャットの作り方</h2>
+  <p class="g-goal"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span><b>完成すると</b>自社の公開 Web サイトをもとにお客様の質問に答えるチャットを作り、サイトに埋め込みます。</span>
+    <a class="g-book" href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html#case-10">事例集 p.16<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  
+  <div class="g-top">
+    <section class="g-prep"><h3>準備するもの</h3><ul><li>答えのもとにする公開 Web サイトの URL</li><li>問い合わせ窓口の案内（フォームの URL など）</li><li>サイトを管理している Web 担当者</li></ul></section>
+    <section class="g-check"><h3>作る前に確認</h3><ul><li>お客様向けに公開してよいか、社内の承認（広報・法務など）を取ったか</li><li>社内向けの資料をナレッジに入れていないか</li></ul></section>
+  </div>
+  <section class="g-ask"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-people"/></svg>担当者にお願いすること</h3><ul><li>サイトに埋め込むコードの追加（Web 担当者）</li><li>公開前の確認（広報・法務などの担当者）</li></ul></section>
+  <section class="g-steps"><h3>作る手順</h3><ol><li><b>作り始める</b><span>01 と同じく、<span class="ui">ホーム</span> で <span class="ui">新しいエクスペリエンス</span> をオフにして作り始め、<span class="ui">概要</span> に下の「指示の例」を貼ります</span></li><li><b>公開サイトを入れる</b><span><span class="ui">ナレッジの追加</span> → <span class="ui">公開 Web サイト</span> で URL を入れて <span class="ui">追加</span> を押し、<span class="ui">エージェントに追加</span> を押します</span></li><li><b>資料の外は答えないようにする</b><span>01 と同じく、一般知識と Web 検索をオフにします</span></li><li><b>窓口を案内する</b><span><span class="ui">トピックを追加</span> で空白から作り、説明に「答えが見つからないときや、担当者と話したいとき」と書きます。メッセージで窓口を案内します</span></li><li><b>認証なしにする</b><span><span class="ui">設定</span> → <span class="ui">セキュリティ</span> → <span class="ui">認証</span> で <span class="ui">認証なし</span> を選んで <span class="ui">保存</span> します。リンクを知っている誰でも話しかけられる状態になります</span></li><li><b>関係者で試す</b><span><span class="ui">公開</span> したあと、<span class="ui">チャネル</span> の <span class="ui">デモ Web サイト</span> を開き、関係者に試してもらいます</span></li><li><b>サイトに載せる</b><span><span class="ui">チャネル</span> のカスタム Web サイトの手順で、埋め込み用のコードを用意し、Web 担当者にサイトへの追加を頼みます</span></li></ol></section>
+  <p class="g-next-page">指示の例・テストの質問・うまくいかないときは、次のページです<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></p>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.15<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv2 g-page2" id="guide-10-2" aria-label="お客様向けWebチャットの作り方（つづき）">
+  <div class="tab">中級</div>
+  <p class="g-cont"><span class="n">10</span>お客様向けWebチャットの作り方<em>つづき</em></p>
+  <div class="g-bottom">
+    <section class="g-instr"><div class="g-h"><h3>指示の例</h3><button type="button" class="copy-btn" aria-label="指示の例をコピー">コピー</button></div>
+      <div class="instr-box"><pre>あなたは当社のお客様向けサポート窓口です。
+・ナレッジの公開 Web サイトの情報だけをもとに答え、参考になるページを示してください。
+・お名前、電話番号、注文番号などの個人情報は聞かないでください。
+・答えが見つからないときは、推測せずに問い合わせ窓口を案内してください。</pre></div>
+      <p class="g-hint">○○ や部署名は、自分の職場に合わせて直します。</p></section>
+    <section class="g-tests"><h3>テストの質問</h3>
+      <table><thead><tr><th scope="col">聞く質問</th><th scope="col">こう答えれば OK</th></tr></thead><tbody><tr><td class="q">注文のキャンセルはできますか？</td><td>公開ページをもとに答え、ページを示す</td></tr><tr><td class="q">担当者と話したい</td><td>問い合わせ窓口を案内する</td></tr><tr><td class="q">私の注文はいつ届く？</td><td>個人の情報は扱えないため、窓口を案内する</td></tr></tbody></table></section>
+  </div>
+  <section class="g-trouble"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>うまくいかないとき</h3><table><tbody><tr><th scope="row">新しいページの内容が出ない</th><td>公開サイトのナレッジは、検索エンジン（Bing）に登録された内容を使います。反映まで時間がかかります</td></tr><tr><th scope="row">デモ Web サイトが開けない</th><td><span class="ui">認証</span> が <span class="ui">認証なし</span> になっているか確かめます</td></tr><tr><th scope="row">社内向けの内容が答えに出る</th><td>ナレッジに社内の資料がないか、一般知識と Web 検索がオフかを確かめます</td></tr></tbody></table></section>
+  <section class="g-notes"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-rocket"/></svg>ポイント</h3><ul><li><span class="ui">認証なし</span> では、使う人の資格情報で動くツールは使えません。お客様向けのチャットは、公開情報の案内にしぼると安全です。</li><li>デモ Web サイトは、関係者が試すためのものです。お客様向けの本番には、サイトに埋め込んだチャットを使います。</li></ul></section>
+  <section class="g-memo" aria-label="メモ"><h3>メモ</h3><div class="memo-lines"></div></section>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.16<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv3" id="guide-11" aria-labelledby="h-guide-11">
+  <div class="tab">上級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">11</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>上級</span><span class="dept">カスタマーサポート・営業事務</span></p>
+      <p class="agent-name">メール仕分け係</p>
+    </div>
+    <p class="harness"><span>作る場所</span>Copilot Studio<small>スタンダード ハーネス</small></p>
+  </header>
+  <h2 class="case-title" id="h-guide-11">メール仕分け係の作り方</h2>
+  <p class="g-goal"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span><b>完成すると</b>問い合わせ用のメールが届くと自動で動き、分類・記録・返信の下書きまで行うエージェントを作ります。</span>
+    <a class="g-book" href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html#case-11">事例集 p.18<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  
+  <div class="g-top">
+    <section class="g-prep"><h3>準備するもの</h3><ul><li>問い合わせ用のメールボックス</li><li>記録用の SharePoint リスト（受信日時・件名・分類・急ぎ度）</li><li>返信の参考にする FAQ と、分類のルール</li></ul></section>
+    <section class="g-check"><h3>作る前に確認</h3><ul><li>生成オーケストレーションがオンか（イベント トリガーに必要です）</li><li>管理者の設定で、この環境でトリガーが使えるか</li><li>作った人の資格情報で動くことを、メールボックスの管理者と話し合ったか</li></ul></section>
+  </div>
+  <section class="g-ask"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-people"/></svg>担当者にお願いすること</h3><ul><li>メールボックスへのアクセス権（メールボックスの管理者）</li><li>トリガーを使えるようにする環境の設定（Power Platform の管理者）</li></ul></section>
+  <section class="g-steps"><h3>作る手順</h3><ol><li><b>作り始める</b><span>01 と同じく、<span class="ui">ホーム</span> で <span class="ui">新しいエクスペリエンス</span> をオフにして作り始め、<span class="ui">概要</span> に下の「指示の例」を貼ります</span></li><li><b>FAQ を入れる</b><span><span class="ui">ナレッジの追加</span> で、返信の参考にする FAQ を追加します</span></li><li><b>記録のツール</b><span><span class="ui">ツール</span> → <span class="ui">ツールの追加</span> → <span class="ui">コネクタ</span> で SharePoint の「項目の作成」を足します。自動で動くので、認証は <span class="ui">作成者が指定した資格情報</span> にします</span></li><li><b>下書きのツール</b><span>同じように、Office 365 Outlook コネクタの下書きを作るアクションを足します。送信のアクションは足しません</span></li><li><b>トリガーを足す</b><span><span class="ui">概要</span> の <span class="ui">トリガー</span> で <span class="ui">トリガーの追加</span> を選び、Office 365 Outlook の「新しいメールが届いたとき (V3)」を選んで <span class="ui">次へ</span> を押します。対象のフォルダーや差出人でしぼります</span></li><li><b>トリガーに指示を書く</b><span>トリガーの内容に「このメールを分類して記録し、返信の下書きを作る」と書きます。エージェントの指示とぶつからないようにします</span></li><li><b>テストする</b><span>テスト用のメールを1通送ります。トリガーの横のテストのアイコンから届いたメールを選び、<span class="ui">テストを開始</span> を押します。アクティビティ マップで動きを確かめます</span></li><li><b>公開して見守る</b><span><span class="ui">公開</span> すると、メールが届くたびに自動で動き始めます。<span class="ui">アクティビティ</span> で毎回の動きを確かめます</span></li></ol></section>
+  <p class="g-next-page">指示の例・テストの質問・うまくいかないときは、次のページです<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></p>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.17<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv3 g-page2" id="guide-11-2" aria-label="メール仕分け係の作り方（つづき）">
+  <div class="tab">上級</div>
+  <p class="g-cont"><span class="n">11</span>メール仕分け係の作り方<em>つづき</em></p>
+  <div class="g-bottom">
+    <section class="g-instr"><div class="g-h"><h3>指示の例</h3><button type="button" class="copy-btn" aria-label="指示の例をコピー">コピー</button></div>
+      <div class="instr-box"><pre>あなたは問い合わせメールの仕分け係です。
+・メールが届いたら、内容を「請求」「配送」「その他」に分類し、急ぎ度（高・中・低）を決めてください。
+・受信日時、件名、分類、急ぎ度を、記録のツールでリストに登録してください。
+・ナレッジの FAQ をもとに、ていねいな返信の下書きを作ってください。メールは送信しないでください。
+・FAQ にない内容は、下書きに「担当者が確認します」と書いてください。</pre></div>
+      <p class="g-hint">○○ や部署名は、自分の職場に合わせて直します。</p></section>
+    <section class="g-tests"><h3>テストの質問</h3>
+      <table><thead><tr><th scope="col">聞く質問</th><th scope="col">こう答えれば OK</th></tr></thead><tbody><tr><td class="q">「請求書を再発行してほしい」</td><td>分類＝請求。リストに記録され、下書きができる</td></tr><tr><td class="q">「配送先を変えたい」</td><td>分類＝配送として記録される</td></tr><tr><td class="q">本文がほとんどないメール</td><td>分類＝その他。下書きに「担当者が確認します」</td></tr></tbody></table></section>
+  </div>
+  <section class="g-trouble"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>うまくいかないとき</h3><table><tbody><tr><th scope="row">トリガーを選べない</th><td>管理者の設定（データ ポリシーや、環境の共有の設定）でトリガーが止められていないか、管理者に確かめます</td></tr><tr><th scope="row">途中で止まる</th><td><span class="ui">アクティビティ</span> で止まった場所を見ます。ツールの認証が作成者の資格情報になっていないと、自動では動けません</td></tr><tr><th scope="row">利用量が多い</th><td>トリガーで動くたびに利用量を使います。フォルダーや差出人の条件でしぼります</td></tr></tbody></table></section>
+  <section class="g-notes"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-rocket"/></svg>ポイント</h3><ul><li>トリガーは、作った人の資格情報で動きます。エージェントを共有すると、使う人がその権限で情報を引き出せることがあるため、共有する相手と扱う情報に注意します。</li><li>最初は「記録と下書きまで」にして、人が確かめてから送る形で始めます。</li></ul></section>
+  <section class="g-memo" aria-label="メモ"><h3>メモ</h3><div class="memo-lines"></div></section>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.18<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv3" id="guide-12" aria-labelledby="h-guide-12">
+  <div class="tab">上級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">12</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>上級</span><span class="dept">経理</span></p>
+      <p class="agent-name">請求書照合エージェント</p>
+    </div>
+    <p class="harness"><span>作る場所</span>Copilot Studio<small>GitHub Copilot ハーネス</small><span class="ref-tag">参考</span></p>
+  </header>
+  <h2 class="case-title" id="h-guide-12">請求書照合エージェントの作り方</h2>
+  <p class="g-goal"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span><b>完成すると</b>請求書を発注データと照らし合わせ、合わないものだけ承認に回すエージェントを作ります。</span>
+    <a class="g-book" href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html#case-12">事例集 p.19<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  <div class="ref-banner" role="note"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg><p><b>参考事例です</b>この事例は GitHub Copilot ハーネスを使います。現在の利用環境では使えないため、考え方の参考としてご覧ください。 <a href="#case-09">承認の流れは、スタンダード ハーネスの 09 で試せます</a></p></div>
+  <div class="g-top">
+    <section class="g-prep"><h3>準備するもの</h3><ul><li>請求書の保存場所</li><li>発注データを参照する方法（コネクタなど）</li><li>照合のルール（許容する差）と、承認する人</li></ul></section>
+    <section class="g-check"><h3>作る前に確認</h3><ul><li>GitHub Copilot ハーネスを使える環境か（現在の利用環境では使えません）</li><li>利用量（Copilot クレジット）の見積もりを、管理者と相談したか</li></ul></section>
+  </div>
+  
+  <section class="g-steps"><h3>作る手順</h3><ol><li><b>作り始める</b><span><span class="ui">ホーム</span> で <span class="ui">新しいエクスペリエンス</span> をオンのまま、作りたいものを言葉で説明して作ります</span></li><li><b>指示を書く</b><span>作成の画面で、目的・照合のルール・合わないときの扱いを書きます</span></li><li><b>つなぐ</b><span>請求書の保存場所をナレッジに、発注データを参照する手段をツールとして追加します</span></li><li><b>毎回同じ手順はまとめる</b><span>承認の依頼や記録のように毎回同じ手順は、ワークフローやスキルにまとめておきます</span></li><li><b>試す</b><span>プレビューでテスト用の請求書を照合させ、評価の画面でテストセットをまとめて確かめます</span></li><li><b>公開して見守る</b><span>公開したあと、モニターの画面で結果と利用量を確かめます</span></li></ol></section>
+  <div class="g-bottom">
+    <section class="g-instr"><div class="g-h"><h3>指示の例</h3><button type="button" class="copy-btn" aria-label="指示の例をコピー">コピー</button></div>
+      <div class="instr-box"><pre>あなたは経理の請求書照合担当です。
+・請求書ごとに、発注データと取引先・金額・数量・支払条件を照らし合わせてください。
+・すべて一致したものは、照合済みとして記録してください。
+・一致しないものは、ちがう項目と理由をまとめ、承認する人に確認を依頼してください。
+・支払いの実行や、発注データの変更はしないでください。</pre></div>
+      <p class="g-hint">○○ や部署名は、自分の職場に合わせて直します。</p></section>
+    <section class="g-tests"><h3>テストの質問</h3>
+      <table><thead><tr><th scope="col">聞く質問</th><th scope="col">こう答えれば OK</th></tr></thead><tbody><tr><td class="q">一致する請求書</td><td>照合済みとして記録される</td></tr><tr><td class="q">数量がちがう請求書</td><td>ちがう項目と理由つきで、確認を依頼する</td></tr><tr><td class="q">発注データがない請求書</td><td>「発注が見つからない」として確認を依頼する</td></tr></tbody></table></section>
+  </div>
+  <section class="g-trouble"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>うまくいかないとき</h3><table><tbody><tr><th scope="row">画面で選べない</th><td>現在の利用環境では使えません。承認の流れは、スタンダード ハーネスの 09 で試せます</td></tr><tr><th scope="row">利用量が多くなる</th><td>簡単な処理でも利用量がかさみやすいため、少ない件数から始めます</td></tr><tr><th scope="row">あとから土台を変えたい</th><td>ハーネスのあいだではエージェントを移せず、作り直しになります</td></tr></tbody></table></section>
+  
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.19<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv3" id="guide-13" aria-labelledby="h-guide-13">
+  <div class="tab">上級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">13</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>上級</span><span class="dept">事務センター・業務部門</span></p>
+      <p class="agent-name">画面操作の転記係</p>
+    </div>
+    <p class="harness"><span>作る場所</span>Copilot Studio<small>スタンダード ハーネス</small></p>
+  </header>
+  <h2 class="case-title" id="h-guide-13">画面操作の転記係の作り方</h2>
+  <p class="g-goal"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span><b>完成すると</b>外部とつなぐ仕組み（API）がない社内システムに、AI が画面を操作してデータを入力するエージェントを作ります。</span>
+    <a class="g-book" href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html#case-13">事例集 p.20<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  
+  <div class="g-top">
+    <section class="g-prep"><h3>準備するもの</h3><ul><li>操作に使うマシン（ホストされたブラウザー（プレビュー）か、登録した Windows マシン）</li><li>対象システムのアカウント（必要な権限だけ）</li><li>テスト用の画面と、テスト用の入力データ</li></ul></section>
+    <section class="g-check"><h3>作る前に確認</h3><ul><li>情報セキュリティの担当者の了承を得たか</li><li>利用量を見積もったか（操作の1ステップごとに数えます）</li><li>Anthropic のモデルを使うときは、管理者が外部モデルの利用を許可しているか</li></ul></section>
+  </div>
+  <section class="g-ask"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-people"/></svg>担当者にお願いすること</h3><ul><li>マシンの用意（Power Automate のマシン ランタイムで登録し、コンピューターの使用を有効にする）</li><li>ログイン情報の保管方法（内部ストレージか Azure Key Vault）</li></ul></section>
+  <section class="g-steps"><h3>作る手順</h3><ol><li><b>作り始める</b><span>01 と同じく、<span class="ui">ホーム</span> で <span class="ui">新しいエクスペリエンス</span> をオフにして作り始めます</span></li><li><b>ツールを足す</b><span><span class="ui">ツール</span> → <span class="ui">ツールの追加</span> → <span class="ui">新しいツール</span> → <span class="ui">コンピューターの使用</span> を選びます</span></li><li><b>操作の手順を書く</b><span>URL やアプリ名を入れて、操作を番号つきで具体的に書きます（下の例）。テンプレートを使うこともできます</span></li><li><b>名前・説明・モデル</b><span><span class="ui">追加と構成</span> のあと、<span class="ui">名前</span>、いつ使うかがわかる <span class="ui">説明</span>、<span class="ui">モデル</span> を決めます</span></li><li><b>マシンを選ぶ</b><span><span class="ui">マシン</span> で、用意したマシンを選びます</span></li><li><b>安全の設定</b><span>ログイン情報を保管し、操作してよいサイトやアプリを <span class="ui">アクセス制御</span> でしぼります。HTTPS のサイトだけに限る設定と、不審な指示を見つけたときの連絡先（人による監督）も決めます</span></li><li><b>テストする</b><span><span class="ui">テスト</span> を押すと、左に考えた手順、右に画面の動きが出ます。うまくいかなければ、手順を細かく書き直します</span></li><li><b>毎回変わる値は入力に</b><span>品番や数量のように毎回変わる値は、<span class="ui">入力</span> として決めておきます</span></li><li><b>公開する</b><span>自動で動かすときは作成者の資格情報で動きます。共有する相手に注意して公開します</span></li></ol></section>
+  <p class="g-next-page">指示の例・テストの質問・うまくいかないときは、次のページです<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></p>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.20<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv3 g-page2" id="guide-13-2" aria-label="画面操作の転記係の作り方（つづき）">
+  <div class="tab">上級</div>
+  <p class="g-cont"><span class="n">13</span>画面操作の転記係の作り方<em>つづき</em></p>
+  <div class="g-bottom">
+    <section class="g-instr"><div class="g-h"><h3>操作の手順の例</h3><button type="button" class="copy-btn" aria-label="操作の手順の例をコピー">コピー</button></div>
+      <div class="instr-box"><pre>1. https://○○ （テスト用の受注システム）を開き、サインインします。
+2. 「新規登録」を選びます。
+3. 受け取った品番・数量・納期を、それぞれの入力欄に入れます。
+4. 「登録」を選びます。確認は不要です。
+5. 画面に出た受付番号を、最後に結果として返します。</pre></div>
+      <p class="g-hint">○○ や部署名は、自分の職場に合わせて直します。</p></section>
+    <section class="g-tests"><h3>テストの質問</h3>
+      <table><thead><tr><th scope="col">聞く質問</th><th scope="col">こう答えれば OK</th></tr></thead><tbody><tr><td class="q">テスト用のデータ1件</td><td>画面に入力され、受付番号が返る</td></tr><tr><td class="q">必須の項目が空のデータ</td><td>エラーを報告して止まる</td></tr><tr><td class="q">許可していないサイトの操作</td><td>操作できずに止まる</td></tr></tbody></table></section>
+  </div>
+  <section class="g-trouble"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>うまくいかないとき</h3><table><tbody><tr><th scope="row">ボタンを見つけられない</th><td>手順に、画面のどのあたりにあるかを書き足します</td></tr><tr><th scope="row">サインインで止まる</th><td>保管したログイン情報のドメインやアプリ名が、実際の画面と合っているか確かめます</td></tr><tr><th scope="row">利用量が多い</th><td>手順を短くして、操作のステップを減らします。1回の作業を小さく分けます</td></tr></tbody></table></section>
+  <section class="g-notes"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-rocket"/></svg>ポイント</h3><ul><li>作成者の資格情報のまま共有すると、使う人が作った人の権限でマシンを操作できてしまいます。</li><li>画面が少し変わっても AI が見て判断しますが、大きく変わったときはテストし直します。</li><li>最初はテスト用の画面で1件ずつ確かめ、本番の件数は少しずつ増やします。</li></ul></section>
+  <section class="g-memo" aria-label="メモ"><h3>メモ</h3><div class="memo-lines"></div></section>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.21<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv3" id="guide-14" aria-labelledby="h-guide-14">
+  <div class="tab">上級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">14</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>上級</span><span class="dept">全社・推進チーム</span></p>
+      <p class="agent-name">社内の総合窓口</p>
+    </div>
+    <p class="harness"><span>作る場所</span>Copilot Studio<small>スタンダード ハーネス</small></p>
+  </header>
+  <h2 class="case-title" id="h-guide-14">社内の総合窓口の作り方</h2>
+  <p class="g-goal"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span><b>完成すると</b>人事・IT・総務のエージェントを窓口役のエージェントにつなぎ、質問に合ったエージェントが答えるようにします。</span>
+    <a class="g-book" href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html#case-14">事例集 p.21<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  
+  <div class="g-top">
+    <section class="g-prep"><h3>準備するもの</h3><ul><li>部署ごとに育てたエージェント（01・03 など）</li><li>各エージェントの担当者</li><li>部署をまたぐ質問の例</li></ul></section>
+    <section class="g-check"><h3>作る前に確認</h3><ul><li>つなぐエージェントが、窓口と同じ環境にあるか</li><li>各エージェントの説明が、担当する質問ごとに分かれているか</li></ul></section>
+  </div>
+  
+  <section class="g-steps"><h3>作る手順</h3><ol><li><b>部署側の準備</b><span>部署のエージェントの <span class="ui">設定</span> で、ほかのエージェントからの接続を許可する設定をオンにします</span></li><li><b>窓口を作る</b><span>01 と同じく、スタンダード ハーネスで窓口役のエージェントを作ります</span></li><li><b>エージェントをつなぐ</b><span>窓口の <span class="ui">エージェント</span> で <span class="ui">エージェントの追加</span> → <span class="ui">外部エージェントに接続</span> → <span class="ui">Copilot Studio</span> を選び、部署のエージェントを選びます</span></li><li><b>説明を整える</b><span>つないだエージェントの説明に、担当する質問を具体的に書きます。ほかと重ならないようにします</span></li><li><b>会話履歴の扱い</b><span>前の会話を渡さなくてよいときは、<span class="ui">会話履歴をこのエージェントに渡す</span> をオフにします</span></li><li><b>指示で使い分ける</b><span>窓口の指示で「/」を入力すると、つないだエージェントを選んで書けます（下の例）</span></li><li><b>試して公開する</b><span><span class="ui">エージェントのテスト</span> のアクティビティ マップで、どのエージェントが呼ばれたかを確かめてから公開します</span></li></ol></section>
+  <div class="g-bottom">
+    <section class="g-instr"><div class="g-h"><h3>指示の例</h3><button type="button" class="copy-btn" aria-label="指示の例をコピー">コピー</button></div>
+      <div class="instr-box"><pre>あなたは社内の総合窓口です。
+・人事の手続きは /人事ガイド、IT のトラブルは /ITヘルプデスク、備品や施設は /総務の受付係 に任せてください。
+・部署をまたぐ質問は、関係するエージェントそれぞれに聞いて、まとめて答えてください。
+・どれにも当てはまらない質問は、総合窓口（連絡先：○○）を案内してください。</pre></div>
+      <p class="g-hint">○○ や部署名は、自分の職場に合わせて直します。</p></section>
+    <section class="g-tests"><h3>テストの質問</h3>
+      <table><thead><tr><th scope="col">聞く質問</th><th scope="col">こう答えれば OK</th></tr></thead><tbody><tr><td class="q">VPN につながらない</td><td>IT のエージェントが答える</td></tr><tr><td class="q">来月引っ越します。手続きは？</td><td>人事と総務のエージェントの答えをまとめる</td></tr><tr><td class="q">社員旅行の行き先は？</td><td>総合窓口を案内する</td></tr></tbody></table></section>
+  </div>
+  <section class="g-trouble"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>うまくいかないとき</h3><table><tbody><tr><th scope="row">ちがうエージェントが答える</th><td>説明が重なっていないか確かめます。選択肢が30〜40をこえると、振り分けがぶれやすくなります</td></tr><tr><th scope="row">つなぐエージェントが一覧に出ない</th><td>同じ環境にあるか、接続を許可する設定がオンかを確かめます</td></tr><tr><th scope="row">応答が遅い</th><td>つなぐ数を減らすか、小さな用途は <span class="ui">新しい子エージェント</span> で窓口の中に作ります</td></tr></tbody></table></section>
+  
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.22<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv3" id="guide-15" aria-labelledby="h-guide-15">
+  <div class="tab">上級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">15</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>上級</span><span class="dept">営業・受注</span></p>
+      <p class="agent-name">在庫・納期アシスタント</p>
+    </div>
+    <p class="harness"><span>作る場所</span>Copilot Studio<small>スタンダード ハーネス</small></p>
+  </header>
+  <h2 class="case-title" id="h-guide-15">在庫・納期アシスタントの作り方</h2>
+  <p class="g-goal"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span><b>完成すると</b>在庫や出荷予定を持つシステムに MCP でつなぎ、品番で最新の数字を確かめ、回答メールの案まで作るエージェントを作ります。</span>
+    <a class="g-book" href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html#case-15">事例集 p.22<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  
+  <div class="g-top">
+    <section class="g-prep"><h3>準備するもの</h3><ul><li>MCP サーバーの URL（システム担当が用意します）</li><li>認証の方法（なし・API キー・OAuth 2.0 のどれか）</li><li>照会してよい項目の一覧（品番・在庫数・出荷予定日など）</li></ul></section>
+    <section class="g-check"><h3>作る前に確認</h3><ul><li>照会してよいデータの範囲を、システム担当と決めたか</li><li>使う人ごとの権限で照会する必要があるか（あれば OAuth 2.0）</li><li>管理者の設定で、MCP のツールが使えるか</li></ul></section>
+  </div>
+  <section class="g-ask"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-people"/></svg>担当者にお願いすること</h3><ul><li>MCP サーバーの用意と、URL・認証情報の受け渡し（システム担当）</li></ul></section>
+  <section class="g-steps"><h3>作る手順</h3><ol><li><b>作り始める</b><span>01 と同じく、スタンダード ハーネスで作り始めます。製品資料（04 のフォルダー）をナレッジに足すと、仕様の質問にも答えられます</span></li><li><b>MCP サーバーを足す</b><span><span class="ui">ツール</span> → <span class="ui">ツールの追加</span> → <span class="ui">新しいツール</span> → <span class="ui">モデル コンテキスト プロトコル</span> を選びます</span></li><li><b>サーバーの情報を入れる</b><span><span class="ui">サーバー名</span>・<span class="ui">サーバーの説明</span>・<span class="ui">サーバーの URL</span> を入れます。説明には、いつ使うサーバーかをはっきり書きます</span></li><li><b>認証を選ぶ</b><span><span class="ui">なし</span>・<span class="ui">API キー</span>・<span class="ui">OAuth 2.0</span> から、システム担当に聞いた方法を選び、<span class="ui">作成</span> を押します</span></li><li><b>接続して追加する</b><span>新しい接続を作成し、<span class="ui">エージェントに追加</span> を押します。追加した MCP のページで、使えるツールとリソースを確かめます</span></li><li><b>指示を書く</b><span><span class="ui">概要</span> の指示に、下の例を貼ります。数字はツールの値をそのまま使うことがポイントです</span></li><li><b>試して公開する</b><span>よくある照会で試し、数字がシステムの画面と一致するかを確かめてから公開します</span></li></ol></section>
+  <p class="g-next-page">指示の例・テストの質問・うまくいかないときは、次のページです<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></p>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.23<i> / 25</i></span></footer>
+</article>
+<article class="sheet case guide lv3 g-page2" id="guide-15-2" aria-label="在庫・納期アシスタントの作り方（つづき）">
+  <div class="tab">上級</div>
+  <p class="g-cont"><span class="n">15</span>在庫・納期アシスタントの作り方<em>つづき</em></p>
+  <div class="g-bottom">
+    <section class="g-instr"><div class="g-h"><h3>指示の例</h3><button type="button" class="copy-btn" aria-label="指示の例をコピー">コピー</button></div>
+      <div class="instr-box"><pre>あなたは営業担当のための在庫・納期アシスタントです。
+・在庫や出荷予定は、必ず在庫システムのツールで調べてから答えてください。
+・ツールで取得した数字をそのまま示し、推測や計算で数字を作らないでください。
+・回答メールの案を頼まれたら、調べた数字と取得した日時を入れて下書きしてください。送信はしないでください。
+・価格や契約条件は答えず、営業企画部を案内してください。</pre></div>
+      <p class="g-hint">○○ や部署名は、自分の職場に合わせて直します。</p></section>
+    <section class="g-tests"><h3>テストの質問</h3>
+      <table><thead><tr><th scope="col">聞く質問</th><th scope="col">こう答えれば OK</th></tr></thead><tbody><tr><td class="q">品番X-100の在庫は？</td><td>ツールで取得した数字をそのまま示す</td></tr><tr><td class="q">X-100を50個、来月10日までに出せる？</td><td>在庫と入荷予定から答え、メールの案を作るか聞く</td></tr><tr><td class="q">存在しない品番</td><td>見つからないと答える（推測しない）</td></tr></tbody></table></section>
+  </div>
+  <section class="g-trouble"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>うまくいかないとき</h3><table><tbody><tr><th scope="row">ツールが呼ばれない</th><td>サーバーの説明に、いつ使うかが具体的に書かれているか確かめます</td></tr><tr><th scope="row">接続でエラーになる</th><td>認証の種類と情報が合っているか、システム担当と確かめます</td></tr><tr><th scope="row">数字が古い</th><td>MCP サーバーの先にあるデータが、いつ更新されるかをシステム担当に確かめます</td></tr></tbody></table></section>
+  <section class="g-notes"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-rocket"/></svg>ポイント</h3><ul><li>MCP（モデル コンテキスト プロトコル）は、AI と外部のサービスをつなぐ共通の決まりごとです。サーバーの用意には開発の知識が要ります。</li><li>MCP のほかに、REST API やカスタム コネクタでつなぐ方法もあります。システム担当と相談して選びます。</li></ul></section>
+  <section class="g-memo" aria-label="メモ"><h3>メモ</h3><div class="memo-lines"></div></section>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.24<i> / 25</i></span></footer>
 </article>
 <section class="sheet page gl-page" id="sources" aria-labelledby="h-src">
   <div class="ptitle"><span class="en">SOURCES</span><h2 id="h-src">参考情報</h2></div>
   <h3 class="sub-h">手順の確認に使った公開情報（Microsoft Learn）</h3>
   <p class="small-lead">画面ではタイトルを押すとページが開きます。印刷した冊子では、タイトルで検索すると見つかります。</p>
-  <ol class="refs"><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/fundamentals-get-started" target="_blank" rel="noopener">Quickstart: Create and deploy an agent with the standard harness</a><span class="meta">作り始め方・あいさつ・質問の例・公開｜更新 2026-09-22</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/agents-experience/switch-experiences" target="_blank" rel="noopener">Access standard harness agents and agent flows</a><span class="meta"><span class="ui">新しいエクスペリエンス</span> のオフ｜更新 2026-06-23</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/knowledge-add-file-upload" target="_blank" rel="noopener">Upload files as a knowledge source</a><span class="meta">ファイルの追加と、使えないファイル｜更新 2026-09-29</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/knowledge-add-sharepoint" target="_blank" rel="noopener">Add SharePoint as a knowledge source</a><span class="meta">SharePoint・一般知識と Web 検索の設定｜更新 2026-08-04</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/publication-add-bot-to-microsoft-teams" target="_blank" rel="noopener">Connect and configure an agent for Teams and Microsoft Copilot</a><span class="meta">Teams への公開・共有｜更新 2026-08-17</span></li><li><a href="https://learn.microsoft.com/microsoft-365/copilot/extensibility/agent-builder-build-agents" target="_blank" rel="noopener">Build agents in Agent Builder</a><span class="meta">エージェント ビルダーでの作り方｜更新 2026-09-30</span></li><li><a href="https://learn.microsoft.com/microsoft-365/copilot/extensibility/agent-builder-share-manage-agents" target="_blank" rel="noopener">Share and manage agents built in Agent Builder</a><span class="meta">共有と更新｜更新 2026-09-30</span></li><li><a href="https://learn.microsoft.com/microsoft-365/copilot/extensibility/agent-builder" target="_blank" rel="noopener">Agent Builder overview</a><span class="meta">できること・Teams での制限｜更新 2026-09-30</span></li></ol>
+  <ol class="refs"><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/fundamentals-get-started" target="_blank" rel="noopener">Quickstart: Create and deploy an agent with the standard harness</a><span class="meta">作り始め方・あいさつ・質問の例・公開｜更新 2026-09-22</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/agents-experience/switch-experiences" target="_blank" rel="noopener">Access standard harness agents and agent flows</a><span class="meta"><span class="ui">新しいエクスペリエンス</span> のオフ｜更新 2026-06-23</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/knowledge-add-file-upload" target="_blank" rel="noopener">Upload files as a knowledge source</a><span class="meta">ファイルの追加と、使えないファイル｜更新 2026-09-29</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/knowledge-add-sharepoint" target="_blank" rel="noopener">Add SharePoint as a knowledge source</a><span class="meta">SharePoint・一般知識と Web 検索の設定｜更新 2026-08-04</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/publication-add-bot-to-microsoft-teams" target="_blank" rel="noopener">Connect and configure an agent for Teams and Microsoft Copilot</a><span class="meta">Teams への公開・共有｜更新 2026-08-17</span></li><li><a href="https://learn.microsoft.com/microsoft-365/copilot/extensibility/agent-builder-build-agents" target="_blank" rel="noopener">Build agents in Agent Builder</a><span class="meta">エージェント ビルダーでの作り方｜更新 2026-09-30</span></li><li><a href="https://learn.microsoft.com/microsoft-365/copilot/extensibility/agent-builder-share-manage-agents" target="_blank" rel="noopener">Share and manage agents built in Agent Builder</a><span class="meta">共有と更新｜更新 2026-09-30</span></li><li><a href="https://learn.microsoft.com/microsoft-365/copilot/extensibility/agent-builder" target="_blank" rel="noopener">Agent Builder overview</a><span class="meta">できること・Teams での制限｜更新 2026-09-30</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/authoring-create-edit-topics" target="_blank" rel="noopener">Create and edit topics</a><span class="meta">トピックの作り方｜更新 2026-07-06</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/authoring-ask-a-question" target="_blank" rel="noopener">Ask a question</a><span class="meta">質問のノード｜更新 2026-07-06</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/advanced-connectors" target="_blank" rel="noopener">Use connectors in Copilot Studio agents</a><span class="meta">コネクタのツール・資格情報｜更新 2026-08-18</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/add-tools-custom-agent" target="_blank" rel="noopener">Add tools to custom agents</a><span class="meta">ツールの入力・確認・完了｜更新 2026-10-01</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/nlu-prompt-node" target="_blank" rel="noopener">Use prompts to make your agent or agent flow perform specific tasks</a><span class="meta">プロンプトのツール｜更新 2026-09-11</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/flow-agent" target="_blank" rel="noopener">Add an agent flow as a tool to an agent</a><span class="meta">エージェント フローの条件（100秒）｜更新 2026-06-18</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/knowledge-add-public-website" target="_blank" rel="noopener">Add a public website as a knowledge source</a><span class="meta">公開 Web サイトのナレッジ｜更新 2026-07-21</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/configuration-end-user-authentication" target="_blank" rel="noopener">Configure user authentication</a><span class="meta">認証なしの設定｜更新 2026-05-01</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/publication-connect-bot-to-web-channels" target="_blank" rel="noopener">Publish an agent to a live or demo website</a><span class="meta">デモ Web サイト・サイトへの埋め込み｜更新 2026-06-02</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/authoring-trigger-event" target="_blank" rel="noopener">Add an event trigger</a><span class="meta">トリガーの追加とテスト｜更新 2026-09-09</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/authoring-triggers-about" target="_blank" rel="noopener">Event triggers overview</a><span class="meta">トリガーの注意点｜更新 2026-09-09</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/authoring-review-activity" target="_blank" rel="noopener">Review agent activity</a><span class="meta">アクティビティ｜更新 2026-06-22</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/computer-use" target="_blank" rel="noopener">Automate web and desktop apps with computer use</a><span class="meta">コンピューターの使用｜更新 2026-07-03</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/configure-where-computer-use-runs" target="_blank" rel="noopener">Configure where computer use runs</a><span class="meta">操作に使うマシン｜更新 2026-05-07</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/add-agent-copilot-studio-agent" target="_blank" rel="noopener">Connect to an existing Copilot Studio agent</a><span class="meta">エージェントの接続｜更新 2026-03-30</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/add-agent-child-agent" target="_blank" rel="noopener">Add a child agent</a><span class="meta">子エージェント｜更新 2026-08-25</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/mcp-add-existing-server-to-agent" target="_blank" rel="noopener">Connect your agent to an existing Model Context Protocol (MCP) server</a><span class="meta">MCP サーバーの追加｜更新 2026-05-28</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/agents-experience/overview" target="_blank" rel="noopener">Agents powered by the GitHub Copilot Harness overview</a><span class="meta">GitHub Copilot ハーネス（参考）｜更新 2026-09-21</span></li></ol>
   <h3 class="sub-h">このガイドについて</h3>
   <ul class="g-about">
     <li>手順は、2026年10月時点の Microsoft の公開情報にもとづきます。画面や名前は更新されることがあるため、作る前に最新の情報も確かめてください。</li>
@@ -854,19 +1305,19 @@ b{font-weight:700}
     <li>事例の背景や効果は、活用事例集（<a href="https://tbtb-k.github.io/diary/pages/jirei_copilot-studio-katsuyou-jireishu.html">Copilot Studio 活用事例集</a>）にまとめています。</li>
   </ul>
   <p class="colophon">Microsoft、Copilot Studio、Microsoft 365、Teams、SharePoint、Power Platform などの製品名は、各社の商標です。</p>
-  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.08<i> / 8</i></span></footer>
+  <footer class="sheet-foot"><span>Copilot Studio 作り方ガイド ／ 活用事例集 別冊 ／ 2026年10月版</span><span class="pg">p.25<i> / 25</i></span></footer>
 </section>
 </main>
 
 <dialog class="pdf-dlg" id="pdf-dlg" aria-labelledby="pdf-dlg-h">
   <h2 id="pdf-dlg-h"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg>PDFで保存する</h2>
-  <p class="pd-lead">このあと開く印刷画面で、次のように選ぶと、配布用と同じ <b>A4・8ページ</b> の PDF になります。</p>
+  <p class="pd-lead">このあと開く印刷画面で、次のように選ぶと、配布用と同じ <b>A4・25ページ</b> の PDF になります。</p>
   <ol class="pd-steps">
     <li><b>送信先（プリンター）</b>で「PDF に保存」を選びます<small>Microsoft Edge では「PDF として保存」です</small></li>
     <li><b>用紙サイズ</b>は A4、<b>倍率</b>は 100%（既定のまま）にします</li>
     <li>色がうすいときは、詳細設定の<b>「背景のグラフィック」</b>にチェックを入れます</li>
   </ol>
-  <p class="pd-note">Google Chrome または Microsoft Edge での利用がおすすめです。紙に印刷するときは、送信先でプリンターを選びます（両面印刷なら4枚です）。</p>
+  <p class="pd-note">Google Chrome または Microsoft Edge での利用がおすすめです。紙に印刷するときは、送信先でプリンターを選びます（両面印刷なら12枚です）。</p>
   <div class="pd-actions">
     <button type="button" class="pd-go" id="pdf-go">印刷画面を開く</button>
     <button type="button" class="pd-cancel" id="pdf-cancel">閉じる</button>
