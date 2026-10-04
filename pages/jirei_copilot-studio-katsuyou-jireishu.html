@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Copilot Studio 活用事例集</title>
+<meta name="description" content="Copilot Studio の活用事例を、初級・中級・上級あわせて15のモデルケースで紹介する配布用の冊子です。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: A4 の「紙面」を縦に重ねた冊子。段階は 色＋スキー場の記号（● ■ ◆）＋紙の端のつめ見出し で見分ける */
+:root{
+  --paper:#e8ecf2; --sheet:#ffffff; --ink:#131a2c; --sub:#4a5470; --faint:#838ca3; --rule:#dce1ea; --wash:#f3f5f9;
+  --lv1:#0a8a5f; --lv1-soft:#e0f3ea; --lv1-ink:#06603f;
+  --lv2:#2a5fd6; --lv2-soft:#e6edfc; --lv2-ink:#1a3f96;
+  --lv3:#1f2547; --lv3-soft:#e9eaf3; --lv3-ink:#1f2547;
+  --spark:#e4531f; --spark-soft:#fdeee7; --spark-ink:#a8360c;
+  --on-lv:#ffffff;
+  --shadow:0 1px 2px rgba(19,26,44,.06), 0 18px 40px -24px rgba(19,26,44,.4);
+  --f-display:"Dela Gothic One","Hiragino Kaku Gothic StdN","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+  --f-label:"Bricolage Grotesque","Zen Kaku Gothic New",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media screen and (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0b0f17; --sheet:#141a26; --ink:#e7ebf3; --sub:#a7b0c4; --faint:#717b93; --rule:#283044; --wash:#1b2232;
+    --lv1:#38c995; --lv1-soft:#10302a; --lv1-ink:#8ae4c2;
+    --lv2:#7ca3ff; --lv2-soft:#18254a; --lv2-ink:#b6cbff;
+    --lv3:#c4c9f4; --lv3-soft:#252a47; --lv3-ink:#d8dcfa;
+    --spark:#ff7d4f; --spark-soft:#36190f; --spark-ink:#ffb497;
+    --on-lv:#0b0f17;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 18px 40px -24px rgba(0,0,0,.9);
+    color-scheme:dark;
+  }
+}
+@media screen{
+  :root[data-theme="dark"]{
+    --paper:#0b0f17; --sheet:#141a26; --ink:#e7ebf3; --sub:#a7b0c4; --faint:#717b93; --rule:#283044; --wash:#1b2232;
+    --lv1:#38c995; --lv1-soft:#10302a; --lv1-ink:#8ae4c2;
+    --lv2:#7ca3ff; --lv2-soft:#18254a; --lv2-ink:#b6cbff;
+    --lv3:#c4c9f4; --lv3-soft:#252a47; --lv3-ink:#d8dcfa;
+    --spark:#ff7d4f; --spark-soft:#36190f; --spark-ink:#ffb497;
+    --on-lv:#0b0f17;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 18px 40px -24px rgba(0,0,0,.9);
+    color-scheme:dark;
+  }
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:64px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.7;
+  font-feature-settings:"palt" 1;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit}
+h1,h2,h3,h4{margin:0;font-weight:700;text-wrap:balance}
+p,ul,ol,dl,dd{margin:0}
+ul,ol{padding:0;list-style:none}
+b{font-weight:700}
+:focus-visible{outline:3px solid var(--spark);outline-offset:2px;border-radius:4px}
+.ic-svg{width:1em;height:1em;flex:none}
+
+.lv1{--lv:var(--lv1);--lv-soft:var(--lv1-soft);--lv-ink:var(--lv1-ink)}
+.lv2{--lv:var(--lv2);--lv-soft:var(--lv2-soft);--lv-ink:var(--lv2-ink)}
+.lv3{--lv:var(--lv3);--lv-soft:var(--lv3-soft);--lv-ink:var(--lv3-ink)}
+
+/* 段階の記号：初級＝●　中級＝■　上級＝◆ */
+.mk{display:inline-block;width:.7em;height:.7em;background:var(--lv);flex:none;vertical-align:.02em}
+.mk.lv1{border-radius:50%}
+.mk.lv2{border-radius:2px}
+.mk.lv3{transform:rotate(45deg) scale(.84);border-radius:1px}
+
+/* ───────── 上部のナビ（画面のみ） ───────── */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;
+  background:color-mix(in srgb, var(--paper) 84%, transparent);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--rule)}
+.topbar-in{max-width:210mm;margin:0 auto;padding:9px 16px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;font-weight:700;font-size:14px;white-space:nowrap}
+.brand .dots{display:inline-flex;gap:4px;font-size:12px}
+.nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none;min-width:0}
+.nav::-webkit-scrollbar{display:none}
+.nav a{display:inline-flex;align-items:center;gap:6px;font-size:13px;text-decoration:none;color:var(--sub);
+  padding:5px 11px;border-radius:999px;border:1px solid transparent;white-space:nowrap;font-size:13px}
+.nav a .mk{font-size:11px}
+.nav a:hover{background:var(--sheet);border-color:var(--rule);color:var(--ink)}
+@media (max-width:560px){.brand .txt{display:none}}
+.pdf-btn{flex:none;display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:0;border-radius:999px;cursor:pointer;
+  background:var(--spark);color:#fff;font:700 13px/1.2 var(--f-body);white-space:nowrap}
+.pdf-btn .ic-svg{font-size:15px}
+.pdf-btn:hover{filter:brightness(1.06)}
+@media (max-width:420px){.pdf-btn{padding:6px 11px}}
+
+/* PDF出力の案内（画面のみ） */
+.pdf-dlg{width:min(460px,calc(100vw - 32px));border:1px solid var(--rule);border-radius:16px;padding:22px 22px 18px;
+  background:var(--sheet);color:var(--ink);box-shadow:0 24px 60px -20px rgba(0,0,0,.45)}
+.pdf-dlg::backdrop{background:rgba(11,15,23,.45)}
+.pdf-dlg h2{display:flex;align-items:center;gap:8px;font-size:18px;margin-bottom:8px}
+.pdf-dlg h2 .ic-svg{color:var(--spark);font-size:20px}
+.pd-lead{font-size:13.5px;line-height:1.7;color:var(--sub)}
+.pd-lead b{color:var(--ink)}
+.pd-steps{counter-reset:p;display:grid;gap:8px;margin:14px 0 12px}
+.pd-steps li{counter-increment:p;position:relative;padding:9px 12px 9px 40px;border-radius:10px;background:var(--wash);font-size:13px;line-height:1.6}
+.pd-steps li::before{content:counter(p);position:absolute;left:12px;top:10px;width:20px;height:20px;border-radius:50%;
+  background:var(--ink);color:var(--sheet);font:800 11px/20px var(--f-label);text-align:center}
+.pd-steps small{display:block;font-size:11.5px;color:var(--faint)}
+.pd-note{font-size:11.5px;line-height:1.65;color:var(--faint)}
+.pd-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.pd-actions button{flex:1 1 140px;padding:10px 14px;border-radius:10px;font:700 14px/1.2 var(--f-body);cursor:pointer}
+.pd-go{border:0;background:var(--spark);color:#fff}
+.pd-cancel{border:1px solid var(--rule);background:var(--sheet);color:var(--ink)}
+
+/* ───────── 紙面 ───────── */
+.book{display:grid;justify-items:center;gap:28px;padding-block:28px 72px;padding-inline:16px}
+.sheet{position:relative;width:100%;max-width:210mm;min-height:297mm;background:var(--sheet);border-radius:4px;
+  box-shadow:var(--shadow);padding:15mm 16mm 20mm;overflow:hidden;font-size:13.5px;line-height:1.68}
+.sheet-foot{position:absolute;left:16mm;right:16mm;bottom:7mm;display:flex;justify-content:space-between;align-items:center;
+  gap:12px;border-top:1px solid var(--rule);padding-top:7px;font-family:var(--f-label);font-size:10.5px;
+  letter-spacing:.04em;color:var(--faint)}
+.sheet-foot .pg{font-variant-numeric:tabular-nums;font-weight:700;color:var(--sub);white-space:nowrap}
+.sheet-foot .pg i{font-style:normal;font-weight:500;color:var(--faint)}
+
+/* つめ見出し（紙の右端のタブ） */
+.tab{position:absolute;right:0;width:24px;height:92px;display:flex;align-items:center;justify-content:center;
+  background:var(--lv);color:var(--on-lv);border-radius:8px 0 0 8px;writing-mode:vertical-rl;
+  font-size:11.5px;font-weight:700;letter-spacing:.4em;padding-top:.4em}
+.lv1 > .tab{top:46mm}
+.lv2 > .tab{top:76mm}
+.lv3 > .tab{top:106mm}
+
+/* 共通の見出し */
+.ptitle{display:flex;flex-direction:column;gap:2px;padding-bottom:12px;margin-bottom:18px;border-bottom:2px solid var(--ink)}
+.ptitle .en{font-family:var(--f-label);font-size:11px;font-weight:800;letter-spacing:.22em;color:var(--spark)}
+.ptitle h2{font-size:27px;line-height:1.3;letter-spacing:.01em}
+.sub-h{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;margin:20px 0 10px}
+.sub-h::before{content:"";width:16px;height:3px;border-radius:2px;background:var(--spark)}
+.page-lead{font-size:14px;color:var(--sub);max-width:46em;margin-bottom:16px}
+.small-lead{font-size:12.5px;color:var(--sub);margin-bottom:10px}
+.tbl-wrap{overflow-x:auto;max-width:100%}
+
+/* ───────── 表紙 ───────── */
+.cover{display:flex;flex-direction:column;padding:16mm 16mm 22mm}
+.cover::before{content:"";position:absolute;inset:0 0 auto 0;height:8px;
+  background:linear-gradient(90deg,var(--lv1) 0 33.3%,var(--lv2) 33.3% 66.6%,var(--lv3) 66.6%)}
+.cover-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--f-label);font-size:11px;
+  font-weight:800;letter-spacing:.22em;color:var(--sub)}
+.cover h1{margin-top:24mm;display:flex;flex-direction:column;gap:4px}
+.cover h1 .l1{font-family:var(--f-label);font-weight:800;font-size:clamp(28px,5.4vw,42px);letter-spacing:-.01em;line-height:1.1}
+.cover h1 .l2{font-family:var(--f-display);font-weight:400;font-size:clamp(46px,11vw,84px);line-height:1.12;letter-spacing:.03em}
+.cover-sub{margin-top:14px;font-size:16px;line-height:1.75;color:var(--sub)}
+.cover-sub b{color:var(--ink);background:linear-gradient(transparent 62%,var(--spark-soft) 62%)}
+.cover-legend{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:20px}
+.cover-legend li{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--sub)}
+.cover-legend li .mk{font-size:15px}
+.cover-legend b{color:var(--ink);font-size:14px;white-space:nowrap}
+.cover-legend span{min-width:0}
+.cover-note{margin-top:12px;font-size:11px;color:var(--faint)}
+
+/* 路線図：初級 → 中級 → 上級 を1本の線でつなぐ */
+.route{--tw:58px;--mk:50px;--rh:128px;--lw:8px;--lt:calc(6px + var(--mk) / 2 - var(--lw) / 2);
+  position:relative;margin-top:auto;padding:22px var(--tw) 0}
+.r-row{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));height:var(--rh)}
+.r-row::before{content:"";position:absolute;left:0;right:0;top:var(--lt);height:var(--lw);background:var(--lv);border-radius:4px}
+.r-row.first::before{left:calc(var(--tw) * -.6)}
+.r-row.last::before{right:calc(var(--tw) * -.6)}
+.r-row.rev{direction:rtl}
+.r-row.rev > *{direction:ltr}
+.turn{position:absolute;width:var(--tw);height:calc((var(--rh) + var(--lw)) / 2);border:var(--lw) solid var(--lv)}
+.t-r-top{right:calc(var(--tw) * -1);top:var(--lt);border-left:0;border-bottom:0;border-radius:0 var(--tw) 0 0}
+.t-r-bot{right:calc(var(--tw) * -1);top:calc(var(--lt) - (var(--rh) - var(--lw)) / 2);border-left:0;border-top:0;border-radius:0 0 var(--tw) 0}
+.t-l-top{left:calc(var(--tw) * -1);top:var(--lt);border-right:0;border-bottom:0;border-radius:var(--tw) 0 0 0}
+.t-l-bot{left:calc(var(--tw) * -1);top:calc(var(--lt) - (var(--rh) - var(--lw)) / 2);border-right:0;border-top:0;border-radius:0 0 0 var(--tw)}
+.r-start,.r-goal{position:absolute;top:calc(var(--lt) - 9px);font-family:var(--f-label);font-size:10px;font-weight:800;
+  letter-spacing:.14em;padding:4px 8px;border-radius:999px;line-height:1;z-index:1}
+.r-start{left:calc(var(--tw) * -1);background:var(--ink);color:var(--sheet)}
+.r-goal{right:calc(var(--tw) * -1);background:var(--spark);color:#fff}
+.st{position:relative;display:flex;flex-direction:column;align-items:center;text-decoration:none;color:var(--ink);z-index:1;min-width:0}
+.mkr{position:relative;width:var(--mk);height:var(--mk);margin-top:6px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-label);font-weight:800;font-size:16px;font-variant-numeric:tabular-nums}
+.mkr::before{content:"";position:absolute;inset:0;background:var(--sheet);border:4px solid var(--lv);transition:background .2s}
+.lv1 .mkr::before{border-radius:50%}
+.lv2 .mkr::before{border-radius:10px}
+.lv3 .mkr::before{inset:6px;transform:rotate(45deg);border-radius:5px}
+.mkr span{position:relative;transition:color .2s}
+.st .nm{margin-top:8px;font-size:13px;font-weight:700;line-height:1.3;text-align:center;overflow-wrap:anywhere}
+.st:hover .mkr::before,.st:focus-visible .mkr::before{background:var(--lv)}
+.st:hover .mkr span,.st:focus-visible .mkr span{color:var(--on-lv)}
+@media (max-width:620px){
+  .route{--tw:30px;--mk:34px;--rh:98px;--lw:6px}
+  .mkr{font-size:12px}
+  .mkr::before{border-width:3px}
+  .st .nm{font-size:10.5px}
+  .r-start,.r-goal{font-size:8.5px;padding:3px 5px;letter-spacing:.08em}
+}
+
+/* ───────── はじめに ───────── */
+.intro-text{display:grid;gap:10px;font-size:14.5px;line-height:1.85;max-width:44em}
+.route-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.route-card{display:flex;flex-direction:column;justify-content:space-between;gap:10px;padding:13px 14px;border-radius:12px;
+  background:var(--lv-soft);text-decoration:none;min-width:0}
+.route-card .q{font-size:13px;font-weight:700;line-height:1.55}
+.route-card .a{display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:var(--lv-ink);font-size:13px}
+.route-card .a b{font-size:15px}
+.route-card .a em{font-style:normal;margin-left:auto;font-family:var(--f-label);font-weight:700;font-size:11.5px}
+.route-card:hover{outline:2px solid var(--lv)}
+.intro-cols{display:grid;grid-template-columns:1.15fr .85fr;gap:22px}
+.intro-cols > *{min-width:0}
+.anatomy{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:start}
+.mini{display:grid;grid-template-rows:20px 22px 20px 34px 20px;grid-template-columns:1fr 1fr;gap:4px;padding:8px;
+  border:1px solid var(--rule);border-radius:6px;background:var(--wash);aspect-ratio:210/297;max-width:100%}
+.mini i{display:flex;align-items:center;justify-content:center;font-style:normal;font-family:var(--f-label);font-size:10px;
+  font-weight:800;color:var(--sub);background:var(--sheet);border:1px solid var(--rule);border-radius:3px}
+.mini .m1{grid-column:1/3}.mini .m2{grid-column:1/3}.mini .m3{grid-column:1/3}
+.mini .m6{grid-column:1/3}
+.an-list{display:grid;gap:6px}
+.an-list li{display:grid;grid-template-columns:20px 1fr;column-gap:8px;font-size:12.5px;line-height:1.5}
+.an-list li > span:last-child{grid-column:2;color:var(--faint);font-size:11.5px}
+.an-n{grid-row:span 2;width:19px;height:19px;border-radius:50%;background:var(--ink);color:var(--sheet);display:flex;
+  align-items:center;justify-content:center;font-family:var(--f-label);font-weight:800;font-size:10.5px;margin-top:1px}
+.about{background:var(--wash);border-radius:12px;padding:2px 16px 14px}
+.about ul{display:grid;gap:8px}
+.about li{position:relative;padding-left:14px;font-size:12px;line-height:1.65;color:var(--sub)}
+.about li::before{content:"";position:absolute;left:0;top:.65em;width:6px;height:6px;border-radius:50%;background:var(--spark)}
+.about b{color:var(--ink)}
+
+/* ───────── 目次 ───────── */
+.toc-item{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:4px 2px;
+  border-bottom:1px dotted var(--rule);text-decoration:none}
+.toc-item .n{font-family:var(--f-display);font-size:17px;color:var(--lv);line-height:1;display:flex;justify-content:center}
+.toc-item.plain .n{color:var(--spark);font-size:18px}
+.toc-item .t{font-size:13px;font-weight:700;line-height:1.45}
+.toc-item .d{display:block;font-size:11px;color:var(--faint);font-weight:400}
+.toc-item .p{font-family:var(--f-label);font-variant-numeric:tabular-nums;font-weight:800;font-size:13px;color:var(--sub)}
+.toc-item:hover .t{color:var(--lv-ink, var(--spark-ink))}
+.toc-front{margin-bottom:6px}
+.toc-group{margin-top:9px}
+.toc-lv{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;background:var(--lv);color:var(--on-lv);
+  text-decoration:none;font-size:12px}
+.toc-lv .mk{background:var(--on-lv);font-size:12px}
+.toc-lv b{font-size:14px}
+.toc-lv em{margin-left:auto;font-style:normal;font-family:var(--f-label);font-weight:800;font-variant-numeric:tabular-nums}
+.toc-back{margin-top:10px}
+
+/* ───────── 6つの部品 ───────── */
+.pgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.pcard{display:grid;grid-template-columns:40px minmax(0,1fr);column-gap:12px;row-gap:2px;padding:10px 14px;
+  border:1px solid var(--rule);border-radius:12px}
+.pcard .ic{grid-row:span 4;width:40px;height:40px;border-radius:10px;background:var(--wash);color:var(--ink);
+  display:flex;align-items:center;justify-content:center;font-size:22px}
+.pc-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.pc-h h3{font-size:16px}
+.pc-h .en{font-family:var(--f-label);font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--faint)}
+.like{font-size:11.5px;font-weight:700;color:var(--spark-ink)}
+.pc-d{font-size:12px;line-height:1.6;color:var(--sub)}
+.used{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:4px}
+.used .lbl{font-size:10.5px;color:var(--faint);margin-right:2px}
+.used .u{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;padding:1px 7px;border-radius:999px;
+  border:1px dashed var(--rule);color:var(--faint)}
+.used .u .mk{background:var(--rule)}
+.used .u.on{border:1px solid transparent;background:var(--lv-soft);color:var(--lv-ink);font-weight:700}
+.used .u.on .mk{background:var(--lv)}
+.orch{display:flex;gap:12px;align-items:flex-start;margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--spark-soft)}
+.orch .ic-svg{font-size:24px;color:var(--spark-ink);margin-top:2px}
+.orch p{font-size:12.5px;line-height:1.65}
+.htbl{width:100%;border-collapse:collapse;font-size:12px;min-width:440px}
+.htbl th,.htbl td{padding:6px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+.htbl thead th{font-size:11px;color:var(--sub);border-bottom:2px solid var(--ink)}
+.htbl tbody th{white-space:nowrap}
+.htbl .ex{font-family:var(--f-label);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--sub)}
+
+/* ───────── 段階の扉 ───────── */
+.divider{padding:0;display:flex;flex-direction:column}
+.divider .panel{position:relative;background:var(--lv);color:var(--on-lv);padding:30mm 16mm 14mm;min-height:142mm;
+  display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.big-mk{position:absolute;right:14mm;top:16mm;width:46mm;height:46mm;border:7mm solid currentColor;opacity:.16}
+.lv1 .big-mk{border-radius:50%}
+.lv2 .big-mk{border-radius:7mm}
+.lv3 .big-mk{transform:rotate(45deg) scale(.82);border-radius:4mm}
+.lv-en{font-family:var(--f-label);font-weight:800;font-size:12px;letter-spacing:.3em;opacity:.85}
+.lv-name{font-family:var(--f-display);font-weight:400;font-size:clamp(72px,18vw,128px);line-height:1.05;margin:6px 0 10px;letter-spacing:.04em}
+.tagline{font-size:clamp(18px,3.4vw,24px);font-weight:700}
+.dv-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;padding:10mm 16mm 22mm}
+.dv-desc{font-size:14px;line-height:1.85}
+.dv-parts{display:flex;flex-wrap:wrap;gap:6px}
+.dv-parts li{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:var(--lv-soft);
+  color:var(--lv-ink);font-weight:700;font-size:12.5px}
+.dv-goal{margin-top:16px;padding:12px 14px;border-left:4px solid var(--lv);background:var(--wash);border-radius:0 10px 10px 0}
+.dv-goal .lbl{font-size:11px;font-weight:700;color:var(--sub);letter-spacing:.08em}
+.dv-goal p{font-size:15px;font-weight:700;line-height:1.55;margin-top:2px}
+.dv-tip{display:flex;gap:8px;margin-top:12px;font-size:12.5px;color:var(--sub)}
+.dv-tip .ic-svg{font-size:18px;color:var(--spark);margin-top:2px}
+.dv-list a{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 4px;
+  border-bottom:1px solid var(--rule);text-decoration:none}
+.dv-list .n{font-family:var(--f-display);font-size:22px;color:var(--lv);line-height:1}
+.dv-list .t{font-weight:700;font-size:14px;line-height:1.4}
+.dv-list small{display:block;font-weight:400;font-size:11.5px;color:var(--faint)}
+.dv-list .p{font-family:var(--f-label);font-weight:800;font-size:12px;color:var(--sub);font-variant-numeric:tabular-nums}
+.dv-list a:hover .t{color:var(--lv-ink)}
+
+/* ───────── 事例ページ ───────── */
+.case h3{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--sub);margin-bottom:8px}
+.case h3::before{content:"";width:14px;height:3px;border-radius:2px;background:var(--lv)}
+.case-head{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.case-no{position:relative;flex:none;width:58px;height:58px;display:flex;align-items:center;justify-content:center}
+.case-no::before{content:"";position:absolute;inset:0;background:var(--lv)}
+.lv1 .case-no::before{border-radius:50%}
+.lv2 .case-no::before{border-radius:12px}
+.lv3 .case-no::before{inset:7px;transform:rotate(45deg);border-radius:6px}
+.case-no .num{position:relative;font-family:var(--f-display);font-size:21px;color:var(--on-lv);letter-spacing:.02em}
+.case-meta{flex:1;min-width:0}
+.eyebrow{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-size:11.5px;font-weight:700;letter-spacing:.06em;color:var(--lv-ink)}
+.eyebrow .dept{color:var(--sub);font-weight:500;padding-left:10px;border-left:1px solid var(--rule)}
+.agent-name{font-size:16px;font-weight:700;line-height:1.4}
+.harness{flex:none;display:flex;flex-direction:column;align-items:flex-end;font-size:12px;font-weight:700;line-height:1.35;text-align:right}
+.harness span{font-size:10px;font-weight:500;color:var(--faint);letter-spacing:.1em}
+.case-title{font-size:24px;line-height:1.42;letter-spacing:.01em;font-weight:900;margin-bottom:8px}
+.lead{font-size:13px;color:var(--sub);line-height:1.7;margin-bottom:11px}
+.parts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.part{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;padding:3px 10px 3px 8px;border-radius:999px;
+  border:1px dashed var(--rule);color:var(--faint)}
+.part .ic-svg{font-size:14px}
+.part.on{border:1px solid transparent;background:var(--lv-soft);color:var(--lv-ink);font-weight:700}
+
+.ba{display:grid;grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr);margin-bottom:14px}
+.ba > .before,.ba > .after{padding:11px 14px 12px;border-radius:10px;min-width:0}
+.ba .before{background:var(--wash)}
+.ba .after{background:var(--lv-soft)}
+.ba h4{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--sub);margin-bottom:6px}
+.ba .after h4{color:var(--lv-ink)}
+.ba li{position:relative;padding-left:13px;font-size:12.5px;line-height:1.55}
+.ba li + li{margin-top:3px}
+.ba li::before{content:"";position:absolute;left:1px;top:.66em;width:5px;height:5px;border-radius:50%;background:var(--faint)}
+.ba .after li::before{background:var(--lv)}
+.ba-arrow{display:flex;align-items:center;justify-content:center;color:var(--lv);font-size:18px}
+
+.flow{margin-bottom:14px}
+.flow-row{display:flex;align-items:stretch}
+.fbox{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;
+  padding:9px 6px 8px;border:1.5px solid var(--lv);border-radius:10px;background:var(--sheet)}
+.fbox .ic{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:var(--lv-soft);color:var(--lv-ink);font-size:17px;margin-bottom:2px}
+.fbox b{font-size:12px;line-height:1.35}
+.fbox small{font-size:10.5px;line-height:1.35;color:var(--faint)}
+.fbox.k-user,.fbox.k-check{border-style:dashed;border-color:var(--faint)}
+.fbox.k-user .ic,.fbox.k-check .ic{background:var(--wash);color:var(--sub)}
+.fbox.k-agent{background:var(--lv-soft);border-color:transparent}
+.fbox.k-agent .ic{background:var(--lv);color:var(--on-lv)}
+.farrow{flex:0 0 20px;display:flex;align-items:center;justify-content:center;color:var(--lv);font-size:14px}
+
+.two{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:20px;margin-bottom:12px}
+.steps ol{counter-reset:s;display:grid;gap:6px}
+.steps li{counter-increment:s;position:relative;padding-left:29px;font-size:12.5px;line-height:1.55}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:21px;height:21px;border-radius:50%;
+  background:var(--ink);color:var(--sheet);font-family:var(--f-label);font-weight:800;font-size:11px;
+  display:flex;align-items:center;justify-content:center}
+.phone,.log{border:1px solid var(--rule);border-radius:14px;overflow:hidden;background:var(--wash)}
+.dtop{display:flex;align-items:center;gap:8px;padding:7px 11px;white-space:nowrap;background:var(--sheet);border-bottom:1px solid var(--rule);
+  font-size:11.5px;font-weight:700}
+.dtop em{margin-left:auto;font-style:normal;font-weight:500;font-size:10px;color:var(--faint)}
+.av{width:20px;height:20px;border-radius:6px;background:var(--lv);color:var(--on-lv);display:flex;align-items:center;
+  justify-content:center;font-size:13px;flex:none}
+.msgs{display:flex;flex-direction:column;gap:6px;padding:9px 10px}
+.msg{max-width:90%;padding:6px 10px;border-radius:12px;font-size:11.5px;line-height:1.55}
+.msg.u{align-self:flex-end;background:var(--ink);color:var(--sheet);border-bottom-right-radius:4px}
+.msg.a{align-self:flex-start;background:var(--sheet);border:1px solid var(--rule);border-bottom-left-radius:4px}
+.msg .ref{display:block;margin-top:3px;font-size:10px;font-weight:700;color:var(--lv-ink)}
+.msg .btns{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.msg .btns span{font-size:10px;padding:1px 8px;border-radius:999px;border:1px solid var(--lv);color:var(--lv-ink);font-weight:700}
+.log ol{display:grid;gap:7px;padding:10px 11px}
+.log li{display:grid;grid-template-columns:34px 20px minmax(0,1fr);gap:6px;align-items:start;font-size:11.5px;line-height:1.5}
+.log time{font-family:var(--f-label);font-variant-numeric:tabular-nums;font-size:10.5px;color:var(--faint);padding-top:1px}
+.li-ic{width:19px;height:19px;border-radius:5px;display:flex;align-items:center;justify-content:center;background:var(--lv-soft);
+  color:var(--lv-ink);font-size:12px}
+
+.foot2{display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);gap:16px;margin-bottom:10px}
+.prep{padding:10px 14px;border:1px solid var(--rule);border-radius:10px}
+.prep li,.caution li{position:relative;padding-left:13px;font-size:12px;line-height:1.55}
+.prep li + li,.caution li + li{margin-top:3px}
+.prep li::before{content:"";position:absolute;left:1px;top:.62em;width:6px;height:6px;border:1.5px solid var(--lv);border-radius:1px}
+.with{display:flex;gap:7px;margin-top:9px;padding-top:8px;border-top:1px dashed var(--rule);font-size:11.5px;line-height:1.5}
+.with .ic-svg{font-size:16px;color:var(--lv-ink);margin-top:1px}
+.with b{display:block;font-size:10.5px;color:var(--faint);font-weight:700}
+.caution{padding:10px 14px;border-radius:10px;background:var(--spark-soft)}
+.case .caution h3{color:var(--spark-ink)}
+.case .caution h3::before{display:none}
+.caution h3 .ic-svg{font-size:14px}
+.caution li::before{content:"";position:absolute;left:1px;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--spark)}
+
+.next{display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px;padding:9px 14px;border-radius:10px;border:1.5px solid var(--lv);
+  text-decoration:none;font-size:12.5px}
+.next .lbl{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--on-lv);background:var(--lv);padding:2px 8px;border-radius:999px}
+.next .why{color:var(--sub)}
+.next .to{display:inline-flex;align-items:center;gap:6px;margin-left:auto;font-weight:700;color:var(--lv-ink)}
+.next .to .ic-svg{font-size:14px}
+.next:hover{background:var(--lv-soft)}
+
+/* ───────── 早見表 ───────── */
+.mtx{width:100%;border-collapse:collapse;font-size:12px;min-width:560px}
+.mtx thead th{font-size:10.5px;font-weight:700;color:var(--sub);padding:6px 4px 8px;border-bottom:2px solid var(--ink);
+  text-align:center;vertical-align:bottom;line-height:1.3}
+.mtx thead th .hi{display:block;font-size:16px;margin-bottom:2px;color:var(--ink)}
+.mtx thead th .hi .ic-svg{margin:0 auto}
+.mtx th.nm,.mtx td.nm{text-align:left}
+.mtx td{padding:4px 4px;border-bottom:1px solid var(--rule);text-align:center;vertical-align:middle}
+.mtx td.no a{font-family:var(--f-display);color:var(--lv);text-decoration:none;font-size:14px}
+.mtx td.nm a{font-weight:700;text-decoration:none}
+.mtx td.nm a:hover{color:var(--lv-ink);text-decoration:underline}
+.mtx td.nm small{display:block;font-size:10.5px;color:var(--faint);line-height:1.35}
+.mtx .dot{display:inline-block;width:12px;height:12px;background:var(--lv)}
+.mtx .lv1 .dot{border-radius:50%}
+.mtx .lv2 .dot{border-radius:2px}
+.mtx .lv3 .dot{transform:rotate(45deg) scale(.85);border-radius:1px}
+.mtx .dash{color:var(--rule)}
+.mtx td.hz{font-size:10.5px;color:var(--sub);white-space:nowrap}
+.mtx .lvrow th{text-align:left;padding:10px 8px 5px;font-size:13px;color:var(--lv-ink);border-bottom:1.5px solid var(--lv)}
+.mtx .lvrow th .mk{margin-right:7px}
+.mtx .lvrow th span{font-weight:500;font-size:11px;color:var(--faint);margin-left:10px}
+
+/* ───────── 作ったあと ───────── */
+.loop-box{padding:16px;border-radius:14px;background:var(--wash);margin-bottom:6px}
+.loop{display:flex;align-items:center;gap:6px}
+.loop .lp{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;border-radius:12px;
+  background:var(--sheet);border:1px solid var(--rule);font-weight:700;font-size:15px}
+.loop .lp span{font-family:var(--f-label);font-weight:800;font-size:11px;color:var(--spark)}
+.lp-arrow{flex:none;color:var(--spark);font-size:16px;display:flex}
+.loop-back{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;font-size:12px;color:var(--sub)}
+.loop-back .ic-svg{color:var(--spark);font-size:16px}
+.points{display:grid;gap:10px}
+.points li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;padding:13px 14px;border:1px solid var(--rule);border-radius:12px}
+.pi{width:44px;height:44px;border-radius:12px;background:var(--spark-soft);color:var(--spark-ink);display:flex;align-items:center;justify-content:center;font-size:22px}
+.points h3{font-size:15px;margin-bottom:3px}
+.points p{font-size:12.5px;line-height:1.7;color:var(--sub)}
+
+/* ───────── わたしの1本シート ───────── */
+.ws{display:grid;gap:10px}
+.ws-q{padding:12px 14px 14px;border:1.5px solid var(--rule);border-radius:12px;min-width:0}
+.ws-q h3{display:flex;align-items:center;gap:8px;font-size:13.5px;margin-bottom:10px}
+.qn{font-family:var(--f-label);font-weight:800;font-size:11px;line-height:1.5;color:#fff;background:var(--spark);padding:1px 8px;border-radius:999px}
+.ws-sentence{font-size:14px;line-height:2.6}
+.blank{display:inline-block;min-width:9em;border-bottom:1.5px solid var(--sub);margin:0 4px;vertical-align:-2px;height:1.2em}
+.blank.s{min-width:4em}
+.ws-inline{font-size:14px;line-height:2.2}
+.ws-inline small{color:var(--faint);font-size:11.5px}
+.lines{display:grid;gap:0}
+.lines span{display:block;height:30px;border-bottom:1px dashed var(--faint)}
+.ws-parts{display:flex;flex-wrap:wrap;gap:8px 16px}
+.ws-parts li{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700}
+.ws-parts .ic-svg{color:var(--sub)}
+.cb{width:15px;height:15px;border:1.5px solid var(--sub);border-radius:3px;order:-1}
+.ws-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+
+/* ───────── 用語集 ───────── */
+.gl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px}
+.gl > div{padding:6px 0;border-bottom:1px solid var(--rule);min-width:0}
+.gl dt{font-weight:700;font-size:13px}
+.gl dd{font-size:12px;line-height:1.6;color:var(--sub)}
+.refs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 22px;counter-reset:r}
+.refs li{counter-increment:r;position:relative;padding-left:26px;font-size:12px;line-height:1.5;min-width:0}
+.refs li::before{content:counter(r);position:absolute;left:0;top:1px;font-family:var(--f-label);font-weight:800;font-size:11px;color:var(--spark)}
+.refs a{font-weight:700;text-decoration:none;border-bottom:1px solid var(--rule)}
+.refs a:hover{border-color:var(--ink)}
+.refs .meta{display:block;font-size:11px;color:var(--sub)}
+.refs .url{display:block;font-size:10.5px;color:var(--faint);overflow-wrap:anywhere;font-family:var(--f-label)}
+.colophon{margin-top:12px;padding-top:10px;border-top:1px solid var(--rule);font-size:11px;color:var(--faint);line-height:1.7}
+
+/* ───────── スマートフォン ───────── */
+@media (max-width:720px){
+  .book{gap:18px;padding-block:16px 48px}
+  .sheet{min-height:0;padding:26px 18px 64px;border-radius:12px}
+  .sheet-foot{left:18px;right:18px;bottom:16px}
+  .tab{display:none}
+  .cover{padding:26px 18px 64px}
+  .cover h1{margin-top:28px}
+  .route{margin-top:28px}
+  .route-cards,.intro-cols,.pgrid,.dv-body,.two,.foot2,.gl,.ws-row,.refs,.toc-mini{grid-template-columns:minmax(0,1fr)}
+  .divider{padding:0}
+  .divider .panel{padding:56px 18px 22px;min-height:0}
+  .big-mk{width:120px;height:120px;border-width:18px;right:16px;top:20px}
+  .dv-body{padding:20px 18px 64px}
+  .case-head{flex-wrap:wrap}
+  .harness{flex-direction:row;gap:6px;align-items:baseline;width:100%;justify-content:flex-start;order:3}
+  .case-title{font-size:21px}
+  .ba{grid-template-columns:minmax(0,1fr)}
+  .ba-arrow{transform:rotate(90deg);height:26px}
+  .flow-row{flex-direction:column}
+  .fbox{flex-direction:row;text-align:left;gap:10px;padding:8px 12px}
+  .fbox .ic{margin:0}
+  .fbox small{margin-left:auto;text-align:right}
+  .farrow{flex-basis:18px;transform:rotate(90deg)}
+  .loop{flex-wrap:wrap}
+  .loop .lp{flex:1 1 40%}
+  .lp-arrow{display:none}
+  .anatomy{grid-template-columns:72px minmax(0,1fr)}
+  .next .to{margin-left:0}
+}
+
+/* ───────── 印刷・PDF ───────── */
+@page{size:A4;margin:0}
+@media print{
+  html{scroll-behavior:auto}
+  body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .topbar,.pdf-dlg{display:none}
+  .book{display:block;padding:0}
+  .sheet{width:210mm;max-width:none;height:297mm;min-height:0;margin:0;border-radius:0;box-shadow:none;
+    break-after:page;break-inside:avoid}
+  .sheet:last-child{break-after:auto}
+  a{text-decoration:none}
+}
+
+/* 目次：前後のページは小さなカードにまとめる */
+.toc-mini{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 16px;margin-bottom:6px}
+.toc-mini.four{grid-template-columns:repeat(4,minmax(0,1fr));margin:12px 0 0}
+.toc-mini a{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 10px;border-radius:8px;
+  background:var(--wash);text-decoration:none;font-size:12.5px;font-weight:700;line-height:1.35}
+.toc-mini .ic-svg{color:var(--spark);font-size:16px}
+.toc-mini .p{font-family:var(--f-label);font-weight:800;font-variant-numeric:tabular-nums;color:var(--sub);font-size:12px}
+.toc-mini a:hover{outline:1.5px solid var(--spark)}
+@media (max-width:720px){.toc-mini.four{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* はじめに：3つの道具の使い分け */
+.which{width:100%;border-collapse:collapse;font-size:12px;min-width:480px}
+.which th,.which td{padding:7px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top;line-height:1.55}
+.which thead th{font-size:11.5px;border-bottom:2px solid var(--ink);color:var(--ink)}
+.which thead th.me{background:var(--spark-soft);color:var(--spark-ink);border-radius:8px 8px 0 0}
+.which td.me{background:var(--spark-soft);font-weight:700}
+.which tbody th{font-size:11px;color:var(--sub);font-weight:700;white-space:nowrap}
+.which-note{font-size:11px;color:var(--faint);margin-top:6px}
+.ws-hint{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--spark-soft);font-size:12.5px;line-height:1.7}
+.ws-hint .ic-svg{font-size:20px;color:var(--spark-ink);margin-top:2px}
+
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-inst" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M8.5 10h7M8.5 13.5h7M8.5 17h4"/></symbol><symbol id="i-know" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5c-.8 0-1.5-.7-1.5-1.5z"/><path d="M13 4h5.5c.8 0 1.5.7 1.5 1.5v13c0 .8-.7 1.5-1.5 1.5H13z"/><path d="M7 8h1.5M16 8h1.5M7 11h1.5M16 11h1.5"/></symbol><symbol id="i-topic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="19" r="2.2"/><path d="M12 7.2v3.6M12 10.8c-4 0-6 2.2-6 6M12 10.8c4 0 6 2.2 6 6"/></symbol><symbol id="i-tool" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 3.5a4.5 4.5 0 0 0-4.2 6.1L4.6 16.3a2 2 0 1 0 2.9 2.9l6.7-6.7a4.5 4.5 0 0 0 6.1-4.2l-2.7 2.7-2.6-.5-.5-2.6z"/></symbol><symbol id="i-trig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 5 13.5h6L10 21l8-10.5h-6z"/></symbol><symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M8.2 11l7.6-4M8.2 13l7.6 4"/></symbol><symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></symbol><symbol id="i-agent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="8" width="15" height="11" rx="3.5"/><path d="M12 8V5.2"/><circle cx="12" cy="4" r="1.2"/><path d="M9.5 13.2v.6M14.5 13.2v.6"/></symbol><symbol id="i-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 5h15v10.5H10l-4.5 4v-4h-1z"/><path d="m9 10.3 2 2 4-4"/></symbol><symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="m8.3 12.3 2.6 2.6 5-5.2"/></symbol><symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 15.5h5"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol><symbol id="i-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 2.8 19.5h18.4z"/><path d="M12 10v4.5M12 17.2v.1"/></symbol><symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8 12 4l8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></symbol><symbol id="i-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><circle cx="17" cy="9.5" r="2.4"/><path d="M3.5 19c.6-3 2.8-4.7 5.5-4.7s4.9 1.7 5.5 4.7M15 14.6c2.4-.3 4.6 1.1 5.3 4.4"/></symbol><symbol id="i-loop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4.5h-4.5"/></symbol><symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.3 3 7.7 7 9.5 4-1.8 7-5.2 7-9.5V6z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol><symbol id="i-gauge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16a8 8 0 1 1 16 0"/><path d="m12 16 4-5"/><path d="M4 19h16"/></symbol><symbol id="i-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5 8.5 12C10 7 13.5 4 19.5 4.5 20 10.5 17 14 12 15.5z"/><path d="M8.5 12 5 11.5 7 8.5h4M12 15.5l.5 3.5 3-2v-4"/><circle cx="15" cy="9" r="1.4"/></symbol><symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4.5h11l-2 3.5 2 3.5H5"/></symbol></svg>
+<header class="topbar"><div class="topbar-in"><a class="brand" href="#cover"><span class="dots"><span class="mk lv1" aria-hidden="true"></span><span class="mk lv2" aria-hidden="true"></span><span class="mk lv3" aria-hidden="true"></span></span><span class="txt">Copilot Studio 活用事例集</span></a><nav class="nav" aria-label="ページ内の移動"><a href="#toc">目次</a><a href="#level-1"><span class="mk lv1" aria-hidden="true"></span>初級</a><a href="#level-2"><span class="mk lv2" aria-hidden="true"></span>中級</a><a href="#level-3"><span class="mk lv3" aria-hidden="true"></span>上級</a><a href="#matrix">早見表</a><a href="#sheet">シート</a></nav><button class="pdf-btn" type="button" id="pdf-btn" aria-haspopup="dialog"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg><span>PDF出力</span></button></div></header>
+<main class="book">
+
+<section class="sheet cover" id="cover" aria-label="表紙">
+  <div class="cover-top"><span>COPILOT STUDIO CASEBOOK</span><span>2026.10 EDITION</span></div>
+  <h1><span class="l1">Copilot Studio</span><span class="l2">活用事例集</span></h1>
+  <p class="cover-sub">初級・中級・上級の<b>15のモデルケース</b>で、<br>「うちの職場なら、何をつくれる？」が見えてきます。</p>
+  <nav class="route" aria-label="15の事例の路線図"><div class="r-row lv1 first"><span class="r-start">START</span><span class="turn t-r-top"></span><a class="st" href="#case-01"><span class="mkr"><span>01</span></span><span class="nm">規程Q&amp;A</span></a><a class="st" href="#case-02"><span class="mkr"><span>02</span></span><span class="nm">入社ガイド</span></a><a class="st" href="#case-03"><span class="mkr"><span>03</span></span><span class="nm">ITヘルプ</span></a><a class="st" href="#case-04"><span class="mkr"><span>04</span></span><span class="nm">製品資料ナビ</span></a><a class="st" href="#case-05"><span class="mkr"><span>05</span></span><span class="nm">現場マニュアル</span></a></div><div class="r-row lv2 rev"><span class="turn t-r-bot"></span><span class="turn t-l-top"></span><a class="st" href="#case-06"><span class="mkr"><span>06</span></span><span class="nm">備品申請</span></a><a class="st" href="#case-07"><span class="mkr"><span>07</span></span><span class="nm">受付票</span></a><a class="st" href="#case-08"><span class="mkr"><span>08</span></span><span class="nm">会議ToDo</span></a><a class="st" href="#case-09"><span class="mkr"><span>09</span></span><span class="nm">出張申請</span></a><a class="st" href="#case-10"><span class="mkr"><span>10</span></span><span class="nm">Webチャット</span></a></div><div class="r-row lv3 last"><span class="turn t-l-bot"></span><span class="r-goal">GOAL</span><a class="st" href="#case-11"><span class="mkr"><span>11</span></span><span class="nm">メール仕分け</span></a><a class="st" href="#case-12"><span class="mkr"><span>12</span></span><span class="nm">請求書照合</span></a><a class="st" href="#case-13"><span class="mkr"><span>13</span></span><span class="nm">画面操作</span></a><a class="st" href="#case-14"><span class="mkr"><span>14</span></span><span class="nm">総合窓口</span></a><a class="st" href="#case-15"><span class="mkr"><span>15</span></span><span class="nm">在庫・納期</span></a></div></nav>
+  <ul class="cover-legend"><li class="lv1"><span class="mk lv1" aria-hidden="true"></span><b>初級</b><span>資料をわたして、答えてもらう</span></li><li class="lv2"><span class="mk lv2" aria-hidden="true"></span><b>中級</b><span>会話の流れを決めて、手続きまで任せる</span></li><li class="lv3"><span class="mk lv3" aria-hidden="true"></span><b>上級</b><span>話しかけなくても動き、システムをまたいで働く</span></li></ul>
+  <p class="cover-note">この冊子の事例は、よくある業務をもとにしたモデルケースです。特定の企業・団体・個人や、実際の案件の情報は含みません。</p>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.01<i> / 26</i></span></footer>
+</section>
+<section class="sheet page intro" id="intro" aria-labelledby="h-intro">
+  <div class="ptitle"><span class="en">INTRODUCTION</span><h2 id="h-intro">はじめに</h2></div>
+  <div class="intro-text">
+    <p>Copilot Studio は、仕事を手伝う AI「エージェント」を、画面の操作と日本語の指示で作れるサービスです。プログラミングの経験がなくても、社内の資料を読み込ませるだけで、質問に答えるエージェントを作れます。</p>
+    <p>この冊子では、職場でよくある困りごとを題材に、<b>15のモデルケース</b>を難しさの順に並べました。気になる事例から読んで、「自分の職場なら何を作れるか」を考えるヒントにしてください。</p>
+  </div>
+  <h3 class="sub-h">どこから読む？</h3>
+  <div class="route-cards"><a class="route-card lv1" href="#level-1"><span class="q">まだエージェントを作ったことがない</span><span class="a"><span class="mk lv1" aria-hidden="true"></span><b>初級</b> 01〜05<em>p.06〜</em></span></a><a class="route-card lv2" href="#level-2"><span class="q">答えるだけでなく、申請や登録まで任せたい</span><span class="a"><span class="mk lv2" aria-hidden="true"></span><b>中級</b> 06〜10<em>p.12〜</em></span></a><a class="route-card lv3" href="#level-3"><span class="q">話しかけなくても動かしたい・システムをまたぎたい</span><span class="a"><span class="mk lv3" aria-hidden="true"></span><b>上級</b> 11〜15<em>p.18〜</em></span></a></div>
+  <div class="intro-cols">
+    <div>
+      <h3 class="sub-h">事例ページの見方</h3>
+      <div class="anatomy">
+        <div class="mini" aria-hidden="true"><i class="m1">1</i><i class="m2">2</i><i class="m3">3</i><i class="m4">4</i><i class="m5">5</i><i class="m6">6</i></div>
+        <ol class="an-list"><li><span class="an-n">1</span><b>こんな職場に</b><span>部署と、エージェントの名前</span></li><li><span class="an-n">2</span><b>いま／これから</b><span>困りごとと、導入後のすがた</span></li><li><span class="an-n">3</span><b>しくみ</b><span>エージェントの動きを流れ図で</span></li><li><span class="an-n">4</span><b>つくり方</b><span>作る手順を4ステップで</span></li><li><span class="an-n">5</span><b>会話のイメージ</b><span>やりとりの例（上級は動きの記録）</span></li><li><span class="an-n">6</span><b>準備・注意・次の一歩</b><span>そろえる物、気をつける点、発展先</span></li></ol>
+      </div>
+    </div>
+    <aside class="about">
+      <h3 class="sub-h">この冊子について</h3>
+      <ul>
+        <li>事例はすべて、よくある業務をもとにした<b>モデルケース</b>です。特定の企業・団体・個人や、実際の案件の情報は含みません。</li>
+        <li>会話例の数字や名称（○○など）は、説明のための架空のものです。</li>
+        <li>効果の大きさは業務の量や使い方で変わるため、数値での効果は載せていません。</li>
+        <li>機能の名前と内容は、2026年10月時点の Microsoft の公開情報にもとづきます。使える機能は、ライセンスや管理者の設定によって変わります。</li>
+      </ul>
+    </aside>
+  </div>
+  <h3 class="sub-h">ほかの Copilot との使い分け</h3>
+  <div class="tbl-wrap"><table class="which">
+    <thead><tr><th scope="col"></th><th scope="col">Microsoft 365 Copilot Chat</th><th scope="col">エージェント ビルダー</th><th scope="col" class="me">Copilot Studio（この冊子）</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">ひとことで</th><td>その場で頼む</td><td>かんたんに作る</td><td class="me">しっかり作る</td></tr>
+      <tr><th scope="row">作れるもの</th><td>（毎回、指示と資料を渡す）</td><td>指示とナレッジのエージェント</td><td class="me">ナレッジ・トピック・ツールなどを組み合わせたエージェント</td></tr>
+      <tr><th scope="row">向いている用途</th><td>自分の、その都度の作業</td><td>自分や少人数向けの手助け</td><td class="me">部署で使う。会話の流れや業務システムとの連携が要る</td></tr>
+    </tbody>
+  </table></div>
+  <p class="which-note">エージェント ビルダーは、Microsoft 365 Copilot の中でエージェントを作る機能です。どれが使えるかは、組織の契約や設定によって変わります。</p>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.02<i> / 26</i></span></footer>
+</section>
+<section class="sheet page toc" id="toc" aria-labelledby="h-toc">
+  <div class="ptitle"><span class="en">CONTENTS</span><h2 id="h-toc">目次</h2></div>
+  <div class="toc-mini"><a href="#intro"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flag"/></svg><span>はじめに</span><span class="p">02</span></a><a href="#parts"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-box"/></svg><span>エージェントの6つの部品</span><span class="p">04</span></a></div>
+  <div class="toc-group lv1"><a class="toc-lv" href="#level-1"><span class="mk lv1" aria-hidden="true"></span><b>初級</b><span>資料をわたして、答えてもらう</span><em>05</em></a><a class="toc-item " href="#case-01"><span class="n">01</span><span class="t">規程への「よくある質問」に、根拠つきで答える<span class="d">社内規程アシスタント｜総務・人事</span></span><span class="p">06</span></a><a class="toc-item " href="#case-02"><span class="n">02</span><span class="t">入社・異動した人の「誰に聞けば？」を減らす<span class="d">入社・異動ガイド｜人事・受け入れ部署</span></span><span class="p">07</span></a><a class="toc-item " href="#case-03"><span class="n">03</span><span class="t">「VPNにつながらない」に、夜でも手順を案内する<span class="d">ITヘルプデスク｜情報システム</span></span><span class="p">08</span></a><a class="toc-item " href="#case-04"><span class="n">04</span><span class="t">提案前の「あの資料どこ？」を、ひと言で探す<span class="d">製品資料ナビ｜営業・企画</span></span><span class="p">09</span></a><a class="toc-item " href="#case-05"><span class="n">05</span><span class="t">手がはなせない現場でも、手順をすぐ確かめる<span class="d">現場マニュアルナビ｜製造・店舗などの現場</span></span><span class="p">10</span></a></div><div class="toc-group lv2"><a class="toc-lv" href="#level-2"><span class="mk lv2" aria-hidden="true"></span><b>中級</b><span>会話の流れを決めて、手続きまで任せる</span><em>11</em></a><a class="toc-item " href="#case-06"><span class="n">06</span><span class="t">会話で聞き取って、申請の登録と通知まで<span class="d">備品申請の受付係｜総務</span></span><span class="p">12</span></a><a class="toc-item " href="#case-07"><span class="n">07</span><span class="t">解決しなかった問い合わせを、受付票にして引き継ぐ<span class="d">ヘルプデスクの受付票づくり｜情報システム</span></span><span class="p">13</span></a><a class="toc-item " href="#case-08"><span class="n">08</span><span class="t">会議メモを貼るだけで、決まったことと宿題を整理する<span class="d">会議メモ整理係｜全部署</span></span><span class="p">14</span></a><a class="toc-item " href="#case-09"><span class="n">09</span><span class="t">規程に合っているか確かめてから、承認に回す<span class="d">出張申請チェッカー｜総務・経理</span></span><span class="p">15</span></a><a class="toc-item " href="#case-10"><span class="n">10</span><span class="t">公開サイトのよくある質問に、Webチャットで答える<span class="d">お客様向けWebチャット｜カスタマーサポート</span></span><span class="p">16</span></a></div><div class="toc-group lv3"><a class="toc-lv" href="#level-3"><span class="mk lv3" aria-hidden="true"></span><b>上級</b><span>話しかけなくても動き、システムをまたいで働く</span><em>17</em></a><a class="toc-item " href="#case-11"><span class="n">11</span><span class="t">届いたメールを読んで、分類と返信の下書きまで<span class="d">メール仕分け係｜カスタマーサポート・営業事務</span></span><span class="p">18</span></a><a class="toc-item " href="#case-12"><span class="n">12</span><span class="t">請求書を発注書と照らし合わせ、合わないものだけ人に回す<span class="d">請求書照合エージェント｜経理</span></span><span class="p">19</span></a><a class="toc-item " href="#case-13"><span class="n">13</span><span class="t">画面しかない古いシステムへの入力を、AI が代わりに<span class="d">画面操作の転記係｜事務センター・業務部門</span></span><span class="p">20</span></a><a class="toc-item " href="#case-14"><span class="n">14</span><span class="t">人事・IT・総務のエージェントを、1つの窓口に束ねる<span class="d">社内の総合窓口｜全社・推進チーム</span></span><span class="p">21</span></a><a class="toc-item " href="#case-15"><span class="n">15</span><span class="t">在庫と納期を会話で確かめ、回答メールの案まで<span class="d">在庫・納期アシスタント｜営業・受注</span></span><span class="p">22</span></a></div>
+  <div class="toc-mini four"><a href="#matrix"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"/></svg><span>早見表</span><span class="p">23</span></a><a href="#after"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-loop"/></svg><span>作ったあとが、本番です</span><span class="p">24</span></a><a href="#sheet"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg><span>わたしの1本シート</span><span class="p">25</span></a><a href="#glossary"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg><span>用語集・参考情報</span><span class="p">26</span></a></div>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.03<i> / 26</i></span></footer>
+</section>
+<section class="sheet page parts-page" id="parts" aria-labelledby="h-parts">
+  <div class="ptitle"><span class="en">BUILDING BLOCKS</span><h2 id="h-parts">エージェントの6つの部品</h2></div>
+  <p class="page-lead">どの事例も、下の6つの部品の組み合わせでできています。初級は「指示」と「ナレッジ」の2つだけ。段階が進むほど、使う部品が増えていきます。</p>
+  <div class="pgrid"><div class="pcard"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg></span><div class="pc-h"><h3>指示</h3><span class="en">Instructions</span></div><p class="like">たとえるなら「業務マニュアル」</p><p class="pc-d">役割・口調・やってはいけないことを、日本語で書きます。すべてのエージェントの土台です。</p><div class="used"><span class="lbl">使う段階</span><span class="u lv1 on"><span class="mk lv1" aria-hidden="true"></span>初級</span><span class="u lv2 on"><span class="mk lv2" aria-hidden="true"></span>中級</span><span class="u lv3 on"><span class="mk lv3" aria-hidden="true"></span>上級</span></div></div><div class="pcard"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg></span><div class="pc-h"><h3>ナレッジ</h3><span class="en">Knowledge</span></div><p class="like">たとえるなら「参考資料の棚」</p><p class="pc-d">回答の根拠にする資料やサイトです。ファイル、SharePoint（社内の共有ファイル置き場）、公開 Web サイトなどを指定します。</p><div class="used"><span class="lbl">使う段階</span><span class="u lv1 on"><span class="mk lv1" aria-hidden="true"></span>初級</span><span class="u lv2 on"><span class="mk lv2" aria-hidden="true"></span>中級</span><span class="u lv3 on"><span class="mk lv3" aria-hidden="true"></span>上級</span></div></div><div class="pcard"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg></span><div class="pc-h"><h3>トピック</h3><span class="en">Topics</span></div><p class="like">たとえるなら「応対のシナリオ」</p><p class="pc-d">「こう聞かれたら、この順番で聞き取る・案内する」という会話の流れです。決まった手続きに向いています。</p><div class="used"><span class="lbl">使う段階</span><span class="u lv1"><span class="mk lv1" aria-hidden="true"></span>初級</span><span class="u lv2 on"><span class="mk lv2" aria-hidden="true"></span>中級</span><span class="u lv3"><span class="mk lv3" aria-hidden="true"></span>上級</span></div></div><div class="pcard"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg></span><div class="pc-h"><h3>ツール</h3><span class="en">Tools</span></div><p class="like">たとえるなら「使える道具」</p><p class="pc-d">登録・送信・検索などの「行動」です。コネクタ、エージェント フロー、プロンプト、MCP、コンピューターの使用などがあります。</p><div class="used"><span class="lbl">使う段階</span><span class="u lv1"><span class="mk lv1" aria-hidden="true"></span>初級</span><span class="u lv2 on"><span class="mk lv2" aria-hidden="true"></span>中級</span><span class="u lv3 on"><span class="mk lv3" aria-hidden="true"></span>上級</span></div></div><div class="pcard"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg></span><div class="pc-h"><h3>トリガー</h3><span class="en">Event triggers</span></div><p class="like">たとえるなら「呼び鈴」</p><p class="pc-d">メールの受信やファイルの追加など、話しかけられなくても動き出すきっかけです。</p><div class="used"><span class="lbl">使う段階</span><span class="u lv1"><span class="mk lv1" aria-hidden="true"></span>初級</span><span class="u lv2"><span class="mk lv2" aria-hidden="true"></span>中級</span><span class="u lv3 on"><span class="mk lv3" aria-hidden="true"></span>上級</span></div></div><div class="pcard"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg></span><div class="pc-h"><h3>エージェント連携</h3><span class="en">Agents</span></div><p class="like">たとえるなら「専門のチーム」</p><p class="pc-d">ほかのエージェントに仕事を振ります。子エージェントや、接続されたエージェントを使います。</p><div class="used"><span class="lbl">使う段階</span><span class="u lv1"><span class="mk lv1" aria-hidden="true"></span>初級</span><span class="u lv2"><span class="mk lv2" aria-hidden="true"></span>中級</span><span class="u lv3 on"><span class="mk lv3" aria-hidden="true"></span>上級</span></div></div></div>
+  <div class="orch"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg><p><b>部品を選ぶのは AI です。</b>質問の内容に合わせて、どのナレッジ・トピック・ツールを使うかを AI が選びます（生成オーケストレーション）。部品ごとの「説明」を具体的に書くほど、正しく選ばれます。</p></div>
+  <h3 class="sub-h">土台（ハーネス）は3種類</h3>
+  <p class="small-lead">ハーネスは、エージェントの動き方を決めるエンジンです。作り始める前に選びます。あとから土台を変えるときは、作り直しが必要になります。</p>
+  <div class="tbl-wrap"><table class="htbl"><thead><tr><th scope="col">土台</th><th scope="col">向いているとき</th><th scope="col">この冊子の事例</th></tr></thead><tbody><tr><th scope="row">スタンダード ハーネス</th><td>決めたルールや会話の流れどおりに、安定して動かす</td><td class="ex">01・03・05〜11・13〜15</td></tr><tr><th scope="row">Copilot chat ハーネス</th><td>Microsoft 365 Copilot Chat に、社内の知識をつなぐ</td><td class="ex">02・04</td></tr><tr><th scope="row">GitHub Copilot ハーネス</th><td>目的から手順を考え、ツールやファイルをまたいで進める</td><td class="ex">12</td></tr></tbody></table></div>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.04<i> / 26</i></span></footer>
+</section>
+<section class="sheet divider lv1" id="level-1" aria-labelledby="h-level-1">
+  <div class="tab">初級</div>
+  <div class="panel">
+    <span class="big-mk" aria-hidden="true"></span>
+    <p class="lv-en">LEVEL 1 ・ BASIC</p>
+    <h2 class="lv-name" id="h-level-1">初級</h2>
+    <p class="tagline">資料をわたして、答えてもらう</p>
+  </div>
+  <div class="dv-body">
+    <div class="dv-left">
+      <p class="dv-desc">指示とナレッジだけで作れる、いちばん身近なエージェントです。プログラミングは不要で、資料がそろっていれば短い時間で試作できます。</p>
+      <h3 class="sub-h">この段階で使う部品</h3>
+      <ul class="dv-parts"><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li></ul>
+      <div class="dv-goal"><span class="lbl">この段階のゴール</span><p>1体作って、まわりの人に使ってもらう</p></div>
+      <p class="dv-tip"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-rocket"/></svg><span>「同じ質問を月に何回受けているか」「答えは資料に書いてあるか」の2つで題材を選びます。</span></p>
+    </div>
+    <nav class="dv-list" aria-label="初級の事例"><h3 class="sub-h">5つの事例</h3><a href="#case-01"><span class="n">01</span><span class="t">社内規程アシスタント<small>総務・人事</small></span><span class="p">p.06</span></a><a href="#case-02"><span class="n">02</span><span class="t">入社・異動ガイド<small>人事・受け入れ部署</small></span><span class="p">p.07</span></a><a href="#case-03"><span class="n">03</span><span class="t">ITヘルプデスク<small>情報システム</small></span><span class="p">p.08</span></a><a href="#case-04"><span class="n">04</span><span class="t">製品資料ナビ<small>営業・企画</small></span><span class="p">p.09</span></a><a href="#case-05"><span class="n">05</span><span class="t">現場マニュアルナビ<small>製造・店舗などの現場</small></span><span class="p">p.10</span></a></nav>
+  </div>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.05<i> / 26</i></span></footer>
+</section>
+<article class="sheet case lv1" id="case-01" aria-labelledby="h-case-01">
+  <div class="tab">初級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">01</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>初級</span><span class="dept">総務・人事</span></p>
+      <p class="agent-name">社内規程アシスタント</p>
+    </div>
+    <p class="harness"><span>土台</span>スタンダード</p>
+  </header>
+  <h2 class="case-title" id="h-case-01">規程への「よくある質問」に、根拠つきで答える</h2>
+  <p class="lead">就業規則や旅費規程のファイルを読み込ませ、社員の質問に該当の条文を示しながら答えます。はじめての1体におすすめの、定番のエージェントです。</p>
+  <ul class="parts" aria-label="使う部品"><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+  <div class="ba">
+    <div class="before"><h4>いま</h4><ul><li>「有給は何日前に申請？」など、同じ質問が何度も届きます</li><li>規程の PDF が長く、該当の条文を探しきれません</li><li>担当者が不在だと、回答が止まってしまいます</li></ul></div>
+    <div class="ba-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+    <div class="after"><h4>これから</h4><ul><li>社員がいつでも自分で調べ、根拠の条文もその場で確かめられます</li><li>担当者は、判断が必要な相談に時間を使えます</li><li>SharePoint に置いた規程を更新すれば、答えも新しい内容になります</li></ul></div>
+  </div>
+  <section class="flow"><h3>しくみ</h3><ol class="flow-row"><li class="fbox k-user"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span><b>社員が質問</b><small>チャットで聞く</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-know"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg></span><b>規程を検索</b><small>ナレッジから探す</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-agent"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><b>該当箇所を読む</b><small>条文をもとに回答</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-out"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-out"/></svg></span><b>根拠つきで回答</b><small>資料名と条番号</small></li></ol></section>
+  <div class="two">
+    <section class="steps"><h3>つくり方</h3><ol><li>規程ファイル（Word・PDF）をナレッジに追加します。SharePoint に置くと更新が楽です</li><li>指示に「資料だけを根拠に答える」「資料名と条番号を示す」と書きます</li><li>AI の一般知識で答える設定をオフにし、資料にないことは答えないようにします</li><li>「資料にない質問」も試してから、Teams に公開します</li></ol></section>
+    <section class="demo"><h3>会話のイメージ</h3><div class="phone"><div class="dtop"><span class="av"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span>社内規程アシスタント<em>例</em></div><div class="msgs"><p class="msg u">国内出張の日当はいくら？</p><p class="msg a">国内出張の日当は○○円です。<span class="ref">参照：旅費規程 第○条</span></p><p class="msg u">来年の社員旅行はどこ？</p><p class="msg a">規程に記載がないため、総務部に確認してください。</p></div></div></section>
+  </div>
+  <div class="foot2">
+    <section class="prep"><h3>準備するもの</h3><ul><li>規程のファイル（文字を選択できる Word・PDF）</li></ul></section>
+    <section class="caution"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>ここに注意</h3><ul><li>使う人は資料の中身を聞き出せる前提で、載せる資料を選びます</li><li>回答はまちがえることがあります。大事な判断は原文で確かめるよう案内します</li></ul></section>
+  </div>
+  <a class="next" href="#case-09"><span class="lbl">次の一歩</span><span class="why">申請の受付まで任せるなら</span><span class="to lv2"><span class="mk lv2" aria-hidden="true"></span>09 出張申請チェッカー<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.06<i> / 26</i></span></footer>
+</article>
+<article class="sheet case lv1" id="case-02" aria-labelledby="h-case-02">
+  <div class="tab">初級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">02</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>初級</span><span class="dept">人事・受け入れ部署</span></p>
+      <p class="agent-name">入社・異動ガイド</p>
+    </div>
+    <p class="harness"><span>土台</span>Copilot chat</p>
+  </header>
+  <h2 class="case-title" id="h-case-02">入社・異動した人の「誰に聞けば？」を減らす</h2>
+  <p class="lead">入社の手続き、社内用語、よく使うシステムの一覧などを SharePoint にまとめ、Copilot Chat の中から聞けるようにします。来たばかりの人が、遠慮なく何度でも聞ける相手になります。</p>
+  <ul class="parts" aria-label="使う部品"><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+  <div class="ba">
+    <div class="before"><h4>いま</h4><ul><li>来たばかりの人は、何をどこで調べればよいか分かりません</li><li>先輩や人事に、同じ内容の質問がくり返し届きます</li><li>案内の資料が、いろいろな場所に散らばっています</li></ul></div>
+    <div class="ba-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+    <div class="after"><h4>これから</h4><ul><li>ふだん使う Copilot Chat の中で、自分で答えを見つけられます</li><li>受け入れる側は説明の手間が減り、大事な話に時間を使えます</li><li>資料を1か所にまとめる、よいきっかけになります</li></ul></div>
+  </div>
+  <section class="flow"><h3>しくみ</h3><ol class="flow-row"><li class="fbox k-user"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span><b>新しく来た人</b><small>Copilot Chat で質問</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-agent"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><b>ガイドが応答</b><small>Copilot Chat の中で動く</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-know"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg></span><b>案内資料を検索</b><small>SharePoint のサイト</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-out"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-out"/></svg></span><b>回答と資料の場所</b><small>窓口もあわせて案内</small></li></ol></section>
+  <div class="two">
+    <section class="steps"><h3>つくり方</h3><ol><li>入社手続き・用語集・システム一覧などを、SharePoint の1つのサイトにまとめます</li><li>作り始めるときに、土台として「Copilot chat ハーネス」を選びます</li><li>サイトをナレッジに追加し、どんな質問で使う資料かを説明に書きます</li><li>指示に「やさしい言葉で」「担当の窓口も案内する」と書き、社内に公開します</li></ol></section>
+    <section class="demo"><h3>会話のイメージ</h3><div class="phone"><div class="dtop"><span class="av"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span>入社・異動ガイド<em>例</em></div><div class="msgs"><p class="msg u">経費精算はどのシステムでやるの？</p><p class="msg a">経費精算は「○○システム」で行います。手順は「新入社員ガイド」の3章にまとまっています。<span class="ref">参照：新入社員ガイド</span></p></div></div></section>
+  </div>
+  <div class="foot2">
+    <section class="prep"><h3>準備するもの</h3><ul><li>案内資料をまとめる SharePoint のサイト</li></ul></section>
+    <section class="caution"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>ここに注意</h3><ul><li>SharePoint の資料は、使う人が閲覧できる範囲だけが回答に使われます。見せたい資料の権限を確かめます</li><li>古い手順書が残っていると、古い答えが返ります。資料の見直しとセットで進めます</li></ul></section>
+  </div>
+  <a class="next" href="#case-06"><span class="lbl">次の一歩</span><span class="why">手続きの受付までさせるなら</span><span class="to lv2"><span class="mk lv2" aria-hidden="true"></span>06 備品申請の受付係<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.07<i> / 26</i></span></footer>
+</article>
+<article class="sheet case lv1" id="case-03" aria-labelledby="h-case-03">
+  <div class="tab">初級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">03</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>初級</span><span class="dept">情報システム</span></p>
+      <p class="agent-name">ITヘルプデスク</p>
+    </div>
+    <p class="harness"><span>土台</span>スタンダード</p>
+  </header>
+  <h2 class="case-title" id="h-case-03">「VPNにつながらない」に、夜でも手順を案内する</h2>
+  <p class="lead">パスワードの再設定、VPN 接続、プリンターの設定などの手順書をナレッジにして、情報システム部門への定番の問い合わせに一次対応します。</p>
+  <ul class="parts" aria-label="使う部品"><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+  <div class="ba">
+    <div class="before"><h4>いま</h4><ul><li>問い合わせの多くは、手順書に書いてある定番の内容です</li><li>担当者が手いっぱいで、回答までに時間がかかります</li><li>手順書がどこにあるのか、社員が知りません</li></ul></div>
+    <div class="ba-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+    <div class="after"><h4>これから</h4><ul><li>定番の問い合わせは、社員が手順を見ながら自分で解決できます</li><li>担当者は、調査が必要なトラブルに集中できます</li><li>よく聞かれる内容が分かり、手順書の改善につながります</li></ul></div>
+  </div>
+  <section class="flow"><h3>しくみ</h3><ol class="flow-row"><li class="fbox k-user"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span><b>社員が症状を入力</b><small>チャットで聞く</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-know"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg></span><b>手順書を検索</b><small>ナレッジ</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-agent"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><b>手順を案内</b><small>番号つきで回答</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-out"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-out"/></svg></span><b>解決しなければ</b><small>窓口の連絡先を案内</small></li></ol></section>
+  <div class="two">
+    <section class="steps"><h3>つくり方</h3><ol><li>よくある問い合わせの上位10件と、その手順書を集めます</li><li>手順書をナレッジに追加し、指示に「手順は番号つきで答える」と書きます</li><li>最初のあいさつに「パスワード」「VPN」など、聞ける内容の例を入れます</li><li>解決しないときの連絡先を指示に書き、テストして公開します</li></ol></section>
+    <section class="demo"><h3>会話のイメージ</h3><div class="phone"><div class="dtop"><span class="av"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span>ITヘルプデスク<em>例</em></div><div class="msgs"><p class="msg u">VPNにつながらない</p><p class="msg a">次の順に確かめてください。<br>1. ○○を再起動<br>2. ○○の設定を確認<br>解決しない場合は、情報システム窓口へご連絡ください。<span class="ref">参照：VPN接続手順書</span></p></div></div></section>
+  </div>
+  <div class="foot2">
+    <section class="prep"><h3>準備するもの</h3><ul><li>よくある問い合わせの手順書（画面や手順が最新のもの）</li></ul></section>
+    <section class="caution"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>ここに注意</h3><ul><li>手順書の画面と実際の画面がちがうと混乱します。更新日を確かめてから載せます</li><li>パスワードそのものをチャットに書かないよう、あいさつ文で案内します</li></ul></section>
+  </div>
+  <a class="next" href="#case-07"><span class="lbl">次の一歩</span><span class="why">解決しないときに受付票まで作るなら</span><span class="to lv2"><span class="mk lv2" aria-hidden="true"></span>07 ヘルプデスクの受付票づくり<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.08<i> / 26</i></span></footer>
+</article>
+<article class="sheet case lv1" id="case-04" aria-labelledby="h-case-04">
+  <div class="tab">初級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">04</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>初級</span><span class="dept">営業・企画</span></p>
+      <p class="agent-name">製品資料ナビ</p>
+    </div>
+    <p class="harness"><span>土台</span>Copilot chat</p>
+  </header>
+  <h2 class="case-title" id="h-case-04">提案前の「あの資料どこ？」を、ひと言で探す</h2>
+  <p class="lead">製品カタログや仕様書、よくある質問集をナレッジにして、営業担当が必要な情報と資料の場所をすぐに見つけられるようにします。</p>
+  <ul class="parts" aria-label="使う部品"><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+  <div class="ba">
+    <div class="before"><h4>いま</h4><ul><li>製品資料が多く、どれが最新版か分かりません</li><li>お客様の質問に答えるため、詳しい人を探して聞いています</li><li>配属されたばかりの人が、資料にたどりつけません</li></ul></div>
+    <div class="ba-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+    <div class="after"><h4>これから</h4><ul><li>製品の特長や仕様を、根拠の資料つきで確かめられます</li><li>詳しい人への確認が、判断が必要なものだけになります</li><li>最新版の資料だけを見る習慣がつきます</li></ul></div>
+  </div>
+  <section class="flow"><h3>しくみ</h3><ol class="flow-row"><li class="fbox k-user"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span><b>営業が質問</b><small>Copilot Chat で聞く</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-know"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg></span><b>製品資料を検索</b><small>最新版のフォルダー</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-agent"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><b>要点を整理</b><small>3行などで回答</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-out"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-out"/></svg></span><b>資料名と場所</b><small>原本へのリンク</small></li></ol></section>
+  <div class="two">
+    <section class="steps"><h3>つくり方</h3><ol><li>最新版の製品資料を、SharePoint の1つのフォルダーに集めます</li><li>古い版は別の場所へ移し、ナレッジに入らないようにします</li><li>指示に「価格や契約条件は答えず、担当部署を案内する」と書きます</li><li>よく聞かれる質問で試してから、営業チームに公開します</li></ol></section>
+    <section class="demo"><h3>会話のイメージ</h3><div class="phone"><div class="dtop"><span class="av"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span>製品資料ナビ<em>例</em></div><div class="msgs"><p class="msg u">製品Aと製品Bのちがいを3行で教えて</p><p class="msg a">1. ○○<br>2. ○○<br>3. ○○<span class="ref">参照：製品A_カタログ／製品B_仕様書</span></p></div></div></section>
+  </div>
+  <div class="foot2">
+    <section class="prep"><h3>準備するもの</h3><ul><li>最新版の製品資料をまとめたフォルダー</li></ul></section>
+    <section class="caution"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>ここに注意</h3><ul><li>価格や契約条件など、まちがえると影響が大きい情報は答えさせない設計が安全です</li><li>社外に出せる資料と出せない資料を、分けて管理します</li></ul></section>
+  </div>
+  <a class="next" href="#case-15"><span class="lbl">次の一歩</span><span class="why">在庫や納期など「いまの数字」も答えたいなら</span><span class="to lv3"><span class="mk lv3" aria-hidden="true"></span>15 在庫・納期アシスタント<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.09<i> / 26</i></span></footer>
+</article>
+<article class="sheet case lv1" id="case-05" aria-labelledby="h-case-05">
+  <div class="tab">初級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">05</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>初級</span><span class="dept">製造・店舗などの現場</span></p>
+      <p class="agent-name">現場マニュアルナビ</p>
+    </div>
+    <p class="harness"><span>土台</span>スタンダード</p>
+  </header>
+  <h2 class="case-title" id="h-case-05">手がはなせない現場でも、手順をすぐ確かめる</h2>
+  <p class="lead">設備の取扱説明書や作業手順書をナレッジにして、スマートフォンの Teams から手順を聞けるようにします。分厚いマニュアルをめくる時間を減らします。</p>
+  <ul class="parts" aria-label="使う部品"><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+  <div class="ba">
+    <div class="before"><h4>いま</h4><ul><li>マニュアルが分厚く、必要なページを探すのに時間がかかります</li><li>久しぶりの作業で手順を忘れ、ベテランに聞きに行きます</li><li>紙のマニュアルが、現場に1冊しかありません</li></ul></div>
+    <div class="ba-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+    <div class="after"><h4>これから</h4><ul><li>スマートフォンから、手順と注意点をすぐに確かめられます</li><li>ベテランへの確認が、本当に判断が必要な場面だけになります</li><li>よく聞かれる箇所から、マニュアルの分かりにくい所が見えてきます</li></ul></div>
+  </div>
+  <section class="flow"><h3>しくみ</h3><ol class="flow-row"><li class="fbox k-user"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span><b>現場で質問</b><small>スマホの Teams</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-know"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg></span><b>マニュアルを検索</b><small>ナレッジ</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-agent"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><b>注意点を先に</b><small>安全の注意から回答</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-out"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-out"/></svg></span><b>手順と参照ページ</b><small>原文で確かめられる</small></li></ol></section>
+  <div class="two">
+    <section class="steps"><h3>つくり方</h3><ol><li>文字を選択できる形式のマニュアル（PDF など）を用意します</li><li>マニュアルをナレッジに追加し、説明に設備名・作業名を書きます</li><li>指示に「安全に関わる注意は、必ず最初に伝える」と書きます</li><li>現場の人に試してもらい、聞き方のくせに合わせて指示を直します</li></ol></section>
+    <section class="demo"><h3>会話のイメージ</h3><div class="phone"><div class="dtop"><span class="av"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span>現場マニュアルナビ<em>例</em></div><div class="msgs"><p class="msg u">設備Xの日常点検の手順は？</p><p class="msg a">【注意】作業の前に電源を切ってください。<br>手順：1. ○○　2. ○○<span class="ref">参照：設備X 取扱説明書 p.○</span></p></div></div></section>
+  </div>
+  <div class="foot2">
+    <section class="prep"><h3>準備するもの</h3><ul><li>文字を選択できるマニュアル（スキャンした画像だけの PDF は読み取れないことがあります）</li></ul></section>
+    <section class="caution"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>ここに注意</h3><ul><li>安全に関わる判断は、必ず原文と現場のルールで確かめます</li><li>画像だけの PDF は文字を読み取れないことがあります。元のデータを探すか、作り直します</li></ul></section>
+  </div>
+  <a class="next" href="#case-06"><span class="lbl">次の一歩</span><span class="why">点検結果の記録まで会話でしたいなら</span><span class="to lv2"><span class="mk lv2" aria-hidden="true"></span>06 備品申請の受付係<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.10<i> / 26</i></span></footer>
+</article>
+<section class="sheet divider lv2" id="level-2" aria-labelledby="h-level-2">
+  <div class="tab">中級</div>
+  <div class="panel">
+    <span class="big-mk" aria-hidden="true"></span>
+    <p class="lv-en">LEVEL 2 ・ INTERMEDIATE</p>
+    <h2 class="lv-name" id="h-level-2">中級</h2>
+    <p class="tagline">会話の流れを決めて、手続きまで任せる</p>
+  </div>
+  <div class="dv-body">
+    <div class="dv-left">
+      <p class="dv-desc">トピックで聞き取りの順番を決め、ツールで登録や通知といった「行動」をさせます。答えるだけのエージェントが、仕事を進めるエージェントに変わります。</p>
+      <h3 class="sub-h">この段階で使う部品</h3>
+      <ul class="dv-parts"><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li></ul>
+      <div class="dv-goal"><span class="lbl">この段階のゴール</span><p>聞き取り・登録・通知までを、1つの会話で終わらせる</p></div>
+      <p class="dv-tip"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-rocket"/></svg><span>登録や送信の前に、人が内容を確かめる場面を必ず入れます。</span></p>
+    </div>
+    <nav class="dv-list" aria-label="中級の事例"><h3 class="sub-h">5つの事例</h3><a href="#case-06"><span class="n">06</span><span class="t">備品申請の受付係<small>総務</small></span><span class="p">p.12</span></a><a href="#case-07"><span class="n">07</span><span class="t">ヘルプデスクの受付票づくり<small>情報システム</small></span><span class="p">p.13</span></a><a href="#case-08"><span class="n">08</span><span class="t">会議メモ整理係<small>全部署</small></span><span class="p">p.14</span></a><a href="#case-09"><span class="n">09</span><span class="t">出張申請チェッカー<small>総務・経理</small></span><span class="p">p.15</span></a><a href="#case-10"><span class="n">10</span><span class="t">お客様向けWebチャット<small>カスタマーサポート</small></span><span class="p">p.16</span></a></nav>
+  </div>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.11<i> / 26</i></span></footer>
+</section>
+<article class="sheet case lv2" id="case-06" aria-labelledby="h-case-06">
+  <div class="tab">中級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">06</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>中級</span><span class="dept">総務</span></p>
+      <p class="agent-name">備品申請の受付係</p>
+    </div>
+    <p class="harness"><span>土台</span>スタンダード</p>
+  </header>
+  <h2 class="case-title" id="h-case-06">会話で聞き取って、申請の登録と通知まで</h2>
+  <p class="lead">「備品がほしい」と話しかけると、品目・数量・理由を順番に聞き取り、SharePoint のリストに登録して担当者に知らせます。決まった項目を聞く手続きは、トピックの得意分野です。</p>
+  <ul class="parts" aria-label="使う部品"><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+  <div class="ba">
+    <div class="before"><h4>いま</h4><ul><li>申請フォームの場所が分からず、メールで依頼が届きます</li><li>記入もれがあり、確認のやりとりがくり返されます</li><li>受け付けた申請の状況が、担当者にしか分かりません</li></ul></div>
+    <div class="ba-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+    <div class="after"><h4>これから</h4><ul><li>必要な項目が会話でそろい、記入もれが減ります</li><li>申請がリストにまとまり、状況をチームで共有できます</li><li>担当者には Teams で通知が届き、見落としが減ります</li></ul></div>
+  </div>
+  <section class="flow"><h3>しくみ</h3><ol class="flow-row"><li class="fbox k-user"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span><b>「備品がほしい」</b><small>チャットで依頼</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-topic"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg></span><b>順番に聞き取る</b><small>品目・数量・理由</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-tool"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg></span><b>リストに登録</b><small>コネクタ</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-out"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-out"/></svg></span><b>担当者に通知</b><small>Teams のチャネル</small></li></ol></section>
+  <div class="two">
+    <section class="steps"><h3>つくり方</h3><ol><li>申請を記録する SharePoint リストを作ります（品目・数量・理由・申請者・状況）</li><li>トピックを作り、質問ノードで品目（選択肢）・数量・理由を順に聞きます</li><li>ツール（コネクタ）でリストに1行追加し、Teams のチャネルに通知します</li><li>登録の前に内容を確かめるメッセージを入れ、テストして公開します</li></ol></section>
+    <section class="demo"><h3>会話のイメージ</h3><div class="phone"><div class="dtop"><span class="av"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span>備品申請の受付係<em>例</em></div><div class="msgs"><p class="msg u">マウスを申請したい</p><p class="msg a">品目を選んでください。<span class="btns"><span>文具</span><span>PC周辺機器</span><span>その他</span></span></p><p class="msg u">PC周辺機器。1つ、いまのものが壊れたため</p><p class="msg a">「PC周辺機器・1つ・故障のため」で受け付けました。担当者からの連絡をお待ちください。</p></div></div></section>
+  </div>
+  <div class="foot2">
+    <section class="prep"><h3>準備するもの</h3><ul><li>申請を記録する SharePoint リスト</li><li>通知先の Teams チャネル</li></ul></section>
+    <section class="caution"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>ここに注意</h3><ul><li>Teams では、選択肢のボタンは1つの質問につき6個までです。品目が多いときは2段階に分けます</li><li>登録を「使う人」と「作った人」のどちらの権限で行うか、先に決めておきます</li></ul></section>
+  </div>
+  <a class="next" href="#case-09"><span class="lbl">次の一歩</span><span class="why">上長の承認も組み込むなら</span><span class="to lv2"><span class="mk lv2" aria-hidden="true"></span>09 出張申請チェッカー<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.12<i> / 26</i></span></footer>
+</article>
+<article class="sheet case lv2" id="case-07" aria-labelledby="h-case-07">
+  <div class="tab">中級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">07</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>中級</span><span class="dept">情報システム</span></p>
+      <p class="agent-name">ヘルプデスクの受付票づくり</p>
+    </div>
+    <p class="harness"><span>土台</span>スタンダード</p>
+  </header>
+  <h2 class="case-title" id="h-case-07">解決しなかった問い合わせを、受付票にして引き継ぐ</h2>
+  <p class="lead">03 の ITヘルプデスクに、受付票を登録するツールを足します。手順で解決しなかったときだけ症状を聞き取り、受付票を作って担当者へ引き継ぎます。</p>
+  <ul class="parts" aria-label="使う部品"><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+  <div class="ba">
+    <div class="before"><h4>いま</h4><ul><li>問い合わせのたびに、端末や症状を聞き直しています</li><li>メール・チャット・電話と窓口がばらばらで、件数がつかめません</li><li>どれから対応するかが、担当者の感覚で決まっています</li></ul></div>
+    <div class="ba-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+    <div class="after"><h4>これから</h4><ul><li>受付票に必要な情報が、最初からそろって届きます</li><li>問い合わせが1つのリストに集まり、件数や傾向が見えます</li><li>担当者は、聞き取りではなく調査から始められます</li></ul></div>
+  </div>
+  <section class="flow"><h3>しくみ</h3><ol class="flow-row"><li class="fbox k-know"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg></span><b>手順を案内</b><small>ナレッジ（03）</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-user"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span><b>「解決しない」</b><small>利用者の返事</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-agent"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><b>症状を聞き取る</b><small>AI が質問を作る</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-tool"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg></span><b>受付票を登録</b><small>番号を返す</small></li></ol></section>
+  <div class="two">
+    <section class="steps"><h3>つくり方</h3><ol><li>03 のエージェントに、受付票を登録するツール（リストや管理システムのコネクタ）を追加します</li><li>ツールの説明に「手順で解決しなかったときに使う」と具体的に書きます</li><li>実行前に確認する設定（Ask the end user before running）をオンにし、登録前に内容を見せます</li><li>登録後に受付番号を伝えるよう設定し、テストして公開します</li></ol></section>
+    <section class="demo"><h3>会話のイメージ</h3><div class="phone"><div class="dtop"><span class="av"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span>ヘルプデスクの受付票づくり<em>例</em></div><div class="msgs"><p class="msg u">手順を試したけど、まだVPNにつながらない</p><p class="msg a">受付票を作ります。お使いの端末と、表示されたメッセージを教えてください。</p><p class="msg u">ノートPCで「接続できません」と出る</p><p class="msg a">この内容で登録してよいですか？<span class="btns"><span>はい</span><span>修正する</span></span></p></div></div></section>
+  </div>
+  <div class="foot2">
+    <section class="prep"><h3>準備するもの</h3><ul><li>受付票を記録する場所（SharePoint リストや、社内の管理システムのコネクタ）</li></ul></section>
+    <section class="caution"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>ここに注意</h3><ul><li>ツールの説明があいまいだと、関係ない場面で動きます。使う場面を具体的に書きます</li><li>どこまでの情報を記録してよいか、社内のルールを確かめます</li></ul></section>
+  </div>
+  <a class="next" href="#case-11"><span class="lbl">次の一歩</span><span class="why">メールで届く問い合わせも自動で仕分けるなら</span><span class="to lv3"><span class="mk lv3" aria-hidden="true"></span>11 メール仕分け係<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.13<i> / 26</i></span></footer>
+</article>
+<article class="sheet case lv2" id="case-08" aria-labelledby="h-case-08">
+  <div class="tab">中級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">08</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>中級</span><span class="dept">全部署</span></p>
+      <p class="agent-name">会議メモ整理係</p>
+    </div>
+    <p class="harness"><span>土台</span>スタンダード</p>
+  </header>
+  <h2 class="case-title" id="h-case-08">会議メモを貼るだけで、決まったことと宿題を整理する</h2>
+  <p class="lead">会議のメモを貼り付けると、決定事項・ToDo・担当・期限に整理し、確かめたうえで Planner（タスク管理のサービス）に登録します。</p>
+  <ul class="parts" aria-label="使う部品"><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+  <div class="ba">
+    <div class="before"><h4>いま</h4><ul><li>会議のあと、議事録づくりに時間がかかります</li><li>宿題の担当と期限が、あいまいなまま終わります</li><li>タスクの登録を忘れ、次の会議で「あれはどうなった？」が起きます</li></ul></div>
+    <div class="ba-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+    <div class="after"><h4>これから</h4><ul><li>決定事項と ToDo が、毎回同じ形でまとまります</li><li>担当や期限が決まっていない項目が、その場で分かります</li><li>確かめた ToDo が、そのままタスクになります</li></ul></div>
+  </div>
+  <section class="flow"><h3>しくみ</h3><ol class="flow-row"><li class="fbox k-user"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span><b>メモを貼り付け</b><small>チャットに入力</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-tool"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg></span><b>決定事項を抽出</b><small>プロンプト</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-check"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></span><b>人が内容を確認</b><small>直してから登録</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-tool"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg></span><b>Planner に登録</b><small>コネクタ</small></li></ol></section>
+  <div class="two">
+    <section class="steps"><h3>つくり方</h3><ol><li>ツールの「プロンプト」で、メモから決定事項・ToDo・担当・期限を取り出す指示を作ります</li><li>Planner のコネクタで「タスクを作成」するツールを追加します</li><li>登録の前に一覧を見せて、直せるようにします（実行前の確認をオン）</li><li>担当や期限がない項目は「未定」と表示するよう指示し、テストします</li></ol></section>
+    <section class="demo"><h3>会話のイメージ</h3><div class="phone"><div class="dtop"><span class="av"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span>会議メモ整理係<em>例</em></div><div class="msgs"><p class="msg u">（会議メモを貼り付け）</p><p class="msg a">決定事項：新しい申請フォームを来月から使う<br>ToDo：① 案内文の作成（担当：総務チーム／期限：○日）<br>② 説明会の日程調整（担当：未定）<br>Planner に登録しますか？<span class="btns"><span>登録する</span><span>修正する</span></span></p></div></div></section>
+  </div>
+  <div class="foot2">
+    <section class="prep"><h3>準備するもの</h3><ul><li>タスクを登録する Planner のプラン</li></ul></section>
+    <section class="caution"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>ここに注意</h3><ul><li>AI は発言の意図を取りちがえることがあります。登録の前に必ず人が確かめます</li><li>機密度の高い会議のメモを扱ってよいか、社内のルールを確かめます</li></ul></section>
+  </div>
+  <a class="next" href="#case-11"><span class="lbl">次の一歩</span><span class="why">決まった時間やできごとで自動的に動かすなら</span><span class="to lv3"><span class="mk lv3" aria-hidden="true"></span>11 メール仕分け係<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.14<i> / 26</i></span></footer>
+</article>
+<article class="sheet case lv2" id="case-09" aria-labelledby="h-case-09">
+  <div class="tab">中級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">09</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>中級</span><span class="dept">総務・経理</span></p>
+      <p class="agent-name">出張申請チェッカー</p>
+    </div>
+    <p class="harness"><span>土台</span>スタンダード</p>
+  </header>
+  <h2 class="case-title" id="h-case-09">規程に合っているか確かめてから、承認に回す</h2>
+  <p class="lead">出張の日程や宿泊費を聞き取り、旅費規程のナレッジで上限や条件を確かめてから、エージェント フロー（決まった手順を自動で進める流れ）で上長の承認に回します。01 の発展形です。</p>
+  <ul class="parts" aria-label="使う部品"><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+  <div class="ba">
+    <div class="before"><h4>いま</h4><ul><li>規程に合わない申請が出され、差し戻しがくり返されます</li><li>申請する人は、規程のどこを見ればよいか分かりません</li><li>承認する人は、規程と申請内容を見比べる手間がかかります</li></ul></div>
+    <div class="ba-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+    <div class="after"><h4>これから</h4><ul><li>申請の前に、規程に合っているかを自分で確かめられます</li><li>差し戻しが減り、承認する人は内容の判断に集中できます</li><li>承認の結果が、申請した人に自動で届きます</li></ul></div>
+  </div>
+  <section class="flow"><h3>しくみ</h3><ol class="flow-row"><li class="fbox k-topic"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg></span><b>出張内容を聞く</b><small>トピック</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-know"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg></span><b>規程で上限を確認</b><small>ナレッジ（01）</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-tool"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg></span><b>上長に承認依頼</b><small>エージェント フロー</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-out"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-out"/></svg></span><b>結果を通知</b><small>申請した人へ</small></li></ol></section>
+  <div class="two">
+    <section class="steps"><h3>つくり方</h3><ol><li>01 の規程ナレッジを使い、トピックで行き先・日程・宿泊費を聞き取ります</li><li>上限をこえる場合は、理由を入力してもらう分岐を作ります</li><li>エージェント フローに「承認」のアクションを入れ、上長へ依頼を送ります</li><li>承認・却下の結果を申請した人に知らせ、テストして公開します</li></ol></section>
+    <section class="demo"><h3>会話のイメージ</h3><div class="phone"><div class="dtop"><span class="av"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span>出張申請チェッカー<em>例</em></div><div class="msgs"><p class="msg u">来週、1泊で出張したい</p><p class="msg a">宿泊費の予定額を教えてください。（規程の上限は1泊○○円です）</p><p class="msg u">○○円です</p><p class="msg a">上限内です。この内容で上長に承認を依頼しますか？<span class="btns"><span>依頼する</span><span>修正する</span></span></p></div></div></section>
+  </div>
+  <div class="foot2">
+    <section class="prep"><h3>準備するもの</h3><ul><li>旅費規程（01 のナレッジ）</li><li>承認する人の情報と、申請を記録する場所</li></ul></section>
+    <section class="caution"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>ここに注意</h3><ul><li>規程の確認は、あくまで補助です。最終的な判断は承認する人が行います</li><li>エージェント フローは、実行したアクションの数に応じて利用量を使います</li></ul></section>
+  </div>
+  <a class="next" href="#case-12"><span class="lbl">次の一歩</span><span class="why">請求書の処理まで自動化するなら</span><span class="to lv3"><span class="mk lv3" aria-hidden="true"></span>12 請求書照合エージェント<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.15<i> / 26</i></span></footer>
+</article>
+<article class="sheet case lv2" id="case-10" aria-labelledby="h-case-10">
+  <div class="tab">中級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">10</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>中級</span><span class="dept">カスタマーサポート</span></p>
+      <p class="agent-name">お客様向けWebチャット</p>
+    </div>
+    <p class="harness"><span>土台</span>スタンダード</p>
+  </header>
+  <h2 class="case-title" id="h-case-10">公開サイトのよくある質問に、Webチャットで答える</h2>
+  <p class="lead">自社の公開 Web サイトをナレッジにして、サイトに埋め込んだチャットでお客様の質問に答えます。解決しないときは、問い合わせフォームなどの窓口を案内します。</p>
+  <ul class="parts" aria-label="使う部品"><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+  <div class="ba">
+    <div class="before"><h4>いま</h4><ul><li>サイトに答えがあるのに、同じ内容の問い合わせが届きます</li><li>営業時間外の問い合わせに、翌日まで答えられません</li><li>お客様が、FAQ のページにたどりつけません</li></ul></div>
+    <div class="ba-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+    <div class="after"><h4>これから</h4><ul><li>お客様は、知りたいことを聞くだけで該当ページにたどりつけます</li><li>営業時間外でも、公開情報の範囲で答えられます</li><li>窓口の担当者は、個別の対応が必要な問い合わせに集中できます</li></ul></div>
+  </div>
+  <section class="flow"><h3>しくみ</h3><ol class="flow-row"><li class="fbox k-user"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span><b>お客様が質問</b><small>サイトのチャット</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-know"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg></span><b>公開サイトを検索</b><small>ナレッジ</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-agent"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><b>回答とリンク</b><small>該当ページへ案内</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-topic"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg></span><b>解決しなければ</b><small>窓口を案内するトピック</small></li></ol></section>
+  <div class="two">
+    <section class="steps"><h3>つくり方</h3><ol><li>ナレッジに、自社の公開 Web サイトの URL を追加します</li><li>指示に「公開情報の範囲で答える」「個人情報は聞かない」と書きます</li><li>デモ用の Web サイトで関係者に試してもらい、答え方を直します</li><li>公開サイトに埋め込み（カスタム Web サイト）、運用を始めます</li></ol></section>
+    <section class="demo"><h3>会話のイメージ</h3><div class="phone"><div class="dtop"><span class="av"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span>お客様向けWebチャット<em>例</em></div><div class="msgs"><p class="msg u">注文のキャンセルはできますか？</p><p class="msg a">発送の前であれば、マイページからキャンセルできます。くわしくは「ご注文について」のページをご覧ください。<span class="ref">参照：ご注文について（公開ページ）</span></p></div></div></section>
+  </div>
+  <div class="foot2">
+    <section class="prep"><h3>準備するもの</h3><ul><li>公開 Web サイトの URL</li><li>問い合わせ窓口の案内文</li></ul></section>
+    <section class="caution"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>ここに注意</h3><ul><li>「認証なし」で公開すると、リンクを知っている誰でも話しかけられます。社内の資料は絶対にナレッジに入れません</li><li>デモ用の Web サイトは試すためのものです。お客様向けの本番には使いません</li><li>公開サイトのナレッジは、検索エンジン（Bing）に登録された内容を使います。新しいページはすぐに反映されないことがあります</li></ul></section>
+  </div>
+  <a class="next" href="#case-11"><span class="lbl">次の一歩</span><span class="why">メールで届く問い合わせにも対応するなら</span><span class="to lv3"><span class="mk lv3" aria-hidden="true"></span>11 メール仕分け係<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.16<i> / 26</i></span></footer>
+</article>
+<section class="sheet divider lv3" id="level-3" aria-labelledby="h-level-3">
+  <div class="tab">上級</div>
+  <div class="panel">
+    <span class="big-mk" aria-hidden="true"></span>
+    <p class="lv-en">LEVEL 3 ・ ADVANCED</p>
+    <h2 class="lv-name" id="h-level-3">上級</h2>
+    <p class="tagline">話しかけなくても動き、システムをまたいで働く</p>
+  </div>
+  <div class="dv-body">
+    <div class="dv-left">
+      <p class="dv-desc">イベント トリガーで自動的に動き出したり、ほかのエージェントや社内システムとつながったりします。権限や利用量の設計が大切になるため、管理者やシステム担当と一緒に進めます。</p>
+      <h3 class="sub-h">この段階で使う部品</h3>
+      <ul class="dv-parts"><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+      <div class="dv-goal"><span class="lbl">この段階のゴール</span><p>くり返しの作業はエージェントに任せ、人は判断と確認に集中する</p></div>
+      <p class="dv-tip"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-rocket"/></svg><span>最初は「報告するだけ」「下書きまで」から始め、任せる範囲を少しずつ広げます。</span></p>
+    </div>
+    <nav class="dv-list" aria-label="上級の事例"><h3 class="sub-h">5つの事例</h3><a href="#case-11"><span class="n">11</span><span class="t">メール仕分け係<small>カスタマーサポート・営業事務</small></span><span class="p">p.18</span></a><a href="#case-12"><span class="n">12</span><span class="t">請求書照合エージェント<small>経理</small></span><span class="p">p.19</span></a><a href="#case-13"><span class="n">13</span><span class="t">画面操作の転記係<small>事務センター・業務部門</small></span><span class="p">p.20</span></a><a href="#case-14"><span class="n">14</span><span class="t">社内の総合窓口<small>全社・推進チーム</small></span><span class="p">p.21</span></a><a href="#case-15"><span class="n">15</span><span class="t">在庫・納期アシスタント<small>営業・受注</small></span><span class="p">p.22</span></a></nav>
+  </div>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.17<i> / 26</i></span></footer>
+</section>
+<article class="sheet case lv3" id="case-11" aria-labelledby="h-case-11">
+  <div class="tab">上級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">11</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>上級</span><span class="dept">カスタマーサポート・営業事務</span></p>
+      <p class="agent-name">メール仕分け係</p>
+    </div>
+    <p class="harness"><span>土台</span>スタンダード</p>
+  </header>
+  <h2 class="case-title" id="h-case-11">届いたメールを読んで、分類と返信の下書きまで</h2>
+  <p class="lead">問い合わせ用のメールが届くと、エージェントが自動で動き出します。内容を分類して記録し、ナレッジをもとに返信の下書きを作ります。送るかどうかは人が決めます。</p>
+  <ul class="parts" aria-label="使う部品"><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+  <div class="ba">
+    <div class="before"><h4>いま</h4><ul><li>毎朝、たまった問い合わせメールの仕分けから一日が始まります</li><li>担当の割り振りに時間がかかり、返信が遅れます</li><li>似た問い合わせにも、毎回ゼロから返信を書いています</li></ul></div>
+    <div class="ba-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+    <div class="after"><h4>これから</h4><ul><li>メールが届いた時点で、分類と記録が終わっています</li><li>担当者は、下書きを確かめて直すところから始められます</li><li>問い合わせの種類と件数が、リストで見えるようになります</li></ul></div>
+  </div>
+  <section class="flow"><h3>しくみ</h3><ol class="flow-row"><li class="fbox k-trig"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg></span><b>メールが届く</b><small>イベント トリガー</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-agent"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><b>内容を分類</b><small>指示のルール</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-tool"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg></span><b>リストに記録</b><small>コネクタ</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-know"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg></span><b>下書きを作成</b><small>ナレッジ＋ツール</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-check"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></span><b>人が確認</b><small>直して送信</small></li></ol></section>
+  <div class="two">
+    <section class="steps"><h3>つくり方</h3><ol><li>Outlook の「新しいメールが届いたとき」などのトリガーを追加し、対象のフォルダーや条件をしぼります</li><li>指示（またはトリガーの内容）に、分類のルールと下書きの書き方を書きます</li><li>記録用のリストと、下書きを作るツールを追加します（送信はさせません）</li><li>テスト用のメールで動きを確かめ、アクティビティ画面で記録を見ながら公開します</li></ol></section>
+    <section class="demo"><h3>動きのイメージ</h3><div class="log"><div class="dtop"><span class="av"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span>メール仕分け係<em>自動で動いた記録</em></div><ol><li><time>09:02</time><span class="li-ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg></span><span>メールを受信：「請求書の再発行について」</span></li><li><time>09:02</time><span class="li-ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><span>分類＝請求関連／急ぎ度＝中</span></li><li><time>09:03</time><span class="li-ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg></span><span>問い合わせリストに記録しました</span></li><li><time>09:03</time><span class="li-ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><span>返信の下書きを作成しました（担当者の確認待ち）</span></li></ol></div></section>
+  </div>
+  <div class="foot2">
+    <section class="prep"><h3>準備するもの</h3><ul><li>問い合わせ用のメールボックス</li><li>記録用のリストと、返信の参考にする FAQ</li></ul><p class="with"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-people"/></svg><span><b>一緒に進めたい人</b>メールボックスの管理者</span></p></section>
+    <section class="caution"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>ここに注意</h3><ul><li>イベント トリガーは、作った人の資格情報で動きます。使う人が見てはいけない情報が出ないか確かめます</li><li>トリガーで動くたびに利用量を使います。対象のメールを条件でしぼります</li><li>管理者のデータ ポリシーで、トリガーが使えない環境もあります</li></ul></section>
+  </div>
+  <a class="next" href="#case-14"><span class="lbl">次の一歩</span><span class="why">部署ごとのエージェントを束ねるなら</span><span class="to lv3"><span class="mk lv3" aria-hidden="true"></span>14 社内の総合窓口<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.18<i> / 26</i></span></footer>
+</article>
+<article class="sheet case lv3" id="case-12" aria-labelledby="h-case-12">
+  <div class="tab">上級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">12</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>上級</span><span class="dept">経理</span></p>
+      <p class="agent-name">請求書照合エージェント</p>
+    </div>
+    <p class="harness"><span>土台</span>GitHub Copilot</p>
+  </header>
+  <h2 class="case-title" id="h-case-12">請求書を発注書と照らし合わせ、合わないものだけ人に回す</h2>
+  <p class="lead">請求書の内容を読み取り、発注のデータと照合します。金額や数量が合わないものだけを、承認する人に回します。Microsoft の公式ドキュメントでも、GitHub Copilot ハーネスに向く例として挙げられている業務です。</p>
+  <ul class="parts" aria-label="使う部品"><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+  <div class="ba">
+    <div class="before"><h4>いま</h4><ul><li>請求書と発注書を、1件ずつ見比べる作業に追われます</li><li>月末に件数が集中し、確認が手薄になりがちです</li><li>金額ちがいなどの例外に気づくのが遅れます</li></ul></div>
+    <div class="ba-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+    <div class="after"><h4>これから</h4><ul><li>照合はエージェントが進め、人は「合わないもの」の判断に集中できます</li><li>例外には理由が添えられて届くため、確認が早くなります</li><li>処理の記録が残り、あとから確かめられます</li></ul></div>
+  </div>
+  <section class="flow"><h3>しくみ</h3><ol class="flow-row"><li class="fbox k-doc"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span><b>請求書を読み取る</b><small>PDF など</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-tool"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg></span><b>発注データと照合</b><small>コネクタなど</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-agent"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><b>一致・不一致を判定</b><small>ルールにそって</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-check"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></span><b>不一致だけ人へ</b><small>承認を依頼</small></li></ol></section>
+  <div class="two">
+    <section class="steps"><h3>つくり方</h3><ol><li>土台に「GitHub Copilot ハーネス」を選び、照合の目的とルール（許容する差など）を指示に書きます</li><li>請求書の保存場所と、発注データを参照するツール（コネクタなど）を追加します</li><li>合わないときに、承認する人へ確認を依頼する流れを用意します</li><li>テスト用の請求書で照合の正しさを確かめてから、対象を広げます</li></ol></section>
+    <section class="demo"><h3>動きのイメージ</h3><div class="log"><div class="dtop"><span class="av"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span>請求書照合エージェント<em>自動で動いた記録</em></div><ol><li><time>10:00</time><span class="li-ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span><span>請求書 ○○件の確認を開始</span></li><li><time>10:04</time><span class="li-ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><span>○○件が発注データと一致 → 照合済みに更新</span></li><li><time>10:05</time><span class="li-ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><span>1件が数量不一致（請求 12／発注 10）</span></li><li><time>10:05</time><span class="li-ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></span><span>承認する人に確認を依頼しました</span></li></ol></div></section>
+  </div>
+  <div class="foot2">
+    <section class="prep"><h3>準備するもの</h3><ul><li>請求書の保存場所</li><li>発注データを参照する手段と、照合のルール</li></ul><p class="with"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-people"/></svg><span><b>一緒に進めたい人</b>経理の責任者、システム担当</span></p></section>
+    <section class="caution"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>ここに注意</h3><ul><li>支払いに関わる業務です。最初は「照合して報告するだけ」から始め、人の確認を残します</li><li>GitHub Copilot ハーネスは、開発者向けサービスの GitHub Copilot とは別物です。データが GitHub Copilot のサービスに送られることはありません</li><li>このハーネスの利用量は Copilot クレジットで数えます。処理件数から見積もっておきます</li></ul></section>
+  </div>
+  <a class="next" href="#case-13"><span class="lbl">次の一歩</span><span class="why">画面しかないシステムへの入力も任せるなら</span><span class="to lv3"><span class="mk lv3" aria-hidden="true"></span>13 画面操作の転記係<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.19<i> / 26</i></span></footer>
+</article>
+<article class="sheet case lv3" id="case-13" aria-labelledby="h-case-13">
+  <div class="tab">上級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">13</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>上級</span><span class="dept">事務センター・業務部門</span></p>
+      <p class="agent-name">画面操作の転記係</p>
+    </div>
+    <p class="harness"><span>土台</span>スタンダード</p>
+  </header>
+  <h2 class="case-title" id="h-case-13">画面しかない古いシステムへの入力を、AI が代わりに</h2>
+  <p class="lead">API（システム同士をつなぐ窓口）がないシステムでも、ツールの「コンピューターの使用」なら、AI が画面を見ながらボタンを押し、文字を入力できます。手作業の転記を任せます。</p>
+  <ul class="parts" aria-label="使う部品"><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+  <div class="ba">
+    <div class="before"><h4>いま</h4><ul><li>データを別のシステムへ手で写す作業が、毎日あります</li><li>古いシステムで、ほかのサービスとつなぐ手段がありません</li><li>入力ミスの確認に時間がかかります</li></ul></div>
+    <div class="ba-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+    <div class="after"><h4>これから</h4><ul><li>決まった転記作業を、エージェントが裏側で進めます</li><li>画面が少し変わっても、AI が画面を見て判断し、作業を続けます</li><li>人は、結果の確認と例外の対応に集中できます</li></ul></div>
+  </div>
+  <section class="flow"><h3>しくみ</h3><ol class="flow-row"><li class="fbox k-doc"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span><b>転記するデータ</b><small>一覧やファイル</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-agent"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><b>画面を開く</b><small>専用の Windows マシン</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-tool"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg></span><b>入力して登録</b><small>コンピューターの使用</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-out"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-out"/></svg></span><b>結果を報告</b><small>登録した一覧</small></li></ol></section>
+  <div class="two">
+    <section class="steps"><h3>つくり方</h3><ol><li>転記作業だけに使う、専用の Windows マシンを用意します</li><li>ツールに「コンピューターの使用」を追加し、URL やアプリ名を含めて手順を具体的に書きます</li><li>操作してよいサイト・アプリを許可リストでしぼり、ログイン情報は安全な保管場所に登録します</li><li>テスト画面で1件ずつ動きを確かめてから、件数を増やします</li></ol></section>
+    <section class="demo"><h3>動きのイメージ</h3><div class="log"><div class="dtop"><span class="av"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span>画面操作の転記係<em>自動で動いた記録</em></div><ol><li><time>13:00</time><span class="li-ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><span>受注システムを開きました</span></li><li><time>13:01</time><span class="li-ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg></span><span>受注 ○件の項目を入力しています</span></li><li><time>13:03</time><span class="li-ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg></span><span>［登録］ボタンを選択しました</span></li><li><time>13:03</time><span class="li-ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-out"/></svg></span><span>完了しました。登録結果の一覧を送ります</span></li></ol></div></section>
+  </div>
+  <div class="foot2">
+    <section class="prep"><h3>準備するもの</h3><ul><li>専用の Windows マシン</li><li>対象システムのアカウント（必要な権限だけ）</li></ul><p class="with"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-people"/></svg><span><b>一緒に進めたい人</b>システムの管理者、情報セキュリティ担当</span></p></section>
+    <section class="caution"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>ここに注意</h3><ul><li>「作った人の資格情報」のまま共有すると、使う人がその権限で操作できてしまいます</li><li>不審な指示を見つけたときに確認する人（人による監督）を設定できます</li><li>利用量は、操作の1ステップごとに数えます。手順は短く、具体的に書きます</li></ul></section>
+  </div>
+  <a class="next" href="#case-14"><span class="lbl">次の一歩</span><span class="why">部署をまたいで仕事を振り分けるなら</span><span class="to lv3"><span class="mk lv3" aria-hidden="true"></span>14 社内の総合窓口<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.20<i> / 26</i></span></footer>
+</article>
+<article class="sheet case lv3" id="case-14" aria-labelledby="h-case-14">
+  <div class="tab">上級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">14</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>上級</span><span class="dept">全社・推進チーム</span></p>
+      <p class="agent-name">社内の総合窓口</p>
+    </div>
+    <p class="harness"><span>土台</span>スタンダード</p>
+  </header>
+  <h2 class="case-title" id="h-case-14">人事・IT・総務のエージェントを、1つの窓口に束ねる</h2>
+  <p class="lead">部署ごとに育てたエージェントを、窓口役のエージェントにつなぎます。社員は1つの窓口に聞くだけで、質問に合った部署のエージェントが答えます。</p>
+  <ul class="parts" aria-label="使う部品"><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+  <div class="ba">
+    <div class="before"><h4>いま</h4><ul><li>エージェントが部署ごとに増え、どれに聞けばよいか分かりません</li><li>1つのエージェントに何でも入れると、答えの精度が落ちます</li><li>部署をまたぐ質問で、たらい回しが起きます</li></ul></div>
+    <div class="ba-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+    <div class="after"><h4>これから</h4><ul><li>社員は「まずここに聞けばよい」窓口を持てます</li><li>各部署は、自分のエージェントを自分で育て続けられます</li><li>窓口が内容を見て、合う部署のエージェントに振り分けます</li></ul></div>
+  </div>
+  <section class="flow"><h3>しくみ</h3><ol class="flow-row"><li class="fbox k-user"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span><b>社員が質問</b><small>総合窓口に聞く</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-agent"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><b>内容を判断</b><small>窓口役のエージェント</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-link"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg></span><b>部署へ振り分け</b><small>人事／IT／総務</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-out"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-out"/></svg></span><b>答えを返す</b><small>窓口からまとめて</small></li></ol></section>
+  <div class="two">
+    <section class="steps"><h3>つくり方</h3><ol><li>部署ごとのエージェント（01・03 など）を、それぞれの部署で育てておきます</li><li>窓口役のエージェントを作り、「エージェント」ページから各エージェントを接続します</li><li>各エージェントの説明に、どんな質問を担当するかを具体的に書きます</li><li>部署をまたぐ質問も含めて試し、振り分けの正しさを確かめます</li></ol></section>
+    <section class="demo"><h3>会話のイメージ</h3><div class="phone"><div class="dtop"><span class="av"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span>社内の総合窓口<em>例</em></div><div class="msgs"><p class="msg u">来月引っ越します。会社の手続きは何がありますか？</p><p class="msg a">住所変更の届け出が必要です。人事の届出ページから申請してください。<span class="ref">人事のエージェントより</span></p><p class="msg a">通勤経路の変更申請もお忘れなく。<span class="ref">総務のエージェントより</span></p></div></div></section>
+  </div>
+  <div class="foot2">
+    <section class="prep"><h3>準備するもの</h3><ul><li>部署ごとに育てたエージェント</li></ul><p class="with"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-people"/></svg><span><b>一緒に進めたい人</b>各部署のエージェント担当者</span></p></section>
+    <section class="caution"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>ここに注意</h3><ul><li>選択肢（ツール・トピック・エージェント）が30〜40をこえると、振り分けの精度が落ちやすいとされています</li><li>つなぐほど応答に時間がかかり、テストや管理の範囲も広がります</li><li>小さな用途なら、1つのエージェントの中に「子エージェント」を作る方法もあります</li></ul></section>
+  </div>
+  <a class="next" href="#after"><span class="lbl">次の一歩</span><span class="why">作ったあとの育て方と守り方は</span><span class="to">p.24 作ったあとが、本番です<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.21<i> / 26</i></span></footer>
+</article>
+<article class="sheet case lv3" id="case-15" aria-labelledby="h-case-15">
+  <div class="tab">上級</div>
+  <header class="case-head">
+    <div class="case-no"><span class="num">15</span></div>
+    <div class="case-meta">
+      <p class="eyebrow"><span>上級</span><span class="dept">営業・受注</span></p>
+      <p class="agent-name">在庫・納期アシスタント</p>
+    </div>
+    <p class="harness"><span>土台</span>スタンダード</p>
+  </header>
+  <h2 class="case-title" id="h-case-15">在庫と納期を会話で確かめ、回答メールの案まで</h2>
+  <p class="lead">在庫や出荷予定を持つ社内システムと MCP（AI と外部のサービスをつなぐ共通の決まりごと）でつなぎ、営業担当が会話で最新の数字を確かめられるようにします。04 の発展形です。</p>
+  <ul class="parts" aria-label="使う部品"><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg>指示</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg>ナレッジ</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg>トピック</li><li class="part on"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg>ツール</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg>トリガー</li><li class="part"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>エージェント連携</li></ul>
+  <div class="ba">
+    <div class="before"><h4>いま</h4><ul><li>在庫や納期の確認のたびに、別のシステムを開いて調べています</li><li>担当部署への問い合わせで、回答までに時間がかかります</li><li>お客様への回答文を、毎回一から書いています</li></ul></div>
+    <div class="ba-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+    <div class="after"><h4>これから</h4><ul><li>会話の中で、最新の在庫と納期を確かめられます</li><li>担当部署への確認が、特別な案件だけになります</li><li>回答メールの案ができ、確かめて送るだけになります</li></ul></div>
+  </div>
+  <section class="flow"><h3>しくみ</h3><ol class="flow-row"><li class="fbox k-user"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span><b>品番と数量で質問</b><small>チャットで聞く</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-tool"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg></span><b>在庫・出荷予定を取得</b><small>MCP</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-agent"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span><b>回答をまとめる</b><small>数字はそのまま</small></li><li class="farrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="fbox k-out"><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-out"/></svg></span><b>回答メールの案</b><small>確かめて送る</small></li></ol></section>
+  <div class="two">
+    <section class="steps"><h3>つくり方</h3><ol><li>システム担当と、照会してよいデータの範囲（品番・在庫数・出荷予定日など）を決めます</li><li>システム側に MCP サーバーを用意し、ツールの「モデル コンテキスト プロトコル」で接続します</li><li>認証を「使う人の資格情報」にして、見てよい人だけが照会できるようにします</li><li>よくある照会で試し、数字の読み方をまちがえないよう指示を整えます</li></ol></section>
+    <section class="demo"><h3>会話のイメージ</h3><div class="phone"><div class="dtop"><span class="av"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-agent"/></svg></span>在庫・納期アシスタント<em>例</em></div><div class="msgs"><p class="msg u">品番X-100を50個、来月10日までに出せる？</p><p class="msg a">現在の在庫は○○個、次の入荷予定は○日です。50個の出荷は○日の見込みです。回答メールの案を作りますか？<span class="ref">取得元：在庫システム</span></p></div></div></section>
+  </div>
+  <div class="foot2">
+    <section class="prep"><h3>準備するもの</h3><ul><li>在庫・出荷データを持つシステム</li><li>MCP サーバー（システム側での準備が必要）</li></ul><p class="with"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-people"/></svg><span><b>一緒に進めたい人</b>システム担当、情報セキュリティ担当</span></p></section>
+    <section class="caution"><h3><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warn"/></svg>ここに注意</h3><ul><li>数字はシステムから取得した値をそのまま示すよう指示し、AI に推測させないようにします</li><li>MCP サーバーの用意には開発の知識が必要です。REST API やカスタム コネクタでつなぐ方法もあります</li><li>管理者のデータ ポリシーで、使えるツールが制限されていることがあります</li></ul></section>
+  </div>
+  <a class="next" href="#case-14"><span class="lbl">次の一歩</span><span class="why">ほかのエージェントと組み合わせるなら</span><span class="to lv3"><span class="mk lv3" aria-hidden="true"></span>14 社内の総合窓口<svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.22<i> / 26</i></span></footer>
+</article>
+<section class="sheet page matrix-page" id="matrix" aria-labelledby="h-matrix">
+  <div class="ptitle"><span class="en">AT A GLANCE</span><h2 id="h-matrix">早見表</h2></div>
+  <p class="page-lead">15の事例で使う部品と土台（ハーネス）の一覧です。気になる部品の列をたどると、その使い方がのっている事例が見つかります。</p>
+  <div class="tbl-wrap"><table class="mtx">
+    <thead><tr><th scope="col">No.</th><th scope="col" class="nm">事例</th><th scope="col"><span class="hi"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg></span>指示</th><th scope="col"><span class="hi"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg></span>ナレッジ</th><th scope="col"><span class="hi"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg></span>トピック</th><th scope="col"><span class="hi"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg></span>ツール</th><th scope="col"><span class="hi"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg></span>トリガー</th><th scope="col"><span class="hi"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg></span>エージェント連携</th><th scope="col">土台</th></tr></thead>
+    <tbody><tr class="lvrow lv1"><th colspan="9" scope="rowgroup"><span class="mk lv1" aria-hidden="true"></span>初級<span>資料をわたして、答えてもらう</span></th></tr><tr class="lv1"><td class="no"><a href="#case-01">01</a></td><td class="nm"><a href="#case-01">社内規程アシスタント</a><small>総務・人事</small></td><td><span class=dot></span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td class="hz">スタンダード</td></tr><tr class="lv1"><td class="no"><a href="#case-02">02</a></td><td class="nm"><a href="#case-02">入社・異動ガイド</a><small>人事・受け入れ部署</small></td><td><span class=dot></span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td class="hz">Copilot chat</td></tr><tr class="lv1"><td class="no"><a href="#case-03">03</a></td><td class="nm"><a href="#case-03">ITヘルプデスク</a><small>情報システム</small></td><td><span class=dot></span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td class="hz">スタンダード</td></tr><tr class="lv1"><td class="no"><a href="#case-04">04</a></td><td class="nm"><a href="#case-04">製品資料ナビ</a><small>営業・企画</small></td><td><span class=dot></span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td class="hz">Copilot chat</td></tr><tr class="lv1"><td class="no"><a href="#case-05">05</a></td><td class="nm"><a href="#case-05">現場マニュアルナビ</a><small>製造・店舗などの現場</small></td><td><span class=dot></span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td class="hz">スタンダード</td></tr><tr class="lvrow lv2"><th colspan="9" scope="rowgroup"><span class="mk lv2" aria-hidden="true"></span>中級<span>会話の流れを決めて、手続きまで任せる</span></th></tr><tr class="lv2"><td class="no"><a href="#case-06">06</a></td><td class="nm"><a href="#case-06">備品申請の受付係</a><small>総務</small></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dot></span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td class="hz">スタンダード</td></tr><tr class="lv2"><td class="no"><a href="#case-07">07</a></td><td class="nm"><a href="#case-07">ヘルプデスクの受付票づくり</a><small>情報システム</small></td><td><span class=dot></span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td class="hz">スタンダード</td></tr><tr class="lv2"><td class="no"><a href="#case-08">08</a></td><td class="nm"><a href="#case-08">会議メモ整理係</a><small>全部署</small></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td class="hz">スタンダード</td></tr><tr class="lv2"><td class="no"><a href="#case-09">09</a></td><td class="nm"><a href="#case-09">出張申請チェッカー</a><small>総務・経理</small></td><td><span class=dot></span></td><td><span class=dot></span></td><td><span class=dot></span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td class="hz">スタンダード</td></tr><tr class="lv2"><td class="no"><a href="#case-10">10</a></td><td class="nm"><a href="#case-10">お客様向けWebチャット</a><small>カスタマーサポート</small></td><td><span class=dot></span></td><td><span class=dot></span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td class="hz">スタンダード</td></tr><tr class="lvrow lv3"><th colspan="9" scope="rowgroup"><span class="mk lv3" aria-hidden="true"></span>上級<span>話しかけなくても動き、システムをまたいで働く</span></th></tr><tr class="lv3"><td class="no"><a href="#case-11">11</a></td><td class="nm"><a href="#case-11">メール仕分け係</a><small>カスタマーサポート・営業事務</small></td><td><span class=dot></span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dot></span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td class="hz">スタンダード</td></tr><tr class="lv3"><td class="no"><a href="#case-12">12</a></td><td class="nm"><a href="#case-12">請求書照合エージェント</a><small>経理</small></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td class="hz">GitHub Copilot</td></tr><tr class="lv3"><td class="no"><a href="#case-13">13</a></td><td class="nm"><a href="#case-13">画面操作の転記係</a><small>事務センター・業務部門</small></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td class="hz">スタンダード</td></tr><tr class="lv3"><td class="no"><a href="#case-14">14</a></td><td class="nm"><a href="#case-14">社内の総合窓口</a><small>全社・推進チーム</small></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td><span class=dot></span></td><td class="hz">スタンダード</td></tr><tr class="lv3"><td class="no"><a href="#case-15">15</a></td><td class="nm"><a href="#case-15">在庫・納期アシスタント</a><small>営業・受注</small></td><td><span class=dot></span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dot></span></td><td><span class=dash>–</span></td><td><span class=dash>–</span></td><td class="hz">スタンダード</td></tr></tbody>
+  </table></div>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.23<i> / 26</i></span></footer>
+</section>
+<section class="sheet page after-page" id="after" aria-labelledby="h-after">
+  <div class="ptitle"><span class="en">AFTER LAUNCH</span><h2 id="h-after">作ったあとが、本番です</h2></div>
+  <p class="page-lead">エージェントは、使われながら育ちます。完璧な1回より、早い10回の改善を目指します。</p>
+  <div class="loop-box"><ol class="loop"><li class="lp"><span>1</span>作る</li><li class="lp-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="lp"><span>2</span>試す</li><li class="lp-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="lp"><span>3</span>気づく</li><li class="lp-arrow" aria-hidden="true"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></li><li class="lp"><span>4</span>直す</li></ol><p class="loop-back"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-loop"/></svg>このサイクルを、何度でもくり返します</p></div>
+  <h3 class="sub-h">育て方と守り方の5つのポイント</h3>
+  <ul class="points"><li><span class="pi"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-rocket"/></svg></span><div><h3>小さく公開する</h3><p>まず自分だけ、次にチーム、そのあと部署へと広げます。Teams では反映に時間がかかることがあり、チャットで「start over」と送ると、最新の内容で会話をやり直せます。</p></div></li><li><span class="pi"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></span><div><h3>テストを「型」にする</h3><p>エージェント評価を使うと、質問と期待する答えのセット（テストセット）をまとめて採点できます。直すたびに同じセットで比べると、良くなったかが分かります。</p></div></li><li><span class="pi"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg></span><div><h3>載せる資料を見直す</h3><p>使う人は、資料の中身を聞き出せる前提で選びます。SharePoint のナレッジは、使う人が閲覧できる範囲の資料だけで答えます。</p></div></li><li><span class="pi"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gauge"/></svg></span><div><h3>利用量を見ておく</h3><p>会話やツール、トリガー、エージェント フローの実行には、利用量（Copilot クレジットなど）がかかる場合があります。扱いは契約で変わるため、管理者と見積もりのルールを決めます。</p></div></li><li><span class="pi"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg></span><div><h3>管理者のルールを知る</h3><p>データ ポリシーで、使えるツール・公開先・トリガーが制限されていることがあります。選べない項目があれば、管理者に相談します。</p></div></li></ul>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.24<i> / 26</i></span></footer>
+</section>
+<section class="sheet page ws-page" id="sheet" aria-labelledby="h-sheet">
+  <div class="ptitle"><span class="en">WORKSHEET</span><h2 id="h-sheet">わたしの1本シート</h2></div>
+  <p class="page-lead">自分の業務で最初に作る1本を考えてみましょう。うまく書けなくても大丈夫です。「もっと小さく始めるなら？」と考えるのがコツです。</p>
+  <div class="ws">
+    <div class="ws-q"><h3><span class="qn">Q1</span>一文で言うと？</h3>
+      <p class="ws-sentence"><span class="blank"></span>な人が、<span class="blank"></span>を聞く（頼む）と、<span class="blank"></span>をもとに答える（動く）</p></div>
+    <div class="ws-q"><h3><span class="qn">Q2</span>いまの困りごとは、どのくらい？</h3>
+      <p class="ws-inline">週に <span class="blank s"></span> 回 × 1回あたり <span class="blank s"></span> 分 ／ 困っている人 <span class="blank s"></span> 人</p></div>
+    <div class="ws-q"><h3><span class="qn">Q3</span>答えや手順は、資料に書いてありますか？　どこにありますか？</h3>
+      <div class="lines"><span></span><span></span></div></div>
+    <div class="ws-q"><h3><span class="qn">Q4</span>使いそうな部品に、チェックを入れましょう</h3>
+      <ul class="ws-parts"><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-inst"/></svg><span class="cb"></span>指示</li><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-know"/></svg><span class="cb"></span>ナレッジ</li><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-topic"/></svg><span class="cb"></span>トピック</li><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tool"/></svg><span class="cb"></span>ツール</li><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trig"/></svg><span class="cb"></span>トリガー</li><li><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg><span class="cb"></span>エージェント連携</li></ul></div>
+    <div class="ws-row">
+      <div class="ws-q"><h3><span class="qn">Q5</span>いちばん近い事例</h3><p class="ws-inline">No. <span class="blank s"></span></p></div>
+      <div class="ws-q"><h3><span class="qn">Q6</span>まちがえたら、どれくらい困る？</h3><p class="ws-inline">小 ・ 中 ・ 大 <small>（大なら人の確認を残す）</small></p></div>
+    </div>
+    <div class="ws-q"><h3><span class="qn">Q7</span>今週やる、最初の一歩</h3><div class="lines"><span></span><span></span><span></span></div></div>
+  </div>
+  <p class="ws-hint"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-people"/></svg><span>書けたら、近くの人と見せ合ってみましょう。「それならナレッジだけで作れそう」「その資料はどこにある？」といった一言が、最初の1本を前に進めます。</span></p>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.25<i> / 26</i></span></footer>
+</section>
+<section class="sheet page gl-page" id="glossary" aria-labelledby="h-gl">
+  <div class="ptitle"><span class="en">GLOSSARY &amp; SOURCES</span><h2 id="h-gl">用語集・参考情報</h2></div>
+  <dl class="gl"><div><dt>エージェント</dt><dd>役割・資料・道具を持たせた AI のアシスタントです。</dd></div><div><dt>ハーネス（土台）</dt><dd>エージェントの動き方を決めるエンジンです。スタンダード、Copilot chat、GitHub Copilot の3種類があります。</dd></div><div><dt>生成オーケストレーション</dt><dd>質問に合わせて、使うナレッジ・トピック・ツールを AI が選ぶ仕組みです。</dd></div><div><dt>コネクタ</dt><dd>Outlook、Teams、SharePoint などのサービスとつなぐための部品です。</dd></div><div><dt>エージェント フロー</dt><dd>決まった手順を、順番どおりに自動で進める流れです。Power Automate の仲間です。</dd></div><div><dt>プロンプト（ツール）</dt><dd>決まった頼み方で AI に文章を作らせたり、情報を取り出させたりする部品です。</dd></div><div><dt>イベント トリガー</dt><dd>メールの受信など、外のできごとをきっかけにエージェントを動かす仕組みです。</dd></div><div><dt>MCP</dt><dd>Model Context Protocol の略です。AI と外部のサービスをつなぐ共通の決まりごとです。</dd></div><div><dt>コンピューターの使用</dt><dd>AI が画面を見て、マウスとキーボードの操作でアプリを動かすツールです。</dd></div><div><dt>作成者の資格情報</dt><dd>エージェントを作った人のアカウントの権限で動くことです。共有するときは注意が必要です。</dd></div><div><dt>ハルシネーション</dt><dd>AI がもっともらしい間違いを答えることです。根拠の資料を示させると見つけやすくなります。</dd></div><div><dt>Copilot クレジット</dt><dd>Copilot Studio の利用量を数える単位です。扱いは契約によって変わります。</dd></div></dl>
+  <h3 class="sub-h">参考にした公開情報（Microsoft Learn）</h3>
+  <ol class="refs"><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/harnesses-overview" target="_blank" rel="noopener">Harnesses in Copilot Studio</a><span class="meta">土台（ハーネス）の3種類｜更新 2026-09-21</span><span class="url">learn.microsoft.com/microsoft-copilot-studio/harnesses-overview</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/guidance/choose-harness" target="_blank" rel="noopener">Compare Copilot Studio agent harnesses</a><span class="meta">土台の選び方と移行の考え方｜更新 2026-09-30</span><span class="url">learn.microsoft.com/microsoft-copilot-studio/guidance/choose-harness</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/add-tools-custom-agent" target="_blank" rel="noopener">Add tools to custom agents</a><span class="meta">ツールの種類・認証・確認の設定｜更新 2026-10-01</span><span class="url">learn.microsoft.com/microsoft-copilot-studio/add-tools-custom-agent</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/knowledge-add-sharepoint" target="_blank" rel="noopener">Add SharePoint as a knowledge source</a><span class="meta">SharePoint のナレッジと権限｜更新 2026-08-04</span><span class="url">learn.microsoft.com/microsoft-copilot-studio/knowledge-add-sharepoint</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/authoring-triggers-about" target="_blank" rel="noopener">Event triggers overview</a><span class="meta">イベント トリガーと注意点｜更新 2026-09-09</span><span class="url">learn.microsoft.com/microsoft-copilot-studio/authoring-triggers-about</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/flows-overview" target="_blank" rel="noopener">Agent flows overview</a><span class="meta">エージェント フローと承認｜更新 2026-06-18</span><span class="url">learn.microsoft.com/microsoft-copilot-studio/flows-overview</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/computer-use" target="_blank" rel="noopener">Automate web and desktop apps with computer use</a><span class="meta">コンピューターの使用｜更新 2026-07-03</span><span class="url">learn.microsoft.com/microsoft-copilot-studio/computer-use</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/authoring-add-other-agents" target="_blank" rel="noopener">Add other agents overview</a><span class="meta">エージェント連携｜更新 2026-05-15</span><span class="url">learn.microsoft.com/microsoft-copilot-studio/authoring-add-other-agents</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/publication-fundamentals-publish-channels" target="_blank" rel="noopener">Key concepts - Publish and deploy your agent</a><span class="meta">公開先と認証｜更新 2026-09-16</span><span class="url">learn.microsoft.com/microsoft-copilot-studio/publication-fundamentals-publish-channels</span></li><li><a href="https://learn.microsoft.com/microsoft-copilot-studio/analytics-agent-evaluation-intro" target="_blank" rel="noopener">About agent evaluation</a><span class="meta">エージェント評価｜更新 2026-10-01</span><span class="url">learn.microsoft.com/microsoft-copilot-studio/analytics-agent-evaluation-intro</span></li></ol>
+  <p class="colophon">機能の名前や画面は頻繁に更新されます。作り始める前に、最新の公式ドキュメントを確かめてください。Microsoft、Copilot Studio、Microsoft 365、Teams、SharePoint、Outlook、Planner、GitHub Copilot などの製品名は、各社の商標です。</p>
+  <footer class="sheet-foot"><span>Copilot Studio 活用事例集 ／ 2026年10月版</span><span class="pg">p.26<i> / 26</i></span></footer>
+</section>
+</main>
+
+<dialog class="pdf-dlg" id="pdf-dlg" aria-labelledby="pdf-dlg-h">
+  <h2 id="pdf-dlg-h"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg>PDFで保存する</h2>
+  <p class="pd-lead">このあと開く印刷画面で、次のように選ぶと、配布用と同じ <b>A4・26ページ</b> の PDF になります。</p>
+  <ol class="pd-steps">
+    <li><b>送信先（プリンター）</b>で「PDF に保存」を選びます<small>Microsoft Edge では「PDF として保存」です</small></li>
+    <li><b>用紙サイズ</b>は A4、<b>倍率</b>は 100%（既定のまま）にします</li>
+    <li>色がうすいときは、詳細設定の<b>「背景のグラフィック」</b>にチェックを入れます</li>
+  </ol>
+  <p class="pd-note">Google Chrome または Microsoft Edge での利用がおすすめです。紙に印刷するときは、送信先でプリンターを選びます（両面印刷なら13枚です）。</p>
+  <div class="pd-actions">
+    <button type="button" class="pd-go" id="pdf-go">印刷画面を開く</button>
+    <button type="button" class="pd-cancel" id="pdf-cancel">閉じる</button>
+  </div>
+</dialog>
+<script>
+/* 「PDF出力」ボタン：案内を出してから、ブラウザの印刷画面（PDF に保存）を開く */
+(() => {
+  const btn = document.getElementById("pdf-btn"), dlg = document.getElementById("pdf-dlg");
+  if (!btn || !dlg) return;
+  const openPrint = async () => {
+    try { await document.fonts.ready; } catch (_) {}
+    setTimeout(() => window.print(), 60);
+  };
+  btn.addEventListener("click", () => {
+    if (typeof dlg.showModal === "function") dlg.showModal(); else openPrint();
+  });
+  document.getElementById("pdf-go").addEventListener("click", () => { dlg.close(); openPrint(); });
+  document.getElementById("pdf-cancel").addEventListener("click", () => dlg.close());
+  dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+})();
+</script>
+</body>
+</html>
