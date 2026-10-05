@@ -113,7 +113,7 @@ kbd{font:700 11px/1 var(--font-body); padding:3px 5px; border:1px solid var(--ru
 .opt:active{transform:translateY(1px)}
 .opt .key{flex:none; width:24px; height:24px; margin-top:1px; display:grid; place-items:center; border:1px solid var(--kon); color:var(--kon); font:700 13px/1 var(--font-body); border-radius:2px; background:var(--paper)}
 .opt .t{min-width:0}
-.opt svg.diagram{display:block; width:150px; max-width:40%; flex:none; margin-left:auto; border:1px solid var(--rule); border-radius:2px; background:var(--paper)}
+.opt svg.diagram{display:block; width:124px; max-width:38%; flex:none; margin-left:auto; border:1px solid var(--rule); border-radius:2px; background:var(--paper)}
 .timer{height:6px; background:var(--paper-2); border-radius:1px; overflow:hidden; margin:-4px 0 12px}
 .timer i{display:block; height:100%; width:100%; background:var(--kon); transform-origin:left center}
 .timer.warn i{background:var(--shu)}
@@ -302,6 +302,9 @@ textarea.copy-fallback{width:100%; min-height:120px; font:13px/1.6 var(--font-bo
   #hslider{right:14px}
   #hslider .track{height:min(28vh,200px)}
   .gauge{width:140px}
+}
+@media (pointer: coarse){
+  kbd, .next-hint kbd{display:none}
 }
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.01ms !important; transition-duration:.01ms !important}
@@ -1069,14 +1072,14 @@ const SHOT = {
   door:    { p:[-.4, 1.6, 2.5],     l:[-3.9, 1.15, -.1], f:44 },
   seats:   { p:[.2, 2.55, 3.3],     l:[0, .7, .3],       f:44 },
   standUp: { p:[2.7, 1.5, 2.6],     l:[.2, 1.05, .5],    f:42 },
-  pos:     { p:[1.6, 3.1, 3.7],     l:[-1.1, .5, .2],    f:46 },
+  pos:     { p:[.4, 3.5, 4.3],      l:[-1.3, .35, .1],   f:50 },
   side:    { p:[-2.17, 1.4, 2.95],  l:[-2.17, 1.24, 0],  f:40 },
-  side4:   { p:[-2.17, 1.55, 3.7],  l:[-2.17, 1.22, 0],  f:42 },
+  side4:   { p:[-2.17, 1.75, 4.0],  l:[-2.17, 1.45, 0],  f:42 },
   over:    { p:[-1.05, 1.72, .55],  l:[-2.6, 1.42, -.08], f:40 },
-  over4:   { p:[-.95, 1.9, 1.15],   l:[-2.6, 1.3, -.1],  f:44 },
+  over4:   { p:[-.55, 2.25, 2.3],   l:[-2.2, 1.15, -.05], f:46 },
   faceThem:{ p:[-1.92, 1.6, .4],    l:[-2.6, 1.56, 0],   f:34 },
-  table:   { p:[.66, 1.82, 1.85],   l:[.4, .74, .25],    f:42 },
-  table2:  { p:[-.5, 1.85, 1.9],    l:[-.5, .74, .1],    f:44 },
+  table:   { p:[.4, 2.45, 1.3],     l:[.4, .74, .18],    f:44 },
+  table2:  { p:[-.66, 2.45, 1.3],   l:[-.66, .74, .18],  f:44 },
   meeting: { p:[2.8, 1.65, .15],    l:[.2, .95, 0],      f:44 }
 };
 function shot(s, dur=1.1){
@@ -1487,7 +1490,7 @@ async function stage1(){
 
   // お辞儀
   await say('あなた', '本日はお時間をいただき、ありがとうございます。');
-  shot(sideShotOf(me, -3.3, 1.3, 1.0), .9);
+  shot(sideShotOf(me, -3.4, 1.35, 1.1), .9);
   const ang = await bowGame(me, 30);
   me.t.bow = 0;
   const bg = Math.abs(ang - 30) <= 6 ? 2 : Math.abs(ang - 30) <= 13 ? 1 : 0;
@@ -1751,7 +1754,7 @@ async function stage2(){
   await tween(.3, k => { tk.hold.position.z = lerp(.4, .3, k); });
 
   // 次の相手
-  shot('over4', 1.0);
+  shot('side4', .8);
   await ask({ tag:'次の相手', q:'上司同士の交換が終わった。あなたが次に名刺交換する相手は？', point:'役職の高い順に交換する。①上司同士 → ②上司と相手の部下／自分と相手の上司 → ③部下同士。', opts:[
     { t:'小鳥遊部長', short:'小鳥遊部長', g:2, pin:() => tk.headPos().add(_t.set(0, .14, 0)),
       why:'相手側で役職がいちばん高い小鳥遊部長と交換します。その間、上司は服部さんと交換します。' },
@@ -1787,7 +1790,7 @@ async function stage2(){
   const cMe2 = await drawCard(me, 'me', me.mountR);
   const cHt = await drawCard(ht, 'hattori', ht.mountR);
   await Promise.all([ tween(.4, k => { me.holdR.position.z = lerp(.33, .41, k); }), tween(.4, k => { ht.holdR.position.z = lerp(.33, .41, k); }) ]);
-  shot({ p:[-2.17, 1.25, 1.55], l:[-2.17, 1.12, .45], f:38 }, 1.0);
+  shot({ p:[-2.17, 1.4, 2.0], l:[-2.17, 1.15, .45], f:38 }, 1.0);
   await say('ナレーション', '服部さんとは、お互いに同時に名刺を差し出す形になりました。');
   await ask({ tag:'同時交換', q:'名刺を同時に差し出し合っている。どう受け渡す？', point:'同時交換は「右手で渡し、左手（名刺入れ）で受ける」。渡したらすぐ右手を添える。', opts:[
     { t:'右手で自分の名刺を渡し、左手の名刺入れで相手の名刺を受ける。渡したらすぐ右手を添える', g:2,
@@ -1850,6 +1853,8 @@ async function stage2(){
     { t:'相手が席を立ってから、最後にまとめて回収する', g:1,
       why:'置き忘れはしないものの、あわてて回収する姿は雑な印象になります。相手に合わせて、落ち着いてしまいましょう。' }
   ]});
+  await moveTo(cHt, me.case.top2, .5, { spin:0 });
+  await Promise.all([ moveTo(cHt, me.case.inner, .4), moveTo(cTk2, me.case.inner, .4) ]);
   cHt.obj.visible = cTk2.obj.visible = false;
   me.mode = 'both'; await moveTo(me.case, me.hold, .5); await putAwayCase(me);
   shot('room', 1.2);
@@ -1876,19 +1881,19 @@ async function stage3(){
 
   // 1 カバン
   const bag = bags[0];
-  bag.obj.visible = true; snapTo(bag, me.arms.R.grip);
-  shot('side', .6);
-  await say('ナレーション', 'ロビーで立ち話をしていたら、東海林課長が名刺入れを取り出した。あなたは右手にカバンを持っている。');
+  bag.obj.visible = true; snapTo(bag, me.arms.L.grip);
+  shot({ p:[-2.0, 1.3, 3.4], l:[-2.1, .95, 0], f:48 }, .6);
+  await say('ナレーション', 'ロビーで立ち話をしていたら、東海林課長が名刺入れを取り出した。あなたは左手にカバンを持っている。');
   await takeOutCase(sj);
   await ask({ tag:'カバン', time:T, q:'カバンを持ったまま、名刺交換が始まりそう！', point:'名刺交換は両手で。カバンは足元（床）に置いて手を空ける。', opts:[
     { t:'カバンを足元に置き、両手を空けてから交換する', g:2,
       why:'名刺交換は両手で行うのが基本。カバンは足元に置きます。イスやテーブルの上に置くのは避けましょう。' },
-    { t:'カバンを持ったまま、空いている左手で交換する', g:0,
+    { t:'カバンを持ったまま、空いている右手で交換する', g:0,
       why:'片手での名刺交換はNGです。荷物は一度置いて、両手を空けましょう。' },
     { t:'カバンを脇にはさんで、両手で交換する', g:1,
       why:'両手は使えますが、窮屈で見た目もよくありません。落とす心配もあるので、足元に置くのがスマートです。' }
   ]});
-  const floorBag = slot(EX.me[0] + .05, .34, EX.me[1] - .32, -Math.PI/2);
+  const floorBag = slot(EX.me[0] + .05, .34, EX.me[1] + .32, -Math.PI/2);
   await moveTo(bag, floorBag, .5);
 
   // 2 先に出された
@@ -1925,7 +1930,7 @@ async function stage3(){
 
   // 4 落とした
   reset(); bag.obj.visible = true; snapTo(bag, floorBag);
-  shot('side', .6);
+  shot({ p:[-1.25, 2.0, 1.95], l:[-2.07, .05, .1], f:44 }, .6);
   await takeOutCase(me);
   const c4 = newCard('shoji'); c4.obj.visible = true; snapTo(c4, me.case.top, { spin:0, flip:0 });
   const floorCard = slot(EX.me[0] - .32, .002, EX.me[1] + .12, -Math.PI/2 + .7);
@@ -1946,6 +1951,7 @@ async function stage3(){
 
   // 5 スマホ
   reset(); bag.obj.visible = true; snapTo(bag, floorBag);
+  shot('side', .6);
   await takeOutCase(me); await takeOutCase(sj);
   Sound.ring(); emote(me, 'プルルル……♪', 'bad', 2.6);
   await ask({ tag:'着信', time:T, q:'名刺交換の最中に、ポケットのスマホが鳴りだした！', point:'訪問前にマナーモード。鳴ってしまったら、お詫びしてすぐに止める。', opts:[
@@ -2102,9 +2108,10 @@ function resize(){
 }
 addEventListener('resize', resize);
 let last = performance.now();
+const DT_MAX = Math.max(.05, +window.__meishiDtMax || 0);   // 自動テストで低速描画のときに時間を進めるための値
 const pipLabel = $('pip-label');
 function frame(now){
-  const dt = Math.min(.05, (now - last)/1000); last = now;
+  const dt = Math.min(DT_MAX, (now - last)/1000); last = now;
   tickTweens(dt);
   if(CAM.orbit){
     CAM.ang += dt*.09;
@@ -2127,7 +2134,7 @@ function frame(now){
     const top = coarse || w < 760 ? 100 : 120;
     const x = w - pw - 16, y = h - top - ph;
     const eye = PIP.from(), tgt = PIP.to();
-    pipCam.position.copy(eye); pipCam.lookAt(tgt); pipCam.aspect = pw/ph; pipCam.fov = 30; pipCam.updateProjectionMatrix();
+    pipCam.position.copy(eye); pipCam.lookAt(tgt); pipCam.aspect = pw/ph; pipCam.fov = 16; pipCam.updateProjectionMatrix();
     renderer.setScissorTest(true); renderer.setScissor(x, y, pw, ph); renderer.setViewport(x, y, pw, ph);
     renderer.render(scene, pipCam);
     renderer.setScissorTest(false); renderer.setViewport(0, 0, w, h);
