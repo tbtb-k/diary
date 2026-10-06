@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Unifi）。2026年10月7日作成。公開情報（Microsoft 顧客事例）をもとにまとめています。">
+<title>100ページを超える労働協約の処理が、数日から数分になりました（Unifi の Copilot Studio 活用）</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月7日／航空地上支援（Unifi）・法務の契約管理</p>
+
+  <h1>100ページを超える労働協約の処理が、数日から数分になりました（Unifi の Copilot Studio 活用）</h1>
+
+  <div class="lead">
+    <p>北米最大の航空地上支援会社 Unifi の法務チームは、100ページを超える労働協約から必要な情報を手作業で抜き出していました。年に数百時間がかかっていました。</p>
+    <p>そこで Copilot Studio（Microsoft の、AI エージェントを作るツール）と Power Platform（業務アプリや自動化を作る Microsoft の道具一式）を組み合わせ、契約を読み取って検索できる仕組みを作りました。</p>
+    <p>契約の処理時間は数日から数分になり、開発は2か月足らずで終わりました。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>長い契約書や規程の中から「この条件はどこに書いてあったか」を探して、半日つぶれてしまったことはないでしょうか。</p>
+  <p>Unifi は240以上の拠点、4万5,000人以上の社員を抱えています。組合員との労働協約は100ページを超えることもあり、専門用語も多くあります。複数の担当者が情報を手で抜き出し、年に数百時間を使っていました。ほかの AI 製品も試しましたが、同じ質問に違う答えが返るなど精度が安定せず、試験段階から先へ進めませんでした。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>1つのエージェントにすべて任せるのではなく、段階に分けた仕組みにしました。契約を SharePoint（社内の共有ファイル置き場）に置くと、Power Automate（作業の自動化ツール）が動き出します。</p>
+  <p>AI Builder の文字認識で本文を読み取り、重要な条項や要約を取り出します。結果は Dataverse（Power Platform のデータ保管場所）に、本文用と見出し・属性用の2つの表に分けて保存します。法務チームは、Microsoft 365 Copilot 上のエージェントに質問します。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="契約のアップロードから検索までの流れ">
+      <li><div class="box">契約を<br>SharePoint に置く</div></li>
+      <li><div class="box">文字認識で<br>本文を読み取り</div></li>
+      <li><div class="box">条項・要約を<br>Dataverse に保存</div></li>
+      <li><div class="box">エージェントに<br>質問して検索</div></li>
+    </ol>
+    <figcaption>契約のアップロードから検索までの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>契約書をアップロードすると、自動処理が始まります。</li>
+    <li>AI Builder が本文を読み取り、期限や保険、休暇などの重要な条項を取り出して、要約と属性情報にします。</li>
+    <li>本文と属性情報を2つの表に分けて保存し、検索時のノイズ（書式や記号による邪魔）を減らします。</li>
+    <li>法務担当者が専門用語を Excel に書き込むと、自動で AI の知識に取り込まれます。</li>
+    <li>法務チームがエージェントに自然な文章で質問します。</li>
+  </ol>
+  <p class="src-note">※ 手順の並びは、記事の説明を読みやすく整理したものです。実際の設定内容の細部は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>複数の担当者が、100ページを超える契約から手作業で情報を抜き出していました。年に数百時間かかっていました。</p></div>
+    <div class="after"><h3>いま</h3><p>アップロードした契約が自動で整理され、自然な文章で検索できます。処理は数日から数分になりました。</p></div>
+  </div>
+  <p>次の数字は Unifi が公表したものです。処理時間は数日から数分に、開発期間は2か月足らずでした。200ページ・50MB までのファイルを扱え、読み取り精度は低画質のスキャンでも100%だったとのことです。性能は、費用が30倍の市販の法務ソフトと同等と述べられています。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>よく読み返す長い文書（契約書、規程、仕様書など）を1種類選びます。</li>
+    <li>「何を取り出したいか」を、期限・金額・条件など5項目ほど書き出します。</li>
+    <li>まず手作業で数件分の正解表を作り、あとで AI の答えと見比べます。</li>
+  </ol>
+  <p>準備物は、サンプルの文書数件と正解表です。Power Platform や AI Builder が使えるかは、ライセンスや社内の設定で変わりますので、情報システム部門に確認してください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>同じ質問で答えが変わる</strong>
+    <p>Unifi は、以前の AI 製品で、同じ質問を2回すると別の答えが返ってきたと述べています。そこで、読み取りと検索を段階に分け、データの持ち方を工夫して精度を上げました。</p>
+  </div>
+  <p>契約書は機密情報です。保存先の権限や、AI に読ませてよい範囲を、法務と情報システムで先に決めてください。AI の答えは、重要な判断の前に原文で確かめましょう。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例の要点は、AI に全部を任せず、読み取り・整理・検索を分けて、人が用語を教えられるようにしたことです。長い文書を扱う業務なら、広く応用できます。</p>
+  <p>自分の職場に置き換えると、取引先との基本契約、就業規則、製品の仕様書など、「探すのに時間がかかる長い文書」が当てはまります。</p>
+
+  <footer>
+    <p>出典：Microsoft 顧客事例「Unifi」の Copilot Studio 活用記事（2026年3月24日公開、タイトルは要約）<br>
+    <a href="https://www.microsoft.com/en/customers/story/26265-unifi-microsoft-copilot-studio">https://www.microsoft.com/en/customers/story/26265-unifi-microsoft-copilot-studio</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月7日作成）。数字は出典元の公表値です。</p>
+  </footer>
+</div>
+</body>
+</html>
