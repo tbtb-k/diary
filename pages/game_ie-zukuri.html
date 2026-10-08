@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-UJlSmOAMXvfNcogeOccWrokynuCseQA9MPAdd1AYnBY=' 'sha256-kkacAs04g8QR38nm0vUF9ONmCCk3PLzbkshvnr88uD0='; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; font-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
 <title>家づくりシミュレーター</title>
 <meta name="description" content="2階建ての家を間取りから家具までつくって、歩いて内見できる3Dシミュレーター。インターネットに接続せずに動きます。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23c45f2c'/%3E%3Cpath d='M7 15.5 16 8l9 7.5M9.5 14v10h13V14' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -5177,7 +5178,7 @@ const ROOM_TYPES = {
 const RT = r => ROOM_TYPES[r.type] || ROOM_TYPES.free;
 const isIndoor = r => !!r && !RT(r).outdoor;
 const roomFloorTop = r => levelY(r.floor) + (RT(r).drop || 0);
-const roomName = r => r.name || RT(r).name;
+const roomName = r => RT(r).name;
 
 /* ───────────── ドア・窓の種類 ───────────── */
 const OPENING_TYPES = {
@@ -5268,18 +5269,51 @@ function scheduleAutosave(){
   clearTimeout(_autoT);
   _autoT = setTimeout(() => store.set(LS_AUTO, JSON.stringify({ date: Date.now(), data: S })), 600);
 }
+/* 読み込んだデータ（ファイル・ブラウザの保存箱）は信用しない。
+   決まった項目を、決まった種類・決まった範囲の値だけ取り出して作り直す（細工されたファイル対策） */
+const LIMITS = { rooms: 300, openings: 800, items: 1500, removed: 4000 };
+const isNum = v => typeof v === 'number' && isFinite(v);
+const toInt = (v, a, b) => isNum(v) ? clamp(Math.round(v), a, b) : null;
+const toNum = (v, a, b) => isNum(v) ? clamp(v, a, b) : null;
+const pickKey = (v, dict, def) => (typeof v === 'string' && Object.prototype.hasOwnProperty.call(dict, v)) ? v : def;
 function sanitizeState(d){
-  const b = blankState();
-  if (!d || typeof d !== 'object') return b;
-  const s = Object.assign(b, d);
-  s.ext = Object.assign(blankState().ext, d.ext || {});
-  s.env = Object.assign(blankState().env, d.env || {});
-  s.rooms = Array.isArray(d.rooms) ? d.rooms.filter(r => r && ROOM_TYPES[r.type] && r.w > 0 && r.d > 0) : [];
-  s.openings = Array.isArray(d.openings) ? d.openings.filter(o => o && OPENING_TYPES[o.type]) : [];
-  s.items = Array.isArray(d.items) ? d.items.filter(i => i && typeof i.type === 'string') : [];
-  s.removed = d.removed && typeof d.removed === 'object' ? d.removed : {};
+  const s = blankState();
+  if (!d || typeof d !== 'object') return s;
+  const list = (a, n) => Array.isArray(a) ? a.slice(0, n).filter(x => x && typeof x === 'object') : [];
+  const used = new Set();
+  const id = (v, p) => { let k = typeof v === 'string' && /^[A-Za-z0-9_-]{1,40}$/.test(v) ? v : newId(p); while (used.has(k)) k = newId(p); used.add(k); return k; };
+  const span = (SITE_W / 2 + 2) * G;
+  for (const r of list(d.rooms, LIMITS.rooms)){
+    const type = pickKey(r.type, ROOM_TYPES, null); if (!type) continue;
+    const x = toInt(r.x, 0, SITE_W - 1), z = toInt(r.z, 0, SITE_D - 1); if (x === null || z === null) continue;
+    const w = toInt(r.w, 1, SITE_W - x), dd = toInt(r.d, 1, SITE_D - z); if (w === null || dd === null) continue;
+    const t = ROOM_TYPES[type];
+    s.rooms.push({ id: id(r.id, 'r'), floor: r.floor === 1 ? 1 : 0, x, z, w, d: dd, type, floorMat: pickKey(r.floorMat, FLOOR_MATS, t.floor), wallMat: pickKey(r.wallMat, WALL_MATS, t.wall) });
+  }
+  for (const o of list(d.openings, LIMITS.openings)){
+    const type = pickKey(o.type, OPENING_TYPES, null), dir = o.dir === 'h' || o.dir === 'v' ? o.dir : null;
+    if (!type || !dir) continue;
+    const t = OPENING_TYPES[type], line = toInt(o.line, 0, dir === 'h' ? SITE_D : SITE_W), c = toNum(o.c, -span, span);
+    if (line === null || c === null) continue;
+    s.openings.push({ id: id(o.id, 'o'), floor: o.floor === 1 ? 1 : 0, dir, line, c, type, w: toNum(o.w, t.minW, t.maxW) ?? t.w, h: t.h, sill: t.sill, flip: o.flip ? 1 : 0, swing: o.swing ? 1 : 0 });
+  }
+  for (const it of list(d.items, LIMITS.items)){
+    const type = pickKey(it.type, CATALOG, null); if (!type) continue;
+    const x = toNum(it.x, -span, span), z = toNum(it.z, -span, span); if (x === null || z === null) continue;
+    const nv = (CATALOG[type].vars || [{}]).length;
+    s.items.push({ id: id(it.id, 'i'), type, floor: it.floor === 1 ? 1 : 0, x, z, rot: isNum(it.rot) ? ((it.rot % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2) : 0, v: toInt(it.v, 0, nv - 1) ?? 0 });
+  }
+  if (d.removed && typeof d.removed === 'object'){
+    let n = 0;
+    for (const k of Object.keys(d.removed)){ if (n >= LIMITS.removed) break; if (/^[01]\|[hv]\|\d{1,2}\|\d{1,2}$/.test(k)){ s.removed[k] = 1; n++; } }
+  }
+  const e = d.ext && typeof d.ext === 'object' ? d.ext : {};
+  s.ext = { wall: pickKey(e.wall, EXT_MATS, s.ext.wall), roof: pickKey(e.roof, ROOF_STYLES, s.ext.roof), roofColor: pickKey(e.roofColor, ROOF_COLORS, s.ext.roofColor), sash: pickKey(e.sash, SASH_COLORS, s.ext.sash) };
+  s.env = { time: pickKey(d.env && d.env.time, { morning: 1, day: 1, evening: 1, night: 1 }, 'day') };
   return s;
 }
+/* 画面に文字を差し込むときに、記号を無害な形にする */
+const esc = v => String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 /* ───────────── ちいさな便利関数 ───────────── */
 let _toastT = 0;
@@ -7379,7 +7413,7 @@ function updateLabels(){
     d.style.top = ((1 - v.y) / 2 * rect.height) + 'px';
     const area = r.w * r.d * CELL_M2, txt = roomName(r), sub = RT(r).outdoor ? `${fmt(area)}㎡` : `${fmt(area / JO)}帖`;
     const key = txt + sub + (V.sel && V.sel.id === r.id);
-    if (d.dataset.k !== key){ d.dataset.k = key; d.innerHTML = `${txt}<small>${sub}</small>`; d.classList.toggle('sel', !!(V.sel && V.sel.id === r.id)); }
+    if (d.dataset.k !== key){ d.dataset.k = key; d.innerHTML = `${esc(txt)}<small>${esc(sub)}</small>`; d.classList.toggle('sel', !!(V.sel && V.sel.id === r.id)); }
   });
 }
 
@@ -7688,7 +7722,7 @@ function updateWallPreview(){
   const y = levelY(f), h = V.cut ? CUT_H : FLOOR_H, removed = u.s.kind === 'removed';
   if (u.dir === 'h') boxViz(preview, (a0 + a1) / 2, y + h / 2, L, a1 - a0, h, 0.2, 0, removed ? OKC : BAD, true);
   else boxViz(preview, L, y + h / 2, (a0 + a1) / 2, 0.2, h, a1 - a0, 0, removed ? OKC : BAD, true);
-  setHint(removed ? 'クリックで壁を<b>もどす</b>' : `クリックで「${roomName(u.s.A)}」と「${roomName(u.s.B)}」のあいだの壁を<b>なくす</b>`);
+  setHint(removed ? 'クリックで壁を<b>もどす</b>' : `クリックで「${esc(roomName(u.s.A))}」と「${esc(roomName(u.s.B))}」のあいだの壁を<b>なくす</b>`);
   markDirty();
 }
 function toggleWall(){
@@ -7721,7 +7755,7 @@ function updateRoomPreview(){
   if (roomDrag) roomDrag.rect = { x: x0, z: z0, w, d, why };
   const area = w * d * CELL_M2;
   setHint(why ? `<b style="color:var(--bad)">${why}</b>` : roomDrag
-    ? `${ROOM_TYPES[V.roomType].name}：${fmt(w * G, 2)}m × ${fmt(d * G, 2)}m ／ <b>${fmt(area / JO)}帖</b>（${fmt(area)}㎡）　はなすと完成`
+    ? `${esc(ROOM_TYPES[V.roomType].name)}：${fmt(w * G, 2)}m × ${fmt(d * G, 2)}m ／ <b>${fmt(area / JO)}帖</b>（${fmt(area)}㎡）　はなすと完成`
     : `ドラッグして「${ROOM_TYPES[V.roomType].name}」をつくる（1マス＝91cm・半畳）`);
   markDirty();
 }
@@ -8392,7 +8426,7 @@ function exteriorPanel(pn){
 function roomPanel(pn, r){
   if (!r) return;
   const area = r.w * r.d * CELL_M2;
-  pn.append(...h2(roomName(r), `${r.floor + 1}階　${fmt(r.w * G, 2)}m × ${fmt(r.d * G, 2)}m　<b>${RT(r).outdoor ? fmt(area) + '㎡' : fmt(area / JO) + '帖（' + fmt(area) + '㎡）'}</b>`));
+  pn.append(...h2(roomName(r), `${Number(r.floor) + 1}階　${fmt(r.w * G, 2)}m × ${fmt(r.d * G, 2)}m　<b>${RT(r).outdoor ? fmt(area) + '㎡' : fmt(area / JO) + '帖（' + fmt(area) + '㎡）'}</b>`));
   const chips = el('div', { class: 'chips' });
   for (const [k, t] of Object.entries(ROOM_TYPES)){
     if (!roomTypeAllowed(k, r.floor)) continue;
@@ -8452,7 +8486,7 @@ function itemPanel(pn, it){
 function openingPanel(pn, o){
   if (!o) return;
   const def = OPENING_TYPES[o.type];
-  pn.append(...h2(def.name, `${o.floor + 1}階　幅${Math.round(o.w * 100)} × 高さ${Math.round(o.h * 100)}cm`));
+  pn.append(...h2(def.name, `${Number(o.floor) + 1}階　幅${Math.round(o.w * 100)} × 高さ${Math.round(o.h * 100)}cm`));
   if (def.maxW > def.minW){
     const out = el('output', null, Math.round(o.w * 100) + 'cm');
     const inp = el('input', { type: 'range', min: def.minW, max: def.maxW, step: 0.05, value: o.w });
@@ -8582,11 +8616,13 @@ function saveModal(){
     const slots = el('div', { class: 'slots' });
     for (let n = 1; n <= 3; n++){
       let d = null; try{ d = JSON.parse(store.get(LS_SLOT(n)) || 'null'); }catch(_){}
+      if (!d || typeof d !== 'object') d = null;
+      const thumb = d && typeof d.thumb === 'string' && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(d.thumb) ? d.thumb : '';
       slots.append(el('div', { class: 'slot' },
-        el('div', { class: 'thumb', style: d && d.thumb ? `background-image:url(${d.thumb})` : '' }, d ? '' : '空き'),
+        el('div', { class: 'thumb', style: thumb ? `background-image:url(${thumb})` : '' }, d ? '' : '空き'),
         el('div', null,
-          el('b', null, d ? (d.name || `保存 ${n}`) : `保存 ${n}`),
-          el('small', null, d ? new Date(d.date).toLocaleString('ja-JP') : 'まだ保存していません'),
+          el('b', null, `保存 ${n}`),
+          el('small', null, d ? new Date(Number(d.date) || 0).toLocaleString('ja-JP') : 'まだ保存していません'),
           el('div', { class: 'btnrow' },
             el('button', { class: 'btn accent', onclick: () => {
               const ok = store.set(LS_SLOT(n), JSON.stringify({ name: `保存 ${n}`, date: Date.now(), thumb: snapThumb(), data: S }));
@@ -8599,6 +8635,7 @@ function saveModal(){
     const file = el('input', { type: 'file', accept: '.json,application/json', style: 'display:none' });
     file.addEventListener('change', () => {
       const f = file.files[0]; if (!f) return;
+      if (f.size > 20 * 1024 * 1024){ toast('ファイルが大きすぎます'); return; }
       f.text().then(t => { const d = JSON.parse(t); loadState(d.data || d); closeModal(); toast('ファイルを読み込みました'); }).catch(() => toast('このファイルは読み込めませんでした'));
     });
     box.append(el('h3', { style: 'margin:20px 0 8px;font-size:12px;color:var(--sub)' }, 'ファイル'), el('div', { class: 'btnrow' },
