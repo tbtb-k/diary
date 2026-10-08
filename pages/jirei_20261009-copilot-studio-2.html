@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Microsoft）。2026年10月9日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>サイトの問い合わせ対応が変わりました。Microsoft の「Ask Microsoft」は人の対応が最大70%減</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月9日／IT企業（Microsoft）・ウェブサイトの顧客対応</p>
+
+  <h1>サイトの問い合わせ対応が変わりました。Microsoft の「Ask Microsoft」は人の対応が最大70%減</h1>
+
+  <div class="lead">
+    <p>Microsoft.com では問い合わせが営業担当者に集中し、応答の待ち時間も長くなっていました。</p>
+    <p>Copilot Studio で「Ask Microsoft」を作り、領域ごとのサブエージェントを使い分ける形に改善しました。</p>
+    <p>人が対応するチャット件数は最大70%減、応答時間は最大61%短縮と公表されています（特定サイトのテスト結果）。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>お店で「ちょっと聞きたいだけ」なのに、担当者を呼ぶしかない。ウェブサイトでも、情報が多すぎて探せず、とりあえず問い合わせる人は少なくありません。</p>
+  <p>Microsoft.com は数千ページ規模で、毎日数百万人が製品や価格の情報を求めて訪れます。見つけにくいため、チャットで営業担当者に、営業以外の質問まで寄せられていました。さらにアクセスが増えると、エージェントの応答待ち時間が長くなり、顧客から指摘が出るようになりました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Microsoft のウェブチームは、Copilot Studio（ノーコード・ローコードで AI エージェントを作れるツール）で「Ask Microsoft」というウェブ用エージェントを作りました。サイト各所に埋め込まれ、製品案内、技術サポート、サインアップの手伝いをします。</p>
+  <p>Azure の製品サイトのチームが試作して数週間で公開し、その後10の製品サイトへ週2サイトのペースで広げました。のちに、1体で全部を担当する形から、Azure・Microsoft 365・価格・トライアルなど領域ごとのサブエージェント（専門担当のエージェント）を、AI が選んで使い分ける形へ作り替えています。</p>
+  <figure class="figure">
+    <ol class="flow" aria-label="Ask Microsoft の改善の流れ">
+      <li><div class="box">Azure サイトで<br>試作・公開</div></li>
+      <li><div class="box">10の製品サイトへ<br>横展開</div></li>
+      <li><div class="box">領域ごとの<br>サブエージェント化</div></li>
+      <li><div class="box">旧版と新版を<br>切り替えて検証</div></li>
+    </ol>
+    <figcaption>Ask Microsoft の導入と改善の流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>Copilot Studio で試作し、数週間で公開する。</li>
+    <li>ほかの製品サイトへ、週2サイトのペースで広げる。</li>
+    <li>AI が適切なサブエージェントを選ぶ構成に作り替える。</li>
+    <li>フラグで旧版と新版を切り替え、A/B テストと段階的な展開をする。問題があれば旧版へ戻せる。</li>
+    <li>全エージェント横断のダッシュボードで、応答時間・エラー・利用状況・フィードバックを見る。</li>
+  </ol>
+  <p>担当者が必要な場合は、ライブチャットへ引き継げます。価格ページのように長いページは Copilot Studio だけでは扱いにくく、Microsoft Foundry で作ったサブエージェントが補っています。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>営業担当者に、営業以外の質問も含めて何でも問い合わせが来ていました。トラフィックの増加で応答も遅くなっていました。</p></div>
+    <div class="after"><h3>いま</h3><p>最大61%の応答時間の短縮（Microsoft 365 サイトのテスト）、人が対応するチャット件数の最大70%減が公表されています。Azure サイトのテストでは、製品トライアルの開始が16%増えました。</p></div>
+  </div>
+  <p>いずれも Microsoft が公表した数字です。「最大」とあるものは特定のサイトでのテスト結果で、すべてのサイトに当てはまるとは限りません。また、Ask Microsoft を使った顧客は、サインアップに進む可能性が10倍になったと公表されています。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>よくある問い合わせを集め、ウェブで自己解決できそうなものを選ぶ。</li>
+    <li>Copilot Studio で小さなエージェントを作り、1つのページだけで試す。</li>
+    <li>応答時間と、人に引き継がれた件数を記録して、改善の材料にする。</li>
+  </ol>
+  <p>準備物は、答えの元になる公開ページや FAQ です。お客様向けに公開する場合は、必要な権限や契約が変わるため、社内のルールを確認してください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>お客様に見せる AI は、慎重に広げる必要があります</strong>
+    <p>出典では、顧客が直接触れるツールは体験の質が特に重要だとして、段階的な展開が欠かせなかったとされています。会話の流れが固定されていると、複数の製品にまたがる質問に答えにくい点も課題でした。</p>
+  </div>
+  <p>社内で真似するときは、AI が間違える場合を想定し、人へ引き継ぐ道を残してください。答えの元にする文書は、最新で公開してよいものに限ります。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例の学びは、最初から完成形を目指さず、小さく出して計測し、旧版へ戻せる形で作り替えたことです。</p>
+  <p>自分の職場に置き換えると、社内ヘルプデスクや総務の窓口で、まず一部の質問だけをエージェントに任せ、答えられないものは人へ回す形から試せます。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「Microsoft uses Copilot Studio to reshape customer experience and drive higher engagement」（2026年2月27日公開）<br>
+    <a href="https://www.microsoft.com/en/customers/story/26166-microsoft-microsoft-copilot-studio">https://www.microsoft.com/en/customers/story/26166-microsoft-microsoft-copilot-studio</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月9日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

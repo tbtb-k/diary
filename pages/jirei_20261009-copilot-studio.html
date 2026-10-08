@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（カコムス）。2026年10月9日作成。公開情報（TechTarget ジャパン）をもとにまとめています。">
+<title>社内規程の問い合わせが約6割減りました。カコムスが作った質問用チャットボット</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月9日／IT企業（カコムス）・社内問い合わせ対応</p>
+
+  <h1>社内規程の問い合わせが約6割減りました。カコムスが作った質問用チャットボット</h1>
+
+  <div class="lead">
+    <p>人事・総務への社内規程の問い合わせが多く、対応に手間がかかっていました。</p>
+    <p>Copilot Studio で、規程やマニュアルを参照して答えるチャットボットを作り、全社に展開しました。</p>
+    <p>人事・総務への問い合わせは導入前と比べて約6割減り、対応工数は約4割まで圧縮されたと公表されています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>就業ルールや経費の手続きを、同僚や人事・総務にその都度たずねていませんか。答える側も、同じ質問に何度も手を止められます。</p>
+  <p>IT企業のカコムス（システムのコンサルティングや受託開発が中心）でも、社内規程やマニュアルの確認が人事・総務への問い合わせとして積み重なっていました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>使ったのは Copilot Studio（ノーコードで AI エージェントを作れる Microsoft のツール）です。社内規程・マニュアル・就業ルールを SharePoint（社内の共有ファイル置き場）に集め、それを参照して答えるチャットボット「KMSG－AI」を作り、全社に展開しました。</p>
+  <p>その前の段階として、まず日常業務で Copilot Chat を使い、AI への心理的なハードルを下げています。次の段階では、営業担当者が自分で「経歴書エージェント」を作りました。Excel・Word・PDF の経歴書を SharePoint に集め、「Python ができる人」のような条件でエンジニア候補を探せます。</p>
+  <figure class="figure">
+    <ol class="flow" aria-label="カコムスの導入の流れ">
+      <li><div class="box">個人で<br>Copilot Chat</div></li>
+      <li><div class="box">規程を集めて<br>KMSG－AI</div></li>
+      <li><div class="box">現場が<br>経歴書エージェント</div></li>
+      <li><div class="box">スキルデータを<br>Power BI で可視化</div></li>
+    </ol>
+    <figcaption>カコムスの段階的な導入の流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>日常業務で Copilot Chat を使い、AI に慣れる。</li>
+    <li>社内規程・マニュアル・就業ルールを SharePoint に集約する。</li>
+    <li>Copilot Studio でチャットボットを作り、全社に展開する。</li>
+    <li>現場の担当者が、自分の業務に合わせたエージェントを作る。</li>
+  </ol>
+  <p class="src-note">※ 各ステップの細かい設定は、出典に書かれていません。カコムスが実際に使った設定は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>規程や就業ルールの確認は、同僚や人事・総務へ都度たずねていました。</p></div>
+    <div class="after"><h3>いま</h3><p>チャットボットに聞いて、自分で解決できるようになりました。人事・総務への問い合わせは導入前と比べて約6割減り、対応工数は約4割まで圧縮されました。</p></div>
+  </div>
+  <p>KMSG－AI の利用は月100回を超えました。数字はいずれも、カコムスの事例記事（TechTarget ジャパン）で公表されたものです。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>よく聞かれる質問と、その答えが書かれた文書を3つ選ぶ。</li>
+    <li>文書を SharePoint など、権限を管理できる場所にまとめる。</li>
+    <li>まず自分の部署だけで、Copilot Studio のエージェントに質問して答えを確かめる。</li>
+  </ol>
+  <p>準備物は、整理された文書と Copilot Studio を使える権限です。使えるかどうかは、ライセンスや社内の設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>現場だけでは足りない部分もあります</strong>
+    <p>出典によると、現場主導のエージェント作りだけでは、高度なデータ設計やシステム連携に手が回りませんでした。技術的な支援が必要で、それが次の基盤づくりにつながったとされています。また、全社に広げるには、一人ひとりが AI に慣れる段階的な取り組みが要りました。</p>
+  </div>
+  <p>真似するときは、古い規程が残っていないか、見せてよい文書だけが対象になっているかを確かめてください。AI がもっともらしい間違いを答えること（ハルシネーション）もあるため、重要な手続きは原本の確認をそえると安心です。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>カコムスは、個人利用、全社の規程 bot、現場のエージェント、データ分析という順で、少しずつ範囲を広げていました。小さく始めて慣れてから広げる進め方は、他の業務にも使えます。</p>
+  <p>自分の職場に置き換えると、経理の精算ルール、情報システム部門の問い合わせ、総務の施設の使い方など、「いつも同じことを聞かれる」業務が最初の候補になります。</p>
+
+  <footer>
+    <p>出典：TechTarget ジャパン「なぜMicrosoft製品か　Copilotで問い合わせ6割減の企業事例」（2026年9月23日公開。本文中の初出は2026年6月27日）<br>
+    <a href="https://techtarget.itmedia.co.jp/tt/article/2609/23/2000001555/">https://techtarget.itmedia.co.jp/tt/article/2609/23/2000001555/</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月9日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
