@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Agent Builder の活用事例（Microsoft 社内）。2026年10月11日作成。公開情報（Microsoft Inside Track）をもとにまとめています。">
+<title>AI エージェントの作り手を月2,000人から20,000人に増やした Microsoft は、まず「資料を読んで答える小さなエージェント」から始めさせました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Agent Builder</span>2026年10月11日／IT・ソフトウェア（Microsoft 社内）・社内でのエージェント作成の広げ方</p>
+
+  <h1>AI エージェントの作り手を月2,000人から20,000人に増やした Microsoft は、まず「資料を読んで答える小さなエージェント」から始めさせました</h1>
+
+  <div class="lead">
+    <p>Microsoft の社内 IT 部門（Microsoft Digital）は、開発者ではない社員にも、自分の仕事に合った AI エージェントを作ってもらいたいと考えていました。</p>
+    <p>そこで、Microsoft 365 Copilot の Agent Builder（資料を読んで答えるエージェントを、自然な文章で指示して作れるツール）を入口にして、研修や相談会で作り手を支えました。</p>
+    <p>広報の担当チームは、過去の報告書をもとに社内向けキャンペーンの効果を予測するエージェントを作りました。Microsoft は、エージェントを作る人が「月約2,000人から20,000人」に増えたと公表しています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>「この施策は、前回と同じくらい読まれそうか」と聞かれて、過去の報告書や数字を何本も開いて調べ直す。担当者の頭の中にしかない目安に頼っていて、人が変わると分からなくなる。そんな場面は、どの職場にもあります。</p>
+  <p>Microsoft Digital の社内向け広報のチームも、社内キャンペーンがどのくらい届き、どのくらい効果がありそうかを、手軽に予測できる方法を求めていました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Agent Builder は、Microsoft 365 Copilot の中で、資料を読んで答える簡単なエージェントを自然な文章で作れるツールです。読ませる先には、SharePoint（社内の共有ファイル置き場）やウェブサイトなどを選べます。</p>
+  <p>広報チームは、プロジェクトの報告書、複数年・複数チャネルの分析、比較の基準になるデータを SharePoint の1つのフォルダーにまとめ、それだけを読む「Campaign Prediction Agent」を作りました。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="キャンペーン予測エージェントができるまでの流れ">
+      <li><div class="box">過去の資料を<br>1つのフォルダーへ</div></li>
+      <li><div class="box">Agent Builder で<br>役割と資料を設定</div></li>
+      <li><div class="box">キャンペーンについて<br>質問する</div></li>
+      <li><div class="box">届く範囲・効果・<br>確からしさの報告</div></li>
+    </ol>
+    <figcaption>Campaign Prediction Agent の使い方の流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>報告書、分析結果、比較用のデータを、1つの SharePoint フォルダーに集めます。</li>
+    <li>Agent Builder で、エージェントの役割と、読ませるフォルダーを決めます。</li>
+    <li>質問をすると、届きそうな範囲、全体の効果、予測の確からしさ（測定の信頼度）が、チャネルごとの内訳つきで報告されます。</li>
+  </ol>
+  <p class="src-note">※ 手順2は、Agent Builder の一般的な作り方で補っています。この広報チームが実際に書いた指示文や設定は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>キャンペーンの効果を見積もるために、過去の資料を自分で探して読む必要がありました（出典の説明にもとづく整理です）。</p></div>
+    <div class="after"><h3>いま</h3><p>キャンペーンについて質問すると、チャネルごとの届く範囲・効果・予測の確からしさが、1つの報告として返ってきます。</p></div>
+  </div>
+  <p>このエージェント単体の削減時間などは公表されていません。次の数字は、Microsoft が公表した、エージェントを作る取り組み全体のものです。月に作る人は「約2,000人から20,000人」へ、作る際に感じる手間は「約50%から5%」へ変わりました。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>「いつも同じ資料を見て答えている」業務を1つ選びます。過去の報告書を見て見積もる仕事も候補です。</li>
+    <li>使ってよい資料を1つのフォルダーにまとめます。内容が古い資料や、間違いのある資料は先に外しておきます。</li>
+    <li>Agent Builder で、そのフォルダーだけを読むエージェントを作ります。説明を具体的に書き、数人で試してください。</li>
+  </ol>
+  <p>必要なもの：Microsoft 365 Copilot の利用環境と、読ませてよい資料です。Agent Builder が使えるかどうかは、会社のライセンスや管理者の設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>資料の質が、そのまま答えの質になります</strong>
+    <p>出典は、エージェントの質は元になる資料の質に左右されること、「プロンプトで十分か、エージェントにする価値があるか」が最初は分かりにくいこと、実行や自動化を求める声は Agent Builder の範囲外で、Copilot Studio（動作の自動化までできるツール）へ案内が必要だったことを挙げています。作りすぎたエージェントの管理も課題で、Microsoft では60日使われないものに通知と自動の整理をかけています。</p>
+  </div>
+  <p>社内で真似するときも、読ませてよい資料か、見せてよい相手かを先に決めましょう。AI の予測や回答は間違うことがあるので、重要な判断は元の資料で確認してください。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、道具を配るだけでなく、研修・相談会・社員同士の紹介で「いつ作ると役に立つか」を伝えたことです。Agent Builder で情報を扱い、動作の自動化が要るときは Copilot Studio へ進む、という使い分けも示されています。</p>
+  <p>自分の職場に置き換えると、過去の報告書や議事録が溜まっている部署は、同じ型で「過去の資料から目安を答えるエージェント」を作れそうです。まずは1つのフォルダーと1つの質問から始めてみてください。</p>
+
+  <footer>
+    <p>出典：Microsoft Inside Track「Our Customer Zero guide: Enabling agent creation across Microsoft 365 Copilot, Copilot Studio, and Foundry」（2026年10月8日公開）<br>
+    <a href="https://www.microsoft.com/insidetrack/blog/our-customer-zero-guide-enabling-agent-creation-across-microsoft-365-copilot-copilot-studio-and-foundry/">https://www.microsoft.com/insidetrack/blog/our-customer-zero-guide-enabling-agent-creation-across-microsoft-365-copilot-copilot-studio-and-foundry/</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月11日作成）。数字は出典元の公表値です。</p>
+  </footer>
+</div>
+</body>
+</html>

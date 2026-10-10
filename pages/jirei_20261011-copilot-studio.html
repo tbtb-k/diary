@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（大林組）。2026年10月11日作成。公開情報（TechTargetジャパン）をもとにまとめています。">
+<title>Revit の社内問い合わせに答えるエージェントを、大林組は約1.5カ月で試作しました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月11日／建設（大林組）・設計ソフトの社内問い合わせ対応</p>
+
+  <h1>Revit の社内問い合わせに答えるエージェントを、大林組は約1.5カ月で試作しました</h1>
+
+  <div class="lead">
+    <p>大林組の設計部では、設計ソフト「Revit」の使い方について、3人の担当者が月約40件の社内問い合わせに答えていました。</p>
+    <p>そこで、Microsoft Copilot Studio（会話型のエージェントを作れるツール）で、基本操作や社内ルールに答える一次対応のエージェントを約1.5カ月で試作しました。</p>
+    <p>回答の精度は約80％とされ、削減効果は月1,580時間という見込みです。ただし、この数字は実測ではなく、見込みと試算です。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>ソフトの使い方で困って質問したいけれど、みんなが見る場所で初歩的なことを聞くのは気が引ける。結局、自分で調べて時間がかかってしまう。新しく入った人なら、よくある場面です。</p>
+  <p>大林組の設計部でも、問い合わせは月約40件で、1件に約180分かかっていました。文章だけでは状況が分かりにくく、追加の質問や打ち合わせが必要になっていたことが、時間のかかる理由でした。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、社内の資料を読んで答える会話型のエージェント（AI の担当者）を作れるツールです。大林組は、すでに使っていた Microsoft 365 の環境で、新しい基盤を用意せずに始めました。</p>
+  <p>読ませたのは、Revit の作図講習資料などの社内文書と、過去の問い合わせへの回答履歴です。開発は外部の会社（スキルアップNeXt）の支援を受け、設計本部の担当者が主導しました。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Revit 問い合わせエージェントの流れ">
+      <li><div class="box">講習資料と<br>回答履歴を集める</div></li>
+      <li><div class="box">Copilot Studio で<br>一次対応に絞って作る</div></li>
+      <li><div class="box">想定質問で<br>精度を確かめる</div></li>
+      <li><div class="box">評価と履歴を<br>SharePoint に蓄積</div></li>
+    </ol>
+    <figcaption>大林組の Revit 問い合わせエージェントの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>講習資料や過去の回答履歴を、エージェントが読む資料として用意します。</li>
+    <li>複雑な質問には無理に答えさせず、基本操作や社内ルールなど、単純な質問の一次対応に絞ります。</li>
+    <li>想定質問と正解例を組にした「ベンチマークQA」で、回答の精度を継続的に確かめます。</li>
+    <li>問い合わせの履歴と回答への評価を SharePoint（社内の共有ファイル置き場）に保存する流れを設計します。</li>
+  </ol>
+  <p class="src-note">※ 出典には詳しい開発手順が書かれていません。上の手順は、記事に書かれた内容を順に並べ直したもので、画面操作や設定の細部は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>3人の担当者が月約40件に対応し、合計は月約120時間でした。質問した側も、自力で調べるのに1人あたり月約5時間かかっていました。</p></div>
+    <div class="after"><h3>いま</h3><p>一次対応のエージェントを、Revit の利用者が多いグループ会社で試用中です。利用者からは「想定していたよりもしっかり回答する」という声があります。</p></div>
+  </div>
+  <p>大林組が公表した数字は次のとおりです。開発期間は約1.5カ月、一次回答の精度は約80％（測り方は記事に記載なし）です。担当者の工数は月80時間（年960時間）、利用者の自己解決の時間は設計者300人への展開で月1,500時間（年18,000時間）の削減で、合計は年18,960時間（月1,580時間）です。この削減分は見込みと試算で、実測値ではありません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>社内で同じ質問が繰り返されている分野を1つ選び、月に何件・何分かかっているかを書き出します。</li>
+    <li>答えてよい範囲を、基本操作や社内ルールなど単純なものに絞ります。回答の元になる資料と、正解例つきの質問を用意します。</li>
+    <li>Copilot Studio で小さなエージェントを作り、数人で試しながら、答えられなかった質問を記録します。</li>
+  </ol>
+  <p>必要なもの：Copilot Studio が使える環境と、読ませてよい資料です。使えるかどうかは、会社のライセンスや管理者の設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>今ある資料は、AI にそのまま読ませるには足りないことがあります</strong>
+    <p>出典によると、マニュアルには推奨の操作は書かれていても「やってはいけない操作」や例外が書かれていないことがありました。回答の過程や画面の情報も記録に残っていませんでした。熟練者が頭の中で補っていた条件を、AI には文章で明示する必要があります。精度も約80％のため、すべての質問に答えられるわけではありません。</p>
+  </div>
+  <p>社内で真似するときも、AI の答えは間違うことがあります。重要な作業は、担当者が確認できる流れにしておきましょう。読ませる資料に機密情報が含まれないかも、先に確かめてください。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例の面白い点は、答えられなかった質問を「AI の弱点」ではなく、マニュアルや記録の足りない場所を見つける材料として使うことです。大林組は、資料を整える作業を自社で進める方針で、他のソフトや部署にも広げることを考えています。</p>
+  <p>自分の職場に置き換えると、経理システムや勤怠システムの操作に関する問い合わせにも、同じ型が使えそうです。まず問い合わせの履歴を集め、「単純な質問」と「人が答えるべき質問」に分けるところから始めてみてください。</p>
+
+  <footer>
+    <p>出典：TechTargetジャパン「Copilot Studioがここまで使えた 大林組「作り込まない」AIの成果：問い合わせ対応月1580時間削減」（2026年7月14日公開）<br>
+    <a href="https://techtarget.itmedia.co.jp/tt/article/2607/14/226071402/">https://techtarget.itmedia.co.jp/tt/article/2607/14/226071402/</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月11日作成）。数字は出典元の公表値です。</p>
+  </footer>
+</div>
+</body>
+</html>
