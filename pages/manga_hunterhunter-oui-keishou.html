@@ -1,0 +1,1274 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="HUNTER×HUNTERの王位継承編（33巻〜最新第420話）を、ストーリーの流れが一本につながるようにまとめた長めの読み物。舞台・ルール・勢力・14王子名鑑・あらすじ・用語集つき（2026年10月10日時点）。">
+<title>王位継承編まるわかりガイド</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* 構成: 広い画面では左に目次・右に本文の2段。狭い画面では目次を折りたたみにして本文1段。
+   色は「王子＝紅」「クラピカ＝青」「旅団＝紫」「マフィア＝琥珀」「協会＝緑」で勢力を塗り分ける。 */
+*{box-sizing:border-box}
+:root{
+  --bg:#F5F2EA;
+  --surface:#FFFFFF;
+  --sunk:#EDE8DC;
+  --ink:#1C1A16;
+  --muted:#625C50;
+  --line:#E0D9CA;
+  --line-strong:#C9BFAA;
+  --accent:#A3242F;
+  --accent-soft:#F6E2E1;
+  --gold:#8C6A12;
+  --gold-soft:#F3EAD0;
+  --mark:#FFE58A;
+
+  --f-prince:#A3242F;   --f-prince-soft:#F6E2E1;
+  --f-kura:#2B4C8C;     --f-kura-soft:#E2E9F6;
+  --f-troupe:#6B3A8E;   --f-troupe-soft:#EEE3F5;
+  --f-mafia:#8A5A12;    --f-mafia-soft:#F4E8D2;
+  --f-assoc:#2E6B4A;    --f-assoc-soft:#DFEFE5;
+
+  --s-alive:#2E6B4A;    --s-alive-soft:#DFEFE5;
+  --s-dead:#6E6A62;     --s-dead-soft:#E8E5DF;
+  --s-missing:#8A5A12;  --s-missing-soft:#F4E8D2;
+
+  --font-display:"Dela Gothic One","Hiragino Kaku Gothic StdN","Yu Gothic",sans-serif;
+  --font-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --radius:14px;
+  --shadow:0 1px 2px rgba(40,30,10,.06),0 6px 18px rgba(40,30,10,.06);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121110;
+    --surface:#1B1A18;
+    --sunk:#171614;
+    --ink:#ECE8E0;
+    --muted:#A39C8F;
+    --line:#2D2A25;
+    --line-strong:#423D35;
+    --accent:#F08A8F;
+    --accent-soft:#33191B;
+    --gold:#E2BF6A;
+    --gold-soft:#2B2416;
+    --mark:rgba(255,214,90,.30);
+    --f-prince:#F08A8F;   --f-prince-soft:#33191B;
+    --f-kura:#9DB8F0;     --f-kura-soft:#18233A;
+    --f-troupe:#CDA4EC;   --f-troupe-soft:#291C33;
+    --f-mafia:#E2BF6A;    --f-mafia-soft:#2B2416;
+    --f-assoc:#8BCFA8;    --f-assoc-soft:#17271E;
+    --s-alive:#8BCFA8;    --s-alive-soft:#17271E;
+    --s-dead:#B3ADA2;     --s-dead-soft:#25231F;
+    --s-missing:#E2BF6A;  --s-missing-soft:#2B2416;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.25);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121110;
+  --surface:#1B1A18;
+  --sunk:#171614;
+  --ink:#ECE8E0;
+  --muted:#A39C8F;
+  --line:#2D2A25;
+  --line-strong:#423D35;
+  --accent:#F08A8F;
+  --accent-soft:#33191B;
+  --gold:#E2BF6A;
+  --gold-soft:#2B2416;
+  --mark:rgba(255,214,90,.30);
+  --f-prince:#F08A8F;   --f-prince-soft:#33191B;
+  --f-kura:#9DB8F0;     --f-kura-soft:#18233A;
+  --f-troupe:#CDA4EC;   --f-troupe-soft:#291C33;
+  --f-mafia:#E2BF6A;    --f-mafia-soft:#2B2416;
+  --f-assoc:#8BCFA8;    --f-assoc-soft:#17271E;
+  --s-alive:#8BCFA8;    --s-alive-soft:#17271E;
+  --s-dead:#B3ADA2;     --s-dead-soft:#25231F;
+  --s-missing:#E2BF6A;  --s-missing-soft:#2B2416;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.25);
+  color-scheme:dark;
+}
+
+html{scroll-behavior:smooth; scroll-padding-top:20px; -webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:16.5px;
+  line-height:1.95;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:var(--accent); text-underline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+mark{background:linear-gradient(transparent 55%, var(--mark) 55%); color:inherit; padding:0 .1em}
+strong{font-weight:700}
+p{margin:0 0 1em}
+ul,ol{margin:0 0 1em; padding-left:1.3em}
+li{margin:.25em 0}
+
+/* 読んだ量バー */
+.progress{position:fixed; inset:0 0 auto 0; height:3px; z-index:50; background:transparent}
+.progress span{display:block; height:100%; width:0; background:var(--accent); transition:width .1s linear}
+
+/* 全体レイアウト */
+.page{max-width:1180px; margin:0 auto; padding:0 16px}
+.layout{display:block}
+.toc-side{display:none}
+@media (min-width:1100px){
+  .page{padding:0 28px}
+  .layout{display:grid; grid-template-columns:240px minmax(0,1fr); gap:48px; align-items:start}
+  .toc-side{display:block; position:sticky; top:24px; max-height:calc(100vh - 48px); overflow:auto; padding:8px 4px 24px 0}
+  .toc-mobile{display:none}
+}
+main{min-width:0; max-width:780px}
+
+/* ヒーロー */
+.topnav{padding:18px 0 0; font-size:14px}
+.topnav a{color:var(--muted); text-decoration:none}
+.topnav a:hover{color:var(--accent)}
+.hero{padding:28px 0 36px; border-bottom:1px solid var(--line); margin-bottom:36px}
+.eyebrow{display:inline-flex; gap:.5em; align-items:center; font-size:13px; letter-spacing:.08em; color:var(--gold); font-weight:700}
+.eyebrow::before{content:""; width:22px; height:2px; background:var(--gold)}
+h1{
+  font-family:var(--font-display); font-weight:400;
+  font-size:clamp(34px, 8vw, 58px); line-height:1.2; letter-spacing:.01em;
+  margin:.35em 0 .4em;
+}
+h1 .sub{display:block; font-size:.42em; color:var(--muted); letter-spacing:.04em; margin-top:.4em}
+.lead{font-size:17.5px; max-width:40em}
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 0; padding:0; list-style:none}
+.chips li{margin:0; font-size:13.5px; padding:4px 12px; border-radius:999px; background:var(--surface); border:1px solid var(--line); color:var(--muted)}
+.chips li b{color:var(--ink)}
+.chips li.warn{background:var(--accent-soft); border-color:transparent; color:var(--accent); font-weight:700}
+
+.howto{margin-top:26px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow)}
+.howto h2{font-family:var(--font-body); font-size:16px; font-weight:700; margin:0 0 8px; padding:0; border:0}
+.howto h2::before{display:none}
+.howto ol{margin:0}
+
+/* 目次 */
+.toc-title{font-size:12px; letter-spacing:.12em; color:var(--muted); font-weight:700; margin:0 0 8px}
+.toc ol{list-style:none; margin:0; padding:0; counter-reset:toc}
+.toc li{margin:0}
+.toc a{
+  display:flex; gap:10px; align-items:baseline;
+  padding:6px 10px; border-radius:8px;
+  color:var(--muted); text-decoration:none; font-size:14px; line-height:1.5;
+}
+.toc a .n{font-variant-numeric:tabular-nums; font-size:12px; color:var(--line-strong); min-width:1.6em}
+.toc a:hover{background:var(--sunk); color:var(--ink)}
+.toc a.active{background:var(--accent-soft); color:var(--accent); font-weight:700}
+.toc a.active .n{color:var(--accent)}
+.toc-mobile{margin:0 0 32px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius)}
+.toc-mobile summary{cursor:pointer; padding:14px 18px; font-weight:700; list-style:none; display:flex; justify-content:space-between; align-items:center}
+.toc-mobile summary::-webkit-details-marker{display:none}
+.toc-mobile summary::after{content:"＋"; color:var(--muted)}
+.toc-mobile[open] summary::after{content:"－"}
+.toc-mobile .toc{padding:0 10px 12px}
+
+/* セクション */
+section.block{margin:0 0 72px}
+h2{
+  font-family:var(--font-display); font-weight:400;
+  font-size:clamp(25px, 5.4vw, 34px); line-height:1.35;
+  margin:0 0 22px; padding-top:6px;
+}
+h2 .num{display:block; font-family:var(--font-body); font-weight:700; font-size:13px; letter-spacing:.14em; color:var(--accent); margin-bottom:4px}
+h3{font-size:20px; line-height:1.5; margin:36px 0 12px; font-weight:700}
+h4{font-size:16.5px; margin:22px 0 8px; font-weight:700}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+
+/* 箱 */
+.box{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; margin:18px 0; box-shadow:var(--shadow)}
+.box > :last-child{margin-bottom:0}
+.point{background:var(--gold-soft); border:0; box-shadow:none}
+.point .label{display:inline-block; font-size:12.5px; font-weight:700; letter-spacing:.08em; color:var(--gold); margin-bottom:4px}
+.note{background:var(--sunk); border:0; box-shadow:none; font-size:15px}
+.hedge{display:inline-block; font-size:11.5px; font-weight:700; line-height:1.6; padding:0 7px; border-radius:6px; background:var(--sunk); color:var(--muted); border:1px solid var(--line-strong); vertical-align:2px; white-space:nowrap}
+
+/* 30秒まとめ */
+.tldr{list-style:none; padding:0; margin:0; display:grid; gap:12px; counter-reset:t}
+.tldr li{margin:0; position:relative; padding:16px 18px 16px 58px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow)}
+.tldr li::before{
+  counter-increment:t; content:counter(t);
+  position:absolute; left:16px; top:14px; width:30px; height:30px; border-radius:50%;
+  display:grid; place-items:center; font-family:var(--font-display); font-size:15px;
+  background:var(--accent); color:var(--bg);
+}
+.oneline{margin-top:18px; font-size:18px; font-weight:700; text-align:center; padding:18px; border-radius:var(--radius); border:2px dashed var(--line-strong)}
+
+/* 難しさの理由 */
+.reasons{display:grid; gap:12px; grid-template-columns:1fr}
+@media (min-width:640px){ .reasons{grid-template-columns:1fr 1fr} }
+.reason{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px}
+.reason h3{margin:0 0 6px; font-size:16.5px}
+.reason p{margin:0; font-size:15px; color:var(--muted)}
+.reason .big{font-family:var(--font-display); color:var(--accent); font-size:22px; line-height:1; margin-right:6px}
+
+/* 船の図 */
+.ship{margin:22px 0; display:grid; gap:8px}
+.deck{
+  display:grid; grid-template-columns:76px 1fr; gap:14px; align-items:center;
+  background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 16px;
+}
+.deck .lv{font-family:var(--font-display); font-size:22px; line-height:1; text-align:center}
+.deck .lv small{display:block; font-family:var(--font-body); font-size:11px; color:var(--muted); margin-top:6px; font-weight:700; letter-spacing:.06em}
+.deck .who{font-size:15px; line-height:1.7}
+.deck .who b{display:block; font-size:15.5px}
+.deck .tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px}
+.tag{display:inline-block; font-size:12px; font-weight:700; padding:1px 9px; border-radius:999px; line-height:1.8}
+.tag.prince{background:var(--f-prince-soft); color:var(--f-prince)}
+.tag.kura{background:var(--f-kura-soft); color:var(--f-kura)}
+.tag.troupe{background:var(--f-troupe-soft); color:var(--f-troupe)}
+.tag.mafia{background:var(--f-mafia-soft); color:var(--f-mafia)}
+.tag.assoc{background:var(--f-assoc-soft); color:var(--f-assoc)}
+.deck.d1{margin:0 9%; border-top:4px solid var(--f-prince)}
+.deck.d2{margin:0 5%}
+.deck.d35{margin:0; border-bottom:4px solid var(--f-mafia)}
+.wall{
+  margin:2px 5%; padding:8px 12px; text-align:center; font-size:13px; font-weight:700; color:var(--muted);
+  background:repeating-linear-gradient(135deg, var(--sunk) 0 8px, var(--line) 8px 16px); border-radius:8px;
+}
+.hull-caption{text-align:center; font-size:13px; color:var(--muted); margin-top:6px}
+@media (max-width:520px){
+  .deck{grid-template-columns:56px 1fr; gap:10px; padding:12px}
+  .deck.d1{margin:0 4%}
+  .deck.d2{margin:0 2%}
+  .wall{margin:2px 2%}
+}
+
+/* ルール */
+.rules{counter-reset:r; list-style:none; padding:0; margin:0}
+.rules > li{counter-increment:r; position:relative; padding:0 0 0 48px; margin:0 0 22px}
+.rules > li::before{content:counter(r); position:absolute; left:0; top:2px; width:32px; height:32px; border-radius:8px; display:grid; place-items:center; font-family:var(--font-display); background:var(--gold-soft); color:var(--gold)}
+.rules > li h3{margin:0 0 4px; font-size:17px}
+.rules > li p:last-child{margin-bottom:0}
+
+/* 勢力 */
+.factions{display:grid; gap:14px; grid-template-columns:1fr}
+@media (min-width:700px){ .factions{grid-template-columns:1fr 1fr} }
+.faction{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px; border-top:5px solid var(--c); box-shadow:var(--shadow)}
+.faction h3{margin:0 0 4px; font-size:17.5px; color:var(--c)}
+.faction .goal{font-size:14px; font-weight:700; margin:0 0 8px; padding:6px 10px; background:var(--cs); border-radius:8px}
+.faction ul{font-size:15px; margin:0; padding-left:1.1em}
+.faction.prince{--c:var(--f-prince); --cs:var(--f-prince-soft)}
+.faction.kura{--c:var(--f-kura); --cs:var(--f-kura-soft)}
+.faction.troupe{--c:var(--f-troupe); --cs:var(--f-troupe-soft)}
+.faction.mafia{--c:var(--f-mafia); --cs:var(--f-mafia-soft)}
+.faction.assoc{--c:var(--f-assoc); --cs:var(--f-assoc-soft)}
+@media (min-width:700px){ .faction.wide{grid-column:1 / -1} }
+
+.links{list-style:none; padding:0; margin:18px 0 0; display:grid; gap:8px}
+.links li{margin:0; display:flex; flex-wrap:wrap; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:10px 14px; font-size:15px}
+.links .who{font-weight:700}
+.links .rel{font-size:12.5px; font-weight:700; color:var(--muted); padding:1px 10px; border-radius:999px; border:1px solid var(--line-strong); white-space:nowrap}
+.links .rel::before{content:"→ "}
+.links .rel.both::before{content:"⇄ "}
+.links .why{flex-basis:100%; font-size:13.5px; color:var(--muted); line-height:1.6}
+
+/* 王子名鑑 */
+.filters{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 16px}
+.filters button{
+  font:inherit; font-size:14px; font-weight:700; cursor:pointer;
+  padding:6px 14px; border-radius:999px; border:1px solid var(--line-strong);
+  background:var(--surface); color:var(--muted);
+}
+.filters button[aria-pressed="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+.filters .count{font-weight:400; opacity:.75; margin-left:4px}
+.princes{display:grid; gap:14px; grid-template-columns:1fr}
+@media (min-width:760px){ .princes{grid-template-columns:1fr 1fr} }
+.pcard{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:8px}
+.pcard[hidden]{display:none}
+.pcard header{display:flex; align-items:center; gap:12px}
+.pnum{flex:none; width:44px; height:44px; border-radius:12px; display:grid; place-items:center; font-family:var(--font-display); font-size:19px; background:var(--f-prince-soft); color:var(--f-prince)}
+.pnum small{font-size:10px; font-family:var(--font-body); font-weight:700; display:block; line-height:1; margin-top:-2px}
+.pname{font-size:18.5px; font-weight:700; line-height:1.35}
+.pmother{font-size:12.5px; color:var(--muted); display:block; font-weight:500}
+.status{margin-left:auto; flex:none; font-size:12.5px; font-weight:700; padding:2px 10px; border-radius:999px; white-space:nowrap}
+.status.alive{background:var(--s-alive-soft); color:var(--s-alive)}
+.status.dead{background:var(--s-dead-soft); color:var(--s-dead)}
+.status.missing{background:var(--s-missing-soft); color:var(--s-missing)}
+.pcard.is-dead .pnum{background:var(--s-dead-soft); color:var(--s-dead)}
+.pcard p{margin:0; font-size:15px; line-height:1.8}
+.pcard dl{margin:0; display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:14.5px; line-height:1.7}
+.pcard dt{color:var(--muted); font-weight:700; white-space:nowrap}
+.pcard dd{margin:0}
+.pcard .now{border-top:1px dashed var(--line-strong); padding-top:8px; font-size:14.5px}
+.pcard .now b{color:var(--accent)}
+
+/* 王子以外の人物 */
+.cast{display:grid; gap:14px; grid-template-columns:1fr}
+@media (min-width:760px){ .cast{grid-template-columns:1fr 1fr} }
+.cast-group{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:14px 18px; border-top:5px solid var(--c); box-shadow:var(--shadow)}
+.cast-group h3{margin:0 0 8px; font-size:16.5px; color:var(--c)}
+.cast-group dl{margin:0}
+.cast-group dt{font-weight:700; font-size:15px; margin-top:8px}
+.cast-group dt:first-child{margin-top:0}
+.cast-group dd{margin:0; font-size:14.5px; line-height:1.75; color:var(--muted)}
+.cast-group.prince{--c:var(--f-prince)} .cast-group.kura{--c:var(--f-kura)} .cast-group.troupe{--c:var(--f-troupe)} .cast-group.mafia{--c:var(--f-mafia)} .cast-group.assoc{--c:var(--f-assoc)}
+
+/* ストーリー */
+.acts{position:relative; margin:0; padding:0; list-style:none}
+.act{position:relative; padding:0 0 8px 34px; margin:0 0 40px}
+.act::before{content:""; position:absolute; left:10px; top:34px; bottom:-40px; width:2px; background:var(--line)}
+.act:last-child::before{bottom:0}
+.act .dot{position:absolute; left:0; top:6px; width:22px; height:22px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 5px var(--bg)}
+.act h3{margin:0 0 4px; font-size:21px}
+.act h3 .actno{display:block; font-size:12.5px; letter-spacing:.12em; color:var(--accent); font-weight:700}
+.act .when{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 14px}
+.act .when span{font-size:12.5px; font-weight:700; padding:1px 10px; border-radius:999px; background:var(--sunk); color:var(--muted)}
+.act h4{border-left:4px solid var(--line-strong); padding-left:10px; line-height:1.5}
+.out{display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:13.5px; margin:10px 0 0}
+.out .k{font-weight:700; color:var(--muted)}
+.out .tag{background:var(--s-dead-soft); color:var(--s-dead)}
+.ch{font-size:12px; font-weight:700; color:var(--accent); background:var(--accent-soft); padding:0 7px; border-radius:6px; margin-right:4px; white-space:nowrap; vertical-align:1px}
+
+/* いまの状況 */
+.board{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:0 0 18px}
+.board div{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px; text-align:center}
+.board b{display:block; font-family:var(--font-display); font-size:30px; line-height:1.2; font-weight:400}
+.board .a b{color:var(--s-alive)} .board .d b{color:var(--s-dead)} .board .m b{color:var(--s-missing)}
+.board span{font-size:13px; color:var(--muted); font-weight:700}
+.clock{display:flex; gap:14px; align-items:center; background:var(--accent-soft); color:var(--accent); border-radius:var(--radius); padding:14px 18px; margin:0 0 18px}
+.clock .ic{flex:none; font-family:var(--font-display); font-size:28px; line-height:1}
+.clock p{margin:0; color:var(--ink); font-size:15px}
+.clock b{color:var(--accent)}
+.where{list-style:none; padding:0; margin:0; display:grid; gap:10px}
+.where li{margin:0; background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--c, var(--line-strong)); border-radius:10px; padding:12px 16px; font-size:15px}
+.where li b{display:block}
+.where .prince{--c:var(--f-prince)} .where .kura{--c:var(--f-kura)} .where .troupe{--c:var(--f-troupe)} .where .mafia{--c:var(--f-mafia)} .where .assoc{--c:var(--f-assoc)}
+.mysteries{counter-reset:q; list-style:none; padding:0; margin:0; display:grid; gap:10px}
+.mysteries li{counter-increment:q; margin:0; position:relative; padding:12px 16px 12px 52px; background:var(--surface); border:1px solid var(--line); border-radius:12px; font-size:15px}
+.mysteries li::before{content:"謎" counter(q); position:absolute; left:12px; top:13px; font-size:12px; font-weight:700; color:var(--gold); background:var(--gold-soft); border-radius:6px; padding:0 5px; line-height:1.9}
+.mysteries li b{display:block}
+
+/* 用語集 */
+.glossary{display:grid; grid-template-columns:1fr; gap:10px; margin:0}
+@media (min-width:700px){ .glossary{grid-template-columns:1fr 1fr} }
+.glossary div{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 16px}
+.glossary dt{font-weight:700; font-size:16px}
+.glossary dt small{font-weight:500; color:var(--muted); font-size:12.5px; margin-left:6px}
+.glossary dd{margin:4px 0 0; font-size:14.5px; line-height:1.8; color:var(--muted)}
+
+/* 読み返し */
+.reread{display:grid; gap:12px; grid-template-columns:1fr}
+@media (min-width:700px){ .reread{grid-template-columns:1fr 1fr} }
+.route{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px; border-left:5px solid var(--c, var(--accent))}
+.route h3{margin:0 0 8px; font-size:16.5px}
+.route ol{margin:0; font-size:15px}
+.route.kura{--c:var(--f-kura)} .route.troupe{--c:var(--f-troupe)} .route.prince{--c:var(--f-prince)}
+.table-wrap{overflow-x:auto; margin:16px 0; border:1px solid var(--line); border-radius:12px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-size:14.5px; line-height:1.7}
+th,td{padding:10px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th{font-size:13px; color:var(--muted); background:var(--sunk); white-space:nowrap}
+td:first-child{white-space:nowrap; font-weight:700}
+@media (max-width:520px){
+  table{font-size:13.5px}
+  th,td{padding:8px 10px}
+  th{white-space:normal}
+}
+
+/* 出典・フッター */
+.sources{font-size:14px; line-height:1.75}
+.sources li{margin:.35em 0; word-break:break-word}
+footer{border-top:1px solid var(--line); padding:28px 0 60px; color:var(--muted); font-size:13.5px}
+
+.to-top{
+  position:fixed; right:16px; bottom:16px; z-index:40;
+  width:46px; height:46px; border-radius:50%; border:1px solid var(--line-strong);
+  background:var(--surface); color:var(--ink); box-shadow:var(--shadow);
+  display:grid; place-items:center; cursor:pointer; font:inherit; font-size:18px;
+  opacity:0; pointer-events:none; transition:opacity .2s;
+}
+.to-top.show{opacity:1; pointer-events:auto}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="bar"></span></div>
+
+<div class="page">
+  <nav class="topnav" aria-label="サイト内"><a href="../index.html">← 学習記録トップへ</a></nav>
+
+  <header class="hero">
+    <span class="eyebrow">HUNTER×HUNTER ／ 暗黒大陸編</span>
+    <h1>王位継承編<br>まるわかりガイド<span class="sub">33巻から最新の第420話まで、ストーリーを一本の話として読む</span></h1>
+    <p class="lead">「キャラが多すぎて誰が誰だかわからない」「結局いま何がどうなってるの？」を、ぜんぶほどくための長めの読み物だよ。地図（舞台・ルール・勢力）を先に渡して、そのあとで物語を順番に追っていくね。</p>
+    <ul class="chips">
+      <li>読む時間 <b>約45分</b></li>
+      <li class="warn">最新話までネタバレあり</li>
+      <li>2026年10月10日時点</li>
+      <li>最新話 <b>第420話（2026年9月7日発売号）</b></li>
+    </ul>
+    <div class="howto">
+      <h2>このページの読み方</h2>
+      <ol>
+        <li>まず「30秒まとめ」と「なんで難しいの？」を読んで、肩の力を抜く</li>
+        <li>「前提」「舞台」「ルール」「勢力マップ」で、頭の中に地図を作る</li>
+        <li>「ストーリー」を上から順に読む（ここが本編）</li>
+        <li>名前がわからなくなったら、「14王子名鑑」「王子以外の重要人物」「用語集」に戻る</li>
+      </ol>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="toc-side" aria-label="目次">
+      <p class="toc-title">目次</p>
+      <nav class="toc" data-toc></nav>
+    </aside>
+
+    <main id="main">
+      <details class="toc-mobile">
+        <summary>目次をひらく</summary>
+        <nav class="toc" data-toc aria-label="目次"></nav>
+      </details>
+
+      <!-- 1 -->
+      <section class="block" id="tldr" data-title="30秒でわかる王位継承編">
+        <h2><span class="num">01</span>30秒でわかる王位継承編</h2>
+        <ol class="tldr">
+          <li>暗黒大陸へ向かう巨大な船「ブラックホエール号」の中で、カキン帝国の14人の王子が<mark>「最後に生き残った1人だけが王になれる」殺し合い</mark>をしている。</li>
+          <li>同じ船に、仲間の目（緋の眼）を取り返したい<b>クラピカ</b>、ヒソカを殺したい<b>幻影旅団</b>、縄張り争いをする<b>マフィア</b>、謎の男ビヨンドを見張る<b>ハンター協会</b>も乗っていて、それぞれ別の目的で動いている。</li>
+          <li>最新話の時点では、毒で余命半日の第1王子ベンジャミンが<b>「特殊戒厳令」</b>を出して、ほかの王子を一気に潰しにかかっている。逃げ出した第4王子ツェリードニヒが、カジノで<b>ヒソカとついに出会った</b>ところで「次回未定」のお休みに入っている。</li>
+        </ol>
+        <p class="oneline">ひとことで言うと<br>「逃げ場のない船の中で、5つのグループが同時に動いている話」</p>
+      </section>
+
+      <!-- 2 -->
+      <section class="block" id="why" data-title="なんでこんなに難しいの？">
+        <h2><span class="num">02</span>なんでこんなに難しいの？</h2>
+        <p>先に言っちゃうと、わからないのは読む人のせいじゃないよ。この章は、わざと複雑に作られてるんだ。難しさの正体はだいたい次の5つ。</p>
+        <div class="reasons">
+          <div class="reason"><h3><span class="big">1</span>人がとにかく多い</h3><p>王子14人に、それぞれ母親（王妃）、兵隊、護衛がつく。名前のある人物を全部数えると200人を超えるとも言われるよ。全員を覚える必要はまったくないからね。</p></div>
+          <div class="reason"><h3><span class="big">2</span>話が5本同時に進む</h3><p>王子の戦い、クラピカ、幻影旅団、マフィア、ハンター協会。1話の中でも場面がどんどん切り替わるから、迷子になりやすいんだ。</p></div>
+          <div class="reason"><h3><span class="big">3</span>時間がほとんど進まない</h3><p>出航からまだ10日ちょっとしかたっていない。それを何年もかけて描いていて、数分の出来事に1話まるごと使うこともあるよ。</p></div>
+          <div class="reason"><h3><span class="big">4</span>殴り合いより読み合い</h3><p>戦いの中心は「契約」「ルールの抜け道」「相手の能力の推理」。文字が多くて、1回読んだだけではつかみにくいんだ。</p></div>
+          <div class="reason"><h3><span class="big">5</span>何年もあいだが空く</h3><p>2018年、2022年、2024年、2026年と、数年おきに10話ずつまとめて載る形。前の話を忘れちゃうのは当たり前だよ。</p></div>
+          <div class="reason"><h3><span class="big">✓</span>コツはひとつだけ</h3><p>「誰が・何のために・誰と組んでいるか」だけ追えばOK。念能力の細かい仕組みは、わからなくても物語は追えるよ。</p></div>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="block" id="before" data-title="前提：選挙編のあと何が起きた？">
+        <h2><span class="num">03</span>前提：選挙編のあと、世界はどうなった？</h2>
+        <p>王位継承編は、いきなり船の上から始まるわけじゃないんだ。選挙編のすぐあと（33巻の前半）に「なんでみんな船に乗ることになったのか」が描かれているから、ここを押さえると一気にわかりやすくなるよ。</p>
+
+        <h3>① ネテロ会長の「息子」が現れる</h3>
+        <p>選挙編でハンター協会の会長選びが終わって、新しい会長はチードルになった。そこへ現れたのが、亡くなったネテロ会長の息子<b>ビヨンド=ネテロ</b>。彼は「暗黒大陸に行く」と世界に向けて宣言するんだ。</p>
+
+        <h3>② 世界は「巨大な湖の中」だった</h3>
+        <p>みんなが「世界のすべて」だと思っていた地図（V5と呼ばれる5つの大国がまとめている世界）は、実はもっと巨大な<b>暗黒大陸</b>のまんなかにある、巨大な湖に浮かぶほんの一部にすぎなかった。これが33巻の大きな種明かしだよ。</p>
+        <p>湖の外の暗黒大陸からは、過去に人類へとんでもない災いが持ち帰られていて、それが<b>五大厄災</b>（兵器ブリオン、ガス生命体アイ、双尾の蛇ヘルベル、人飼いの獣パプ、不死の病ゾバエ）。危なすぎるから、暗黒大陸へ行くことは国どうしの約束で禁止されてきたんだ。</p>
+
+        <h3>③ カキン帝国が「一緒に行く」と手を挙げる</h3>
+        <p>そこで大国<b>カキン帝国</b>の国王ナスビ=ホイコーロが「ビヨンドと一緒に暗黒大陸へ移民する」と発表して、超巨大な船<b>ブラックホエール1号</b>を用意する。V5は最初ハンター協会に「ビヨンドを捕まえろ」と頼んでいたんだけど、最終的には<mark>「ハンター協会が見張りながらなら、行ってもいい」</mark>という話になったんだ。</p>
+
+        <h3>④ ハンター協会の2つの目的</h3>
+        <p>ネテロ会長は遺言で「息子より先に、暗黒大陸の探検を成功させてほしい」と残していた。だから協会の幹部チーム<b>十二支ん（じゅうにしん）</b>の目的は、</p>
+        <ul>
+          <li>ビヨンドを見張ること</li>
+          <li>五大厄災のどれかを攻略して、「リターン」（持ち帰れる見返り。薬や資源のようなもの）を手に入れること</li>
+        </ul>
+        <p>の2つ。十二支んからはジンとパリストンが抜けて、その空いた席に<b>クラピカとレオリオ</b>が入ったよ。抜けたジンとパリストンは、なんとビヨンドの側についている。</p>
+
+        <h3>⑤ ゴンとキルアはお休み中</h3>
+        <p>ゴンは念が使えなくなって、故郷のくじら島に帰っている。キルアは妹のアルカと旅に出た。だからこの章の主人公は、ほぼ<b>クラピカ</b>なんだ。</p>
+
+        <h3>⑥ ヒソカ vs クロロ、そして「旅団狩り」</h3>
+        <p>同じころ、天空闘技場でヒソカと幻影旅団の団長クロロが「どちらかが死ぬまで」戦って、クロロが勝つ。でもヒソカは、死ぬ直前に自分にかけておいた念で生き返るんだ。そしてそのまま旅団員の<b>シャルナークとコルトピを殺し</b>、「旅団を全員殺す」と宣言する。</p>
+        <p>怒った旅団は、ヒソカを殺すために、ヒソカが乗り込んだらしいブラックホエール号に乗ることにする。キルアの兄イルミと弟カルトも旅団の団員になっているよ（イルミはヒソカ本人から「自分を殺す」依頼を受けているから、とされている）。</p>
+
+        <div class="box point"><span class="label">ここまでのまとめ</span>
+          <p>ビヨンドを見張りたい<b>協会</b>、移民したい<b>カキン</b>、ヒソカを追う<b>旅団</b>、そしてもう1人。緋の眼を追う<b>クラピカ</b>が、全員同じ船に乗ることになった。これが王位継承編のスタート地点だよ。</p>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="block" id="ship" data-title="舞台：ブラックホエール号">
+        <h2><span class="num">04</span>舞台：巨大船ブラックホエール号</h2>
+        <p>物語のほぼ全部が、この船の中で起きるよ。ファンの資料によると、長さは約1.5km、高さと幅は約800m、乗客は約20万人。暗黒大陸に着くまでは<b>約2か月</b>の航海なんだ。</p>
+        <p>船の中は5つの「層」に分かれていて、<b>上に行くほど偉い人・お金持ち</b>がいるよ。</p>
+
+        <div class="ship" role="figure" aria-label="ブラックホエール号の階層図">
+          <div class="deck d1">
+            <div class="lv">1<small>層</small></div>
+            <div class="who"><b>カキン王族とV5の要人</b>14人の王子と王妃たち、各国のVIP、ハンター協会。カジノなどの娯楽エリアもここ。
+              <div class="tags"><span class="tag prince">王子の戦い</span><span class="tag kura">クラピカ</span><span class="tag assoc">協会</span><span class="tag troupe">ヒソカ（カジノ）</span></div>
+            </div>
+          </div>
+          <div class="deck d2">
+            <div class="lv">2<small>層</small></div>
+            <div class="who"><b>有名人・お金持ち</b>マフィアのエイ=イ一家のアジトが、実はここにあると旅団がつきとめる。
+              <div class="tags"><span class="tag mafia">エイ=イ一家のアジト</span></div>
+            </div>
+          </div>
+          <div class="wall">分厚い壁。扉は上（2層側）からしか開けられない</div>
+          <div class="deck d35">
+            <div class="lv">3〜5<small>層</small></div>
+            <div class="who"><b>一般の移民たち</b>マフィア3家の縄張りがあって、旅団もはじめはここにいる。一般の乗客は「念」の存在を知らない。
+              <div class="tags"><span class="tag mafia">マフィア戦争</span><span class="tag troupe">幻影旅団</span></div>
+            </div>
+          </div>
+          <p class="hull-caption">上の階ほど身分が高い。2層と3層のあいだは分厚い壁でしきられている</p>
+        </div>
+
+        <div class="box point"><span class="label">覚え方</span>
+          <p><b>上の階＝王子の戦争</b>、<b>下の階＝マフィアの戦争</b>。上の階では念の存在が王子たちにも知られていて、念と念獣でおおっぴらに殺し合っている。下の階の一般人は念を知らないまま、マフィアの抗争に巻きこまれているよ。</p>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="block" id="rules" data-title="王位継承戦のルール">
+        <h2><span class="num">05</span>王位継承戦のルール</h2>
+        <p>カキン帝国の次の王は、<b>王子どうしの殺し合いで最後に残った1人</b>がなる。今回は14人で争うよ。大事なルールはこれだけ。</p>
+        <ol class="rules">
+          <li>
+            <h3>期限は「暗黒大陸に着くまで」</h3>
+            <p>船が着くまでの約2か月が勝負。逆に言うと、着くまで逃げ切れば複数の王子が生き残る可能性もある（クラピカはここに目をつけている）。</p>
+          </li>
+          <li>
+            <h3>壺中卵の儀（こちゅうらんのぎ）で、全員に「守護霊獣」がつく</h3>
+            <p>出航してすぐ、王子たちは自分の血を壺に入れて「王になりたい」と念じる儀式をする。すると全員に<b>守護霊獣</b>（念でできた生き物）がとりつくんだ。</p>
+            <p>この壺は、初代の王が<mark>「蠱毒（こどく）」</mark>（毒虫をひとつの壺に入れて殺し合わせ、最後に残った1匹を使うまじない）から思いついて作ったものとされている。つまり<b>この船そのものが、巨大な蠱毒の壺</b>なんだ。</p>
+          </li>
+          <li>
+            <h3>守護霊獣は、王子本人にもコントロールできない</h3>
+            <p>見た目や能力は宿主（とりついた王子）の性格を映したものになる。宿主のオーラ（生命エネルギー）を食べて動いていて、宿主は自分で操れないし、育てている自覚もない。念を知らない人には見えないよ。</p>
+          </li>
+          <li>
+            <h3>霊獣どうしは戦わず、ほかの王子も直接は襲わない</h3>
+            <p>守護霊獣どうしは攻撃し合わないし、霊獣が憑いている王子本人を直接攻撃することもない、と考えられている。そのかわり狙われるのは<b>まわりの護衛や兵隊</b>。だから王子たちは、念能力者の部下を使って戦うことになるんだ。</p>
+          </li>
+          <li>
+            <h3>逃げられない</h3>
+            <p>出航セレモニーに出ないと不参加あつかい。そして<b>船から逃げようとすると死ぬ</b>。第10王子カチョウがこれで命を落とした（あとで詳しく書くね）。</p>
+          </li>
+          <li>
+            <h3>まわりは兵隊とスパイだらけ</h3>
+            <p>王子には、自分の兵隊（<b>私設兵</b>）、母親の兵隊（<b>王妃所属兵</b>）、外から雇った<b>護衛（プロハンターなど）</b>がつく。でも王妃所属兵の中には、ほかの王妃が送りこんだスパイもまぎれている。味方のはずの人が一番あぶない、というのがこの戦いのいやらしいところだよ。</p>
+          </li>
+          <li>
+            <h3>あとから出てくる2つの重要ルール</h3>
+            <p><b>継承資格</b>：そもそも「王になる資格」がない子は、戦いの外にいることになる（412話で大きく効いてくる）。<br><b>緊急事態法</b>：継承権を持つ全員が死にそうで国王だけが残るときは、国王がすぐに次の継承者を指名しなければいけない、という法律（417話で第1王子ベンジャミンがこれを利用しようとする）。</p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- 6 -->
+      <section class="block" id="factions" data-title="勢力マップ">
+        <h2><span class="num">06</span>勢力マップ：5つのグループ</h2>
+        <p>この船にいる人たちは、大きく5つのグループに分けられるよ。色はこのページ全体で共通にしてあるからね。</p>
+        <div class="factions">
+          <div class="faction prince">
+            <h3>A. 王子たち</h3>
+            <p class="goal">目的：王になる／生き残る</p>
+            <ul>
+              <li>14人の王子と、その母親の8人の王妃</li>
+              <li>私設兵・王妃所属兵・護衛たち</li>
+              <li>最大勢力は、全員が念能力者の兵団を持つ第1王子ベンジャミン</li>
+              <li>いちばん危険なのは第4王子ツェリードニヒ</li>
+            </ul>
+          </div>
+          <div class="faction kura">
+            <h3>B. クラピカ陣営</h3>
+            <p class="goal">目的：第14王子ワブルを守る＋緋の眼を取り返す</p>
+            <ul>
+              <li>クラピカ（ワブル王子の護衛）、ビル、ワブルの母オイト王妃</li>
+              <li>クラピカの仲間や顔見知りのハンターが、ほかの王子の護衛としても乗っている：センリツ（第10王子カチョウ）、ハンゾー（第12王子モモゼ）、バショウ（第7王子ルズールス）、イズナビ（第6王子タイソン）、ビスケ（第13王子マラヤーム）</li>
+            </ul>
+          </div>
+          <div class="faction troupe">
+            <h3>C. 幻影旅団</h3>
+            <p class="goal">目的：ヒソカを殺す</p>
+            <ul>
+              <li>クロロ、ノブナガ、フェイタン、フィンクス、フランクリン、マチ、シズク、ボノレノフなど（イルミとカルトも団員）</li>
+              <li>マフィアと手を組んでヒソカの居場所を探す</li>
+              <li>団長クロロは途中から単独行動。カキン王家の「宝」も狙っている</li>
+            </ul>
+          </div>
+          <div class="faction mafia">
+            <h3>D. カキンの三大マフィア</h3>
+            <p class="goal">目的：縄張り。ただしエイ=イ一家だけは「国を壊す」</p>
+            <ul>
+              <li><b>シュウ=ウ一家</b>：組長オニオール、若頭ヒンリギ。後ろ盾は第3王子チョウライ</li>
+              <li><b>シャ=ア一家</b>：組長ブロッコ=リー。後ろ盾は第7王子ルズールス</li>
+              <li><b>エイ=イ一家</b>：組長モレナ。後ろ盾は第4王子ツェリードニヒ</li>
+              <li>組長は王族の隠し子が務めるならわし、とされている（モレナの出自にはまだ謎が残っている）</li>
+            </ul>
+          </div>
+          <div class="faction assoc wide">
+            <h3>E. ハンター協会とビヨンド</h3>
+            <p class="goal">目的：ビヨンドを見張る＋暗黒大陸の攻略</p>
+            <ul>
+              <li>十二支ん（会長チードル、ミザイストム、レオリオなど）。船の警備や治安も担当</li>
+              <li>ビヨンド=ネテロ、そのそばにジンとパリストン</li>
+              <li>ビヨンドは、船の裏で<b>「呪い」を仕込んだ自分の子どもたち</b>をあちこちに潜ませていた（39巻で発覚）</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>グループどうしの「つながり」</h3>
+        <ul class="links">
+          <li><span class="who">クラピカ</span><span class="rel">狙っている</span><span class="who">第4王子ツェリードニヒ</span><span class="why">クルタ族（クラピカの一族）の緋の眼が、ツェリードニヒのコレクションにあるから。</span></li>
+          <li><span class="who">幻影旅団</span><span class="rel both">殺し合い</span><span class="who">ヒソカ</span><span class="why">ヒソカが団員2人を殺して宣戦布告。旅団はヒソカを探して船内をうろついている。</span></li>
+          <li><span class="who">幻影旅団</span><span class="rel">協力していた</span><span class="who">シュウ=ウ一家（ヒンリギ）</span><span class="why">ヒソカ探しのために手を組んだ。でも406話で関係にひびが入る。</span></li>
+          <li><span class="who">シュウ=ウ一家＋シャ=ア一家</span><span class="rel">協力して潰す</span><span class="who">エイ=イ一家</span><span class="why">エイ=イ一家が殺しをばらまいてマフィアのバランスを壊そうとしているから。</span></li>
+          <li><span class="who">第1王子ベンジャミン</span><span class="rel">特殊戒厳令で狙う</span><span class="who">ほかの王子全員</span><span class="why">毒で余命が残りわずか。死ぬ前に全員を片付けたい（411話〜）。</span></li>
+          <li><span class="who">クラピカ</span><span class="rel both">契約</span><span class="who">ロンギ（第5王子ツベッパの兵）</span><span class="why">ロンギはビヨンドの娘。ビヨンドの秘密をクラピカに明かした（401話）。</span></li>
+          <li><span class="who">ビヨンド</span><span class="rel">呪いを仕込んだ子どもを潜ませた</span><span class="who">王子たちのまわり</span><span class="why">王子の中に「ビヨンドの実の子」がいるかもしれない、という最大級の疑惑につながる。</span></li>
+          <li><span class="who">クラピカ</span><span class="rel both">因縁（まだ直接は会っていない）</span><span class="who">幻影旅団</span><span class="why">旅団はクルタ族を滅ぼした仇。でも今のクラピカは、旅団よりワブル王子と緋の眼を優先している。</span></li>
+        </ul>
+      </section>
+
+      <!-- 7 -->
+      <section class="block" id="princes" data-title="14王子名鑑">
+        <h2><span class="num">07</span>14王子名鑑</h2>
+        <p>「今どうなってるか」は<b>第420話時点</b>だよ。わからなくなったら、いつでもここに戻ってきてね。</p>
+        <div class="filters" role="group" aria-label="生死でしぼりこむ">
+          <button type="button" data-filter="all" aria-pressed="true">すべて<span class="count">14</span></button>
+          <button type="button" data-filter="alive" aria-pressed="false">生存<span class="count">8</span></button>
+          <button type="button" data-filter="dead" aria-pressed="false">死亡<span class="count">4</span></button>
+          <button type="button" data-filter="missing" aria-pressed="false">行方不明<span class="count">2</span></button>
+        </div>
+
+        <div class="princes">
+          <article class="pcard" data-status="alive">
+            <header><div class="pnum">1</div><div class="pname">ベンジャミン<span class="pmother">母：第1王妃ウンマ</span></div><span class="status alive">生存</span></header>
+            <p>筋金入りの軍人。全員が念能力者の私設兵団を持っていて、最初から他の王子を大きく引き離す最大勢力。</p>
+            <dl>
+              <dt>能力</dt><dd>「星を継ぐもの（ベンジャミンバトン）」。自分に忠誠を誓った部下が死ぬと、その部下の念能力を受け継げる。</dd>
+              <dt>主な部下</dt><dd>兵隊長バルサミルコ、ヒュリコフ、リハン、ウショウヒ、カンジドルなど</dd>
+            </dl>
+            <p class="now"><b>いま：</b>部下ヒュリコフに毒（TSK-17）を浴びせられ、もう半日ももたない。死ぬ前にほかの王子を全滅させようと「特殊戒厳令」を出して暴れている。</p>
+          </article>
+
+          <article class="pcard" data-status="alive">
+            <header><div class="pnum">2</div><div class="pname">カミーラ<span class="pmother">母：第2王妃ドゥアズル</span></div><span class="status alive">生存</span></header>
+            <p>「私が王になるのが当然」という超わがままな女王様タイプ。きょうだいを消す気まんまん。</p>
+            <dl>
+              <dt>能力</dt><dd>「百万回生きた猫（ネコノナマエ）」。自分が殺されると、殺した相手の命と引きかえに生き返る、とされる。416話では「最長3か月くらい冬眠できる」ことも判明。</dd>
+              <dt>主な部下</dt><dd>サラヘル（メイドに化けてワブル王子を狙っていた）</dd>
+            </dl>
+            <p class="now"><b>いま：</b>特殊戒厳令の直後、ベンジャミンに部屋へ突入される（416話）。かなりのピンチ。</p>
+          </article>
+
+          <article class="pcard" data-status="missing">
+            <header><div class="pnum">3</div><div class="pname">チョウライ<span class="pmother">母：第3王妃トウチョウレイ</span></div><span class="status missing">行方不明</span></header>
+            <p>現実的で頭が切れる政治家タイプ。マフィアのシュウ=ウ一家の後ろ盾。早い段階でクラピカに電話をかけてきた王子でもある。</p>
+            <p class="now"><b>いま：</b>特殊戒厳令の前に姿を消した（415話〜）。どうやって逃げたのかは謎。</p>
+          </article>
+
+          <article class="pcard" data-status="alive">
+            <header><div class="pnum">4</div><div class="pname">ツェリードニヒ<span class="pmother">母：第1王妃ウンマ</span></div><span class="status alive">生存</span></header>
+            <p>この章の「いちばん怖い人」。頭がよくて人気者だけど、中身は人を標本にして集める異常者。<mark>クルタ族の緋の眼も彼のコレクション</mark>。念を知らなかったのに、部下に習いはじめた途端、天才的な速さで上達した。エイ=イ一家の後ろ盾。</p>
+            <dl>
+              <dt>能力</dt><dd>「刹那の10秒（ラプラスデビル）」。絶（気配を消す技）をして目を閉じると、10秒先の未来が見える。さらに、まわりの人に「ニセの未来」を見せて、そのあいだ自分は自由に動ける。ただし幻の中の相手を攻撃したり、物を奪ったりはできない。範囲は念獣を中心に約36m。</dd>
+              <dt>主な部下</dt><dd>テータ（念の先生）、サルコフ、兵隊長ヴァンダイン、ボークセン</dd>
+            </dl>
+            <p class="now"><b>いま：</b>ベンジャミンに撃ち殺されたように見えたのは、能力で見せたニセの映像だった。部屋から逃げ出し、カジノでヒソカと出くわす（420話）。</p>
+          </article>
+
+          <article class="pcard" data-status="alive">
+            <header><div class="pnum">5</div><div class="pname">ツベッパ<span class="pmother">母：第2王妃ドゥアズル</span></div><span class="status alive">生存</span></header>
+            <p>科学者で、慎重なリアリスト。部下のロンギがクラピカと「契約」を結んでいて、クラピカとはゆるい協力関係。</p>
+            <dl><dt>主な部下</dt><dd>ロンギ（ビヨンドの娘だった）、マオール</dd></dl>
+            <p class="now"><b>いま：</b>ベンジャミンの呼び出しに応じて出向いた（417話）。ベンジャミンに毒をうつされた可能性がある。</p>
+          </article>
+
+          <article class="pcard" data-status="alive">
+            <header><div class="pnum">6</div><div class="pname">タイソン<span class="pmother">母：第4王妃カットローノ</span></div><span class="status alive">生存</span></header>
+            <p>「愛」を説くお花畑系の王子。自分の教えを書いた本を配っている。護衛にはクラピカの仲間イズナビがついた。</p>
+            <p class="now"><b>いま：</b>ツベッパと一緒にベンジャミンの呼び出しに応じた（417話）。こちらも毒をうつされた可能性あり。</p>
+          </article>
+
+          <article class="pcard" data-status="missing">
+            <header><div class="pnum">7</div><div class="pname">ルズールス<span class="pmother">母：第2王妃ドゥアズル</span></div><span class="status missing">行方不明</span></header>
+            <p>マフィアのシャ=ア一家の後ろ盾。護衛にはクラピカの仲間バショウがついている。</p>
+            <p class="now"><b>いま：</b>チョウライと同じく、戒厳令の前に姿を消した。ベンジャミン側の兵が護衛を襲っていた（414話）。</p>
+          </article>
+
+          <article class="pcard is-dead" data-status="dead">
+            <header><div class="pnum">8</div><div class="pname">サレサレ<span class="pmother">母：第5王妃スィンコスィンコ</span></div><span class="status dead">死亡</span></header>
+            <p>パーティー好きの遊び人。</p>
+            <p class="now"><b>最期：</b>ベンジャミンの私設兵リハンに守護霊獣を倒され、無防備になったところをウショウヒに暗殺された。表向きは「体調不良」として伏せられていた。</p>
+          </article>
+
+          <article class="pcard is-dead" data-status="dead">
+            <header><div class="pnum">9</div><div class="pname">ハルケンブルグ<span class="pmother">母：表向きは第2王妃ドゥアズル（実の母は第1王妃ウンマ）</span></div><span class="status dead">肉体は死亡</span></header>
+            <p>正義感の強い理想主義者。最初は継承戦そのものを止めようとしていたけど、途中で「戦って王になり、この仕組みを変える」側に回った。</p>
+            <dl><dt>能力</dt><dd>「少年は残酷な弓を射る」。彼を信じる仲間たちと一緒に放つ念の矢。当たった相手と、こちら側の誰か1人の「中身（魂）」が入れ替わる。</dd></dl>
+            <p class="now"><b>いま：</b>自分の肉体は死んだ（404話）。でも魂はベンジャミンの兵隊長バルサミルコの体に入って生きのびていた。いまはさらに別の誰かに移ったかもしれず、どこにいるかは謎。</p>
+          </article>
+
+          <article class="pcard is-dead" data-status="dead">
+            <header><div class="pnum">10</div><div class="pname">カチョウ<span class="pmother">母：第6王妃セイコ</span></div><span class="status dead">死亡</span></header>
+            <p>口が悪くてわがまま…に見えて、本当は双子の妹フウゲツ思いのお姉ちゃん。護衛はセンリツ。</p>
+            <dl><dt>守護霊獣</dt><dd>「2人セゾン（キミガイナイ）」。双子のどちらかが死ぬと、その子の姿になって、残ったほうを死ぬまでそばで守る。</dd></dl>
+            <p class="now"><b>最期：</b>フウゲツと船から逃げようとして命を落とした。でも霊獣の力で、カチョウの姿をした存在がフウゲツのそばで守り続けている。</p>
+          </article>
+
+          <article class="pcard" data-status="alive">
+            <header><div class="pnum">11</div><div class="pname">フウゲツ<span class="pmother">母：第6王妃セイコ</span></div><span class="status alive">生存</span></header>
+            <p>気が弱くてやさしい双子の妹。</p>
+            <dl><dt>守護霊獣</dt><dd>「秘密の扉（マジカルワーム）」。外へ通じる扉を作れる。脱出計画のカギだった。</dd></dl>
+            <p class="now"><b>いま：</b>悪い霊（邪霊）にとりつかれて弱っていた時期もあったけど、いまは司法省（裁判などを担当する役所のエリア）にいる（415話）。</p>
+          </article>
+
+          <article class="pcard is-dead" data-status="dead">
+            <header><div class="pnum">12</div><div class="pname">モモゼ<span class="pmother">母：第7王妃セヴァンチ</span></div><span class="status dead">死亡</span></header>
+            <p>最初の犠牲者。護衛はクラピカの仲間ハンゾー。</p>
+            <p class="now"><b>最期：</b>出航初日の夕方。守護霊獣がオーラを使いすぎて眠りこんでしまったところを、自分の護衛兵タフディーに絞殺された。タフディーは別の王妃側のスパイだったとされる（どの王妃かは資料によって説が分かれる）。ハンゾーがタフディーに自白させて、仇を討った。</p>
+          </article>
+
+          <article class="pcard" data-status="alive">
+            <header><div class="pnum">13</div><div class="pname">マラヤーム<span class="pmother">母：第7王妃セヴァンチ</span></div><span class="status alive">生存</span></header>
+            <p>モモゼの弟。護衛にはクラピカの仲間ビスケがついている。</p>
+            <p class="now"><b>いま：</b>生存。表に出てくる場面は少なめ。</p>
+          </article>
+
+          <article class="pcard" data-status="alive">
+            <header><div class="pnum">14</div><div class="pname">ワブル<span class="pmother">母：第8王妃オイト</span></div><span class="status alive">生存</span></header>
+            <p>まだ赤ちゃん。クラピカが守っている王子。母のオイト王妃は「とにかくこの子を生かして継承戦から抜けたい」と願っている。</p>
+            <p class="now"><b>いま：</b>411話でクラピカが「ワブル王子には継承資格がない」と発表。412話で、オイト王妃が出航前に赤ちゃんをすり替えていたらしいことがわかる（詳しくは第8幕で）。</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 8 -->
+      <section class="block" id="cast" data-title="王子以外の重要人物">
+        <h2><span class="num">08</span>王子以外の重要人物</h2>
+        <p>王子以外にも、話のカギをにぎる人がたくさんいるよ。「この人だれだっけ？」となったらここを見てね。</p>
+        <div class="cast">
+          <div class="cast-group kura">
+            <h3>クラピカのまわり</h3>
+            <dl>
+              <dt>クラピカ</dt><dd>この章の主人公。第14王子ワブルの護衛。緋の眼を取り戻すのが人生の目的。能力の代償で寿命を削り続けている。</dd>
+              <dt>ビル</dt><dd>クラピカと一緒にワブルの部屋を守るハンター。414話で改めてクラピカの「仲間」として腹をくくる。</dd>
+              <dt>オイト王妃</dt><dd>第8王妃でワブルの母。子どもを生かして継承戦から抜けることだけを願っている。出航前に赤ちゃんをすり替えていたらしい。</dd>
+              <dt>センリツ</dt><dd>心音を聞き分ける音楽家ハンター。第10王子カチョウの護衛。カチョウとフウゲツの脱出を助けた。</dd>
+            </dl>
+          </div>
+          <div class="cast-group prince">
+            <h3>王子の部下たち</h3>
+            <dl>
+              <dt>バルサミルコ</dt><dd>ベンジャミンの兵隊長。ハルケンブルグの暗殺に向かい、逆に矢で体を乗っ取られた。</dd>
+              <dt>ヒュリコフ</dt><dd>ベンジャミンの私設兵。主君にわざと毒（TSK-17）を浴びせた張本人。自分にもビヨンドの呪いがかかっていると気づく。</dd>
+              <dt>リハン／ウショウヒ</dt><dd>ベンジャミンの私設兵。第8王子サレサレを暗殺した。</dd>
+              <dt>テータ</dt><dd>ツェリードニヒの私設兵で、念の先生。彼の才能を恐れて撃ったが、通じなかった。</dd>
+              <dt>サルコフ</dt><dd>ツェリードニヒの私設兵で、テータと一緒に念を教えた。ベンジャミンが見た「ツェリードニヒの死」を疑う。</dd>
+              <dt>ヴァンダイン</dt><dd>ツェリードニヒの兵隊長。</dd>
+              <dt>ボークセン</dt><dd>ツェリードニヒの私設兵。エイ=イ一家にさらわれ、交渉ゲームの末にモレナの仲間になった。</dd>
+              <dt>ロンギ</dt><dd>第5王子ツベッパの私設兵。実はビヨンドの娘。クラピカと契約し、「呪いの子どもたち」の秘密を明かした。</dd>
+              <dt>サラヘル</dt><dd>第2王子カミーラの私設兵。メイドに化けてワブルの命を狙っていた。</dd>
+              <dt>タフディー</dt><dd>第12王子モモゼの護衛兵だったスパイ。モモゼを殺し、ハンゾーに討たれた。</dd>
+            </dl>
+          </div>
+          <div class="cast-group troupe">
+            <h3>幻影旅団とヒソカ</h3>
+            <dl>
+              <dt>クロロ</dt><dd>旅団の団長。ヒソカを追いつつ、単独でカキン王家の宝を狙って上の階へ向かっている。</dd>
+              <dt>ノブナガ</dt><dd>旅団の古株。マフィアと組んでエイ=イ一家を狩る。旅団結成の思い出を語る役。</dd>
+              <dt>フェイタン／フィンクス</dt><dd>ノブナガと一緒にマフィアと手を組んで動く武闘派コンビ。</dd>
+              <dt>ボノレノフ</dt><dd>変身できる団員。ヒソカに化けていたところを見破ったリンチを殺し、旅団とシュウ=ウ一家の関係にひびを入れた。</dd>
+              <dt>ヒソカ</dt><dd>旅団員を殺して宣戦布告した男。1層のカジノで遊びながら、兵士を片手間で倒している。ツェリードニヒと遭遇した。</dd>
+            </dl>
+          </div>
+          <div class="cast-group mafia">
+            <h3>マフィア</h3>
+            <dl>
+              <dt>ヒンリギ</dt><dd>シュウ=ウ一家の若頭。旅団と手を組んでいたが、部下リンチを殺したのが旅団だと気づいて復讐を誓う。</dd>
+              <dt>モレナ</dt><dd>エイ=イ一家の組長。キスで「人を殺して強くなる仲間」を増やす。カキン、そして人類の滅亡が目的。</dd>
+              <dt>オニオール</dt><dd>シュウ=ウ一家の組長。</dd>
+              <dt>ブロッコ=リー</dt><dd>シャ=ア一家の組長。</dd>
+              <dt>リンチ</dt><dd>シュウ=ウ一家の組員。ボノレノフの変身を見破って殺された。</dd>
+            </dl>
+          </div>
+          <div class="cast-group assoc">
+            <h3>ハンター協会・ビヨンド・カキン国王</h3>
+            <dl>
+              <dt>ビヨンド=ネテロ</dt><dd>ネテロ前会長の息子。暗黒大陸遠征のリーダー。呪いを仕込んだ子どもたちを王子のまわりに潜ませていた。</dd>
+              <dt>ジン／パリストン</dt><dd>十二支んを抜けてビヨンドの側についた2人。何をたくらんでいるかはまだ見えない。</dd>
+              <dt>チードル</dt><dd>ハンター協会の新会長。</dd>
+              <dt>レオリオ</dt><dd>十二支んの新メンバー。船に乗っているが、この章ではまだ出番少なめ。</dd>
+              <dt>ナスビ=ホイコーロ</dt><dd>カキン帝国の国王。王子たちの父で、王位継承戦を見守る（というより仕向けた）立場。</dd>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9 -->
+      <section class="block" id="story" data-title="ストーリーを順番に読む">
+        <h2><span class="num">09</span>ストーリーを順番に読む</h2>
+        <p>ここからが本編。全体を8つの「幕」に分けて、起きた順番に追っていくね。巻数はだいたいの目安だよ。</p>
+
+        <ol class="acts">
+          <!-- 第1幕 -->
+          <li class="act" id="act1">
+            <span class="dot" aria-hidden="true"></span>
+            <h3><span class="actno">第1幕</span>出航前夜：それぞれが船に乗る理由</h3>
+            <div class="when"><span>33巻〜34巻</span><span>選挙編の直後</span></div>
+            <p>ビヨンドの宣言と、カキン国王の「暗黒大陸へ移民する」発表で、世界中が大騒ぎになる。ハンター協会は「ビヨンドを見張りつつ、五大厄災を1つでも攻略してリターンを持ち帰る」と方針を決めて、十二支んのメンバーごと船に乗りこむことになるよ。</p>
+            <p>一方、カキン国王は船の上で<b>王位継承戦</b>をやると決める。王子たちには大勢の護衛が必要になって、プロハンターも雇われることになった。</p>
+
+            <h4>クラピカが船に乗る理由</h4>
+            <p>クラピカの人生の目的は、幻影旅団に殺された一族（クルタ族）の<b>緋の眼</b>（感情が高ぶると真っ赤になる目。闇の世界で高値で取引されている）を、すべて取り戻すこと。マフィアのノストラードファミリーで力をつけながら、ほとんどを集め終えていた。</p>
+            <p>残りの一部を持っているのが、カキンの<b>第4王子ツェリードニヒ</b>。王族に近づける機会なんてめったにないから、クラピカは王子の護衛として船に乗ることを選ぶ。担当になったのは、第8王妃オイトとその子ども、<b>第14王子ワブル</b>（まだ赤ちゃん）だよ。仲間のハンター、ビルも一緒だよ。</p>
+            <p>ほかの王子の護衛にも、クラピカの仲間や顔見知りのハンター（センリツ、バショウ、イズナビ、ハンゾー、ビスケなど）が雇われていて、船のあちこちにクラピカの「目」がある状態なんだ。</p>
+
+            <h4>旅団が船に乗る理由</h4>
+            <p>天空闘技場でクロロに敗れたヒソカは、念の力で生き返って、シャルナークとコルトピを殺す。旅団は「ヒソカを殺す」ために、ヒソカが乗りこんだらしいブラックホエール号に乗る。目的はあくまでヒソカで、王位継承戦には興味がない。</p>
+            <div class="box point"><span class="label">ここを押さえて</span>
+              <p>クラピカの狙いは<b>ツェリードニヒ（緋の眼）</b>、旅団の狙いは<b>ヒソカ</b>。同じ船にクラピカと旅団が乗っているけど、お互いの目的は今のところ交わっていないよ。</p>
+            </div>
+          </li>
+
+          <!-- 第2幕 -->
+          <li class="act" id="act2">
+            <span class="dot" aria-hidden="true"></span>
+            <h3><span class="actno">第2幕</span>出航と壺の儀式：最初の夜</h3>
+            <div class="when"><span>34巻〜35巻</span><span>出航1日目</span></div>
+            <p>船が出て、王子たちは<b>壺中卵の儀</b>を行う。全員に守護霊獣がとりつくけど、ほとんどの王子は念を知らないから、自分に何が起きたのかもわかっていない。念が使えるクラピカには、それぞれの霊獣がはっきり見えている。</p>
+
+            <h4>ワブル王子の部屋が地獄になる</h4>
+            <p>ワブルの部屋には、オイト王妃の兵や護衛がたくさんいた。でも出航してわずか数時間で、<b>ほかの王子たちの霊獣や、まぎれこんだスパイ</b>によって次々と死んでいく。気づけば、信用できるのはクラピカとビルの2人だけになっていたんだ。</p>
+            <p>「霊獣は王子本人じゃなくて、まわりの人間を襲う」というルールが、ここで身にしみてわかる場面だよ。</p>
+
+            <h4>最初の脱落者：第12王子モモゼ</h4>
+            <p>初日の夕方、第12王子モモゼが死ぬ。彼女の守護霊獣が本人の知らないところで動きすぎてオーラを使い果たし、モモゼが疲れて眠りこんだところを、<b>自分の護衛兵タフディー</b>に絞め殺されたんだ。タフディーは別の王妃が送りこんだスパイだったとされている。</p>
+            <p>モモゼの護衛だったハンゾーは、タフディーの「手柄をほめられたい」気持ちを利用して自白させ、仇を討つ。</p>
+
+            <h4>クラピカの能力と、その代償</h4>
+            <p>クラピカは緋の眼を発動すると、すべての念系統を100%の力で使える「絶対時間（エンペラータイム）」になる。でもこの章で、<mark>発動している1秒ごとに寿命が1時間ずつ縮む</mark>という恐ろしい代償が明かされる（364話）。</p>
+            <p>さらに、他人の能力を奪って使える新しい鎖も持っているんだけど、奪った能力を使い切るまでエンペラータイムが切れなくなる。そのせいで意図せず長時間発動してしまい、倒れて、何年分もの寿命を一気に失ってしまうんだ（369話あたり）。</p>
+            <div class="out"><span class="k">この幕で退場：</span><span class="tag">第12王子モモゼ</span></div>
+          </li>
+
+          <!-- 第3幕 -->
+          <li class="act" id="act3">
+            <span class="dot" aria-hidden="true"></span>
+            <h3><span class="actno">第3幕</span>クラピカの念講習会と、怪物の目覚め</h3>
+            <div class="when"><span>35巻〜37巻</span><span>出航2日目〜</span></div>
+
+            <h4>「念講習会」という奇策</h4>
+            <p>ワブルを守る人手がない。そこでクラピカは、船の全体チャンネルで「<b>各王子の護衛向けに、念の講習会を開く</b>」と呼びかける。ねらいは3つあるよ。</p>
+            <ul>
+              <li>ほかの王子の護衛に念を覚えさせて、霊獣が見えるようにする（＝戦力のバランスをとって、うかつに手を出せなくする）</li>
+              <li>講習を個室で行うことで、まぎれこんだ暗殺者をあぶり出す</li>
+              <li>王子たちのにらみ合いを長引かせて、時間をかせぐ</li>
+            </ul>
+            <p>講習を受けた護衛たちは次々と念に目覚めていく。下位の王子どうしが手を組む流れも生まれて、第3王子チョウライからはクラピカに直接電話がかかってくる。</p>
+
+            <h4>未解決事件「11人いる！（サイレントマジョリティー）」</h4>
+            <p>ところが講習会のさなか、参加者の中にひそんでいた正体不明の念能力者が、人を殺す事件が起きる。「11人いる！（サイレントマジョリティー）」と呼ばれる能力による犯行で、<mark>犯人は420話の時点でもまだわかっていない</mark>。王位継承編で最大級の謎のひとつだよ。</p>
+
+            <h4>ツェリードニヒが念に目覚める</h4>
+            <p>いちばん念を覚えちゃいけない人が、念を覚えてしまう。第4王子ツェリードニヒは、部下のテータとサルコフから念を習いはじめると、ありえない速さで上達していくんだ。</p>
+            <p>「このまま育てたら手がつけられなくなる」と恐れたテータは、修行中のツェリードニヒを至近距離から撃つ。でも次の瞬間、彼は無傷で立っていた。この不思議な現象の正体は、ずっとあとの418〜419話でやっと明かされるよ（第8幕で説明するね）。</p>
+
+            <h4>ハルケンブルグの決意</h4>
+            <p>第9王子ハルケンブルグは、殺し合いそのものに反対していた。国王を撃ってでも継承戦を止めようとするけど、国王の守護霊獣に防がれ、自分の命を絶つことも止められてしまう。</p>
+            <p>そこで彼は考えを変える。「逃げられないなら、戦って王になって、この仕組みを変える」。彼を信じる仲間たちの思いが集まって、念の矢を放つ力が目覚めるんだ。</p>
+
+            <h4>第8王子サレサレ、暗殺される</h4>
+            <p>そのころ、最大勢力のベンジャミンは着実に動いていた。私設兵リハンが第8王子サレサレの守護霊獣を倒し、丸腰になったところを同じく私設兵のウショウヒが暗殺する。死は表向き「体調不良」として伏せられた。</p>
+            <div class="out"><span class="k">この幕で退場：</span><span class="tag">第8王子サレサレ</span></div>
+          </li>
+
+          <!-- 第4幕 -->
+          <li class="act" id="act4">
+            <span class="dot" aria-hidden="true"></span>
+            <h3><span class="actno">第4幕</span>カチョウとフウゲツの脱出</h3>
+            <div class="when"><span>36巻〜37巻</span><span>383話「脱出」あたり</span></div>
+            <p>第10王子カチョウと第11王子フウゲツは双子の姉妹。わがままなお姉ちゃんと、気弱な妹。でも本当は、カチョウは誰よりも妹を大事に思っていた。</p>
+            <p>フウゲツの守護霊獣は「外へ通じる扉」を作れる。2人はこれを使って、<b>護衛のセンリツの助けを借りて船から逃げ出す</b>計画を立てる。継承戦から抜けて、2人で生きのびるために。</p>
+            <p>でも、この戦いは逃げることを許さなかった。船の外へ出た瞬間、壺の「離脱を許さない呪い」のようなものが襲いかかる。カチョウはフウゲツをかばって命を落とす。センリツは、人の心音を聞き分ける力で、カチョウの死を「音」で感じ取ってしまう。</p>
+            <p>ただ、物語はそこで終わらない。カチョウの守護霊獣は、<b>双子のどちらかが死ぬと、その子の姿になって、残ったほうを守り続ける</b>能力だった。だからフウゲツのそばには、今もカチョウの姿をした存在がいるんだ。</p>
+            <div class="box point"><span class="label">この幕のテーマ</span>
+              <p>「逃げたら死ぬ」というルールがはっきりする。王子たちは、戦うか、守りを固めて期限まで耐えるかしかない。この「逃げ場のなさ」が、のちのクラピカの作戦にもつながっていくよ。</p>
+            </div>
+            <div class="out"><span class="k">この幕で退場：</span><span class="tag">第10王子カチョウ</span></div>
+          </li>
+
+          <!-- 第5幕 -->
+          <li class="act" id="act5">
+            <span class="dot" aria-hidden="true"></span>
+            <h3><span class="actno">第5幕</span>下の階のマフィア戦争</h3>
+            <div class="when"><span>36巻〜38巻</span><span>同じころ、3〜5層で</span></div>
+            <p>上の階で王子が殺し合っているころ、下の階ではマフィアの戦争が始まっていた。</p>
+
+            <h4>カキンの三大マフィアとは</h4>
+            <p>カキンの裏社会を仕切るのは、<b>シュウ=ウ一家</b>、<b>シャ=ア一家</b>、<b>エイ=イ一家</b>の3つ。組長は王族の隠し子が務めるならわしで、表の世界に出ない代わりに生きることを許されている、とされている（エイ=イ一家のモレナの出自については、まだはっきりしないところがある）。そしてそれぞれに、王子が後ろ盾（ケツ持ち）としてついているんだ。</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>一家</th><th>トップ</th><th>後ろ盾の王子</th><th>スタンス</th></tr></thead>
+                <tbody>
+                  <tr><td>シュウ=ウ一家</td><td>組長オニオール／若頭ヒンリギ</td><td>第3王子チョウライ</td><td>バランス重視</td></tr>
+                  <tr><td>シャ=ア一家</td><td>組長ブロッコ=リー</td><td>第7王子ルズールス</td><td>バランス重視</td></tr>
+                  <tr><td>エイ=イ一家</td><td>組長モレナ</td><td>第4王子ツェリードニヒ</td><td>破壊と殺戮</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h4>モレナと「恋のエチュード」</h4>
+            <p>この戦争の火種は、エイ=イ一家の組長<b>モレナ</b>。彼女の能力「恋のエチュード」は、キス（唾液）を通して相手に念能力を目覚めさせるもの。目覚めた人は、人を殺すことで力を伸ばしていく。エイ=イ一家の組員たちが、下の階で次々と殺人事件を起こしていくんだ。</p>
+            <p>モレナの目的は、お金でも縄張りでもない。<mark>カキン帝国を滅ぼし、できればその先、人類を滅ぼすこと</mark>。のちに、彼女が孤児として過酷な目にあってきた過去も語られるよ（408話）。</p>
+
+            <h4>旅団、マフィアと手を組む</h4>
+            <p>マフィアのバランスを大事にするシュウ=ウ一家とシャ=ア一家は、エイ=イ一家を潰すために協力する。そこへ加わるのが<b>幻影旅団</b>。ヒソカの居場所を知りたい旅団と、エイ=イ一家を片付けたいマフィアの利害が一致したんだ。ノブナガたちはシュウ=ウ一家の若頭<b>ヒンリギ</b>と手を組んで、エイ=イ一家の狩りを始める。</p>
+            <p>やがて旅団は、エイ=イ一家のアジトが下の階じゃなく<b>2層</b>にあることをつきとめる。一方、ヒソカを見つけたヒンリギは、ヒソカに「旅団がエイ=イ一家を片付けるまで、1層の娯楽エリアにいてほしい」と頼む。ヒソカがのちにカジノにいるのは、この流れだよ。</p>
+          </li>
+
+          <!-- 第6幕 -->
+          <li class="act" id="act6">
+            <span class="dot" aria-hidden="true"></span>
+            <h3><span class="actno">第6幕</span>幻影旅団はなぜ生まれたか</h3>
+            <div class="when"><span>38巻</span><span>395〜397話の回想</span></div>
+            <p>エイ=イ一家との戦いのさなか、ノブナガが旅団結成のいきさつを思い出す。王位継承編の中で、ちょっと毛色のちがう、でもすごく大事なエピソードだよ。</p>
+            <p>舞台は<b>流星街</b>。何を捨ててもいい場所で、そこで暮らす子どもたちは、外の世界から見捨てられた存在だった。誘拐や殺人もひんぱんに起きていた。</p>
+            <p>子どもだったクロロたちは、ヒーロー番組を自分たちで吹き替えて、小さな子どもたちに見せる上映会を開いていた。その活動を「旅の一座」になぞらえたのが、<b>「旅団」という名前の由来</b>。乱暴者のウボォーギンたちとも、ここで仲間になっていく。</p>
+            <p>ところが仲間の少女<b>サラサ</b>が、むごたらしく殺される。葬式のあと、クロロは犯人をおびき出す罠を考え、「流星街を悪から守るために、自分たちが悪になる」という道を選ぶ。最初はウボォーギンがリーダーに推されたけど、ウボォーギン自身が「クロロのほうが向いている」と認めて、クロロが団長になった。結成は3年後、クロロが14歳のころだよ。</p>
+            <div class="box point"><span class="label">なぜ大事？</span>
+              <p>旅団は「ただの極悪集団」じゃなくて、見捨てられた場所で、仲間と故郷を守ろうとした子どもたちから始まっていた。クルタ族を滅ぼした仇として旅団を追ってきたクラピカの物語にも、いつか重くのしかかってきそうな過去なんだ。</p>
+            </div>
+          </li>
+
+          <!-- 第7幕 -->
+          <li class="act" id="act7">
+            <span class="dot" aria-hidden="true"></span>
+            <h3><span class="actno">第7幕</span>ビヨンドの影と、ハルケンブルグの反撃</h3>
+            <div class="when"><span>39巻</span><span>401〜410話（2024年秋に掲載）</span><span>出航10日目ごろ</span></div>
+
+            <h4><span class="ch">401話</span>ロンギの告白：ビヨンドの「呪いの子どもたち」</h4>
+            <p>第5王子ツベッパの私設兵<b>ロンギ</b>が、クラピカに自分が念能力者だと明かし、彼女の能力（うそのつけない契約を結ぶ力）でクラピカと契約を結ぶ。そして衝撃の事実を打ち明けるんだ。</p>
+            <ul>
+              <li>ロンギは<b>ビヨンド=ネテロの娘</b></li>
+              <li>ビヨンドには10人以上の子どもがいて、みんな生まれつきの念能力者</li>
+              <li>子どもたちには、<mark>本人が死んだあとに発動する強力な呪い</mark>が仕込まれている。彼らは「<b>詛贄者（ソエモノ）</b>」と呼ばれ、強い者は標的を呪い殺す役に選ばれる</li>
+              <li>ロンギは「カキンの王子の中に、ビヨンドの<b>実の子</b>がまぎれていて、ビヨンドはその子を王にしようとしているのでは」と疑っている</li>
+            </ul>
+            <p>ビヨンドは船の裏で、王位継承戦そのものに手を突っこんでいたかもしれない。物語のスケールが一段大きくなる回だよ。</p>
+
+            <h4><span class="ch">402〜404話</span>ハルケンブルグ vs ベンジャミン</h4>
+            <p>ベンジャミンの兵隊長<b>バルサミルコ</b>が、第9王子ハルケンブルグの暗殺に動く。ハルケンブルグが裁判の場に現れると読んだバルサミルコは待ち伏せするけど、ハルケンブルグはコンクリートの壁ごしに念の矢でバルサミルコを射抜くんだ。</p>
+            <p>矢の効果で、<b>ハルケンブルグの魂はバルサミルコの体へ</b>移る。そしてハルケンブルグ自身の肉体は死んでしまう（404話）。死因ははっきり描かれていなくて、読み方が分かれているよ。表向きは「第9王子死亡」。でも中身のハルケンブルグは、敵の兵隊長の体を乗っ取って、ベンジャミンのすぐそばにいることになったんだ。</p>
+            <p>この流れの中で、<b>ハルケンブルグの本当の母親は第1王妃ウンマ</b>（ベンジャミンと同じ母）だったことも明かされる（403話）。表向きは第2王妃ドゥアズルの子とされていたから、王妃たちの間でも何か大きな秘密があるみたい。</p>
+
+            <h4><span class="ch">405〜406話</span>旅団とヒンリギに亀裂</h4>
+            <p>旅団のボノレノフは、変身してヒソカのふりをしていた。それを見破ったシュウ=ウ一家の組員<b>リンチ</b>を、ボノレノフは殺してしまう。リンチの遺体を見たヒンリギは、「犯人はエイ=イ一家じゃなく、旅団の誰かだ」と気づいて、復讐を誓う。<mark>旅団とシュウ=ウ一家の協力関係が、一気に敵対の一歩手前まで崩れる</mark>んだ。</p>
+            <p>団長クロロは、ほかの団員と離れて単独で動いている。ヒソカを狙いつつ、カキン王家に伝わる「三種の神器」（壺中卵の壺などの宝）にも目をつけて、上の階を目指しているよ。また、ボノレノフはゲームで遊ぶヒソカを見つけ出している。</p>
+
+            <h4><span class="ch">407〜410話</span>モレナとボークセンの「交渉ゲーム」</h4>
+            <p>第9王子の葬儀の警備をしていた、ツェリードニヒの私設兵<b>ボークセン</b>が、エイ=イ一家にさらわれる。モレナは彼をカードを使った「交渉ゲーム」に引きこんで、仲間になるよう迫るんだ。ゲームの中で、モレナの過去や、カキンの残酷な風習も少しずつ語られる。</p>
+            <p>最後にボークセンは「Yes」を残して、モレナとキスを交わし、エイ=イ一家に加わる。実はゲームには「イカサマをした相手を操る」仕掛けがあって、イカサマがばれたボークセンには、仲間になると答えるしかなかった、という読み方が有力だよ。</p>
+
+            <h4><span class="ch">410話</span>ベンジャミン、感染する</h4>
+            <p>そして39巻のラスト。ベンジャミンの顔色がおかしい。彼は、カキン軍が開発したものの使われなかった毒<b>「TSK-17」</b>に感染していたんだ。残された時間はわずか。ベンジャミンは、死ぬ前にすべてを終わらせるため、<b>「特殊戒厳令」</b>を出すことを決める。</p>
+            <p>ここで連載はまた長いお休みに入って、続きは約1年半後の2026年夏まで待つことになったよ。</p>
+            <div class="out"><span class="k">この幕で退場：</span><span class="tag">第9王子ハルケンブルグ（肉体のみ）</span></div>
+          </li>
+
+          <!-- 第8幕 -->
+          <li class="act" id="act8">
+            <span class="dot" aria-hidden="true"></span>
+            <h3><span class="actno">第8幕</span>特殊戒厳令：船が戦場になる</h3>
+            <div class="when"><span>411〜420話（2026年6月29日〜9月7日に掲載）</span><span>40巻に収録予定</span></div>
+
+            <h4><span class="ch">411話</span>クラピカの爆弾発言</h4>
+            <p>クラピカは2回目の念講習会を開く。参加者の中には、第2王子カミーラの私設兵<b>サラヘル</b>がメイドに化けてまぎれこんでいた。ワブル王子の命を狙う役目だったらしい。</p>
+            <p>クラピカは、期限までに勝者が1人に決まらなければ継承戦そのものが崩れ、カキンという国が傾きかねない、と読んでいる。そのうえで、みんなの前でこう発表するんだ。<mark>「第14王子ワブルには、継承資格がない」</mark>。</p>
+
+            <h4><span class="ch">412話</span>赤ちゃんのすり替え</h4>
+            <p>その発表の裏側が明かされる。オイト王妃は出航前に、赤ちゃんを<b>すり替えていた</b>らしい。本物のワブルは王妃の妹に預けられていて、船に乗っているのは妹の子ども、という読み方が有力だよ。王子じゃない子なら、そもそも継承戦に参加していないことになる。</p>
+            <p>クラピカの作戦は、この事実を武器に、<b>ワブルとオイト王妃を継承戦の外に出すこと</b>だよ。</p>
+            <p>ただし、クラピカの体はもう限界が近い。念の使いすぎで、寿命という代償がどんどん積み重なっているんだ。ロンギの告発を受けて、「王子の中にいるかもしれないビヨンドの子」と「護衛にも仕込まれている呪い」をどうするか、という難題も抱えている。</p>
+
+            <h4><span class="ch">413話</span>毒を盛った犯人は、身内だった</h4>
+            <p>ベンジャミンに毒を浴びせたのは、ハルケンブルグが入っているバルサミルコ…ではなく、ベンジャミン自身の私設兵<b>ヒュリコフ</b>だった。ブーツに仕込んだTSK-17を噴きつけたんだ。</p>
+            <p>動機は裏切りじゃない。ヒュリコフは、<b>ベンジャミンの守護霊獣の力で、ベンジャミンを死んだあとも「カキンの守護神」にできる</b>と考えて、わざと今の状況を作り出したらしい。ベンジャミンもそれを受け入れて覚悟を決める。そして14時15分、<b>特殊戒厳令</b>が出される。</p>
+
+            <h4><span class="ch">414話</span>仲間</h4>
+            <p>戒厳令のさなか、ベンジャミンの兵たちは、ほかの王子の護衛を静かに片付けはじめる（第7王子ルズールスの護衛も襲われる）。</p>
+            <p>一方クラピカ陣営では、ビルが改めてクラピカの「仲間」として腹をくくる。そしてクラピカが「信頼できる仲間」として思い浮かべるのが、<b>ゴンとキルア</b>。久しぶりに2人の姿が描かれて、大きな話題になったよ。</p>
+
+            <h4><span class="ch">415話</span>呪いの正体と、消えた2人の王子</h4>
+            <p>ヒュリコフは、自分の能力で、<b>自分自身にも呪いがかけられている</b>ことに気づく。彼もビヨンドの子ども（詛贄者）の1人だったらしい。ヒュリコフはビヨンドに直接電話をかけて問いただす。</p>
+            <p>ベンジャミンが王子たちを呼び出すと、<b>第3王子チョウライと第7王子ルズールスはすでに姿を消していた</b>。第11王子フウゲツは（カチョウの姿をした霊獣と一緒に）司法省にいることもわかる。クラピカとオイト王妃は、外の仲間に助けを求めるため、ハガキ8枚を使った作戦を動かしはじめる。</p>
+
+            <h4><span class="ch">416話</span>突撃</h4>
+            <p>特殊戒厳令が船中に告げられる。ベンジャミンは、体が動かなくなるまでの残り時間（およそ10時間）を意識しながら、まず第2王子<b>カミーラ</b>の部屋に兵を連れて突入する。カミーラは銃を撃つけど、ベンジャミンは念のガードで無傷。カミーラは「自分は最長3か月くらい冬眠できる」と言い放ち、立てこもりで耐える構えを見せる。</p>
+            <p>続いてベンジャミンは、第4王子<b>ツェリードニヒ</b>の部屋へ向かう。</p>
+
+            <h4><span class="ch">417話</span>ツェリードニヒ、死す？</h4>
+            <p>ベンジャミンはツェリードニヒを撃ち、念には念を入れて頭まで踏みつぶして部屋を出る。でもそばにいたサルコフは、「今のは本当に起きたことなのか？」と疑う。ツェリードニヒは撃たれる前に、能力を発動していたんだ。</p>
+            <p>ベンジャミンの狙いも見えてくる。カキンの<b>緊急事態法</b>では、継承権を持つ全員が死にそうで国王だけが残る場合、国王はすぐに次の継承者を指名しなければならない。ベンジャミンは<mark>王子を全滅させて、自分の子どもを次の王に指名させる</mark>つもりらしい。そのために、呼び出しに応じてやってきた第5王子ツベッパと第6王子タイソンにも、ひそかにTSKをうつした可能性が高い。</p>
+            <p>また、バルサミルコの体にいたハルケンブルグの魂は、さらに別の誰かの体へ移ったかもしれない、という描写もある。</p>
+
+            <h4><span class="ch">418〜419話</span>「刹那の10秒」の正体</h4>
+            <p>ここで、ツェリードニヒの能力がついに説明される。</p>
+            <ul>
+              <li>絶（気配を消す技）をして目を閉じると、<b>10秒先の未来</b>が見える</li>
+              <li>そのまま目を開けて動くと、まわりの人には「ニセの未来」が見え続け、そのあいだツェリードニヒは<b>誰にも気づかれずに動ける</b></li>
+              <li>ただし幻の中の相手を攻撃したり、物を奪ったりはできない（兵隊長ヴァンダインに撃っても効かなかった）</li>
+              <li>効果があるのは念獣を中心に<b>半径約36m</b>。発動したあとに範囲へ入ってきた人には効かない</li>
+              <li>能力の名前は「刹那の10秒（ラプラスデビル）」。本人いわく、まだ「レベル1」の段階</li>
+            </ul>
+            <p>第3幕でテータに撃たれても無傷だったのも、この能力の仕組みで説明がつくね。ツェリードニヒは兵士たちを相手に能力を試しながら部屋を抜け出し、1層の客室エリアから<b>カジノエリア</b>へ向かう。</p>
+
+            <h4><span class="ch">420話</span>遭遇</h4>
+            <p>カジノでは、ヒソカがパチンコを打っていた。しかも、襲ってくる国王軍の兵士を片手間で倒しながら。ツェリードニヒは正体を知らないまま彼を「沼男（仮）」と呼び、二人はついに顔を合わせる。</p>
+            <p>力の差は歴然で、戦いにすらならない。ツェリードニヒはなんとかその場を逃げ切る。</p>
+            <p>そして誌面には「次回の掲載は決定次第、本誌で発表いたします」。物語はここで、またお休みに入っているよ。</p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- 10 -->
+      <section class="block" id="now" data-title="いま（420話時点）どうなってる？">
+        <h2><span class="num">10</span>いま（420話時点）どうなってる？</h2>
+        <div class="board" role="group" aria-label="王子の生死のまとめ">
+          <div class="a"><b>8</b><span>生存</span></div>
+          <div class="d"><b>4</b><span>死亡</span></div>
+          <div class="m"><b>2</b><span>行方不明</span></div>
+        </div>
+        <p class="small muted">生存の8人には、「継承資格がない」と発表されたワブル王子も入っているよ。死亡の4人はモモゼ、サレサレ、カチョウ、ハルケンブルグ（肉体のみ）。</p>
+
+        <div class="clock">
+          <span class="ic" aria-hidden="true">⏳</span>
+          <p><b>タイムリミットが2つ同時に動いている。</b>ひとつはベンジャミンの命（半日もたない）。もうひとつは、船が暗黒大陸に着くまでの約2か月。ベンジャミンは前者のうちに王子を全滅させたい。逆に、ほかの王子はベンジャミンが倒れるまで逃げ切れば勝ち筋が見える。</p>
+        </div>
+
+        <h3>それぞれの現在地</h3>
+        <ul class="where">
+          <li class="prince"><b>第1王子ベンジャミン</b>特殊戒厳令で王子狩りの真っ最中。緊急事態法で自分の子に王位をつなぐつもり。</li>
+          <li class="prince"><b>第4王子ツェリードニヒ</b>死んだと思われたまま逃走中。カジノでヒソカと出会い、なんとか逃げ切った。</li>
+          <li class="prince"><b>第2王子カミーラ</b>ベンジャミンに突入されたが、冬眠できる体質で籠城の構え。</li>
+          <li class="prince"><b>第3王子チョウライ・第7王子ルズールス</b>戒厳令の前に姿を消した。どこにいるのかは不明。</li>
+          <li class="kura"><b>クラピカ</b>「ワブルに継承資格はない」を武器に、ワブルとオイト王妃を継承戦から外そうとしている。外の仲間（ゴンとキルア）に頼る動きも。ただし寿命の限界が近い。</li>
+          <li class="troupe"><b>幻影旅団</b>ヒソカを追っているが、ボノレノフのせいでシュウ=ウ一家と決裂寸前。クロロは単独で王家の宝を狙って上の階へ。</li>
+          <li class="troupe"><b>ヒソカ</b>1層のカジノで遊びながら、兵士を軽くあしらっている。ツェリードニヒと接触した。</li>
+          <li class="mafia"><b>エイ=イ一家（モレナ）</b>ツェリードニヒの部下ボークセンを仲間に引き入れ、カキン崩壊に向けて勢力を広げている。</li>
+          <li class="assoc"><b>ビヨンド</b>呪いを仕込んだ子どもたち（詛贄者）を王子のまわりに潜ませていた。ヒュリコフから直接問いただされている。</li>
+        </ul>
+
+        <h3>まだ明かされていない謎</h3>
+        <ol class="mysteries">
+          <li><b>王子の中にビヨンドの実の子はいるのか？</b>いるとしたら誰？ ビヨンドは本当にその子を王にしようとしているの？</li>
+          <li><b>「11人いる！（サイレントマジョリティー）」の犯人は誰？</b>講習会で人を殺した能力者は、まだ正体不明。</li>
+          <li><b>ハルケンブルグの魂は今どこにいる？</b>バルサミルコの体からさらに移ったのなら、誰の体に？</li>
+          <li><b>ベンジャミンは間に合うのか？</b>死ぬ前に王子を全滅させられるのか。そして守護霊獣の力で「死後も国を守る」とはどういうこと？</li>
+          <li><b>本物のワブルはどこに？</b>オイト王妃の妹のもとにいる本物のワブルは、この先物語に関わってくるのか。</li>
+          <li><b>クラピカは緋の眼を取り戻せるのか？</b>しかも、寿命がもつうちに。</li>
+          <li><b>ヒソカと旅団の決着は？</b>そしてツェリードニヒとヒソカの出会いが、何を引き起こすのか。</li>
+          <li><b>チョウライとルズールスはどうやって消えた？</b>誰かの念能力に助けられたのか、それとも連れ去られたのか。</li>
+          <li><b>ゴンとキルアは船に来るのか？</b>クラピカのハガキ作戦は2人に届くのか。</li>
+        </ol>
+      </section>
+
+      <!-- 11 -->
+      <section class="block" id="glossary" data-title="用語集">
+        <h2><span class="num">11</span>用語集</h2>
+        <dl class="glossary">
+          <div><dt>念<small>ねん</small></dt><dd>体からあふれる生命エネルギー（オーラ）を自在に操る技術。修行した人だけが使えて、使えない人には見えない。</dd></div>
+          <div><dt>絶<small>ぜつ</small></dt><dd>オーラを体の内側に閉じこめて、気配を消す念の基本技。ツェリードニヒの能力の発動条件にもなっている。</dd></div>
+          <div><dt>念獣<small>ねんじゅう</small></dt><dd>念でできた生き物。持ち主の能力として作られるものもあれば、守護霊獣のように儀式でとりつくものもある。</dd></div>
+          <div><dt>守護霊獣<small>しゅごれいじゅう</small></dt><dd>壺中卵の儀で王子全員にとりついた念獣。宿主の性格を映した姿と能力を持ち、宿主にも操れない。</dd></div>
+          <div><dt>壺中卵の儀<small>こちゅうらんのぎ</small></dt><dd>出航直後に王子たちが行った儀式。自分の血を壺に入れて王位を願うと、守護霊獣がつく。蠱毒が元ネタとされる。</dd></div>
+          <div><dt>蠱毒<small>こどく</small></dt><dd>毒虫をひとつの壺に入れて殺し合わせ、最後に残った1匹を使う古いまじない。王位継承戦の仕組みそのもの。</dd></div>
+          <div><dt>私設兵／王妃所属兵</dt><dd>王子本人が抱える兵隊と、母親の王妃が送りこむ兵隊。王妃所属兵の中には、ほかの王妃のスパイもまざっている。</dd></div>
+          <div><dt>緋の眼<small>ひのめ</small></dt><dd>クルタ族の目は、感情が高ぶると真っ赤に染まる。とても美しく、闇の世界で高値で売買されてきた。クラピカが一族のために取り戻そうとしている。</dd></div>
+          <div><dt>絶対時間<small>エンペラータイム</small></dt><dd>クラピカが緋の眼のときに使える、すべての念系統を100%の力で使える状態。1秒ごとに寿命が1時間縮む。</dd></div>
+          <div><dt>十二支ん<small>じゅうにしん</small></dt><dd>ハンター協会の最高幹部12人。ネテロ会長が選んだ。クラピカとレオリオも、選挙編のあとにメンバー入りした。</dd></div>
+          <div><dt>V5<small>ブイファイブ</small></dt><dd>人類が暮らす世界をまとめる5つの大国。暗黒大陸に関わることを取り決めている。</dd></div>
+          <div><dt>暗黒大陸</dt><dd>人類の世界がある巨大な湖の、外側に広がる未知の大陸。危険な生き物や五大厄災がいる。</dd></div>
+          <div><dt>五大厄災</dt><dd>暗黒大陸から人類が持ち帰ってしまった5つの災い。兵器ブリオン、ガス生命体アイ、双尾の蛇ヘルベル、人飼いの獣パプ、不死の病ゾバエ。</dd></div>
+          <div><dt>リターン</dt><dd>暗黒大陸から持ち帰れる見返り。万能薬や新しい資源などがあるとされる。</dd></div>
+          <div><dt>詛贄者<small>ソエモノ</small></dt><dd>ビヨンドの子どもたちのうち、本人の死後に発動する呪いを仕込まれた者。強い者は標的を呪い殺す役目を負う。</dd></div>
+          <div><dt>TSK-17</dt><dd>カキン軍が開発したものの、使われなかった毒（生物兵器）。ベンジャミンに使われ、半日ほどで命を奪うとされる。</dd></div>
+          <div><dt>特殊戒厳令</dt><dd>ベンジャミンが出した非常時の命令。これをきっかけに、船の1層が戦場になる。</dd></div>
+          <div><dt>緊急事態法</dt><dd>継承権を持つ全員の死が避けられず国王だけが残るとき、国王がすぐに次の継承者を指名する、というカキンの法律。</dd></div>
+          <div><dt>恋のエチュード</dt><dd>モレナの能力。キスで相手に念能力を目覚めさせ、人を殺すことで力を伸ばす「仲間」を増やしていく。</dd></div>
+          <div><dt>流星街<small>りゅうせいがい</small></dt><dd>何を捨ててもいいとされる場所。幻影旅団のメンバーの多くがここの出身。</dd></div>
+        </dl>
+      </section>
+
+      <!-- 12 -->
+      <section class="block" id="reread" data-title="読み返すならここから">
+        <h2><span class="num">12</span>読み返すならここから</h2>
+        <p>このページで流れをつかんだら、原作を読み返すと驚くほどスッと入ってくるはず。目的別のおすすめルートを置いておくね。</p>
+        <div class="reread">
+          <div class="route">
+            <h3>全部まとめて読み直す</h3>
+            <ol>
+              <li>33巻（選挙編のあと〜出航前夜）から順番に</li>
+              <li>王子が出てきたら、このページの「14王子名鑑」を横に開いておく</li>
+              <li>1話で場面が変わったら「今どのグループの話？」とだけ意識する</li>
+            </ol>
+          </div>
+          <div class="route kura">
+            <h3>クラピカの話だけ追う</h3>
+            <ol>
+              <li>34〜36巻：ワブルの部屋のパートと念講習会</li>
+              <li>39巻：401話（ロンギの告白）</li>
+              <li>411話〜：継承資格の発表と、そのあと</li>
+            </ol>
+          </div>
+          <div class="route troupe">
+            <h3>旅団とヒソカの話だけ追う</h3>
+            <ol>
+              <li>34巻：ヒソカ vs クロロ</li>
+              <li>36〜38巻：マフィア戦争と、旅団の過去編</li>
+              <li>39巻：405〜406話（ボノレノフとヒンリギ）</li>
+              <li>419〜420話：カジノのヒソカ</li>
+            </ol>
+          </div>
+          <div class="route prince">
+            <h3>王子の戦いだけ追う</h3>
+            <ol>
+              <li>34〜35巻：壺中卵の儀とモモゼの死</li>
+              <li>37巻：ハルケンブルグの覚醒、カチョウの脱出</li>
+              <li>39巻：402〜404話、410話</li>
+              <li>413〜420話：特殊戒厳令</li>
+            </ol>
+          </div>
+        </div>
+
+        <h3>巻ごとのざっくり早見表</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>巻</th><th>だいたい何が起きる？</th></tr></thead>
+            <tbody>
+              <tr><td>33巻</td><td>暗黒大陸の種明かし、ビヨンド、十二支んにクラピカとレオリオが加入、出航前夜</td></tr>
+              <tr><td>34巻</td><td>ヒソカ vs クロロ、旅団狩りの始まり、出航と壺中卵の儀</td></tr>
+              <tr><td>35巻</td><td>ワブルの部屋の危機、クラピカの能力の代償、念講習会</td></tr>
+              <tr><td>36巻</td><td>旅団が再登場してマフィアの世界へ、王子たちの駆け引き</td></tr>
+              <tr><td>37巻</td><td>ハルケンブルグの覚醒、サレサレの死、カチョウとフウゲツの脱出</td></tr>
+              <tr><td>38巻</td><td>391〜400話。エイ=イ一家との抗争、幻影旅団の過去編</td></tr>
+              <tr><td>39巻</td><td>401〜410話。ロンギとビヨンドの秘密、ハルケンブルグの死、交渉ゲーム、ベンジャミン感染（2026年7月3日発売）</td></tr>
+              <tr><td>40巻</td><td>411〜420話を収録予定（未発売）。特殊戒厳令、ツェリードニヒの能力、ヒソカとの遭遇</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small muted">33〜37巻の内容の区切りは、だいたいの目安だよ。</p>
+      </section>
+
+      <!-- 13 -->
+      <section class="block" id="sources" data-title="このまとめについて・出典">
+        <h2><span class="num">13</span>このまとめについて・出典</h2>
+        <div class="box note">
+          <p>このページは、2026年10月10日時点で公開されているニュース記事や、ファンによる解説・感想記事を複数突き合わせてまとめたものだよ。原作の本文をそのまま確かめたわけではないので、細かいところは記事によって読み方が分かれている部分もある。そういうところは「〜らしい」「〜とされる」「読み方が有力」と書き分けているよ。</p>
+          <p>正確なセリフや描写は、ぜひ単行本や『週刊少年ジャンプ』で確かめてね。漫画の画像は著作権があるので使わず、文章と図だけでまとめているよ。</p>
+        </div>
+        <h3>主な参照先</h3>
+        <ul class="sources">
+          <li><a href="https://hypebeast.com/jp/2026/6/hunter-hunter-39-release-info" target="_blank" rel="noopener">HUNTER×HUNTER 39巻の発売情報（Hypebeast）</a></li>
+          <li><a href="https://www.tokyoweekender.com/entertainment/anime-and-manga/hunter-x-hunter-manga-resumes-serialization/" target="_blank" rel="noopener">連載再開のニュース（Tokyo Weekender）</a></li>
+          <li><a href="https://realsound.jp/book/2026/07/post-2447184.html" target="_blank" rel="noopener">『HUNTER×HUNTER』、今どうなってる？ 第39巻を読むために（リアルサウンド）</a></li>
+          <li><a href="https://manga.watch.impress.co.jp/docs/special/1627486.html" target="_blank" rel="noopener">うろ覚えの人に向けて王位継承編を一挙おさらい（Impress Watch）</a></li>
+          <li><a href="https://dengekionline.com/article/202408/321" target="_blank" rel="noopener">最新刊39巻 発売日・あらすじまとめ（電撃オンライン）</a></li>
+          <li><a href="https://www.animatetimes.com/news/details.php?id=1788744716" target="_blank" rel="noopener">今週の『ハンター×ハンター』No.420「遭遇」（アニメイトタイムズ）</a></li>
+          <li><a href="https://www.animatetimes.com/news/details.php?id=1785722082" target="_blank" rel="noopener">今週の『ハンター×ハンター』No.416「発令」（アニメイトタイムズ）</a></li>
+          <li><a href="https://www.animatetimes.com/news/details.php?id=1788147110" target="_blank" rel="noopener">今週の『ハンター×ハンター』No.419「実践」（アニメイトタイムズ）</a></li>
+          <li><a href="https://dic.pixiv.net/a/%E3%82%AB%E3%82%AD%E3%83%B3%E5%B8%9D%E5%9B%BD" target="_blank" rel="noopener">カキン帝国（ピクシブ百科事典）</a></li>
+          <li><a href="https://dic.pixiv.net/a/%E5%B9%BB%E5%BD%B1%E6%97%85%E5%9B%A3" target="_blank" rel="noopener">幻影旅団（ピクシブ百科事典）</a></li>
+          <li><a href="https://dic.pixiv.net/a/%E3%83%AD%E3%83%B3%E3%82%AE(HUNTER%C3%97HUNTER)" target="_blank" rel="noopener">ロンギ（ピクシブ百科事典）</a></li>
+          <li><a href="https://ciatr.jp/topics/321056" target="_blank" rel="noopener">王位継承編のルール一覧・全14王子の生死（ciatr）</a></li>
+          <li><a href="https://xyz.stars.ne.jp/hunterguide/succession-blackwhale.html" target="_blank" rel="noopener">ブラックホエール号（HUNTER GUIDE）</a></li>
+          <li><a href="https://xyz.stars.ne.jp/hunterguide/succession-timesequence.html" target="_blank" rel="noopener">王位継承編時系列（HUNTER GUIDE）</a></li>
+          <li><a href="https://hunterworld.tokyo/en/queens-of-kakin/" target="_blank" rel="noopener">カキン国王妃一覧（HUNTER×WORLD）</a></li>
+          <li><a href="https://www.saiusaruzzz.com/entry/2022/11/09/120000" target="_blank" rel="noopener">暗黒大陸編の設定とルールの整理（うさるの厨二病な読書日記）</a></li>
+          <li><a href="https://www.g913-jiro.com/entry/2026/08/24/115115" target="_blank" rel="noopener">No.418『仮定』の感想（私の名前はジロギン。）</a></li>
+          <li><a href="https://skypenguin.net/2026/07/13/post-158222/" target="_blank" rel="noopener">413話『忠誠』感想・考察（skypenguin）</a></li>
+          <li><a href="https://heysay.hatenadiary.jp/entry/2026/09/07/001909" target="_blank" rel="noopener">420話の感想（平成令和JUMP）</a></li>
+          <li><a href="https://himanekoblog.hatenablog.com/entry/2026/09/07/172814" target="_blank" rel="noopener">第420話で10話掲載終了・次回は未定（ひまなねこのひまつぶし）</a></li>
+        </ul>
+      </section>
+
+      <footer>
+        <p>HUNTER×HUNTER（冨樫義博／集英社）の王位継承編を、個人の学習記録としてまとめたページです。作品の画像は使用していません。</p>
+        <p>作成：2026年10月10日</p>
+      </footer>
+    </main>
+  </div>
+</div>
+
+<button class="to-top" id="to-top" type="button" aria-label="ページの先頭へ">↑</button>
+
+<script>
+(function(){
+  /* 目次を各セクションの見出しから作る */
+  var sections = Array.prototype.slice.call(document.querySelectorAll("section.block[data-title]"));
+  var tocs = document.querySelectorAll("[data-toc]");
+  tocs.forEach(function(nav){
+    var ol = document.createElement("ol");
+    sections.forEach(function(sec, i){
+      var li = document.createElement("li");
+      var a = document.createElement("a");
+      a.href = "#" + sec.id;
+      a.dataset.target = sec.id;
+      var n = document.createElement("span");
+      n.className = "n";
+      n.textContent = String(i + 1).padStart(2, "0");
+      a.appendChild(n);
+      a.appendChild(document.createTextNode(sec.dataset.title));
+      li.appendChild(a);
+      ol.appendChild(li);
+    });
+    nav.appendChild(ol);
+  });
+
+  /* スマホの目次はリンクを押したら閉じる */
+  var mob = document.querySelector(".toc-mobile");
+  if(mob){
+    mob.addEventListener("click", function(e){
+      if(e.target.closest("a")) mob.open = false;
+    });
+  }
+
+  /* いま読んでいるセクションを目次で光らせる */
+  var links = document.querySelectorAll(".toc a");
+  function setActive(id){
+    links.forEach(function(a){ a.classList.toggle("active", a.dataset.target === id); });
+  }
+  if("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting) setActive(en.target.id); });
+    }, { rootMargin:"-20% 0px -70% 0px" });
+    sections.forEach(function(s){ io.observe(s); });
+  }
+
+  /* 読んだ量バーと「先頭へ」ボタン */
+  var bar = document.getElementById("bar");
+  var top = document.getElementById("to-top");
+  function onScroll(){
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    var p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+    bar.style.width = p + "%";
+    top.classList.toggle("show", h.scrollTop > 600);
+  }
+  window.addEventListener("scroll", onScroll, { passive:true });
+  onScroll();
+  top.addEventListener("click", function(){ window.scrollTo({ top:0 }); });
+
+  /* 王子名鑑のしぼりこみ */
+  var buttons = document.querySelectorAll(".filters button");
+  var cards = document.querySelectorAll(".pcard");
+  buttons.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var f = btn.dataset.filter;
+      buttons.forEach(function(b){ b.setAttribute("aria-pressed", String(b === btn)); });
+      cards.forEach(function(c){ c.hidden = !(f === "all" || c.dataset.status === f); });
+    });
+  });
+})();
+</script>
+</body>
+</html>
