@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（SCSK）。2026年10月13日作成。公開情報（Microsoft カスタマーストーリー）をもとにまとめています。">
+<title>提案書レビューを「目的ごとの3エージェント」に分け、約3か月で現場に出しました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月13日／IT サービス業（SCSK）・提案書づくり</p>
+
+  <h1>提案書レビューを「目的ごとの3エージェント」に分け、約3か月で現場に出しました</h1>
+
+  <div class="lead">
+    <p>SCSK では、生成 AI を検索エンジンの延長のように使う人が多く、高度なプロンプト（AI への指示文）の技術がなくても使える形が求められていました。</p>
+    <p>そこで Microsoft の支援を受け、Copilot Studio で提案書レビューなど3種類のエージェントを約3か月で作りました。</p>
+    <p>提案書レビューは、目的ごとにセルフレビュー用・上長レビュー用・壁打ち用の3つに分け、メンバーと上長の作業時間の短縮と品質向上に役立ったと SCSK は述べています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>提案書を書き終えたあと、上長に見てもらう前に自分で確認したい。けれど、何を見ればよいのか迷う。逆に上長は、毎回すべての提案書を細かく見る時間がない。そんな場面はありませんか。</p>
+  <p>SCSK では、生成 AI を使っていると考える人の約8割は検索エンジンの延長のような使い方にとどまる、という見方がありました。高度なプロンプトを書く力を全員に求める形では、全社への定着は現実的ではないと考えたそうです。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、文章での指示や画面操作で AI エージェント（決まった仕事を代わりに進める AI）を作れる Microsoft のサービスです。SCSK は、10余りのユースケース（使い道）を出したうえで3つを選び、マイクロソフトとも議論しながら、期待に近い出力を得るための情報の盛り込み方を検討しました。</p>
+  <p>作ったのは、提案書レビュー、メンバーからの情報共有、メンバーの活動把握の3つです。想定した利用者は、若手から中堅管理職までの、業務負荷の高い層です。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="SCSK がエージェントを作って現場に出すまでの流れ">
+      <li><div class="box">ユースケースを<br>10余り出す</div></li>
+      <li><div class="box">3つに絞って<br>作成</div></li>
+      <li><div class="box">提案書レビューを<br>目的別に分ける</div></li>
+      <li><div class="box">現場の声で<br>改善する</div></li>
+      </ol>
+    <figcaption>SCSK がエージェントを作って現場に出すまでの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>関連する複数の部署と連携し、10余りのユースケースを出します。</li>
+    <li>その中から3つを選び、期待に近い出力が得られる情報の盛り込み方を検討します。</li>
+    <li>提案書レビューは、セルフレビュー・上長レビュー・提案作成時の壁打ち（アイデア整理）の3つに分けて作ります。フェーズごとに分けるのはマイクロソフトの助言でした。</li>
+    <li>短い期間で作って出し、現場のフィードバックを受けて改善します。</li>
+    </ol>
+  <p class="src-note">※ 手順は SCSK が公表している進め方を4段階にまとめたものです。エージェントの具体的な設定内容は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>生成 AI は検索エンジンの延長のような使い方が中心で、高度なプロンプトの技術を求める使い方は全社には定着しにくいと考えられていました。</p></div>
+    <div class="after"><h3>いま</h3><p>目的別の3つのエージェントで、メンバーと上長の作業時間の短縮と提案書の品質向上につながったとされています。</p></div>
+  </div>
+  <p>SCSK が公表した数字は、作成したエージェント3つ、検討したユースケース10余り、開発期間約3か月です。作業時間を実測した数字は公表されていません。ライセンスは、挙手制から約7,000ライセンスの全社トライアルへ広げ、5,000以上を提供済みとのことです。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>自分がよく作る書類（提案書、報告書、議事録など）を1つ選びます。</li>
+    <li>「書いた本人の確認用」「上長の確認用」「相談相手」のうち、どれが一番ほしいかを決めます。</li>
+    <li>1つだけエージェントを作り、確認してほしい観点を数項目書いて、実際の書類で試します。</li>
+    </ol>
+  <p>準備物は、確認してほしい観点のメモと、試しに使う書類（機密を除いたもの）です。Copilot Studio の利用にはライセンスや社内の設定が関わるため、情報システム部門に確認してください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>業務の進め方そのものを見直すことがあります</strong>
+    <p>SCSK では、一部のエージェントで成果が出た一方、現場の意見で課題が見えたものもありました。エージェントだけでなく、業務の進め方自体の見直しが必要なケースもあったと述べています。</p>
+  </div>
+  <p>提案書には顧客情報が含まれることが多いため、エージェントに渡してよい情報の範囲を先に決めてください。AI の指摘がいつも正しいとは限らないので、最終判断は人が行います。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例の要点は、「提案書レビュー」という1つの仕事を、目的ごとに別のエージェントに分けたことです。1つの万能なエージェントを目指すより、目的を絞ったほうが、使う側も指示を考えずに済みます。</p>
+  <p>自分の職場に置き換えると、議事録のチェック、契約書の確認、メールの下書きなど、「自分で見る」「上司が見る」「相談する」の段階がある仕事は多くあります。段階ごとに別のエージェントを用意する発想は、そのまま応用できます。</p>
+
+  <footer>
+    <p>出典：Microsoft カスタマーストーリー「Copilot エージェントによる自社業務課題解決と外販サービス化を推進。Microsoft 365 Copilot の全社導入に舵を切ったSCSK の AI 活用」（2025年9月3日公開）<br>
+    <a href="https://www.microsoft.com/ja-jp/customers/story/24985-scsk-corporation-agents">https://www.microsoft.com/ja-jp/customers/story/24985-scsk-corporation-agents</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月13日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -20,6 +20,8 @@
 | 2026-10-09 | Copilot Studio（Agent Builder 枠の代替） | Microsoft（Ask Microsoft） | pages/jirei_20261009-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/26166-microsoft-microsoft-copilot-studio |
 | 2026-10-11 | Agent Builder | Microsoft（社内・Inside Track Customer Zero guide） | pages/jirei_20261011-agent-builder.html | https://www.microsoft.com/insidetrack/blog/our-customer-zero-guide-enabling-agent-creation-across-microsoft-365-copilot-copilot-studio-and-foundry/ |
 | 2026-10-11 | Copilot Studio | 大林組 | pages/jirei_20261011-copilot-studio.html | https://techtarget.itmedia.co.jp/tt/article/2607/14/226071402/ |
+| 2026-10-13 | Copilot Studio | Atea | pages/jirei_20261013-copilot-studio.html | https://adoption.microsoft.com/en-us/agent-transformation-stories/atea/ |
+| 2026-10-13 | Copilot Studio（Agent Builder 枠の代替） | SCSK | pages/jirei_20261013-copilot-studio-2.html | https://www.microsoft.com/ja-jp/customers/story/24985-scsk-corporation-agents |
 
 ## ネタ帳（候補）
 
@@ -55,3 +57,4 @@
 - 2026-10-07：Agent Builder 枠は、本文を読めて Agent Builder と明記された事例が見つからず、Copilot Studio を2本（Coca-Cola Andina、Unifi）にした。確認したが不採用：Inside Track 3本（2024-12-19 extensibility、2025-02-06 Copilot Studio、2026-07-30 AI value。Agent Builder の具体例なし）、adoption.microsoft.com の agent-transformation-stories（Agent Builder の明記なし）。blog.jbs.co.jp は egress proxy でブロック。ukstories は未確認のまま。
 - 2026-10-09：Agent Builder 枠は、WebSearch（標準・拡張）でも顧客事例が出ず、Copilot Studio を2本（カコムス、Microsoft 自社の Ask Microsoft）にした。ブロックされたホストなし。
 - 2026-10-11：Agent Builder 枠は Inside Track の Customer Zero guide（2026-10-08、第2章が Agent Builder）で成立。Copilot Studio 枠は大林組（TechTarget）。ブロックされたホストなし。ネタ帳の本文確認済み候補（未使用）：カコムス以外の国内例として SCSK・コニカミノルタ・ベネッセ・府中市は二次情報のみで未確認。
+- 2026-10-13：Agent Builder 枠は、本文を読めて Agent Builder と明記された新規事例がなく、Copilot Studio を2本（Atea、SCSK）にした。確認して不採用：Inside Track 3本（2025-01-30 Network Copilot＝Agent Builder 記載なし、2025-01-30 AI agents in action＝具体例なし、2026-04-16 Agent Launchpad＝具体例なし）、Eneco（2025-03、Copilot Studio、読了済み・未使用の候補）。ブロックされたホストなし。

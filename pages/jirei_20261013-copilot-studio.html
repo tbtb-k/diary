@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Atea）。2026年10月13日作成。公開情報（Microsoft Adoption の Agent transformation stories）をもとにまとめています。">
+<title>顧客情報が散らばる営業の会議準備を、35以上の専門エージェントの束ねで一本化しました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月13日／IT サービス業（Atea）・法人営業</p>
+
+  <h1>顧客情報が散らばる営業の会議準備を、35以上の専門エージェントの束ねで一本化しました</h1>
+
+  <div class="lead">
+    <p>北欧・バルト地域で事業を行う IT 企業 Atea の営業担当は、顧客情報が国ごとに異なる CRM（顧客管理システム）や契約書置き場などに散らばり、会議の準備にあちこちのアプリを行き来していました。</p>
+    <p>そこで Copilot Studio で、依頼を専門のサブエージェントに振り分ける「Kate」を作り、会議前の資料づくりや CRM への記録を任せました。</p>
+    <p>Kate は現在パイロット（試行）中で約100人が使っています。Atea は全社で社員1人あたり1日およそ50分の時間削減（自己申告）を報告しています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>明日の顧客との打ち合わせに向けて、CRM を開き、契約書を探し、案件の進み具合を確かめ、過去のやり取りも見返す。気づけば資料づくりだけで時間がたっていた、という経験はありませんか。</p>
+  <p>Atea では、顧客情報が国ごとに違う CRM、ServiceNow（問い合わせ管理のサービス）、契約書や案件履歴の置き場に分かれていました。営業担当は会議の準備のたびにアプリを切り替え、入札担当者も複数のデータベースから情報を集めていました。さらに、社員が各自でエージェントを作り始め、そのままでは管理が追いつかない状態にもなっていました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、文章での指示や画面操作で AI エージェント（決まった仕事を代わりに進める AI）を作れる Microsoft のサービスです。Atea は、全体の窓口になる「Kate」を作りました。名前は Key Account Team Executer の略とされています。</p>
+  <p>Kate は、依頼の内容に応じて、CRM・契約・営業プロセス・入札・顧客履歴を担当する35以上のサブエージェントに仕事を振り分けます。Microsoft 以外の CRM を使う国では、MCP（AI と外部システムをつなぐ共通の接続方式）のサーバー経由でつないでいます。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Kate が依頼を振り分けて会議前の資料を作る流れ">
+      <li><div class="box">営業担当が<br>Kate に依頼</div></li>
+      <li><div class="box">Kate が<br>専門エージェントへ振り分け</div></li>
+      <li><div class="box">CRM・契約・履歴を<br>集めて整理</div></li>
+      <li><div class="box">会議前の資料を作成<br>CRM にメモを記録</div></li>
+      </ol>
+    <figcaption>Kate が依頼を振り分けて会議前の資料を作る流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>営業担当が、顧客との会議の準備を Kate に頼みます。</li>
+    <li>Kate が、CRM・契約・営業プロセス・入札・顧客履歴のうち必要な専門エージェントに仕事を振り分けます。</li>
+    <li>集めた情報から、会議前のブリーフィング（要点をまとめた資料）を作ります。会議後は、メモを CRM に反映することもできます。</li>
+    </ol>
+  <p class="src-note">※ Atea が公表している範囲の流れを3段階にまとめています。サブエージェント間のやり取りの細かい設定は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>顧客情報が国ごとの CRM や契約書置き場などに分かれ、担当者がアプリを行き来して会議の準備をしていました。</p></div>
+    <div class="after"><h3>いま</h3><p>Kate が専門のサブエージェントに仕事を振り分け、会議前の資料づくりと CRM への記録を支えています。</p></div>
+  </div>
+  <p>数字は Atea が公表したものです。Kate は35以上のサブエージェントで構成され、パイロットでは約100人が利用し、ノルウェーでは年末までに最大1,750人への拡大を計画しています。全社では、時間削減が1人あたり1日およそ50分と報告されています。ただし、この時間削減は自己申告で、Kate 単独の効果を測った数字ではありません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>まず、会議の準備で毎回開いている情報の置き場所を書き出します（例：顧客管理、契約書、過去の議事録）。</li>
+    <li>次に、そのうち1か所だけを使って、「会議前の要点まとめ」を出す小さなエージェントを試します。</li>
+    <li>うまくいったら、置き場所を一つずつ足し、使う人を少しずつ広げます。</li>
+    </ol>
+  <p>準備物は、使う情報の置き場所の一覧と、まとめたい項目のメモです。Copilot Studio の利用にはライセンスや社内の設定が関わるため、情報システム部門に使える範囲を先に確認してください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>データを先に整える必要があります</strong>
+    <p>Kate は整理された情報に頼るため、導入前に営業担当が CRM の記録を整える必要がありました。また、社員が個別にエージェントを作り始めたことから、Atea はエージェントを探して共有できる社内の置き場「Agent Hotel」を作りました。機密性の高い情報を扱うエージェントは、広く配る前に確認を受けます。時間削減や品質向上は自己申告の数字だという点も、記事に明記されています。</p>
+  </div>
+  <p>真似するときは、エージェントが読める情報の範囲を、利用者の権限と同じにそろえてください。AI がもっともらしい間違い（ハルシネーション）を出すこともあるため、顧客に出す資料は人が必ず確認します。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例の要点は、1つの大きなエージェントに全部を任せず、専門の小さなエージェントに分けて束ねたことです。さらに、勝手に増えるエージェントを探せて確認できる場所を用意した点も、規模が広がったときの備えとして参考になります。</p>
+  <p>自分の職場に置き換えると、会議の準備だけでなく、問い合わせ対応や月次の報告づくりでも、「情報がいくつもの場所に分かれていて、集めるだけで時間がかかる」場面があるはずです。まず1つの業務で、集める先を2〜3か所に絞った小さなエージェントから始めるのが現実的です。</p>
+
+  <footer>
+    <p>出典：Microsoft Adoption「Atea builds an enterprise AI agent ecosystem with Microsoft Copilot Studio」（最終更新2026年7月28日。初公開日は記載なし）<br>
+    <a href="https://adoption.microsoft.com/en-us/agent-transformation-stories/atea/">https://adoption.microsoft.com/en-us/agent-transformation-stories/atea/</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月13日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
