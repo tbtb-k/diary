@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（室蘭工業大学）。2026年10月15日作成。公開情報（Microsoft カスタマー事例）をもとにまとめています。">
+<title>広報文案づくりが20〜30分から数分に――室蘭工業大学の職員が Copilot Studio でエージェントを作りました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月15日／大学（室蘭工業大学）・事務部門の広報文づくり</p>
+  <h1>広報文案づくりが20〜30分から数分に――室蘭工業大学の職員が Copilot Studio でエージェントを作りました</h1>
+  <div class="lead">
+    <p>小規模な大学の事務部門では、広報文の作成など日々の文章づくりに時間がとられ、学生や教育のために使える手が限られていました。</p>
+    <p>経営企画課の職員が、Microsoft Copilot Studio（ノーコードでエージェントを作るツール）を使い、ほぼ独力で広報文案を作るエージェントを作りました。</p>
+    <p>慣れた職員でも20分〜30分かかっていた広報文が、数分で高い品質の文案になるようになりました（室蘭工業大学の事例記事による）。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>イベントの告知やお知らせ文を、毎回ゼロから書いていませんか。基本情報は決まっているのに、文章に整えるだけで30分近くかかってしまうことがあります。</p>
+  <p>室蘭工業大学は、従業員50〜999人に分類される規模の大学です。教員が事務手続きなどの雑務に時間をとられ、研究や教育に十分な時間を割けない悩みがありました。キャリアサポートセンターも限られた人員で運営されており、学生サービスに回せる余力に限りがありました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、Microsoft 365 Copilot 向けのエージェント（決まった役割を持つ AI アシスタント）を、プログラミングなしで作れるツールです。同大学では、2025年5月に全事務部門へ Microsoft 365 Copilot を本格導入したあと、職員が自分の業務に合わせたエージェントを作り始めました。</p>
+  <p>広報文案を作るエージェントは、経営企画課の職員がほぼ独力で開発しました。基本情報を入力すると、数分で広報文案ができあがります。職員向けには、間もなくリリースされる予定と紹介されています。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="広報文案エージェントの流れ">
+      <li><div class="box">基本情報を入力する<br>（日時・内容など）</div></li>
+      <li><div class="box">エージェントが<br>文案を作る</div></li>
+      <li><div class="box">職員が内容を<br>確認・修正する</div></li>
+      <li><div class="box">広報文として<br>使う</div></li>
+    </ol>
+    <figcaption>広報文案エージェントの使い方のイメージ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>広報文に必要な基本情報（何を、いつ、誰向けに伝えるか）を入力します。</li>
+    <li>エージェントが、基本情報をもとに広報文案を作ります。</li>
+    <li>職員が文案を読み、事実の誤りや言い回しを直してから使います。</li>
+  </ol>
+  <p class="src-note">※ 手順2・3は、一般的な使い方で補っています。エージェントの細かな設定や、確認の手順は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>広報文の作成は、慣れた職員でも20分〜30分かかっていました。</p></div>
+    <div class="after"><h3>いま</h3><p>基本情報を入力すると、数分で高い品質の文案を作れるようになりました。</p></div>
+  </div>
+  <p>「20分〜30分」と「数分」は、室蘭工業大学の事例記事に載っている説明です。測定の方法などの詳しい数字は公表されていません。同じ大学では、学生が面接練習に使う就職活動支援エージェントなど、ほかのエージェントも作られています。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>毎月くり返している文章づくり（お知らせ、案内文、議事メモなど）を1つ選びます。</li>
+    <li>入力する材料（基本情報）と、できあがりの形を箇条書きにします。</li>
+    <li>Copilot Chat や Copilot Studio で、その材料から文案を作る役割のエージェントを作り、自分で試します。</li>
+  </ol>
+  <p>準備物は、よく書く文章の見本1〜2本です。エージェントを作れるかどうかは、ライセンスや社内の設定で変わります。まずは情報システムの担当者に確認してみてください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>AI に心理的な抵抗がある人は、思ったより多いです</strong>
+    <p>同大学では、参加者アンケートで、AI に抵抗感を持つ職員が事前の想定より多いことが分かりました。また、生成 AI の答えが100%正確とは限らない点に、検索に慣れた人ほど戸惑いました。部署ごとの活用状況にもばらつきがあります。</p>
+  </div>
+  <p>対策として、同大学はキックオフセミナー、4コマ漫画を使った研修、プロンプト集の共有、DX推進アンバサダー（各課との橋渡し役）の制度などを用意しました。自分の職場でも、AI が作った文案は必ず人が確認し、公開前の情報や個人情報は入力しないルールを先に決めておくと安心です。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>小さな文章づくりでも、「材料を入れる→文案が出る」という型にしておくと、時間の使い方が変わります。広報文だけでなく、案内メールや報告書の下書きなど、型のある文章すべてに広げられます。</p>
+  <p>自分の職場に置き換えると、毎月必ず書く定型の文章を1つ選び、その材料と書き方をエージェントに渡すところから始められます。</p>
+
+  <footer>
+    <p>出典：Microsoft カスタマー事例「データ駆動型「デジタル・キャンパス」の実現へ Microsoft 365 Copilot を活用し、価値創造に挑む室蘭工業大学」（2025年11月25日公開）<br>
+    <a href="https://www.microsoft.com/ja-jp/customers/story/25556-muroran-institute-of-technology-microsoft-365-copilot">https://www.microsoft.com/ja-jp/customers/story/25556-muroran-institute-of-technology-microsoft-365-copilot</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月15日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

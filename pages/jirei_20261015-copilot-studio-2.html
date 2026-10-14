@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（INPEX）。2026年10月15日作成。公開情報（Microsoft カスタマー事例）をもとにまとめています。">
+<title>AI エージェントが1,000体を超えても迷わない――INPEX が Copilot Chat と Copilot Studio を使い分けた方法</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月15日／エネルギー（INPEX）・社内規程や法令の調べもの</p>
+  <h1>AI エージェントが1,000体を超えても迷わない――INPEX が Copilot Chat と Copilot Studio を使い分けた方法</h1>
+  <div class="lead">
+    <p>INPEX では、調べものや資料づくりに時間がかかり、産休・育休のように担当者へ聞きにくい相談もありました。</p>
+    <p>そこで Microsoft 365 Copilot を中核に据え、社内規程を調べるエージェントなどを作りました。誰でも作れる Copilot Chat と、高度な設定ができる Copilot Studio を、用途に応じて使い分けています。</p>
+    <p>導入から約1年後のアンケートでは、オフィス業務の時間が44%減ったと答えています。社内で作られたエージェントは1,000を超えました。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>「社内規程のどこに書いてあるか分からない」「法令を調べるのに半日かかった」という場面は、多くの職場にあります。産休・育休のような相談は、担当者に直接聞きにくいこともあります。</p>
+  <p>INPEX では、情報収集や調査、資料づくり、翻訳に多くの時間がかかっていました。契約書業務のように、知識の蓄積に支えられた仕事を引き継ぐ難しさもありました。さらに、AI を使うのが一部の専門家やバックオフィスに偏っていました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、ノーコードでエージェント（役割を持つ AI アシスタント）を作るツールです。外部システムとのつなぎ込みや、自動で動かす仕組みなど、高度な設定ができます。</p>
+  <p>INPEX は、作る手段を2つに分けました。個人や非デジタル部門の人は、Copilot Chat で作る「Copilot エージェント」を使います。外部コネクタ（他のシステムとの接続）や自動の起動条件が要るものは Copilot Studio で作ります。Copilot Studio は費用とアクセス権の管理が必要なので、申請制にしました。社内規程エージェントの編集画面や、Copilot Studio の使い方を紹介する社内動画も用意されています。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="エージェントを作る手段の使い分け">
+      <li><div class="box">作りたい業務を<br>決める</div></li>
+      <li><div class="box">個人・部門で足りる？<br>→ Copilot Chat</div></li>
+      <li><div class="box">高度な設定が要る？<br>→ Copilot Studio（申請制）</div></li>
+      <li><div class="box">社内に共有する</div></li>
+    </ol>
+    <figcaption>作る手段の使い分けのイメージ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>AI 活用推進タスクフォース「AIR」が、「AI が空気のように自然にある職場へ」という考えで活動を始めました。</li>
+    <li>Microsoft 365 Copilot を2025年から本格導入し、社内規程エージェント、国内法令検索エージェント、産休・育休の問い合わせエージェントなどを社内に共有しました。</li>
+    <li>数が増えるなかで、有用なエージェントを上位のエージェントにまとめ、将来は複数をつなげて業務を自動化する方針を立てています。</li>
+  </ol>
+  <p class="src-note">※ 図の判断の言い回しは、公開記事の説明を要約して補っています。各エージェントの細かな設定は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>調査や資料づくりに時間がかかり、聞きにくい相談は後回しになりがちでした。AI も一部の専門家しか使っていませんでした。</p></div>
+    <div class="after"><h3>いま</h3><p>規程や法令をエージェントに質問でき、AI の利用が現場に広がりました。社内で作られたエージェントは1,000を超えています。</p></div>
+  </div>
+  <p>導入から約1年後のアンケートでは、業務時間の削減が44%、業務の高度化が46%、エンゲージメント（仕事への意欲）の向上が43%でした。年間20億円以上の効果という試算も出ています。いずれも INPEX が公表した数字で、社内アンケートと試算に基づきます。有償ライセンスは、2025年初頭の650から1,450に増えました。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>自分の部署でよく聞かれる質問（規程、手続き、よくある問い合わせ）を5つ書き出します。</li>
+    <li>その答えが載っている資料（規程集など）を、読んでよい範囲で集めます。</li>
+    <li>まず Copilot Chat のエージェントで、資料をもとに答える役割を試します。外部サービスとの連携が要るときだけ Copilot Studio を検討します。</li>
+  </ol>
+  <p>準備物は、質問のリストと、答えの元になる資料です。Copilot Studio が使えるか、費用や申請のルールはどうなっているかは、社内の設定やライセンスで変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>エージェントが増えすぎると、管理が大変になります</strong>
+    <p>INPEX では、エージェントが1,000を超え、統制と柔軟性の両立が課題になっています。新しいものへの不安を持つ従業員も一定数いました。Copilot Studio を申請制にしたのは、費用とアクセス権を管理するためです。</p>
+  </div>
+  <p>自分の職場でも、規程の古い版を元にしていないか、AI の答えを鵜呑みにせず原文で確かめているかを、時々見直してください。人事や契約のような機密性の高い資料は、見てよい人だけが使えるように権限を確認してから渡します。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例で参考になるのは、ツールを増やすことよりも、「どの手段を、誰が、どんな条件で使うか」を先に決めた点です。規程の質問に限らず、手順書やマニュアルを使った問い合わせ対応にも応用できます。</p>
+  <p>自分の職場に置き換えると、まず「聞きにくい・探しにくい質問」を1つ選び、その答えが載っている資料を使った小さなエージェントを作るところから始められます。</p>
+
+  <footer>
+    <p>出典：Microsoft カスタマー事例「INPEX が Microsoft 365 Copilot と Copilot Studio で AI活用基盤を構築、AIエージェントをフル活用し業務プロセス変革を目指す」（2026年5月28日公開）<br>
+    <a href="https://www.microsoft.com/ja-jp/customers/story/26549-inpex-corporation-microsoft-365-copilot">https://www.microsoft.com/ja-jp/customers/story/26549-inpex-corporation-microsoft-365-copilot</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月15日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
