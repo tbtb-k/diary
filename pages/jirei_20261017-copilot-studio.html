@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Regal Rexnord）。2026年10月17日作成。公開情報（Microsoft カスタマー事例）をもとにまとめています。">
+<title>社内の問い合わせの40%しか答えられなかったAIを入れ替え、月2,000件超に答えるまでになりました――Regal Rexnord</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月17日／製造業（Regal Rexnord）・社内問い合わせと顧客対応</p>
+  <h1>社内の問い合わせの40%しか答えられなかったAIを入れ替え、月2,000件超に答えるまでになりました――Regal Rexnord</h1>
+  <div class="lead">
+    <p>従業員3万人超の製造業 Regal Rexnord では、別のプラットフォームで作った社内向け AI が、従業員の質問の40%にしか答えられていませんでした。</p>
+    <p>そこで Copilot Studio に移し、SharePoint（社内の共有ファイル置き場）などの資料につないで作り直しました。顧客向けのチャットと、顧客対応担当者向けの AI も同じ仕組みで作っています。</p>
+    <p>社内向けの AI は月2,000件超の問い合わせに答え、年間で約2,400時間を節約していると、同社が公表しています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>「出張や購買のルールを知りたいのに、どのサイトを見ればよいか分からない」。大きな会社では、よくある場面です。社内向けに AI を作っても、読ませる資料が少なければ、答えられない質問が増えてしまいます。</p>
+  <p>Regal Rexnord でも、最初に作った社内向け AI は、資料とのつながりが限られていました。そのため従業員の質問の40%にしか答えられませんでした。顧客対応の現場でも、資料が整っておらず、複数のシートが入った Excel を AI が読み取りにくいという悩みがありました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、ノーコード（プログラムを書かない方法）でエージェント（役割を持つ AI アシスタント）を作るツールです。同社は約2年前にライセンスを購入し、業務部門の「市民開発者」（IT 部門ではない社員の作り手）がエージェントを作り始めました。いまは500体を超えています。</p>
+  <p>代表的なのは3つです。1つ目は全社員向けの「RRX GPT」で、SharePoint などの社内資料をもとに、規程の質問に答えます。2つ目は公式サイトに置いた顧客向けの「RRXy」で、製品の仕様書や動画を参照します。注文の状況は Salesforce（顧客管理システム）から引き、必要なときは文脈を保ったまま有人チャットへ引き継ぎます。3つ目は500人以上の顧客対応担当者向けのエージェントです。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="顧客対応担当者向けエージェントのデータの流れ">
+      <li><div class="box">複数シートの<br>Excel</div></li>
+      <li><div class="box">CSV に変換</div></li>
+      <li><div class="box">Azure Blob Storage<br>に保存</div></li>
+      <li><div class="box">Azure AI Search で<br>検索できる形に</div></li>
+      <li><div class="box">エージェントが<br>回答</div></li>
+    </ol>
+    <figcaption>担当者向けエージェントの資料の流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>別のプラットフォームで作った社内向け AI を、Copilot Studio に移しました。</li>
+    <li>SharePoint などの Microsoft 365 の資料に直接つなぎ、Word や PDF も正確に読めるようにしました。1か月で稼働し、Teams と Microsoft 365 Copilot から使えます。</li>
+    <li>顧客対応の資料は、開発者が Excel を CSV に変換する処理を作りました。Azure Blob Storage（クラウド上の保管場所）に置き、Azure AI Search（資料の検索基盤）で AI が引ける形にしています。</li>
+    <li>AI の方針を決める担当者と、監査・法務・業務部門からなる委員会を置きました。人事・法務・財務の情報は、別の環境に分けています。</li>
+  </ol>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>社内向け AI は従業員の質問の40%にしか答えられませんでした。担当者向けの資料は、複数シートの Excel のままで、AI が読みにくい状態でした。</p></div>
+    <div class="after"><h3>いま</h3><p>社内向け AI は月2,000件超の問い合わせに答えています。顧客向けは週1,000人超が使い、満足度は80%超（しばしば90%）です。</p></div>
+  </div>
+  <p>数字はすべて Regal Rexnord が公表したものです。社内向け AI は年間約2,400時間の節約、担当者向けは生産性の約12%向上（同社の見積もり）とされています。基本的なエージェントなら、IT 部門の責任者の話として30分未満で作れるそうです。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>社内でよく聞かれる質問を3つ書き出し、答えが載っている資料（規程やマニュアル）を決めます。</li>
+    <li>その資料を SharePoint の1つのフォルダにまとめ、古い版を取り除きます。</li>
+    <li>Copilot Studio（または自社で使えるエージェント作成ツール）で、そのフォルダだけを読むエージェントを作り、書き出した質問で試します。</li>
+  </ol>
+  <p>準備物は、整理した資料と試す質問です。Copilot Studio を使えるかどうかは、ライセンスや社内の設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>資料が整っていないと、AI も答えられません</strong>
+    <p>同社の IT 部門の責任者は、AI の知識源になるデータは「きれいに整理されているとは限らない」と話しています。Excel を変換する作業が必要になったのも、そのためです。</p>
+  </div>
+  <p>まねるときは、人事・法務・財務のような機密性の高い資料を、誰でも使うエージェントにつながないでください。同社は別の環境に分けています。AI の回答が間違うこともあるため、大事な判断は規程の原本で確かめる習慣も大切です。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例の学びは、AI の性能より先に、つなぐ資料の整え方と、誰が決めるかという体制が結果を左右することです。この考え方は、社内向けの問い合わせ以外にも使えます。</p>
+  <p>自分の職場に置き換えると、よく来る問い合わせの上位3つについて、答えが載っている資料を1つの場所にそろえるところから始められます。それだけでも、人に聞く回数は減らせそうです。</p>
+
+  <footer>
+    <p>出典：Microsoft カスタマー事例「Regal Rexnord goes all in with Microsoft Copilot Studio to streamline operational efficiency and support customers」（2026年3月10日公開）<br>
+    <a href="https://www.microsoft.com/en/customers/story/26197-regal-rexnord-microsoft-copilot-studio">https://www.microsoft.com/en/customers/story/26197-regal-rexnord-microsoft-copilot-studio</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月17日作成）。数字は出典元の公表値です。</p>
+  </footer>
+</div>
+</body>
+</html>
