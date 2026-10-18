@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Lifetime Products）。2026年10月19日作成。公開情報（Microsoft カスタマー事例）をもとにまとめています。">
+<title>工場の受注処理が、寝ている間に終わるようになりました――Lifetime Products の Copilot Studio 活用</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月19日／製造・小売（Lifetime Products）・受注処理と社内問い合わせ</p>
+
+  <h1>工場の受注処理が、寝ている間に終わるようになりました――Lifetime Products の Copilot Studio 活用</h1>
+
+  <div class="lead">
+    <p>アウトドア用品や家具を作る Lifetime Products では、店舗の店長たちが毎朝早く出勤し、前日の受注を締める作業に2〜3時間かけていました。</p>
+    <p>そこで Power Automate（作業を自動で流すツール）と Copilot Studio で、受注の処理を夜のうちに終わらせ、人事や税務の問い合わせに答えるエージェントも作りました。</p>
+    <p>手作業で触る受注は1日50〜80件からゼロになり、2年間で45人が新しい役割に移ったと、同社は公表しています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>毎朝、同じ入力と突き合わせの作業から一日が始まる。就業規則の質問は、そのたびに人事へ電話する。調べものでは、四つも五つもシステムを開いて回る。そんな経験はないでしょうか。</p>
+  <p>Lifetime Products では、9店舗の店長と副店長が、早く出勤して受注を締め、前日の数字を突き合わせ、在庫を確認していました。人事と給与の担当は、ハンドブックにある質問に電話や対面で答えていました。顧客対応の担当は、商品・在庫・寸法・部品の情報を探すために四つか五つのシステムを調べていました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、ノーコード（プログラムを書かない方法）でエージェント（役割を持つ AI アシスタント）を作るツールです。同社はまず、仕入先とのやり取りや勘定の突き合わせ用に、用意済みのエージェントから始め、必要に応じて自社専用のものへ進みました。</p>
+  <p>導入は、パートナー企業の Argano と一緒に進めました。最初に使う場面、管理の方針、技術の骨組みを決め、そのうえで複数の部署に広げる道筋を描いています。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="導入の進め方の流れ">
+      <li><div class="box">用意済みの<br>エージェントで開始</div></li>
+      <li><div class="box">使う場面と<br>管理方針を決める</div></li>
+      <li><div class="box">部署ごとに<br>自社用を作る</div></li>
+      <li><div class="box">効果を測り<br>人の配置を考える</div></li>
+    </ol>
+    <figcaption>導入の進め方の流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>小売の受注の締め作業を、Power Automate の仕組みで夜間に自動で流すようにしました。受注の流れから経理への引き渡しまで含みます。</li>
+    <li>従業員向けハンドブックと管理職向けハンドブックをもとに、人事の質問に答えるエージェントを作りました。休暇の積み立てや規則の範囲などを、人事に連絡せず確かめられます。</li>
+    <li>財務チーム向けに、税務の質問に答える「Lifetime TAX Knowledge Agent」を作りました。有料の相談や、ファイルを手で探す作業の代わりに使います。</li>
+    <li>顧客対応向けには、商品・在庫・部品・顧客の情報を1か所にまとめるエージェントを開発中です。</li>
+    <li>効果が見えたエージェントは、IT・人事・事業責任者・現場のチームで、減った時間を確認します。そして、その人たちのスキルアップや新しい役割、より価値の高い仕事への配置を決めます。</li>
+  </ol>
+  <p class="src-note">※ 各エージェントの具体的な設定やプロンプトは公開されていません。ここでは公開された概要だけを書いています。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>店長と副店長が早朝に出勤し、受注の締めと突き合わせに毎日2〜3時間かけていました。手作業で触る受注は1日50〜80件でした。</p></div>
+    <div class="after"><h3>いま</h3><p>受注の締めは夜のうちに自動で終わります。手作業で触る受注はゼロになり、2〜3時間が空きました。</p></div>
+  </div>
+  <p>数字は Lifetime Products が公表したものです。2年間で45人が新しい役割に移ったとも述べています。一方で、顧客対応の改善（正確さの向上、返金請求の減少、通話時間の短縮）はまだ目標の段階です。時間の削減の計算方法は、記事では詳しく示されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>毎日同じ時間にやっている作業や、同じ質問への回答を、1つだけ選びます。</li>
+    <li>その作業にかかる時間と、使う資料（ハンドブックなど）を書き出します。</li>
+    <li>まず1つのエージェントか自動化で試し、減った時間を測ってから、次に広げます。</li>
+  </ol>
+  <p>準備物は、対象業務の手順と、最新の資料です。Copilot Studio や Power Automate が使えるかどうかは、ライセンスや社内の設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>いちばんの壁は「使ってもらうこと」でした</strong>
+    <p>同社の担当者は、AI を使ってもらうことが最大の難しさだと述べています。過去に自動化を経験した製造の現場だったため、「人を減らす話ではなく、新しい機会の話だ」と示す必要がありました。</p>
+  </div>
+  <p>まねるときは、ハンドブックや税務の資料に読ませてよい内容だけが入っているか、誰が使えるのかを先に決めてください。AI は、もっともらしい間違いを答えることがあります。税務のような重要な判断では、専門家や原本で確かめるようにしましょう。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例は、道具の導入だけで終わらず、空いた時間を使って人をどう育て、どこに配置するかまで決めていた点が特徴です。同社のCIO（最高情報責任者）の助言は、1つのエージェントから始め、社員のスキルを上げ、生産性を測ってから広げる、というものでした。</p>
+  <p>自分の職場に置き換えると、「毎朝の締め作業」や「何度も同じ質問が来る窓口」から始められます。たとえば、日次の集計、経費の確認、社内規程の問い合わせなどです。空いた時間を何に使うかも、最初に話し合っておくと進めやすくなります。</p>
+
+  <footer>
+    <p>出典：Microsoft カスタマー事例「Lifetime Products rebalances work with Microsoft Copilot Studio」（記事ページの日付は2026年8月26日）<br>
+    <a href="https://www.microsoft.com/en/customers/story/27087-lifetime-products-microsoft-copilot-studio">https://www.microsoft.com/en/customers/story/27087-lifetime-products-microsoft-copilot-studio</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月19日作成）。数字は出典元の公表値です。</p>
+  </footer>
+</div>
+</body>
+</html>

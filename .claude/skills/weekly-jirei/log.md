@@ -26,6 +26,8 @@
 | 2026-10-15 | Copilot Studio（Agent Builder 枠の代替） | INPEX | pages/jirei_20261015-copilot-studio-2.html | https://www.microsoft.com/ja-jp/customers/story/26549-inpex-corporation-microsoft-365-copilot |
 | 2026-10-17 | Copilot Studio | Regal Rexnord | pages/jirei_20261017-copilot-studio.html | https://www.microsoft.com/en/customers/story/26197-regal-rexnord-microsoft-copilot-studio |
 | 2026-10-17 | Copilot Studio（Agent Builder 枠の代替） | Grupo Bimbo | pages/jirei_20261017-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/26762-grupo-bimbo-microsoft-365-copilot |
+| 2026-10-19 | Copilot Studio | Lifetime Products | pages/jirei_20261019-copilot-studio.html | https://www.microsoft.com/en/customers/story/27087-lifetime-products-microsoft-copilot-studio |
+| 2026-10-19 | Copilot Studio（Agent Builder 枠の代替） | Cancer Council NSW | pages/jirei_20261019-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/26834-cancer-council-nsw-sharepoint |
 
 ## ネタ帳（候補）
 
@@ -43,11 +45,6 @@
 - **Agent Builder?**｜キリングループ（2026-05-12 公開、本文確認済み）
   https://www.microsoft.com/ja-jp/customers/story/26435-kirin-holdings-company-microsoft-365-copilot
   Agent Builder は一言のみ（「習熟はそこまで難しくない」）。Copilot 普及施策の事例としては厚い。Agent Builder 枠には弱い。
-- **Copilot Studio**｜Cancer Council NSW（2026-07-07 公開、本文確認済み）
-  https://www.microsoft.com/en/customers/story/26834-cancer-council-nsw-sharepoint
-  社内ポリシー回答エージェント「Genie」。数字は「4時間→数秒」の例のみ。
-- **Copilot Studio**｜Lifetime Products（2026-08-26 公開、要約のみ確認）
-  https://www.microsoft.com/en/customers/story/27087-lifetime-products-microsoft-copilot-studio
 
 ### 見送り（Agent Builder 枠としては記事にならない。読み直さなくてよい）
 
@@ -69,3 +66,4 @@
 - 2026-10-13：Agent Builder 枠は、本文を読めて Agent Builder と明記された新規事例がなく、Copilot Studio を2本（Atea、SCSK）にした。確認して不採用：Inside Track 3本（2025-01-30 Network Copilot＝Agent Builder 記載なし、2025-01-30 AI agents in action＝具体例なし、2026-04-16 Agent Launchpad＝具体例なし）、Eneco（2025-03、Copilot Studio、読了済み・未使用の候補）。ブロックされたホストなし。
 - 2026-10-15：Agent Builder 枠は、本文を読めて Agent Builder と明記された新規事例がなく、Copilot Studio を2本（室蘭工業大学、INPEX）にした。確認して不採用：日本郵船（2026-05-13、ツール名の記載なし）、JAF（2026-08-03、Agent Builder の記載なし・Copilot Studio は検証中）。Capita は再確認したが Agent Builder は一文のみで見送りのまま。ブロックされたホストなし。
 - 2026-10-17：Agent Builder 枠は、本文を読めて Agent Builder と明記された新規事例がなく、Copilot Studio を2本（Regal Rexnord、Grupo Bimbo）にした。Grupo Bimbo・Cancer Council NSW・Lifetime Products の本文に Agent Builder の記載なし。adoption.microsoft.com の transformation-stories 一覧にも Agent Builder の事例なし。ブロックされたホストなし。
+- 2026-10-19：Agent Builder 枠は、WebSearch で顧客事例が出ず、Copilot Studio を2本（Lifetime Products、Cancer Council NSW。ネタ帳の本文を読み直して採用）にした。2本とも Agent Builder の記載なし。ブロックされたホストなし。

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Cancer Council NSW）。2026年10月19日作成。公開情報（Microsoft カスタマー事例）をもとにまとめています。">
+<title>方針を探す4時間が「数秒」に――Cancer Council NSW が Teams に置いた社内ルール回答エージェント</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月19日／非営利団体（Cancer Council NSW）・社内ポリシーの問い合わせ</p>
+
+  <h1>方針を探す4時間が「数秒」に――Cancer Council NSW が Teams に置いた社内ルール回答エージェント</h1>
+
+  <div class="lead">
+    <p>オーストラリアのがん支援団体 Cancer Council NSW では、職員が社内ポリシー（規程）の答えを探すのに、何時間もかけることがありました。</p>
+    <p>そこで Copilot Studio で、承認済みの規程だけを読んで Teams 上で答える「Genie」というエージェントを作りました。</p>
+    <p>記事は「数時間から数秒へ」と紹介していますが、数字は4時間の1例のみで、全体の削減効果までは公表されていません。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>「この場合の対応手順はどこに書いてあったか」と、共有フォルダを探し回る。見つからず同僚に聞くと、人によって答えが違う。そんな経験はないでしょうか。</p>
+  <p>Cancer Council NSW（職員は約475人）では、職員が SharePoint（社内の共有ファイル置き場）を探したり、同僚に聞いたり、古い版の記憶に頼ったりしていました。ある職員は、顧客対応の電話のあとで正しい対応手順を探すのに4時間かけたそうです。規程はあるのに、見つけにくく、読み解きにくい状態でした。同じ質問が専門知識を持つ担当者に集中していました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、ノーコード（プログラムを書かない方法）でエージェント（役割を持つ AI アシスタント）を作るツールです。Genie は Microsoft Teams（チャットや会議のツール）の中で使えます。パートナー企業の Engage Squared と一緒に設計し、作りました。</p>
+  <p>新しい公開場所は作らず、すでにある承認済みの SharePoint の置き場所につなぎました。規程は、レビューと承認が終わるとそこに移され、「唯一の正しい情報源」になっています。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Genie ができるまでの流れ">
+      <li><div class="box">ワークショップで<br>成功の基準を決める</div></li>
+      <li><div class="box">担当と運用を<br>最初に決める</div></li>
+      <li><div class="box">承認済みの<br>規程置き場につなぐ</div></li>
+      <li><div class="box">Teams で<br>Genie を公開</div></li>
+    </ol>
+    <figcaption>Genie ができるまでの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>共同のワークショップで、成功の測り方、必要な機能、作る順番を決めました。</li>
+    <li>管理の担当や長く続ける体制を、最初から計画しました。</li>
+    <li>Genie は、自然な言葉の質問に、出典つきで答えます。回答を評価・報告する仕組みがあり、答えを知らないときは、知らないと伝えます。利用状況の分析もできます。</li>
+    <li>公開後は、AI について学ぶ社内ワークショップで Genie を使い、「承認済みの資料で調べるときと、広く AI で探すときの使い分け」を伝えています。</li>
+  </ol>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>規程を探して、共有フォルダを見て回ったり、同僚に聞いたりしていました。答えは人や版によってばらつきました。</p></div>
+    <div class="after"><h3>いま</h3><p>Teams で質問すると、承認済みの規程にもとづく答えが出典つきで返ります。職員は、より早く、自信を持って答えを得られるようになったと記事は述べています。</p></div>
+  </div>
+  <p>数字は Cancer Council NSW の事例として公開されたものです。「4時間」は1人の例で、全体の削減時間は公表されていません。同団体はまだ定着の途中で、成果は初期のものです。IT サポートへの広げ方も検討中で、すでに問い合わせ件数の基準値を持っているそうです。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>「探すのに時間がかかる規程」を1分野だけ選びます。たとえば休暇、経費、情報管理などです。</li>
+    <li>最新で承認済みの版だけを、1つのフォルダにまとめます。</li>
+    <li>そのフォルダだけを読むエージェントを作り、実際の質問で試します。答えに出典がつくか、わからないときに「わからない」と返すかを確認します。</li>
+  </ol>
+  <p>準備物は、承認済みの規程と、内容を確認する担当者です。Copilot Studio が使えるかどうかは、ライセンスや社内の設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>規程が正しい場所に置かれていることが前提です</strong>
+    <p>Genie が頼りにするのは、レビュー後に承認済みの場所へ置かれた規程です。置き場所が乱れると、答えも乱れます。また、下書きや作業中の文書ではなく、整えた資料に向けた設計です。</p>
+  </div>
+  <p>まねるときは、読ませる資料に機密情報が混ざっていないか、誰が使えるのかを先に決めてください。AI は、もっともらしい間違いを答えることがあります。重要な判断では、出典の規程を開いて確かめるようにしましょう。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、AI を賢くすることより、「どの資料が正しいか」を先にそろえたことです。同団体の CIO（最高情報責任者）は、Genie は1年後にはかなり違う姿になるだろうと述べ、複数の専門エージェントをまとめる役にする構想も示しています。</p>
+  <p>自分の職場に置き換えると、規程の問い合わせが多い総務・人事・情報システム部門から始められます。AI を入れる前に、承認済みの最新版を1か所に集めるだけでも、探す時間は減らせます。</p>
+
+  <footer>
+    <p>出典：Microsoft カスタマー事例「Cancer Council NSW gives staff trusted policy answers in seconds with Copilot Studio」（記事ページの日付は2026年7月7日）<br>
+    <a href="https://www.microsoft.com/en/customers/story/26834-cancer-council-nsw-sharepoint">https://www.microsoft.com/en/customers/story/26834-cancer-council-nsw-sharepoint</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月19日作成）。数字は出典元の公表値です。</p>
+  </footer>
+</div>
+</body>
+</html>
