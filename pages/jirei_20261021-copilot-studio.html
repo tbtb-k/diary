@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（mobilezone）。2026年10月21日作成。公開情報（Microsoft カスタマー事例）をもとにまとめています。">
+<title>社内ITの解決時間が半分に――mobilezone が Copilot Studio で作った2体のエージェント</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月21日／通信小売（mobilezone）・お客様対応と社内IT窓口</p>
+
+  <h1>社内ITの解決時間が半分に――mobilezone が Copilot Studio で作った2体のエージェント</h1>
+
+  <div class="lead">
+    <p>スイスの通信小売 mobilezone では、古いチャットボットの答えがばらつき、社内のIT依頼も情報が足りないまま届いて、確認に手間がかかっていました。</p>
+    <p>そこで Copilot Studio で、お客様向けの「Mia」と、社員向けIT窓口の「Supporto」という2体のエージェントを作りました。</p>
+    <p>同社は、解決にかかる時間が今年は半分になり、2体で月に1,600件以上の会話があると公表しています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>社内のIT窓口に「パソコンが変です」とだけ書かれた依頼が届き、何度も聞き返してから、ようやく作業を始める。そんな経験はないでしょうか。</p>
+  <p>mobilezone（実店舗125店以上）では、ウェブサイトのチャットボットが決まった質問にしか答えられず、答えも一定せず、多言語にも弱い状態でした。複雑な問い合わせが担当者へうまく引き継がれないことも多くありました。社内では、入力欄の多い固定フォームで依頼を受けていたため、情報が足りず、一次対応のIT担当者が内容の確認に多くの時間を使っていました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、ノーコード（プログラムを書かない方法）が中心のエージェント作成ツールです。エージェントとは、役割を持って質問に答えたり作業したりする AI アシスタントのことです。同社は、信頼性・管理のしやすさ・既存システムとのつなぎやすさを比べて、これを選びました。</p>
+  <p>パートナー企業の D ONE がエージェントの初期開発を、Automatify AG が土台となる環境づくりを支えました。エージェントは、ウェブ検索ではなく、社内で管理しているデータにだけつないでいます。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="mobilezone の2体のエージェントができるまでの流れ">
+      <li><div class="box">信頼・管理・連携で<br>ツールを選ぶ</div></li>
+      <li><div class="box">管理された<br>データにだけつなぐ</div></li>
+      <li><div class="box">Mia と Supporto を<br>作る</div></li>
+      <li><div class="box">サイトと Teams で<br>公開</div></li>
+    </ol>
+    <figcaption>mobilezone の2体のエージェントができるまでの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>信頼、管理のしやすさ、既存の Dynamics 365 環境との相性を比べて、Copilot Studio を選びました。</li>
+    <li>パートナーの支援を受けながら、2体のエージェントを作りました。</li>
+    <li>管理されたデータ（Dynamics 365 や Dataverse などの社内データ置き場）にだけつなぎました。Mia は、商品やプランの情報を MCP サーバー（AI がデータを取りにいくための接続の仕組み）経由で取ります。</li>
+    <li>Mia は mobilezone.ch でお客様に案内します。複雑なケースや慎重な対応が必要なケースは、会話の経緯をつけて人の担当者へ引き継ぎます。</li>
+    <li>Supporto は Teams で社員に追加の質問をし、障害か依頼かを見分けて、情報の整ったチケット（依頼票）を作ります。2026年1月初めに稼働しました。</li>
+  </ol>
+  <p class="src-note">※ 多言語対応（ドイツ語・フランス語・イタリア語・英語）は、記事では Copilot Studio の標準機能として説明されています。手順の細かい設定は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>古いチャットボットは答えが一定せず、引き継ぎもうまくいきませんでした。IT依頼は情報が足りず、確認に時間がかかりました。</p></div>
+    <div class="after"><h3>いま</h3><p>Mia が店舗・料金・注文状況などに答え、Supporto が情報の整った依頼票を作ります。記事は、よい品質のチケットで問題をずっと早く解決できると述べています。</p></div>
+  </div>
+  <p>数字は mobilezone が公表したものです。解決にかかる時間は2026年のこれまでで50％減、会話は2体合わせて月1,600件以上です。内訳は、Mia が月約1,250件、Supporto が月約350件で、Supporto の利用率は87％と紹介されています。ただし、お客様側の効果は「初期の兆し」で、確かな数字はまだ公表されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>自分の部署で「情報が足りないまま届く依頼」を1つ選びます。たとえば、IT依頼、備品の申請、問い合わせ窓口などです。</li>
+    <li>依頼を受けるときに必ず聞き返している項目を、書き出します。</li>
+    <li>その項目を順に質問してくれるエージェントを小さく作り、実際の依頼で試します。</li>
+  </ol>
+  <p>準備物は、聞き返している項目のリストと、依頼票をつなぐ先です。Copilot Studio が使えるかどうかや、チケットのシステムとつなげるかどうかは、ライセンスや社内の設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>まだ「育てている途中」です</strong>
+    <p>記事によると、同社は成果の測り方（KPI）をまだ整えている途中です。Supporto が「チケットなしで簡単な問題を解決する」機能も、訓練の途中です。Mia は、管理された情報だけを使い、複雑な話や法的に慎重な話は人の担当者に回します。</p>
+  </div>
+  <p>まねるときは、エージェントに読ませるデータに機密情報が混ざっていないか、誰が使えるのかを先に決めてください。AI は、もっともらしい間違いを答えることがあります。お客様向けにする場合は、人に引き継ぐ条件を決めておくことが大切です。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例の要点は、お客様向けと社員向けの2体を同じ土台で作り、役割をはっきり決めて育てている点です。記事によると、同社はエージェントを役割のある「仮想の社員」として扱っています。</p>
+  <p>自分の職場に置き換えると、問い合わせの「聞き返し」が多い窓口が、最初の候補です。必要な情報を最初にそろえてもらうだけで、担当者の確認の手間が減り、解決までの時間を縮められるかもしれません。</p>
+
+  <footer>
+    <p>出典：Microsoft カスタマー事例「mobilezone switches on an agentic transformation with Microsoft Copilot Studio」（記事ページの日付は2026年4月14日）<br>
+    <a href="https://www.microsoft.com/en/customers/story/26389-mobilezone-dynamics-365-customer-service">https://www.microsoft.com/en/customers/story/26389-mobilezone-dynamics-365-customer-service</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月21日作成）。数字は出典元の公表値です。</p>
+  </footer>
+</div>
+</body>
+</html>

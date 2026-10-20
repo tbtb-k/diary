@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Graebel）。2026年10月21日作成。公開情報（Microsoft Adoption）をもとにまとめています。">
+<title>注文メールの手入力を減らす――Graebel が Copilot Studio で作った「画面を操作するエージェント」</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月21日／人材移動支援（Graebel）・サービス注文のメール処理</p>
+
+  <h1>注文メールの手入力を減らす――Graebel が Copilot Studio で作った「画面を操作するエージェント」</h1>
+
+  <div class="lead">
+    <p>転居・赴任支援の Graebel では、届いた注文メールを担当者が読み、専用システムへ手で入力していました。</p>
+    <p>そこで Copilot Studio を使い、メールを読み取って、システムの画面を人のように操作して登録するエージェントを作りました。</p>
+    <p>ただし、時間の削減などの数字は公表されておらず、まだ限られた注文の種類での試行段階です。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>取引先から届く依頼メールを読み、書式がばらばらな内容を、別のシステムに一件ずつ打ち込む。忙しい時期ほど、遅れや入力ミスが心配になる。そんな作業はないでしょうか。</p>
+  <p>Graebel（従業員は1,000〜9,999人規模）は、世界各地で人の転居を支援する会社です。依頼の多くは、クライアントやパートナーから、メールで届きます。そこには、対象者の情報、作業の範囲、期限、守るべきルールが書かれています。運用チームはこれを読み、自社の専用システム「globalCONNECT」へ手で入力していました。手間とコストがかかり、メールの形式がまちまちなため、間違いも起きやすい状態でした。しかも、このシステムはこの作業用の API（外部のソフトがつながるための窓口）を持っていませんでした。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、ノーコード（プログラムを書かない方法）が中心の、エージェント作成ツールです。Graebel は、これに Azure AI の文章読み取りの機能と、コンピューター利用（computer use：AI が人のように画面を見て操作する機能）を組み合わせました。作ったのが「Graebel Service Order Agent」です。パートナーの GET AI と一緒に進めました。</p>
+  <p>API がないため、エージェントは訓練を受けた担当者と同じように、システムの画面から入力します。自信が低いものや例外、承認が必要なものは、人が確認します。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Graebel のエージェントが注文メールを処理する流れ">
+      <li><div class="box">注文メールを<br>見つける</div></li>
+      <li><div class="box">内容を読み取り<br>項目に整理</div></li>
+      <li><div class="box">ルールを確認し<br>画面から登録</div></li>
+      <li><div class="box">迷うものは<br>人が確認</div></li>
+    </ol>
+    <figcaption>注文メールを処理する流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>決めたメールの受付口を見張ります。</li>
+    <li>Azure AI Content Understanding（文書から必要な項目を取り出すサービス）で、ばらばらの文面を、決まった形の項目に整理します。</li>
+    <li>サービスごとのルールと、守るべき条件を確認します。</li>
+    <li>コンピューター利用の機能で、globalCONNECT の画面から登録します。</li>
+    <li>自信が低いもの、例外、承認が必要なものは、人の確認に回します。</li>
+  </ol>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>担当者がメールを読み、内容をシステムに手で入力していました。忙しい時期は処理が遅れがちでした。</p></div>
+    <div class="after"><h3>いま</h3><p>対象の注文メールは、エージェントが読み取り、画面から登録します。例外や迷うものは人が確認します。</p></div>
+  </div>
+  <p>数字は、出典では公表されていません。記事には、時間の短縮、処理の速さ、正確さの数字は書かれておらず、成果は「初期のもの」「質的なもの」とされています。現在は、件数の多い一部の注文の種類での試行です。同社は30種類を超える関連サービスがあり、今後それらに広げられる設計だと説明しています。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>「メールを読んで、別のシステムに入力する」作業を1つ選びます。</li>
+    <li>入力に必要な項目と、人が判断している例外の条件を書き出します。</li>
+    <li>まずは、項目を取り出して表にするところまでを試します。登録の自動化は、そのあとです。</li>
+  </ol>
+  <p>準備物は、実際のメールの例と、入力先の項目の一覧です。画面を操作する機能が使えるかどうかは、ライセンスや社内の設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>人の確認を残すことが前提です</strong>
+    <p>記事によると、Graebel はAPIのない古いシステムへの対応、ばらばらな形式のメール、守るべきルールの管理に取り組みました。そのため、自信が低いものや例外は人が確認する設計にしています。画面操作の自動化は、手順書の変更に弱い従来の方法より、保守の手間が減ると記事は説明しています。</p>
+  </div>
+  <p>まねるときは、AI に画面を操作させる権限を、必要な範囲に絞ってください。メールには個人情報が含まれるため、扱える人と保存先も先に決めます。AI は、もっともらしい間違いを答えることがあります。登録した内容は、最初のうちは必ず人が見比べましょう。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例の要点は、API がない古いシステムでも、画面を操作する方法で自動化の入口をつくれることです。同時に、確認を人に残し、小さな範囲から始めている点も参考になります。</p>
+  <p>自分の職場に置き換えると、メールや申請書を読んで、別の画面に転記している作業が候補です。まずは件数の多い1種類だけに絞り、読み取りの精度を人がチェックしながら確かめるのが、安全な始め方です。</p>
+
+  <footer>
+    <p>出典：Microsoft Adoption「Graebel uses governed automation to modernize global relocation service orders with Microsoft Copilot Studio」（記事ページの表示は2026年7月28日更新。初出日は表示されていません）<br>
+    <a href="https://adoption.microsoft.com/en-us/ai-agents/transformation-stories/graebel/">https://adoption.microsoft.com/en-us/ai-agents/transformation-stories/graebel/</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月21日作成）。数字は出典元の公表値です。</p>
+  </footer>
+</div>
+</body>
+</html>
