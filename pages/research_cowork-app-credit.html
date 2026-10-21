@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Copilot Cowork の /app で作ったアプリのクレジット消費（作るとき・使うとき、誰の枠から引かれるか）を公式情報で整理。2026-10-21 調査。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Coworkアプリのクレジットはどこから引かれる？</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  /* Layout: 1本の読み物カラム（最大780px）。冒頭に「作る/使う」2レーンの請求図、その下に参照用セクションを積む */
+  --bg:#F3F6F7;
+  --surface:#FFFFFF;
+  --sunk:#E9EEF0;
+  --ink:#15202A;
+  --muted:#55636F;
+  --line:#D5DDE2;
+  --accent:#0A6A93;
+  --accent-soft:#E0EEF5;
+  --ok:#276F43;
+  --ok-soft:#E1F1E6;
+  --warn:#8A5700;
+  --warn-soft:#FAEED6;
+  --ng:#A3291F;
+  --ng-soft:#F8E2DF;
+  --info:#46525D;
+  --info-soft:#E6EBEE;
+  --hl:#FFF5D3;
+  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1418;
+    --surface:#162027;
+    --sunk:#1C2830;
+    --ink:#E6EDF1;
+    --muted:#9AA9B4;
+    --line:#2A3841;
+    --accent:#56B6DD;
+    --accent-soft:#123241;
+    --ok:#74C795;
+    --ok-soft:#14301F;
+    --warn:#E5AE52;
+    --warn-soft:#382811;
+    --ng:#F19087;
+    --ng-soft:#3B1916;
+    --info:#B3C0CA;
+    --info-soft:#24313A;
+    --hl:#2C2914;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1418;
+  --surface:#162027;
+  --sunk:#1C2830;
+  --ink:#E6EDF1;
+  --muted:#9AA9B4;
+  --line:#2A3841;
+  --accent:#56B6DD;
+  --accent-soft:#123241;
+  --ok:#74C795;
+  --ok-soft:#14301F;
+  --warn:#E5AE52;
+  --warn-soft:#382811;
+  --ng:#F19087;
+  --ng-soft:#3B1916;
+  --info:#B3C0CA;
+  --info-soft:#24313A;
+  --hl:#2C2914;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:16px;
+  line-height:1.8;
+  -webkit-text-size-adjust:100%;
+}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+b,strong{font-weight:700}
+
+.page{
+  max-width:780px;
+  margin:0 auto;
+  padding-block:40px 64px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid;
+  gap:56px;
+}
+.page > *{min-width:0}
+
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.4;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.6rem, 4.6vw, 2.25rem);letter-spacing:.01em}
+h2{font-size:1.45rem}
+h3{font-size:1.08rem}
+p{margin:0}
+
+section{display:grid;gap:18px}
+.sec-lead{color:var(--muted)}
+
+/* ---------- ヘッダー ---------- */
+.hero{display:grid;gap:16px}
+.eyebrow{
+  display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;
+  font-size:.82rem;letter-spacing:.08em;color:var(--muted);font-weight:700;
+}
+.eyebrow span{font-family:var(--f-mono);font-weight:500;letter-spacing:0}
+.lead{font-size:1.02rem}
+.meta{
+  display:grid;gap:6px;margin:0;
+  font-size:.88rem;color:var(--muted);
+  border-top:1px solid var(--line);padding-top:12px;
+}
+.meta div{display:grid;grid-template-columns:4.5em 1fr;gap:8px}
+.meta dt{font-weight:700}
+.meta dd{margin:0}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* ---------- 引用番号 ---------- */
+.c{white-space:nowrap}
+.c a{
+  font-family:var(--f-mono);font-size:.74rem;font-weight:500;
+  text-decoration:none;color:var(--accent);
+  padding:0 1px;vertical-align:.18em;
+}
+.c a:hover{text-decoration:underline}
+
+/* ---------- 結論 ---------- */
+.verdict{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:24px;
+  gap:16px;
+}
+.label{
+  font-size:.78rem;font-weight:700;letter-spacing:.12em;color:var(--accent);
+}
+.verdict-main{
+  font-family:var(--f-display);font-size:clamp(1.15rem, 3.4vw, 1.4rem);line-height:1.6;font-weight:700;
+}
+.verdict-main em{font-style:normal;background:linear-gradient(transparent 62%, var(--accent-soft) 62%)}
+
+.lanes{
+  display:grid;grid-template-columns:1fr 1fr;gap:28px 16px;margin-top:8px;
+}
+.lane{
+  position:relative;
+  background:var(--sunk);
+  border-radius:12px;
+  padding:18px 18px 22px;
+  display:grid;gap:10px;align-content:start;
+  min-width:0;
+}
+.lane-tag{font-size:.78rem;font-weight:700;letter-spacing:.1em;color:var(--muted)}
+.lane dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:.92rem}
+.lane dt{color:var(--muted);font-weight:700;white-space:nowrap}
+.lane dd{margin:0;min-width:0}
+.drop{
+  position:absolute;left:50%;bottom:-16px;transform:translateX(-50%);
+  width:30px;height:30px;border-radius:50%;
+  background:var(--accent);color:var(--surface);
+  display:grid;place-items:center;font-size:.9rem;font-weight:700;
+}
+.wallet{
+  grid-column:1 / -1;
+  display:flex;gap:14px;align-items:flex-start;
+  border:2px solid var(--accent);
+  border-radius:12px;padding:16px 18px;
+  background:var(--accent-soft);
+}
+.wallet > div{min-width:0;display:grid;gap:4px}
+.wallet-h{font-family:var(--f-display);font-weight:700;font-size:1.05rem}
+.wallet p:not(.wallet-h){font-size:.92rem}
+.coin{
+  flex:none;width:36px;height:36px;border-radius:50%;
+  background:var(--accent);color:var(--surface);
+  display:grid;place-items:center;
+  font-family:var(--f-mono);font-weight:500;font-size:1rem;
+  box-shadow:inset 0 0 0 3px var(--accent-soft);
+}
+.coin.sm{width:22px;height:22px;font-size:.72rem;box-shadow:inset 0 0 0 2px var(--accent-soft)}
+
+@media (max-width:640px){
+  .lanes{grid-template-columns:1fr}
+  .lane:first-child .drop{display:none}
+  .verdict{padding:20px 16px}
+  .lane dl{grid-template-columns:1fr;gap:0}
+  .lane dt{font-size:.8rem}
+  .lane dd{margin-bottom:8px}
+}
+
+/* ---------- 用語 ---------- */
+.terms{
+  margin:0;display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:10px;
+}
+.terms div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:4px;min-width:0}
+.terms dt{font-weight:700}
+.terms dd{margin:0;font-size:.9rem;color:var(--muted)}
+
+/* ---------- 流れ ---------- */
+.steps{
+  list-style:none;margin:0;padding:0;
+  display:grid;grid-template-columns:repeat(4, 1fr);gap:10px;
+  counter-reset:st;
+}
+.steps li{
+  counter-increment:st;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:16px 14px;display:grid;gap:8px;align-content:start;min-width:0;
+}
+.steps li::before{
+  content:counter(st);
+  width:26px;height:26px;border-radius:50%;
+  border:1.5px solid var(--ink);
+  display:grid;place-items:center;
+  font-family:var(--f-mono);font-size:.82rem;font-weight:500;
+}
+.steps h3{font-size:1rem}
+.charge{display:flex;gap:8px;align-items:flex-start;font-size:.86rem}
+.charge.free{color:var(--muted)}
+@media (max-width:700px){
+  .steps{grid-template-columns:1fr 1fr}
+}
+@media (max-width:440px){
+  .steps{grid-template-columns:1fr}
+}
+
+/* ---------- 利用者パターン ---------- */
+.pats{display:grid;grid-template-columns:repeat(3, 1fr);gap:12px}
+.pat{
+  border-radius:12px;padding:18px 16px;display:grid;gap:10px;align-content:start;min-width:0;
+  border:1px solid var(--line);background:var(--surface);
+}
+.pat h3{font-size:1rem}
+.pat p{font-size:.92rem}
+.pat-note{font-size:.88rem;color:var(--muted)}
+@media (max-width:700px){ .pats{grid-template-columns:1fr} }
+
+/* ---------- ピル ---------- */
+.pill{
+  display:inline-block;justify-self:start;
+  padding:2px 11px;border-radius:999px;
+  font-size:.82rem;font-weight:700;line-height:1.7;white-space:nowrap;
+}
+.p-cost{background:var(--accent-soft);color:var(--accent)}
+.p-ok{background:var(--ok-soft);color:var(--ok)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-ng{background:var(--ng-soft);color:var(--ng)}
+.p-info{background:var(--info-soft);color:var(--info)}
+
+/* ---------- 表 ---------- */
+.table-wrap{
+  overflow-x:auto;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+}
+table{width:100%;min-width:620px;border-collapse:collapse;font-size:.92rem}
+th,td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{font-size:.78rem;letter-spacing:.06em;color:var(--muted);background:var(--sunk);font-weight:700;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+td.q{font-weight:700;min-width:14em}
+tr.hl td{background:var(--hl)}
+td.nw{white-space:nowrap;font-weight:700}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.hl-note{font-size:.84rem;color:var(--muted)}
+.hl-note span{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--hl);border:1px solid var(--line);vertical-align:-1px;margin-right:6px}
+
+/* ---------- 単価 ---------- */
+.rates{display:grid;grid-template-columns:repeat(2, 1fr);gap:12px}
+.rate{
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:4px;min-width:0;
+}
+.rate-k{font-size:.8rem;color:var(--muted);font-weight:700;letter-spacing:.04em}
+.rate-v{font-family:var(--f-mono);font-size:1.6rem;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.3}
+.rate-v small{font-family:var(--f-body);font-size:.9rem;font-weight:700;margin-left:4px}
+.rate p:last-child{font-size:.88rem;color:var(--muted)}
+@media (max-width:520px){ .rates{grid-template-columns:1fr} }
+h3.sub{font-size:1.02rem;margin-top:8px}
+.api-list{margin:0;padding-left:1.3em;display:grid;gap:2px;font-size:.94rem}
+
+/* ---------- 試算 ---------- */
+.calc{
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;
+}
+.calc-in{display:grid;gap:12px;align-content:start;min-width:0}
+.field{display:grid;gap:4px}
+.field label{font-size:.88rem;font-weight:700}
+.field input{
+  font:inherit;font-family:var(--f-mono);font-variant-numeric:tabular-nums;
+  width:100%;max-width:12em;
+  padding:8px 10px;border-radius:8px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);
+}
+.calc-out{
+  background:var(--accent-soft);border-radius:12px;padding:16px;display:grid;gap:10px;align-content:start;min-width:0;
+}
+.out-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:1px dashed var(--line);padding-bottom:8px}
+.out-row:last-of-type{border-bottom:0;padding-bottom:0}
+.out-row span:first-child{font-size:.86rem;color:var(--muted);font-weight:700}
+.out-row output{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:1.25rem;font-weight:500;text-align:right}
+.out-row.big output{font-size:1.7rem;color:var(--accent)}
+.calc-note{grid-column:1 / -1;font-size:.84rem;color:var(--muted)}
+@media (max-width:600px){ .calc{grid-template-columns:1fr;padding:16px} }
+
+/* ---------- 手順 ---------- */
+.howto{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:ht}
+.howto li{
+  counter-increment:ht;
+  display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+}
+.howto li::before{
+  content:counter(ht);
+  width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--surface);
+  display:grid;place-items:center;font-family:var(--f-mono);font-size:.85rem;font-weight:500;
+}
+.howto li > div{min-width:0;display:grid;gap:2px}
+.howto .who{font-size:.78rem;font-weight:700;color:var(--muted);letter-spacing:.06em}
+.path{font-family:var(--f-mono);font-size:.86em;background:var(--sunk);padding:1px 6px;border-radius:5px;white-space:nowrap}
+
+/* ---------- 2案 ---------- */
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 16px;display:grid;gap:10px;align-content:start;min-width:0}
+.plan dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:.92rem}
+.plan dt{color:var(--muted);font-weight:700;white-space:nowrap}
+.plan dd{margin:0;min-width:0}
+@media (max-width:620px){ .plans{grid-template-columns:1fr} }
+
+/* ---------- 注意点 ---------- */
+.cautions{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.cautions li{
+  display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;
+  padding:12px 0;border-bottom:1px solid var(--line);
+}
+.cautions li:last-child{border-bottom:0}
+.cautions li > div{min-width:0;display:grid;gap:2px}
+.cautions h3{font-size:.98rem;font-family:var(--f-body)}
+.cautions p{font-size:.93rem}
+
+/* ---------- 根拠 ---------- */
+.sources{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.sources li{
+  display:grid;grid-template-columns:2.6em 1fr;gap:10px;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+  scroll-margin-top:16px;
+}
+.sources li:target{outline:2px solid var(--accent);outline-offset:2px}
+.src-n{font-family:var(--f-mono);font-weight:500;color:var(--accent)}
+.sources li > div{min-width:0;display:grid;gap:6px}
+.src-t{font-weight:700;line-height:1.5}
+.src-meta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:.82rem;color:var(--muted)}
+.tag{font-size:.74rem;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--ok-soft);color:var(--ok)}
+.tag.third{background:var(--info-soft);color:var(--info)}
+.src-sum{font-size:.9rem}
+.src-url{font-family:var(--f-mono);font-size:.74rem;color:var(--muted);overflow-wrap:anywhere;word-break:break-all}
+
+/* ---------- フッター ---------- */
+.foot{
+  border-top:1px solid var(--line);padding-top:20px;display:grid;gap:10px;font-size:.86rem;color:var(--muted);
+}
+.foot ul{margin:0;padding-left:1.2em;display:grid;gap:2px}
+
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <p class="eyebrow">調査メモ <span>2026-10-21 時点</span></p>
+  <h1>Coworkの「/app」で作ったアプリ、クレジットはどこから引かれる？</h1>
+  <p class="lead">Copilot Cowork の App スキル（<span class="mono">/app</span>）で作り、Microsoft のクラウドに公開して他の人に共有したアプリについて、クレジットが「いつ」「誰の枠から」減るのかを公式ドキュメントで確かめてまとめました。</p>
+  <dl class="meta">
+    <div><dt>調査日</dt><dd class="mono">2026-10-21</dd></div>
+    <div><dt>対象</dt><dd>Copilot Cowork の App スキル（Frontier プレビュー）と、アプリの公開先である Copilot Managed Runtime（プレビュー）</dd></div>
+  </dl>
+</header>
+
+<section class="verdict" aria-labelledby="h-verdict">
+  <h2 id="h-verdict" class="label">結論</h2>
+  <p class="verdict-main">作るときは<em>作った人の枠</em>から、使うときは<em>使った人ひとりひとりの枠</em>から引かれます。お財布（クレジットの残高）は会社全体で1つです。</p>
+  <p>アプリを作ったり直したりする分は、作成者が入っている Cowork 用の「支出ポリシー」から消費されます<span class="c"><a href="#src-2">[2]</a><a href="#src-3">[3]</a></span>。公開後に誰かがアプリを開いて使う分は、作成者ではなくその利用者本人に計上されるので、管理者は利用者向けに別の支出ポリシーを用意する必要があります<span class="c"><a href="#src-2">[2]</a><a href="#src-3">[3]</a><a href="#src-7">[7]</a></span>。利用者に Microsoft 365 Copilot ライセンスは要りませんが、Power Apps Premium ライセンスかクレジットの割り当てのどちらかは必要です<span class="c"><a href="#src-3">[3]</a></span>。</p>
+
+  <div class="lanes" role="group" aria-label="作るときと使うときの請求の流れ">
+    <article class="lane">
+      <p class="lane-tag">作るとき</p>
+      <h3>/app でアプリを作る・直す</h3>
+      <dl>
+        <dt>消費する人</dt><dd>アプリの作成者</dd>
+        <dt>引かれる枠</dt><dd>作成者の <b>Cowork 支出ポリシー</b></dd>
+        <dt>量の決まり方</dt><dd>使うAIモデル、アプリの複雑さ、作り直しの回数で変わります。目安は1本あたり 250〜1,350+ クレジット<span class="c"><a href="#src-6">[6]</a></span></dd>
+      </dl>
+      <span class="drop" aria-hidden="true">↓</span>
+    </article>
+    <article class="lane">
+      <p class="lane-tag">使うとき</p>
+      <h3>公開したアプリを開く・データを読み書きする</h3>
+      <dl>
+        <dt>消費する人</dt><dd>アプリを使った本人（作成者ではない）</dd>
+        <dt>引かれる枠</dt><dd>利用者の <b>Copilot Managed Runtime 支出ポリシー</b></dd>
+        <dt>量の決まり方</dt><dd>API 呼び出し1回につき 0.1 クレジット。Power Apps Premium を持つ人は原則ゼロ<span class="c"><a href="#src-3">[3]</a><a href="#src-5">[5]</a></span></dd>
+      </dl>
+      <span class="drop" aria-hidden="true">↓</span>
+    </article>
+    <div class="wallet">
+      <span class="coin" aria-hidden="true">C</span>
+      <div>
+        <p class="wallet-h">会社（テナント）共有のお財布</p>
+        <p>どちらの分もテナント全体でまとめた Copilot Credits から差し引かれます。支払いは、使った分を後払いする従量課金（1 クレジット＝$0.01）か、1年分を前払いするプラン（P3）で行います<span class="c"><a href="#src-5">[5]</a><a href="#src-7">[7]</a></span>。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="h-terms">
+  <h2 id="h-terms">先に押さえておきたい言葉</h2>
+  <dl class="terms">
+    <div><dt>Copilot Credits（クレジット）</dt><dd>Cowork などの従量課金で使う共通の「ポイント」。使った量に応じて減ります。</dd></div>
+    <div><dt>支出ポリシー</dt><dd>「誰が」「どのサービスで」「月にどこまで」クレジットを使ってよいかを決める、管理者が作るルールです。</dd></div>
+    <div><dt>Copilot Managed Runtime</dt><dd>Cowork で作ったアプリが置かれる、Microsoft が運用するクラウド上の置き場所です。</dd></div>
+    <div><dt>API 呼び出し</dt><dd>アプリが裏側で行う1回1回の処理のこと。アプリを開く、データを1件読む・書く、などが該当します。</dd></div>
+  </dl>
+</section>
+
+<section aria-labelledby="h-flow">
+  <h2 id="h-flow">作ってから使われるまでの流れと、お金が動くところ</h2>
+  <ol class="steps">
+    <li>
+      <h3>作る・直す</h3>
+      <p class="charge"><span class="coin sm" aria-hidden="true">C</span><span>作成者の Cowork 枠から消費<span class="c"><a href="#src-2">[2]</a></span></span></p>
+    </li>
+    <li>
+      <h3>公開する</h3>
+      <p class="charge"><span class="coin sm" aria-hidden="true">C</span><span>公開も API 呼び出し1回として数えられます<span class="c"><a href="#src-3">[3]</a></span></span></p>
+    </li>
+    <li>
+      <h3>共有リンクを送る</h3>
+      <p class="charge free"><span>送るだけなら消費なし。ただし受け取った人に使う権利は付きません<span class="c"><a href="#src-3">[3]</a></span></span></p>
+    </li>
+    <li>
+      <h3>開いて使う</h3>
+      <p class="charge"><span class="coin sm" aria-hidden="true">C</span><span>操作ごとに 0.1 クレジットを利用者本人の枠から消費<span class="c"><a href="#src-3">[3]</a></span></span></p>
+    </li>
+  </ol>
+  <p class="sec-lead">アプリは Microsoft のクラウド上で動き、会社の Microsoft Entra アカウントでサインインして使います。利用者は専用ポータル（<span class="mono">managedapps.cloud.microsoft</span>）からも自分が使えるアプリを開けます<span class="c"><a href="#src-4">[4]</a></span>。</p>
+</section>
+
+<section aria-labelledby="h-pats">
+  <h2 id="h-pats">共有された人は、3パターンに分かれます</h2>
+  <div class="pats">
+    <article class="pat">
+      <span class="pill p-ok">原則ゼロ</span>
+      <h3>Power Apps Premium を持っている人</h3>
+      <p>アプリを使ってもクレジットは減りません。1日のリクエスト上限を超えた分と、Work IQ API などの別サービスはクレジットで払います<span class="c"><a href="#src-2">[2]</a><a href="#src-3">[3]</a></span>。</p>
+    </article>
+    <article class="pat">
+      <span class="pill p-cost">使った分だけ</span>
+      <h3>支出ポリシーに入っている人</h3>
+      <p>API 呼び出し1回につき 0.1 クレジットが、その人の枠から減ります。管理者は1人あたりの上限も決められます<span class="c"><a href="#src-3">[3]</a><a href="#src-7">[7]</a></span>。</p>
+    </article>
+    <article class="pat">
+      <span class="pill p-ng">途中で止まる</span>
+      <h3>どちらにも当てはまらない人</h3>
+      <p>開けますが警告が出て、20回操作するか5分使うと（早いほう）ブロックされます。プレビュー期間中の動きです<span class="c"><a href="#src-2">[2]</a></span>。</p>
+    </article>
+  </div>
+  <p class="pat-note">Microsoft 365 や Dynamics 365 に最初から付いている Power Apps の利用権では、このアプリは動かせません<span class="c"><a href="#src-3">[3]</a></span>。</p>
+</section>
+
+<section aria-labelledby="h-matrix">
+  <h2 id="h-matrix">早見表</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th scope="col">質問</th><th scope="col">答え</th><th scope="col">ひとこと</th><th scope="col">根拠</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="q">/app でアプリを作るとクレジットは減る？</td>
+          <td><span class="pill p-cost">減る</span></td>
+          <td>作成者の Cowork 支出ポリシーから。モデル・複雑さ・作り直しの量で変わります</td>
+          <td class="c"><a href="#src-2">[2]</a><a href="#src-3">[3]</a><a href="#src-6">[6]</a></td>
+        </tr>
+        <tr class="hl">
+          <td class="q">共有したアプリを他の人が使うと減る？</td>
+          <td><span class="pill p-cost">減る</span></td>
+          <td>Power Apps Premium を持つ人の利用は原則減りません</td>
+          <td class="c"><a href="#src-2">[2]</a><a href="#src-3">[3]</a><a href="#src-5">[5]</a></td>
+        </tr>
+        <tr class="hl">
+          <td class="q">他の人が使った分は、作成者の枠から引かれる？</td>
+          <td><span class="pill p-ok">いいえ</span></td>
+          <td>使った人ごとに計上されます。利用者向けの支出ポリシーを別に用意します</td>
+          <td class="c"><a href="#src-2">[2]</a><a href="#src-3">[3]</a><a href="#src-7">[7]</a></td>
+        </tr>
+        <tr>
+          <td class="q">利用者に Microsoft 365 Copilot ライセンスは必要？</td>
+          <td><span class="pill p-ok">不要</span></td>
+          <td>代わりに Power Apps Premium かクレジットのどちらかが必要です</td>
+          <td class="c"><a href="#src-3">[3]</a></td>
+        </tr>
+        <tr>
+          <td class="q">共有リンクを送れば、相手はすぐ使える？</td>
+          <td><span class="pill p-warn">条件付き</span></td>
+          <td>共有で付くのはアクセス権だけ。ライセンスかクレジット、データ側の権限や接続も必要です</td>
+          <td class="c"><a href="#src-3">[3]</a></td>
+        </tr>
+        <tr>
+          <td class="q">Microsoft 365 付属の Power Apps 利用権で動く？</td>
+          <td><span class="pill p-ng">動かない</span></td>
+          <td>Copilot Managed Runtime のアプリは対象外です</td>
+          <td class="c"><a href="#src-3">[3]</a></td>
+        </tr>
+        <tr>
+          <td class="q">作る分と使う分は、まとめて管理される？</td>
+          <td><span class="pill p-info">別々</span></td>
+          <td>支出ポリシーも別です。どちらも Microsoft 365 管理センターで設定します</td>
+          <td class="c"><a href="#src-2">[2]</a><a href="#src-3">[3]</a></td>
+        </tr>
+        <tr>
+          <td class="q">最終的に払うのは？</td>
+          <td><span class="pill p-info">会社全体</span></td>
+          <td>クレジットはテナント単位でまとめてプールされ、請求も会社に1本です</td>
+          <td class="c"><a href="#src-3">[3]</a><a href="#src-5">[5]</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="hl-note"><span aria-hidden="true"></span>色付きの行が、今回いちばん知りたかった点です。</p>
+</section>
+
+<section aria-labelledby="h-price">
+  <h2 id="h-price">どのくらい減るの？</h2>
+  <div class="rates">
+    <div class="rate">
+      <p class="rate-k">クレジットの単価（従量課金の定価）</p>
+      <p class="rate-v">$0.01<small>／1 クレジット</small></p>
+      <p>100 クレジットで $1。前払いプラン（P3）は量に応じて 5〜20% 引きで、使い残しは1年で失効します<span class="c"><a href="#src-5">[5]</a></span>。</p>
+    </div>
+    <div class="rate">
+      <p class="rate-k">アプリを動かすときの単価</p>
+      <p class="rate-v">0.1<small>クレジット／API 呼び出し1回</small></p>
+      <p>10回の呼び出しで 1 クレジット（$0.01）。AIを使う Work IQ API やエージェントは別料金です<span class="c"><a href="#src-3">[3]</a><a href="#src-5">[5]</a></span>。</p>
+    </div>
+  </div>
+
+  <h3 class="sub">API 呼び出しとして数えられる主な操作<span class="c"><a href="#src-3">[3]</a></span></h3>
+  <ul class="api-list">
+    <li>アプリを開く（起動する）</li>
+    <li>コネクタ経由でデータを読む・書く（レコードの読み込みや保存など）</li>
+    <li>アプリを公開する</li>
+  </ul>
+
+  <h3 class="sub">作るときの目安（1本あたり）<span class="c"><a href="#src-6">[6]</a></span></h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">規模</th><th scope="col">Microsoft が挙げている例</th><th scope="col">クレジット</th><th scope="col">金額の目安</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">軽め</td><td>研修の日程・資料を見られて、感想を送れるハブ。管理用ページ付き</td><td class="num">250〜450</td><td class="num">$2.5〜4.5</td></tr>
+        <tr><td class="nw">中くらい</td><td>今日対応が必要な相手と理由を一覧にし、担当者がフォロータスクを記録できるアプリ</td><td class="num">400〜750</td><td class="num">$4〜7.5</td></tr>
+        <tr><td class="nw">重め</td><td>複数のデータ元と連携し、承認ページや例外処理、エージェント呼び出しまで持つ監査用ワークスペース</td><td class="num">700〜1,350+</td><td class="num">$7〜13.5+</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub">動かすときの目安（1アプリ・1か月あたり）<span class="c"><a href="#src-6">[6]</a></span></h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">規模</th><th scope="col">使われ方</th><th scope="col">クレジット／月</th><th scope="col">金額の目安／月</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">小さめ</td><td>数人が使うフォームなどの簡単なアプリ。コネクタの利用は少なめ</td><td class="num">10〜50</td><td class="num">$0.1〜0.5</td></tr>
+        <tr><td class="nw">部署向け</td><td>複数のコネクタを使い、部署で毎日ほどほどに使うアプリ</td><td class="num">300〜500</td><td class="num">$3〜5</td></tr>
+        <tr><td class="nw">全社向け</td><td>大勢が使い、裏側の処理やコネクタの通信が多いアプリ</td><td class="num">3,000〜5,000</td><td class="num">$30〜50</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="sec-lead">どれも Microsoft が出している計画用のざっくりした目安で、実際の請求額を約束するものではありません<span class="c"><a href="#src-5">[5]</a><a href="#src-6">[6]</a></span>。</p>
+</section>
+
+<section aria-labelledby="h-calc">
+  <h2 id="h-calc">ざっくり試算してみる</h2>
+  <p class="sec-lead">Power Apps Premium を持っていない利用者が、公開済みのアプリを1か月使った場合の「使う分」だけを計算します。</p>
+  <div class="calc">
+    <div class="calc-in">
+      <div class="field">
+        <label for="calc-users">使う人の数（Power Apps Premium なし）</label>
+        <input id="calc-users" type="number" min="0" step="1" value="10" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label for="calc-launch">1人が月に開く回数</label>
+        <input id="calc-launch" type="number" min="0" step="1" value="20" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label for="calc-ops">1回開くごとのデータの読み書き回数</label>
+        <input id="calc-ops" type="number" min="0" step="1" value="10" inputmode="numeric">
+      </div>
+    </div>
+    <div class="calc-out" aria-live="polite">
+      <div class="out-row"><span>API 呼び出し／月</span><output id="out-calls" for="calc-users calc-launch calc-ops">2,200 回</output></div>
+      <div class="out-row"><span>消費クレジット／月</span><output id="out-credits" for="calc-users calc-launch calc-ops">220</output></div>
+      <div class="out-row big"><span>金額の目安／月</span><output id="out-usd" for="calc-users calc-launch calc-ops">$2.20</output></div>
+    </div>
+    <p class="calc-note">計算式：人数 × 開く回数 ×（起動1回＋読み書き回数）× 0.1 クレジット。読み書き1回をAPI呼び出し1回と仮定した試算です。実際の回数はアプリの作りで変わり、AI機能（Work IQ API・エージェント）を使う場合は別料金が加わります。</p>
+  </div>
+</section>
+
+<section aria-labelledby="h-admin">
+  <h2 id="h-admin">管理者が設定するところ（設定する順）</h2>
+  <ol class="howto">
+    <li><div><p class="who">作れるようにする</p><p>テナントを Frontier プログラムに参加させ、Microsoft 365 管理センターの <span class="path">アプリ &gt; 概要</span> でアプリを作れる人を有効にします<span class="c"><a href="#src-2">[2]</a><a href="#src-8">[8]</a></span>。</p></div></li>
+    <li><div><p class="who">お財布を用意する</p><p><span class="path">Copilot &gt; Cost management</span> で従量課金をオンにし、支払い方法（Azure サブスクリプションでの後払い、前払いプランなど）を設定します<span class="c"><a href="#src-7">[7]</a></span>。</p></div></li>
+    <li><div><p class="who">作る人の枠</p><p>Cowork を対象にした支出ポリシーに、アプリを作る人を入れます。Cowork を見えるようにするだけでは App スキルは使えません<span class="c"><a href="#src-2">[2]</a></span>。</p></div></li>
+    <li><div><p class="who">使う人の枠</p><p>「Copilot Managed Runtime」を対象にした支出ポリシーを作り、アプリを使う人やグループを入れます。Power Apps Premium を持つ人は入れなくても使えます<span class="c"><a href="#src-3">[3]</a><a href="#src-7">[7]</a></span>。</p></div></li>
+    <li><div><p class="who">上限を決める</p><p>ポリシー全体の上限と1人あたりの上限、上限に近づいたときの通知を設定します<span class="c"><a href="#src-3">[3]</a><a href="#src-7">[7]</a></span>。</p></div></li>
+    <li><div><p class="who">使われ方を見る</p><p>Cost management の消費の画面で、ポリシー別・ユーザー別・サービス別にどれだけ減ったかを確認できます<span class="c"><a href="#src-7">[7]</a></span>。</p></div></li>
+  </ol>
+</section>
+
+<section aria-labelledby="h-plans">
+  <h2 id="h-plans">使う人の費用をまかなう2つの方法</h2>
+  <div class="plans">
+    <article class="plan">
+      <h3>A. クレジットでまかなう</h3>
+      <dl>
+        <dt>手間</dt><dd>少ない（支出ポリシーに入れるだけ）</dd>
+        <dt>追加コスト</dt><dd>使った分だけ（API 呼び出し1回 0.1 クレジット）</dd>
+        <dt>向く人</dt><dd>たまに開く人、人数が読めない段階</dd>
+      </dl>
+    </article>
+    <article class="plan">
+      <h3>B. Power Apps Premium を割り当てる</h3>
+      <dl>
+        <dt>手間</dt><dd>中くらい（ライセンスの購入と割り当て）</dd>
+        <dt>追加コスト</dt><dd>1人あたりの月額ライセンス費（価格は購入経路で要確認）</dd>
+        <dt>向く人</dt><dd>毎日たくさん使う人。AI機能の分は別途クレジット</dd>
+      </dl>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="h-caution">
+  <h2 id="h-caution">説明するときに外せない注意点</h2>
+  <ul class="cautions">
+    <li><span class="pill p-warn">プレビュー</span><div><h3>仕組みも金額も変わる可能性があります</h3><p>App スキルは Frontier プレビュー、Copilot Managed Runtime は有償のパブリックプレビューです。一般提供の前に価格や仕組みが変わることがあると明記されています<span class="c"><a href="#src-1">[1]</a><a href="#src-5">[5]</a></span>。</p></div></li>
+    <li><span class="pill p-warn">自動追加</span><div><h3>既存の支出ポリシーに、知らないうちに含まれることがあります</h3><p>支出ポリシーは「新しいサービスを自動で追加する」設定が最初からオンです。既存の Cowork 用ポリシーが Copilot Managed Runtime までカバーしていないか見直してください<span class="c"><a href="#src-7">[7]</a></span>。</p></div></li>
+    <li><span class="pill p-ng">共有範囲</span><div><h3>リンクを持つ人は、アプリのデータも全部見られます</h3><p>共有リンクを受け取った人は、アプリとその中のデータすべてを使えます。渡す相手は必要な人だけにします<span class="c"><a href="#src-1">[1]</a></span>。</p></div></li>
+    <li><span class="pill p-info">表現の差</span><div><h3>「Copilot を使える人」と「Copilot ライセンス不要」</h3><p>Cowork の手順ページは共有相手を「組織内で Microsoft 365 Copilot を使える人」と書き、ライセンス FAQ は「利用者に Microsoft 365 Copilot ライセンスは不要」と書いています。有償ライセンスのない人も使える前提と読めますが、実際のテナントで一度確かめるのが安全です<span class="c"><a href="#src-1">[1]</a><a href="#src-3">[3]</a></span>。</p></div></li>
+    <li><span class="pill p-info">作る人の条件</span><div><h3>作成者には別途ライセンスが要ります</h3><p>作る側は Microsoft 365 Copilot ライセンス、Cowork へのアクセス、Frontier への参加が必要です。Copilot ライセンスに Cowork の利用分は含まれず、別にクレジットがかかります<span class="c"><a href="#src-2">[2]</a><a href="#src-8">[8]</a></span>。</p></div></li>
+    <li><span class="pill p-info">Studio との違い</span><div><h3>Copilot Studio で作ったアプリは「作る分」の管理場所が違います</h3><p>Copilot Studio で作る分は環境単位で Power Platform 管理センターから管理します。使う分はどちらで作っても利用者単位です<span class="c"><a href="#src-2">[2]</a><a href="#src-8">[8]</a></span>。</p></div></li>
+  </ul>
+</section>
+
+<section aria-labelledby="h-src">
+  <h2 id="h-src">根拠</h2>
+  <ol class="sources">
+    <li id="src-1"><span class="src-n">[1]</span><div>
+      <p class="src-t"><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/use-cowork#build-apps-with-the-app-skill-frontier">Use Copilot Cowork（Build apps with the App skill (Frontier)）</a></p>
+      <p class="src-meta"><span class="tag">公式</span><span>Microsoft Learn</span><span>最終更新 <span class="mono">2026-09-14</span></span></p>
+      <p class="src-sum">説明するだけでアプリを作り、公開して共有リンクで組織内に配れること。リンクを持つ人はアプリとそのデータを使えること。プレビュー機能で内容が変わりうること。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/use-cowork</p>
+    </div></li>
+    <li id="src-2"><span class="src-n">[2]</span><div>
+      <p class="src-t"><a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/">Copilot Managed Runtime overview and key concepts for admins (preview)</a></p>
+      <p class="src-meta"><span class="tag">公式</span><span>Microsoft Learn</span><span>最終更新 <span class="mono">2026-10-13</span></span></p>
+      <p class="src-sum">作る分は作成者の Cowork 支出ポリシー（ユーザー単位）、動かす分は利用者向けに別の支出ポリシーで管理すること。Power Apps Premium は原則消費なし。条件を満たさない利用者は警告後、20操作か5分でブロック。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/</p>
+    </div></li>
+    <li id="src-3"><span class="src-n">[3]</span><div>
+      <p class="src-t"><a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-faq">Copilot Managed Runtime licensing FAQ (preview)</a></p>
+      <p class="src-meta"><span class="tag">公式</span><span>Microsoft Learn</span><span>最終更新 <span class="mono">2026-10-08</span></span></p>
+      <p class="src-sum">利用者は Power Apps Premium かクレジットが必要で、Microsoft 365 Copilot ライセンスは不要。共有してもライセンスは付かない。起動・コネクタでの読み書き・公開が API 呼び出しで1回 0.1 クレジット。Microsoft 365 付属の Power Apps 利用権は対象外。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-faq</p>
+    </div></li>
+    <li id="src-4"><span class="src-n">[4]</span><div>
+      <p class="src-t"><a href="https://learn.microsoft.com/en-us/microsoft-365/managed-apps/">What is Copilot Managed Runtime (preview)</a></p>
+      <p class="src-meta"><span class="tag">公式</span><span>Microsoft Learn</span><span>最終更新 <span class="mono">2026-10-15</span></span></p>
+      <p class="src-sum">Cowork などで作ったアプリは Microsoft が運用する環境で動き、Entra 認証とテナントのポリシーに従い、管理センターに一覧表示されること。利用者はポータルから開けること。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-365/managed-apps/</p>
+    </div></li>
+    <li id="src-5"><span class="src-n">[5]</span><div>
+      <p class="src-t"><a href="https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/bade/documents/products-and-services/en-us/ai/Copilot-Credits-Guide.pdf">Microsoft Copilot Credits Guide（PDF）</a></p>
+      <p class="src-meta"><span class="tag">公式</span><span>Microsoft</span><span><span class="mono">2026年10月</span>版</span></p>
+      <p class="src-sum">1 クレジット $0.01、クレジットはテナント単位でプール、前払いプランの割引と失効。Copilot Managed Runtime は API 呼び出し1回 0.1 クレジットで、Power Apps Premium はリクエスト上限内なら込み。GA前の価格変更の可能性。</p>
+      <p class="src-url">https://cdn-dynmedia-1.microsoft.com/…/ai/Copilot-Credits-Guide.pdf</p>
+    </div></li>
+    <li id="src-6"><span class="src-n">[6]</span><div>
+      <p class="src-t"><a href="https://www.microsoft.com/licensing/guidance/Copilot-Credits">Copilot Credits licensing guidance（Webページ）</a></p>
+      <p class="src-meta"><span class="tag">公式</span><span>Microsoft Licensing</span><span>日付不明（<span class="mono">2026-10-21</span> 閲覧）</span></p>
+      <p class="src-sum">Cowork でアプリを作るときの目安（250〜450／400〜750／700〜1,350+）と、置いて動かすときの1アプリ・月あたりの目安（10〜50／300〜500／3,000〜5,000）。</p>
+      <p class="src-url">https://www.microsoft.com/licensing/guidance/Copilot-Credits</p>
+    </div></li>
+    <li id="src-7"><span class="src-n">[7]</span><div>
+      <p class="src-t"><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-overview-copilot-credits">Understand usage-based billing and cost management for Copilot Credits</a></p>
+      <p class="src-meta"><span class="tag">公式</span><span>Microsoft Learn</span><span>最終更新 <span class="mono">2026-10-02</span></span></p>
+      <p class="src-sum">従量課金の対象サービスに Copilot Managed Runtime が含まれること。Cost management で支出ポリシー、対象ユーザー、上限、消費の確認ができること。新サービスの自動追加は既定でオン。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-overview-copilot-credits</p>
+    </div></li>
+    <li id="src-8"><span class="src-n">[8]</span><div>
+      <p class="src-t"><a href="https://mc.merill.net/message/MC1469329">MC1469329：Build apps in Microsoft Copilot Studio and Copilot Cowork</a></p>
+      <p class="src-meta"><span class="tag">公式</span><span class="tag third">第三者アーカイブで閲覧</span><span>公開 <span class="mono">2026-09-08</span>／更新 <span class="mono">2026-10-13</span></span></p>
+      <p class="src-sum">Cowork のアプリ作成は Frontier プレビューで、Microsoft 365 Copilot ライセンスと Cowork へのアクセスがある人が対象。作る分と動かす分の両方のクレジット要件を確認するよう案内。Copilot Studio 側は環境のクレジットを使う。</p>
+      <p class="src-url">https://mc.merill.net/message/MC1469329</p>
+    </div></li>
+  </ol>
+</section>
+
+<footer class="foot">
+  <p>調査日：<span class="mono">2026-10-21</span>。プレビュー中の機能のため、提供状況や金額はテナント・時期によって変わります。</p>
+  <p>出典の日付</p>
+  <ul>
+    <li>[1] 最終更新 <span class="mono">2026-09-14</span></li>
+    <li>[2] 最終更新 <span class="mono">2026-10-13</span></li>
+    <li>[3] 最終更新 <span class="mono">2026-10-08</span></li>
+    <li>[4] 最終更新 <span class="mono">2026-10-15</span></li>
+    <li>[5] <span class="mono">2026年10月</span>版</li>
+    <li>[6] 日付不明（<span class="mono">2026-10-21</span> 閲覧）</li>
+    <li>[7] 最終更新 <span class="mono">2026-10-02</span></li>
+    <li>[8] 公開 <span class="mono">2026-09-08</span>／更新 <span class="mono">2026-10-13</span></li>
+  </ul>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var ids=['calc-users','calc-launch','calc-ops'];
+  var els=ids.map(function(id){return document.getElementById(id)});
+  var oc=document.getElementById('out-calls'),ocr=document.getElementById('out-credits'),ou=document.getElementById('out-usd');
+  function num(el){var v=parseFloat(el.value);return isFinite(v)&&v>0?v:0}
+  function update(){
+    var calls=num(els[0])*num(els[1])*(1+num(els[2]));
+    var credits=calls*0.1;
+    var usd=credits*0.01;
+    oc.textContent=Math.round(calls).toLocaleString('ja-JP')+' 回';
+    ocr.textContent=credits.toLocaleString('ja-JP',{maximumFractionDigits:1});
+    ou.textContent='$'+usd.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+  els.forEach(function(el){el.addEventListener('input',update)});
+  update();
+})();
+</script>
+
+</body>
+</html>
