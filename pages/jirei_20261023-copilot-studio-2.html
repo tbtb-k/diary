@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Tiendas Cuadra）。2026年10月23日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>ECサイトの問い合わせ対応を4人のチームで支える仮想アシスタントを作りました（Tiendas Cuadra）</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月23日／小売業（Tiendas Cuadra）・カスタマーサービス</p>
+
+    <h1>ECサイトの問い合わせ対応を4人のチームで支える仮想アシスタントを作りました（Tiendas Cuadra）</h1>
+
+    <div class="lead">
+    <p>メキシコの革製ブーツ小売 Tiendas Cuadra では、ネット販売が伸びる一方、問い合わせの対応を4人のチームで受けていました。</p>
+    <p>そこで Copilot Studio（ノーコードでエージェントを作れる Microsoft のツール）で仮想アシスタントを作り、Dynamics 365（顧客対応や会計の業務システム）とつなぎました。</p>
+    <p>同社は、1か月で400件以上の問い合わせを人手なしで処理できたと公表しています。</p>
+  </div>
+
+    <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>夜間や繁忙期に、「注文はどうなっていますか」という同じような問い合わせが一度に届いて、対応が追いつかなくなったことはありませんか。</p>
+  <p>Tiendas Cuadra では、電話、チャット、メール、SNS、WhatsApp から問い合わせが届きます。通常は回りますが、年末のような繁忙期は厳しくなります。以前のチャットボットは簡易的で、社内の業務システムともつながっていませんでした。</p>
+
+    <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、文章で指示や資料を与えて、チャット形式のエージェントを作るツールです。今回は、自社サイトに組み込んだ仮想アシスタントとして使っています。</p>
+  <p>知識には、自社サイト、商品カタログ、店舗一覧を使っています。注文データの取得には Power Automate（作業の自動化ツール）を使い、難しい質問は人に引き継ぎます。構築は Microsoft のパートナー企業と一緒に進めました。</p>
+
+  <figure class="figure">
+        <ol class="flow" aria-label="仮想アシスタントの流れ">
+      <li><div class="box">お客様が<br>サイトで質問</div></li>
+      <li><div class="box">仮想アシスタントが<br>注文状況などを回答</div></li>
+      <li><div class="box">難しい質問は<br>担当者へ引き継ぎ</div></li>
+      <li><div class="box">案件（ケース）と<br>要約を自動作成</div></li>
+    </ol>
+    <figcaption>仮想アシスタントの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>既存のしくみでは増える問い合わせに対応しきれないと判断し、Microsoft のツールでそろえる方針にしました。</li>
+    <li>業務システムとつなげやすいことと、WhatsApp に標準で対応していることから、Copilot Studio を選びました。</li>
+    <li>注文状況、配送の追跡、商品情報、キャンペーンの案内に答えるアシスタントを、パートナーと一緒に作りました。</li>
+    <li>複雑な問い合わせは担当者に引き継ぎ、そのときに会話の要約つきのケースが Dynamics 365 に自動で作られます。</li>
+  </ol>
+    <p class="src-note">※ 手順は、公開記事の説明を読みやすく並べ直したものです。実際の設定や画面の操作内容は公開されていません。</p>
+
+    <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>夜間や繁忙期の問い合わせに十分に応えられませんでした。以前のチャットボットは簡易的で、業務システムとつながっていませんでした。</p></div>
+    <div class="after"><h3>いま</h3><p>注文状況などの定型的な質問に、いつでもすぐ答えられます。複雑な案件だけが、要約つきで担当者に届きます。</p></div>
+  </div>
+  <p>1か月で400件以上、回答品質88%以上、受けた質問の100%を解決、担当チームは4人という数字は、すべて Tiendas Cuadra が公表したものです。ただし測り方は示されておらず、報告された期間も1か月です。</p>
+
+    <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>お客様や社員から繰り返し届く質問を、1週間分だけ書き出します。</li>
+    <li>その中で、答えが決まっている質問（注文状況、手続きの場所など）を3つ選びます。</li>
+    <li>答えの元になる資料を用意し、小さなエージェントで試して、どこで間違えるかを記録します。</li>
+  </ol>
+  <p>準備するのは、質問の記録と、答えの元になる資料です。Copilot Studio や Dynamics 365 を使えるかどうかは、ライセンスや社内の設定で変わります。</p>
+
+    <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>最初は品質がいまひとつで、公開も遅れました</strong>
+    <p>記事によると、設定の問題で、メキシコ最大のセールに間に合わせることができませんでした。最初の回答の品質もよくなく、改善を重ねたとのことです。</p>
+  </div>
+  <p>お客様に向けて公開するアシスタントは、AI がもっともらしい間違いを答える（ハルシネーション）ことを前提に、引き継ぎの道筋を必ず用意しましょう。顧客情報を扱うので、見せてよい情報の範囲も先に決めておく必要があります。</p>
+
+    <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例は、全部を AI に任せるのでなく、定型の質問は AI、複雑な案件は人、と分けたところがポイントです。同社は小さく始めて、効果を確かめてから広げています。</p>
+  <p>自分の職場に置き換えると、社内のヘルプデスクで、毎月同じ質問が届いているなら、その質問だけを引き受けるアシスタントから始め、それ以外は担当者につなぐ形にすると、少ない手間で試せます。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「Tiendas Cuadra reinvents customer service with a virtual assistant built on Microsoft Copilot Studio」（2026年4月28日公開）<br>
+    <a href="https://www.microsoft.com/en/customers/story/26459-tiendas-cuadra-microsoft-copilot-studio">https://www.microsoft.com/en/customers/story/26459-tiendas-cuadra-microsoft-copilot-studio</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月23日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -30,6 +30,8 @@
 | 2026-10-19 | Copilot Studio（Agent Builder 枠の代替） | Cancer Council NSW | pages/jirei_20261019-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/26834-cancer-council-nsw-sharepoint |
 | 2026-10-21 | Copilot Studio | mobilezone | pages/jirei_20261021-copilot-studio.html | https://www.microsoft.com/en/customers/story/26389-mobilezone-dynamics-365-customer-service |
 | 2026-10-21 | Copilot Studio（Agent Builder 枠の代替） | Graebel | pages/jirei_20261021-copilot-studio-2.html | https://adoption.microsoft.com/en-us/ai-agents/transformation-stories/graebel/ |
+| 2026-10-23 | Copilot Studio | Dunaway | pages/jirei_20261023-copilot-studio.html | https://www.microsoft.com/en/customers/story/25879-dunaway-microsoft-copilot-studio |
+| 2026-10-23 | Copilot Studio（Agent Builder 枠の代替） | Tiendas Cuadra | pages/jirei_20261023-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/26459-tiendas-cuadra-microsoft-copilot-studio |
 
 ## ネタ帳（候補）
 
@@ -70,3 +72,4 @@
 - 2026-10-17：Agent Builder 枠は、本文を読めて Agent Builder と明記された新規事例がなく、Copilot Studio を2本（Regal Rexnord、Grupo Bimbo）にした。Grupo Bimbo・Cancer Council NSW・Lifetime Products の本文に Agent Builder の記載なし。adoption.microsoft.com の transformation-stories 一覧にも Agent Builder の事例なし。ブロックされたホストなし。
 - 2026-10-19：Agent Builder 枠は、WebSearch で顧客事例が出ず、Copilot Studio を2本（Lifetime Products、Cancer Council NSW。ネタ帳の本文を読み直して採用）にした。2本とも Agent Builder の記載なし。ブロックされたホストなし。
 - 2026-10-21：Agent Builder 枠は、WebSearch（標準・拡張）でも顧客事例が出ず、Copilot Studio を2本（mobilezone、Graebel）にした。2本とも Agent Builder の記載なし。ネタ帳候補（未読）：Tiendas CUADRA、Dunaway、Singapore Civil Defence Force（Copilot Studio、learn.microsoft.com の adoption case studies 一覧より）。ブロックされたホストなし。
+- 2026-10-23：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（Dunaway、Tiendas Cuadra。ネタ帳の候補を本文確認して採用）にした。2本とも Agent Builder の記載なし。ネタ帳候補（未読）：Singapore Civil Defence Force は検索で裏づけが取れず。ブロックされたホストなし。
