@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Copilot Studio で作ったエージェントを M365 Copilot ライセンスあり・なしの人が使うとき、回答の精度やできることに差が出るのか。公式に書かれている差と、SharePoint・設定・環境などライセンス以外の原因の切り分けを、出典と日付つきでまとめた調査メモ。調査日 2026年10月22日。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Copilot Studio エージェントの精度はライセンスで変わる？</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  /* Layout: 1本の読み物カラム（最大760px）。結論 → 公式の差（表） → ライセンス以外の原因（5分類のチェックリスト） → 切り分け手順 → 注意点 → 出典 */
+  --bg:#F4F6F9;
+  --surface:#FFFFFF;
+  --sunk:#EBEFF4;
+  --ink:#161C26;
+  --muted:#566173;
+  --line:#D8DEE7;
+  --accent:#1F4FA3;
+  --accent-soft:#E3EAF7;
+  --ok:#25694A;
+  --ok-soft:#E0F0E7;
+  --warn:#8A5A00;
+  --warn-soft:#F8EDD5;
+  --ng:#A12C24;
+  --ng-soft:#F7E2DF;
+  --info:#4A5566;
+  --info-soft:#E7EBF0;
+  --hl:#FFF6D6;
+  --f-display:"BIZ UDPGothic","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F141B;
+    --surface:#171E28;
+    --sunk:#1D2632;
+    --ink:#E5EAF1;
+    --muted:#9DA8B8;
+    --line:#2B3644;
+    --accent:#86A9EC;
+    --accent-soft:#1B2A45;
+    --ok:#7CCAA0;
+    --ok-soft:#15301F;
+    --warn:#E6B45E;
+    --warn-soft:#372A12;
+    --ng:#F0948B;
+    --ng-soft:#3A1B18;
+    --info:#B6C0CD;
+    --info-soft:#253040;
+    --hl:#2B2915;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F141B;
+  --surface:#171E28;
+  --sunk:#1D2632;
+  --ink:#E5EAF1;
+  --muted:#9DA8B8;
+  --line:#2B3644;
+  --accent:#86A9EC;
+  --accent-soft:#1B2A45;
+  --ok:#7CCAA0;
+  --ok-soft:#15301F;
+  --warn:#E6B45E;
+  --warn-soft:#372A12;
+  --ng:#F0948B;
+  --ng-soft:#3A1B18;
+  --info:#B6C0CD;
+  --info-soft:#253040;
+  --hl:#2B2915;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:16px;
+  line-height:1.8;
+  -webkit-text-size-adjust:100%;
+}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+b,strong{font-weight:700}
+.page{
+  max-width:760px;
+  margin:0 auto;
+  padding-block:40px 64px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid;
+  gap:52px;
+}
+.page > *{min-width:0}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.45;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.55rem, 4.6vw, 2.15rem);letter-spacing:.01em}
+h2{font-size:1.38rem}
+h3{font-size:1.04rem}
+p{margin:0}
+section{display:grid;gap:16px}
+.sec-lead{color:var(--muted);font-size:.96rem}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.ui{font-family:var(--f-mono);font-size:.84em;background:var(--sunk);padding:1px 6px;border-radius:5px;overflow-wrap:anywhere}
+
+/* ---------- ヘッダー ---------- */
+.hero{display:grid;gap:14px}
+.eyebrow{
+  display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;
+  font-size:.82rem;letter-spacing:.08em;color:var(--muted);font-weight:700;
+}
+.eyebrow span{font-family:var(--f-mono);font-weight:500;letter-spacing:0}
+.lead{font-size:1.01rem}
+.meta{
+  display:grid;gap:6px;margin:0;
+  font-size:.88rem;color:var(--muted);
+  border-top:1px solid var(--line);padding-top:12px;
+}
+.meta div{display:grid;grid-template-columns:4.5em 1fr;gap:8px}
+.meta dt{font-weight:700}
+.meta dd{margin:0;min-width:0}
+
+/* ---------- 引用番号 ---------- */
+.c{white-space:nowrap}
+.c a{
+  font-family:var(--f-mono);font-size:.74rem;font-weight:500;
+  text-decoration:none;color:var(--accent);
+  padding:0 1px;vertical-align:.18em;
+}
+.c a:hover{text-decoration:underline}
+
+/* ---------- 結論 ---------- */
+.verdict{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:24px;
+  gap:14px;
+}
+.label{font-size:.78rem;font-weight:700;letter-spacing:.12em;color:var(--accent)}
+.verdict-main{
+  font-family:var(--f-display);font-size:clamp(1.1rem, 3.3vw, 1.32rem);line-height:1.65;font-weight:700;
+}
+.verdict-main em{font-style:normal;background:linear-gradient(transparent 62%, var(--accent-soft) 62%)}
+.glance{
+  list-style:none;margin:6px 0 0;padding:0;
+  display:grid;grid-template-columns:repeat(4, 1fr);gap:10px;
+}
+.glance li{
+  background:var(--sunk);border-radius:12px;padding:12px 12px 14px;
+  display:grid;gap:8px;align-content:start;min-width:0;
+}
+.glance .k{font-size:.84rem;font-weight:700;line-height:1.5}
+@media (max-width:640px){
+  .verdict{padding:20px 16px}
+  .glance{grid-template-columns:1fr 1fr}
+}
+
+/* ---------- ピル ---------- */
+.pill{
+  display:inline-block;justify-self:start;
+  padding:1px 10px;border-radius:999px;
+  font-size:.8rem;font-weight:700;line-height:1.75;white-space:nowrap;
+}
+.p-ok{background:var(--ok-soft);color:var(--ok)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-ng{background:var(--ng-soft);color:var(--ng)}
+.p-info{background:var(--info-soft);color:var(--info)}
+
+/* ---------- 表 ---------- */
+.table-wrap{
+  overflow-x:auto;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+}
+table{width:100%;min-width:640px;border-collapse:collapse;font-size:.9rem;line-height:1.7}
+th,td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{font-size:.78rem;letter-spacing:.06em;color:var(--muted);background:var(--sunk);font-weight:700;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+td.q{font-weight:700;width:11.5em}
+td.src{white-space:nowrap;width:4.5em}
+td .pill{margin-bottom:4px}
+td p{font-size:.88rem}
+tr.hl td{background:var(--hl)}
+.note{font-size:.86rem;color:var(--muted)}
+.note span.sw{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--hl);border:1px solid var(--line);vertical-align:-1px;margin-right:6px}
+.aside{
+  background:var(--surface);border:1px dashed var(--muted);border-radius:12px;
+  padding:14px 16px;font-size:.9rem;display:grid;gap:4px;
+}
+.aside b{font-size:.86rem}
+
+/* ---------- チェックリスト ---------- */
+.groups{display:grid;gap:20px}
+.group{display:grid;gap:10px}
+.group h3{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.group h3 small{font-family:var(--f-body);font-size:.8rem;font-weight:500;color:var(--muted)}
+.checks{
+  list-style:none;margin:0;padding:0;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;
+}
+.checks li{
+  display:grid;grid-template-columns:13.5em 1fr;gap:4px 16px;
+  padding:12px 16px;border-bottom:1px solid var(--line);
+}
+.checks li:last-child{border-bottom:0}
+.checks li > *{min-width:0}
+.checks .why{font-weight:700;font-size:.93rem;line-height:1.6}
+.checks .see{font-size:.9rem;line-height:1.7}
+@media (max-width:620px){
+  .checks li{grid-template-columns:1fr}
+}
+
+/* ---------- 手順 ---------- */
+.howto{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:ht}
+.howto li{
+  counter-increment:ht;
+  display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+}
+.howto li::before{
+  content:counter(ht);
+  width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--surface);
+  display:grid;place-items:center;font-family:var(--f-mono);font-size:.85rem;font-weight:500;
+}
+.howto li > div{min-width:0;display:grid;gap:4px}
+.howto h3{font-family:var(--f-body);font-size:.98rem}
+.howto p{font-size:.92rem}
+
+/* ---------- 注意点 ---------- */
+.cautions{margin:0;padding:0;list-style:none;display:grid}
+.cautions li{
+  display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;
+  padding:12px 0;border-bottom:1px solid var(--line);font-size:.93rem;
+}
+.cautions li:last-child{border-bottom:0}
+.cautions li > div{min-width:0}
+
+/* ---------- 出典 ---------- */
+.sources{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.sources li{
+  display:grid;grid-template-columns:2.6em 1fr;gap:8px;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+  scroll-margin-top:16px;
+}
+.sources li:target{outline:2px solid var(--accent);outline-offset:2px}
+.src-n{font-family:var(--f-mono);font-weight:500;color:var(--accent)}
+.sources li > div{min-width:0;display:grid;gap:4px}
+.src-t{font-weight:700;line-height:1.5;font-size:.93rem}
+.src-meta{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;font-size:.8rem;color:var(--muted)}
+.tag{font-size:.72rem;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--ok-soft);color:var(--ok)}
+.src-sum{font-size:.88rem}
+.src-url{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);overflow-wrap:anywhere;word-break:break-all}
+
+/* ---------- フッター ---------- */
+.foot{border-top:1px solid var(--line);padding-top:18px;display:grid;gap:6px;font-size:.85rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <p class="eyebrow">調査メモ <span>2026-10-22 時点</span> <span>約3分</span></p>
+  <h1>Copilot Studio エージェントの精度は、ライセンスで変わる？</h1>
+  <p class="lead">「M365 Copilot ライセンス（有償）を持つ人と持たない人で、同じエージェントの答えの正確さや、できることが違う」という話について、Microsoft 公式の記載を確かめ、ライセンス以外に考えられる原因も洗い出しました。</p>
+  <dl class="meta">
+    <div><dt>調査日</dt><dd class="mono">2026-10-22</dd></div>
+    <div><dt>対象</dt><dd>Copilot Studio で作ったエージェントを、ライセンスあり・なしの社員が Teams や Copilot Chat で使うケース</dd></div>
+    <div><dt>用語</dt><dd>「ライセンスあり」は M365 Copilot（有償）を割り当てられた人、「ライセンスなし」は無償の Copilot Chat だけを使える人のことです。</dd></div>
+  </dl>
+</header>
+
+<section class="verdict" aria-labelledby="h-verdict">
+  <h2 id="h-verdict" class="label">結論</h2>
+  <p class="verdict-main">AIの頭脳（モデル）がライセンスで変わる、という公式の記載は見つかりませんでした。ただし<em>資料の探し方</em>・<em>読める資料の範囲</em>・<em>混雑時の扱い</em>はライセンスで変わると公式に書かれていて、答えに差が出ることは十分あり得ます。</p>
+  <p>特に SharePoint を資料置き場にしている場合、ライセンスありの人には「言葉の意味で探す高精度な検索（セマンティック検索）」が標準で使われ、ライセンスなしの人には設定をオンにしない限り使われません<span class="c"><a href="#src-1">[1]</a></span>。一方で「資料が見つからない」「答えがぶれる」は権限や設定の問題でも同じように起きます。下の手順で切り分けるのがおすすめです。</p>
+  <ul class="glance" aria-label="ひと目でわかる結論">
+    <li><span class="k">AIモデル（頭脳）</span><span class="pill p-info">差の記載なし</span></li>
+    <li><span class="k">SharePointの探し方</span><span class="pill p-warn">差あり（公式）</span></li>
+    <li><span class="k">読めるデータの範囲</span><span class="pill p-warn">差あり（公式）</span></li>
+    <li><span class="k">混雑時の扱い</span><span class="pill p-warn">差あり（公式）</span></li>
+  </ul>
+</section>
+
+<section aria-labelledby="h-diff">
+  <h2 id="h-diff">公式に書かれている「ライセンスによる差」</h2>
+  <p class="sec-lead">ライセンスあり・なしで公式に違いが書かれている項目です。黄色の行が、今回の「精度に差が出る」話にいちばん関係しそうなところです。</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th scope="col">項目</th><th scope="col">ライセンスあり</th><th scope="col">ライセンスなし</th><th scope="col">根拠</th></tr>
+      </thead>
+      <tbody>
+        <tr class="hl">
+          <td class="q">SharePoint の資料の探し方</td>
+          <td><span class="pill p-ok">○ 標準で高精度</span><p>セマンティック検索が最初から使われます。</p></td>
+          <td><span class="pill p-warn">△ 設定しだい</span><p>エージェントの設定 <span class="ui">Tenant graph grounding with semantic search</span> をオンにしたときだけ使われます。オンにすると質問1回ごとに10クレジットの追加課金です。</p></td>
+          <td class="src"><span class="c"><a href="#src-1">[1]</a><a href="#src-13">[13]</a></span></td>
+        </tr>
+        <tr class="hl">
+          <td class="q">社内データを読むエージェント（SharePoint・コネクタ・Dataverse）</td>
+          <td><span class="pill p-ok">○ 使える</span></td>
+          <td><span class="pill p-warn">△ 条件つき</span><p>管理者が従量課金（使った分だけ払う契約）を有効にしたときだけ使えます。初期状態はオフです。</p></td>
+          <td class="src"><span class="c"><a href="#src-4">[4]</a><a href="#src-5">[5]</a></span></td>
+        </tr>
+        <tr>
+          <td class="q">メール・Teams のチャットや会議・人の情報</td>
+          <td><span class="pill p-ok">○ 使える</span></td>
+          <td><span class="pill p-ng">✕ 使えない</span><p>従量課金を有効にしても使えません。</p></td>
+          <td class="src"><span class="c"><a href="#src-5">[5]</a></span></td>
+        </tr>
+        <tr>
+          <td class="q">混雑時の扱い（Copilot Chat 本体）</td>
+          <td><span class="pill p-ok">○ 優先アクセス</span></td>
+          <td><span class="pill p-warn">△ 標準アクセス</span><p>応答が遅くなる、一部の機能が制限される、一時的に別のモデルが使われる、ことがあります。Copilot Studio のエージェントにも当てはまるかは記載がありません。</p></td>
+          <td class="src"><span class="c"><a href="#src-6">[6]</a></span></td>
+        </tr>
+        <tr>
+          <td class="q">Word・Excel・PowerPoint での資料作成</td>
+          <td><span class="pill p-ok">○ 使える</span></td>
+          <td><span class="pill p-warn">△ 一部</span><p>アプリの中で使う Copilot はライセンスと会社の設定で変わります。Copilot Chat 上の Word・Excel・PowerPoint エージェントでの作成は、利用上限つきで使えます。</p></td>
+          <td class="src"><span class="c"><a href="#src-7">[7]</a></span></td>
+        </tr>
+        <tr>
+          <td class="q">エージェントのコードインタープリター・画像生成</td>
+          <td><span class="pill p-ok">○ 使える</span></td>
+          <td><span class="pill p-ok">○ 使える</span><p>利用上限があります。</p></td>
+          <td class="src"><span class="c"><a href="#src-5">[5]</a></span></td>
+        </tr>
+        <tr>
+          <td class="q">AI モデル（頭脳）</td>
+          <td colspan="2"><span class="pill p-info">― 差の記載なし</span><p>モデルはエージェントごとの設定で決まります。使う人のライセンスで切り替わる、という記載は見つかりませんでした。</p></td>
+          <td class="src"><span class="c"><a href="#src-8">[8]</a></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><span class="sw" aria-hidden="true"></span>黄色の行＝精度の差にいちばん関係しそうな項目。○＝使える、△＝条件つき、✕＝使えない、―＝公式の記載なし。</p>
+  <div class="aside">
+    <b>よく聞く「7MB / 200MB」の話について</b>
+    <p>SharePoint のファイルを 200MB まで読めるのは「テナント（会社全体）に M365 Copilot ライセンスがあり、上のセマンティック検索の設定がオン」のとき、ライセンスがないテナントでは 7MB までです<span class="c"><a href="#src-2">[2]</a><a href="#src-3">[3]</a></span>。これは使う人ひとりひとりではなく、会社や作成者側の条件として書かれています。同じ会社の中で人によって差が出る理由としては、表の1行目の検索方式の違いのほうが有力です（推測）。</p>
+  </div>
+</section>
+
+<section aria-labelledby="h-other">
+  <h2 id="h-other">ライセンス以外に考えられる原因</h2>
+  <p class="sec-lead">次のどれかに当てはまると、ライセンスに関係なく「答えが出ない」「精度が低い」「資料が作れない」が起きます。たまたまライセンスなしの人だけがサイトの閲覧権限を持っていない、といった違いがライセンス差に見えることもあります。</p>
+
+  <div class="groups">
+    <div class="group">
+      <h3>SharePoint（資料置き場） <small>いちばん多い原因</small></h3>
+      <ul class="checks">
+        <li><span class="why">本人に閲覧権限がない</span><span class="see">エラーは出ず「見つからない」扱いになります。本人がそのファイルを直接開けるか確認します。<span class="c"><a href="#src-3">[3]</a></span></span></li>
+        <li><span class="why">検索の下準備（インデックス）がまだ</span><span class="see">置いたばかりの資料は検索に出てきません。SharePoint の検索窓でキーワード検索して出るか確認します。<span class="c"><a href="#src-3">[3]</a></span></span></li>
+        <li><span class="why">暗号化ラベル・パスワード付き</span><span class="see">「準備完了」と表示されても中身は読めません。<span class="c"><a href="#src-3">[3]</a><a href="#src-9">[9]</a></span></span></li>
+        <li><span class="why">対応外のページや形式</span><span class="see">クラシックページや SPFx 部品入りのページは対象外です。サイト登録で読めるファイルは Word・PowerPoint・PDF です。<span class="c"><a href="#src-2">[2]</a></span></span></li>
+        <li><span class="why">苦手な聞き方をしている</span><span class="see">ファイル名を指定した質問、フォルダ内の件数や一覧、Excel の集計や分析は苦手と公式に書かれています。<span class="c"><a href="#src-2">[2]</a></span></span></li>
+        <li><span class="why">似た資料が多すぎる</span><span class="see">答えは検索結果の上位3件だけから作られます。古い版や似た資料が多いと外れやすくなります。<span class="c"><a href="#src-3">[3]</a></span></span></li>
+        <li><span class="why">管理側の制限・リンク切れ</span><span class="see">「制限付き SharePoint 検索」がオンだと使えません。サイト名やフォルダ名を変えるとリンクが切れることがあります。<span class="c"><a href="#src-3">[3]</a></span></span></li>
+      </ul>
+    </div>
+
+    <div class="group">
+      <h3>Copilot Studio の設定</h3>
+      <ul class="checks">
+        <li><span class="why">認証の設定</span><span class="see">「認証なし」だと SharePoint を読みに行きません。手動認証ならアクセス許可（<span class="ui">Sites.Read.All</span> と <span class="ui">Files.Read.All</span>）の設定が必要です。<span class="c"><a href="#src-9">[9]</a><a href="#src-3">[3]</a></span></span></li>
+        <li><span class="why">根拠のない回答を許可しない設定</span><span class="see"><span class="ui">Allow ungrounded responses</span> がオフだと、引用が付かなかった答えは隠されます。同じ質問でも答えたり答えなかったりします。<span class="c"><a href="#src-1">[1]</a></span></span></li>
+        <li><span class="why">指示文が引用を消している</span><span class="see">「出典は書かない」「JSON だけで返す」などの指示があると、引用が消えて答えがブロックされやすくなります。<span class="c"><a href="#src-1">[1]</a></span></span></li>
+        <li><span class="why">有害表現フィルターが強め</span><span class="see">モデレーションで止められると、何も言わずに答えが出ません。<span class="c"><a href="#src-1">[1]</a><a href="#src-3">[3]</a></span></span></li>
+        <li><span class="why">ナレッジの説明文が薄い</span><span class="see">説明文は AI がどの資料を使うか選ぶ手がかりです。中身がわかるように書きます。<span class="c"><a href="#src-9">[9]</a></span></span></li>
+        <li><span class="why">プレビュー版・試験版のモデル</span><span class="see">品質や速度が安定しないことがあると公式に注意書きがあります。<span class="c"><a href="#src-8">[8]</a></span></span></li>
+      </ul>
+    </div>
+
+    <div class="group">
+      <h3>資料作成（ファイル・グラフ）</h3>
+      <ul class="checks">
+        <li><span class="why">管理者側で機能がオフ</span><span class="see">コードインタープリター（Python で表やファイル、グラフを作る機能）は、管理者が Power Platform 管理センターで有効にする必要があり、初期状態はオフです。<span class="c"><a href="#src-11">[11]</a></span></span></li>
+        <li><span class="why">エージェント側の設定不足</span><span class="see">エージェントやプロンプト側でもオンにし、ユーザー認証を設定する必要があります。<span class="c"><a href="#src-10">[10]</a></span></span></li>
+        <li><span class="why">画面の制限</span><span class="see">コードインタープリターで作った画像は、Teams と Microsoft Copilot の画面には表示されません。複数ファイルをまとめて分析・出力することもできません。<span class="c"><a href="#src-11">[11]</a><a href="#src-10">[10]</a></span></span></li>
+      </ul>
+    </div>
+
+    <div class="group">
+      <h3>環境・管理者側</h3>
+      <ul class="checks">
+        <li><span class="why">リージョン間のデータ移動がオフ</span><span class="see"><span class="ui">Move data across regions</span> がオフだと生成 AI の機能が使えません。日本の環境では既定のモデルも「地域の外で処理されうる（cross-geo）」扱いです。<span class="c"><a href="#src-12">[12]</a><a href="#src-8">[8]</a></span></span></li>
+        <li><span class="why">クレジット（利用枠）切れ</span><span class="see">ライセンスなしの人の利用分はクレジットを消費し、ライセンスありの人の分は消費しません。契約量の125%を超えるとエージェントが止まります。<span class="c"><a href="#src-13">[13]</a></span></span></li>
+        <li><span class="why">試用版の環境</span><span class="see">試用・開発用の環境は「1分あたり10回まで」など上限が低く、超えると失敗の通知が出ます。<span class="c"><a href="#src-2">[2]</a></span></span></li>
+      </ul>
+    </div>
+
+    <div class="group">
+      <h3>比べ方・使い方</h3>
+      <ul class="checks">
+        <li><span class="why">違うものを比べている</span><span class="see">ライセンスありの人が M365 Copilot 本体（メールや Teams も検索できる）で聞いた答えと、エージェントの答えを比べていないか確認します。<span class="c"><a href="#src-5">[5]</a></span></span></li>
+        <li><span class="why">エージェントの版が古い</span><span class="see">公開した変更が反映されていないことがあります。Teams では「start over」と送ると最新版で会話をやり直せます。<span class="c"><a href="#src-9">[9]</a></span></span></li>
+        <li><span class="why">1回だけで判断している</span><span class="see">引用の付き方の揺れで、同じ質問でも答えが返ったり返らなかったりすることが公式にも書かれています。数回試して比べます。<span class="c"><a href="#src-1">[1]</a></span></span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="h-steps">
+  <h2 id="h-steps">切り分けの進め方</h2>
+  <ol class="howto">
+    <li><div><h3>条件をそろえて比べる</h3><p>同じエージェント・同じ画面（たとえば Teams）・同じ質問で、ライセンスあり・なしの2人が数回ずつ試します。</p></div></li>
+    <li><div><h3>ライセンスなしの人だけ失敗するなら</h3><p>表の黄色の行を管理者と確認します。従量課金が有効か、エージェントのセマンティック検索の設定（<span class="ui">Tenant graph grounding with semantic search</span>）がオンか、の2点です。<span class="c"><a href="#src-1">[1]</a><a href="#src-4">[4]</a></span></p></div></li>
+    <li><div><h3>2人とも失敗する・ぶれるなら</h3><p>原因はライセンス以外です。公式の確認方法として、ライセンスありの人のアカウントで Copilot Chat に同じ質問をし、そこでも答えが出なければ権限か検索インデックスの問題と判断できます。そのあと上のチェックリストを順に確認します。<span class="c"><a href="#src-3">[3]</a></span></p></div></li>
+  </ol>
+</section>
+
+<section aria-labelledby="h-caution">
+  <h2 id="h-caution">説明するときの注意点</h2>
+  <ul class="cautions">
+    <li><span class="pill p-warn">断定しない</span><div>「ライセンスで差は出ない」とも「必ず差が出る」とも公式は書いていません。このページの「差が出うる」は、公式に書かれた仕組みの違いからの判断です。</div></li>
+    <li><span class="pill p-info">変わりやすい</span><div>提供状況・料金・画面の名前は頻繁に変わります。2026年10月時点で、公式文書の一部は有償版の名前を「Microsoft Copilot」と書いています<span class="c"><a href="#src-14">[14]</a></span>。</div></li>
+    <li><span class="pill p-info">会社の設定</span><div>同じライセンスでも、管理者の設定（従量課金、コードインタープリター、データ移動、外部モデルの許可など）でできることが変わります。</div></li>
+  </ul>
+</section>
+
+<section aria-labelledby="h-src">
+  <h2 id="h-src">出典</h2>
+  <p class="sec-lead">すべて Microsoft の公式ページです。日付はページに記載された更新日（<span class="mono">ms.date</span>）です。</p>
+  <ol class="sources">
+    <li id="src-1"><span class="src-n">[1]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/knowledge-copilot-studio">Knowledge sources summary - Microsoft Copilot Studio</a>
+      <div class="src-meta"><span class="tag">公式</span><span class="mono">更新 2026-07-21</span></div>
+      <p class="src-sum">ライセンスありの人には標準でセマンティック検索が使われ、ライセンスなしの人がいる場合は設定をオンにすると品質が上がる（追加課金）と記載。引用がないと答えが隠される仕組み、指示文の注意、モデレーションもここ。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/knowledge-copilot-studio</span>
+    </div></li>
+    <li id="src-2"><span class="src-n">[2]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/requirements-quotas">Quotas and limits - Microsoft Copilot Studio</a>
+      <div class="src-meta"><span class="tag">公式</span><span class="mono">更新 2026-10-06</span></div>
+      <p class="src-sum">SharePoint の 200MB / 7MB の条件、対応形式、苦手な質問（ファイル名指定・件数・Excel 分析）、試用環境の上限など。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/requirements-quotas</span>
+    </div></li>
+    <li id="src-3"><span class="src-n">[3]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/troubleshoot/power-platform/copilot-studio/knowledge/sharepoint-no-response">SharePoint Knowledge Sources Don't Return Results - Copilot Studio</a>
+      <div class="src-meta"><span class="tag">公式</span><span class="mono">更新 2026-08-05</span></div>
+      <p class="src-sum">SharePoint で答えが出ないときの原因一覧（権限、インデックス、暗号化、上位3件、制限付き検索、ファイルサイズ、モデレーション）と切り分け方法。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/troubleshoot/power-platform/copilot-studio/knowledge/sharepoint-no-response</span>
+    </div></li>
+    <li id="src-4"><span class="src-n">[4]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/copilot/agents">Purchase and manage agents in Copilot Chat</a>
+      <div class="src-meta"><span class="tag">公式</span><span class="mono">更新 2026-10-21</span></div>
+      <p class="src-sum">社内データを使うエージェントは、ライセンスなしの人には従量課金でのみ提供され、初期状態はオフと記載。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/copilot/agents</span>
+    </div></li>
+    <li id="src-5"><span class="src-n">[5]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/prerequisites">Set Up Your Development Environment for a Microsoft 365 Copilot Plugin</a>
+      <div class="src-meta"><span class="tag">公式</span><span class="mono">更新 2026-09-30</span></div>
+      <p class="src-sum">ライセンス別にエージェントで使える機能の一覧表。メール・Teams・人の情報はライセンスありのみ、SharePoint などは従量課金で可、コードインタープリターと画像生成は全員可。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/prerequisites</span>
+    </div></li>
+    <li id="src-6"><span class="src-n">[6]</span><div>
+      <a class="src-t" href="https://support.microsoft.com/topic/standard-versus-priority-access-in-microsoft-365-copilot-chat-12c8d9f8-db32-4f99-8ebe-d8d85879137f">Standard versus priority access in Microsoft 365 Copilot Chat</a>
+      <div class="src-meta"><span class="tag">公式</span><span class="mono">日付不明</span></div>
+      <p class="src-sum">ライセンスありは優先アクセス、なしは標準アクセス。混雑時は応答の遅れ、機能の制限、一時的な別モデルの利用がありうると記載。</p>
+      <span class="src-url">https://support.microsoft.com/topic/standard-versus-priority-access-in-microsoft-365-copilot-chat-12c8d9f8-db32-4f99-8ebe-d8d85879137f</span>
+    </div></li>
+    <li id="src-7"><span class="src-n">[7]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/copilot/faq">Frequently asked questions about Microsoft Copilot Chat</a>
+      <div class="src-meta"><span class="tag">公式</span><span class="mono">更新 2026-10-19</span></div>
+      <p class="src-sum">ライセンスなしの Copilot Chat は社内データにアクセスできないこと、Word・Excel・PowerPoint エージェント、アプリ内の Copilot はライセンスと設定で変わることを記載。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/copilot/faq</span>
+    </div></li>
+    <li id="src-8"><span class="src-n">[8]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/authoring-select-agent-model">Select a primary AI model for your agent - Microsoft Copilot Studio</a>
+      <div class="src-meta"><span class="tag">公式</span><span class="mono">更新 2026-10-19</span></div>
+      <p class="src-sum">モデルはエージェントの設定で選ぶ。地域ごとの提供状況（日本の既定モデルは cross-geo）、プレビュー・試験版モデルの注意点。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/authoring-select-agent-model</span>
+    </div></li>
+    <li id="src-9"><span class="src-n">[9]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/knowledge-add-sharepoint">Add SharePoint as a knowledge source - Microsoft Copilot Studio</a>
+      <div class="src-meta"><span class="tag">公式</span><span class="mono">更新 2026-08-04</span></div>
+      <p class="src-sum">閲覧権限がない資料は答えに使われないこと、暗号化ファイル、認証の設定、説明文の重要性、Teams での「start over」。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/knowledge-add-sharepoint</span>
+    </div></li>
+    <li id="src-10"><span class="src-n">[10]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/code-interpreter-for-prompts">Use code interpreter in a prompt to generate and execute Python code</a>
+      <div class="src-meta"><span class="tag">公式</span><span class="mono">更新 2026-09-30</span></div>
+      <p class="src-sum">コードインタープリターでできること、ユーザー認証が必要なこと、複数ファイルの同時処理ができないこと。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/code-interpreter-for-prompts</span>
+    </div></li>
+    <li id="src-11"><span class="src-n">[11]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/faq-code-interpreter">FAQ for code interpreter - Microsoft Copilot Studio</a>
+      <div class="src-meta"><span class="tag">公式</span><span class="mono">更新 2026-02-03</span></div>
+      <p class="src-sum">管理者が Power Platform 管理センターで有効にする必要があり初期状態はオフ。作った画像は Teams と Microsoft Copilot の画面に表示されない。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/faq-code-interpreter</span>
+    </div></li>
+    <li id="src-12"><span class="src-n">[12]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/troubleshoot/power-platform/copilot-studio/generative-answers/generative-ai-not-available">Generative AI isn't available error message - Copilot Studio</a>
+      <div class="src-meta"><span class="tag">公式</span><span class="mono">更新 2025-09-09</span></div>
+      <p class="src-sum">リージョン間のデータ移動がオフだと生成 AI 機能が使えないこと、管理センターでの設定手順。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/troubleshoot/power-platform/copilot-studio/generative-answers/generative-ai-not-available</span>
+    </div></li>
+    <li id="src-13"><span class="src-n">[13]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/requirements-messages-management">Billing rates and management - Microsoft Copilot Studio</a>
+      <div class="src-meta"><span class="tag">公式</span><span class="mono">更新 2026-08-03</span></div>
+      <p class="src-sum">ライセンスありの人の利用は課金対象外。セマンティック検索（Tenant graph grounding）は1回10クレジット。125%超過でエージェント停止。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/requirements-messages-management</span>
+    </div></li>
+    <li id="src-14"><span class="src-n">[14]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-license-options">License Options for Microsoft Copilot</a>
+      <div class="src-meta"><span class="tag">公式</span><span class="mono">更新 2026-10-19</span></div>
+      <p class="src-sum">有償版を「Microsoft Copilot」と表記したライセンス案内。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-license-options</span>
+    </div></li>
+  </ol>
+</section>
+
+<footer class="foot">
+  <p>調査日：<span class="mono">2026-10-22</span>。出典の更新日は <span class="mono">2025-09-09</span>〜<span class="mono">2026-10-21</span>（[6] のみ日付不明）。</p>
+  <p>このページは一般に公開されている Microsoft の情報だけをもとにまとめています。実際の動きは会社のテナント設定や時期によって変わります。</p>
+</footer>
+
+</div>
+</body>
+</html>
