@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（HELLENiQ ENERGY）。2026年10月25日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>社内の規程を探す人事向けエージェント「HRaklis」を、全社展開の次の一歩として作りました（HELLENiQ ENERGY）</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月25日／エネルギー（HELLENiQ ENERGY）・人事の問い合わせ</p>
+
+  <h1>社内の規程を探す人事向けエージェント「HRaklis」を、全社展開の次の一歩として作りました（HELLENiQ ENERGY）</h1>
+
+  <div class="lead">
+    <p>ギリシャのエネルギー企業 HELLENiQ ENERGY では、Microsoft 365 Copilot の試用を少人数で始めたものの、使い方が人によって違うため、全社に広げる方法が課題でした。</p>
+    <p>そこで約600人の推進役を育てる研修を行い、その先の一歩として、Copilot Studio（ノーコードでエージェントを作れる Microsoft のツール）で人事向けのエージェント「HRaklis」を作りました。</p>
+    <p>同社は、Copilot 利用者の約70%が生産性の向上を報告し、メールの処理時間が64%短くなったと公表しています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>「出張の規程はどこにあるのだろう」「この手続きは誰に聞けばいいのか」と、社内の資料を探すだけで時間がかかったことはありませんか。</p>
+  <p>HELLENiQ ENERGY では、人事部門が扱う情報が多く、全社員が関わります。同社の責任者は、人事が多くの情報を扱うため、最初のエージェントの題材に選んだと説明しています。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、資料をもとに答えるエージェントを、プログラムを書かずに作れるツールです。HRaklis は、同社が技術パートナーの PwC と作った、初めての部門別 AI エージェントです。</p>
+  <p>社内の規程やドキュメントといった、Microsoft 365 に置かれた社内の情報を、社員が探しやすくするためのものです。社員は普通の言葉で質問し、エージェントが社内の資料から適切な答えを返します。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="HRaklis の流れ">
+      <li><div class="box">社員が<br>言葉で質問</div></li>
+      <li><div class="box">エージェントが<br>質問を解釈</div></li>
+      <li><div class="box">社内の資料から<br>答えを探す</div></li>
+      <li><div class="box">いちばん合う<br>答えを返す</div></li>
+    </ol>
+    <figcaption>HRaklis の流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>早期アクセスに申し込み、少人数で Microsoft 365 Copilot を試しました。</li>
+    <li>約600人の推進役「Digital Stars」のコミュニティを作り、段階的に研修を行い、70を超える使い方を集めました。</li>
+    <li>その成果をもとに、部門別の AI エージェントへ進み、人事向けの HRaklis を Copilot Studio で作りました。</li>
+  </ol>
+  <p class="src-note">※ 手順は、公開記事の説明を読みやすく並べ直したものです。HRaklis の具体的な設定や、つないだ資料の範囲は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>Copilot は使い道が利用者に委ねられた柔軟な道具で、全社に広げるのが難しい状態でした。</p></div>
+    <div class="after"><h3>いま</h3><p>推進役の輪が広がり、70を超える使い方が集まりました。部門別のエージェントも動き出しています。</p></div>
+  </div>
+  <p>約70%という数字は、「生産性が70%上がった」という意味ではありません。Copilot 利用者の約70%が、生産性が上がったと報告した割合です。メール処理時間の64%短縮、情報の特定・処理・共有が29%速くなったこと、欠席した会議の内容を把握する速さが約4倍になったことも、すべて HELLENiQ ENERGY が公表した数字です。ただし、HRaklis だけの効果ではなく、測り方も示されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>人事や総務に、よく届く質問を5つ書き出します。</li>
+    <li>その答えが載っている規程やマニュアルの場所を、一覧にします。</li>
+    <li>Copilot Studio（または社内で使えるエージェント作成ツール）に、その資料だけを渡して、5つの質問に正しく答えるか試します。</li>
+  </ol>
+  <p>準備するのは、質問の一覧と、答えの元になる資料です。Copilot Studio を使えるかどうかは、ライセンスや社内の設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>課題は技術より、使い方の広がりでした</strong>
+    <p>記事で示された主な課題は、柔軟すぎる道具を全社に広げることでした。同社の責任者は、取り組んでいるのは技術でなく考え方の改善だと述べています。具体的な失敗例や技術的なつまずきは書かれていません。</p>
+  </div>
+  <p>人事の資料には、個人情報や非公開の規程が混ざることがあります。エージェントに渡す資料は、全社員が見てよいものに限りましょう。AI は、古い規程をもとに答えたり、もっともらしい間違い（ハルシネーション）を答えたりすることもあります。最終的な判断は担当部署に確認する案内も添えると安心です。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例は、エージェント作りの前に、推進役の育成と研修で土台を作っていた点が特徴です。道具を配るだけでなく、使い方を集めてから、目的のはっきりした一つ目のエージェントへ進んでいます。</p>
+  <p>自分の職場に置き換えると、人事に限らず、経理や情報システムなど「同じ質問が何度も届く部署」が、最初のエージェントの題材になります。まずは質問を集め、答えの元になる資料をそろえるところから始めてみてください。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「HELLENiQ ENERGY boosts productivity 70% and scales AI adoption with Microsoft 365 Copilot」（2025年7月7日公開）<br>
+    <a href="https://www.microsoft.com/en/customers/story/24670-helleniq-energy-microsoft-365-copilot">https://www.microsoft.com/en/customers/story/24670-helleniq-energy-microsoft-365-copilot</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月25日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

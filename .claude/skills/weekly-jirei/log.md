@@ -32,17 +32,20 @@
 | 2026-10-21 | Copilot Studio（Agent Builder 枠の代替） | Graebel | pages/jirei_20261021-copilot-studio-2.html | https://adoption.microsoft.com/en-us/ai-agents/transformation-stories/graebel/ |
 | 2026-10-23 | Copilot Studio | Dunaway | pages/jirei_20261023-copilot-studio.html | https://www.microsoft.com/en/customers/story/25879-dunaway-microsoft-copilot-studio |
 | 2026-10-23 | Copilot Studio（Agent Builder 枠の代替） | Tiendas Cuadra | pages/jirei_20261023-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/26459-tiendas-cuadra-microsoft-copilot-studio |
+| 2026-10-25 | Copilot Studio | Capita | pages/jirei_20261025-copilot-studio.html | https://www.microsoft.com/en/customers/story/25164-capita-microsoft-copilot-studio/ |
+| 2026-10-25 | Copilot Studio（Agent Builder 枠の代替） | HELLENiQ ENERGY | pages/jirei_20261025-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/24670-helleniq-energy-microsoft-365-copilot |
 
 ## ネタ帳（候補）
 
 使う前に必ず本文を WebFetch で読み直してください。「本文確認済み」はカッコ内の公開日の記事を、実際に開いて中身を読んだもの、「未確認」は検索結果の要約だけで見つけたものです。使った候補はここから消し、「掲載済み」に移します。
 
-- **Copilot Studio**｜Capita（2025-09-10 公開、本文確認済み）
-  https://www.microsoft.com/en/customers/story/25164-capita-microsoft-copilot-studio/
-  メール仕分けエージェント（返信時間60%短縮）、70,000件のエージェント利用。詳細は薄め。
 - **Copilot Studio**｜OBC（2026-04-06 公開、本文は一部確認）
   https://www.microsoft.com/ja-jp/customers/story/26323-obc-microsoft-365-copilot
   Copilot Studio での内製開発が中心。Agent Builder 枠には不向き（下の「見送り」参照）。
+- **Copilot Studio**｜KOHLER（2026-08-10 表示、本文確認済み）
+  https://www.microsoft.com/en/customers/story/26948-kohler-company-microsoft-365-copilot
+  Copilot 98%採用・エージェント3,000件。Copilot Studio の具体例は「Leadership Candor Coach」1件のみ（Agent Builder の記載なし）。
+
 - **Agent Builder?**｜Hiscox（未確認）
   社員約3,500人が6,000体以上のエージェントを作成、3時間 → 約20分の例あり（検索要約）。一次情報の ukstories.microsoft.com は、ネットワーク許可後も相手のサイト側（Cloudflare）に断られて読めません（2026-10-02）。
 
@@ -73,3 +76,4 @@
 - 2026-10-19：Agent Builder 枠は、WebSearch で顧客事例が出ず、Copilot Studio を2本（Lifetime Products、Cancer Council NSW。ネタ帳の本文を読み直して採用）にした。2本とも Agent Builder の記載なし。ブロックされたホストなし。
 - 2026-10-21：Agent Builder 枠は、WebSearch（標準・拡張）でも顧客事例が出ず、Copilot Studio を2本（mobilezone、Graebel）にした。2本とも Agent Builder の記載なし。ネタ帳候補（未読）：Tiendas CUADRA、Dunaway、Singapore Civil Defence Force（Copilot Studio、learn.microsoft.com の adoption case studies 一覧より）。ブロックされたホストなし。
 - 2026-10-23：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（Dunaway、Tiendas Cuadra。ネタ帳の候補を本文確認して採用）にした。2本とも Agent Builder の記載なし。ネタ帳候補（未読）：Singapore Civil Defence Force は検索で裏づけが取れず。ブロックされたホストなし。
+- 2026-10-25：Agent Builder 枠は、WebSearch（標準・拡張）でも顧客事例が出ず、Copilot Studio を2本（Capita、HELLENiQ ENERGY）にした。2本とも本文を WebFetch で確認。Agent Builder の記載は Capita に一文のみ、HELLENiQ にはなし。ブロックされたホストなし。
