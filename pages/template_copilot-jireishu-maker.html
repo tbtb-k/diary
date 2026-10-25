@@ -1,0 +1,1085 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Copilot 活用事例集メーカー</title>
+<meta name="description" content="Copilot が書いた「事例テキスト」を貼りつけると、初級・中級・上級に分かれた A4 の事例集ができあがり、そのまま PDF にできるテンプレートです。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: 上に「入力パネル」（画面だけ）、下に A4 の紙面を縦に重ねる。紙面は印刷と同じ見た目を保つため、常に明るい配色で描く */
+:root{
+  --paper:#e8ecf2; --panel:#ffffff; --ink:#131a2c; --sub:#4a5470; --faint:#838ca3; --rule:#dce1ea; --wash:#f3f5f9;
+  --spark:#e4531f; --spark-soft:#fdeee7; --spark-ink:#a8360c;
+  --lv1:#0a8a5f; --lv2:#2a5fd6; --lv3:#1f2547;
+  --ok:#0a8a5f; --ok-soft:#e0f3ea; --warn:#b7791f; --warn-soft:#fdf3dc; --bad:#c53030; --bad-soft:#fde8e8;
+  --shadow:0 1px 2px rgba(19,26,44,.06), 0 18px 40px -24px rgba(19,26,44,.4);
+  --f-display:"Dela Gothic One","Hiragino Kaku Gothic StdN","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+  --f-label:"Bricolage Grotesque","Zen Kaku Gothic New",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media screen and (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0b0f17; --panel:#141a26; --ink:#e7ebf3; --sub:#a7b0c4; --faint:#717b93; --rule:#283044; --wash:#1b2232;
+    --spark:#ff7d4f; --spark-soft:#36190f; --spark-ink:#ffb497;
+    --lv1:#38c995; --lv2:#7ca3ff; --lv3:#c4c9f4;
+    --ok:#38c995; --ok-soft:#10302a; --warn:#f0b54a; --warn-soft:#3a2c10; --bad:#ff7b7b; --bad-soft:#3d1717;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 18px 40px -24px rgba(0,0,0,.9);
+    color-scheme:dark;
+  }
+}
+@media screen{
+  :root[data-theme="dark"]{
+    --paper:#0b0f17; --panel:#141a26; --ink:#e7ebf3; --sub:#a7b0c4; --faint:#717b93; --rule:#283044; --wash:#1b2232;
+    --spark:#ff7d4f; --spark-soft:#36190f; --spark-ink:#ffb497;
+    --lv1:#38c995; --lv2:#7ca3ff; --lv3:#c4c9f4;
+    --ok:#38c995; --ok-soft:#10302a; --warn:#f0b54a; --warn-soft:#3a2c10; --bad:#ff7b7b; --bad-soft:#3d1717;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 18px 40px -24px rgba(0,0,0,.9);
+    color-scheme:dark;
+  }
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:64px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.7;
+  font-feature-settings:"palt" 1;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit}
+h1,h2,h3,h4{margin:0;font-weight:700;text-wrap:balance}
+p,ul,ol,dl,dd,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--spark);outline-offset:2px;border-radius:4px}
+.ic{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.14em}
+
+/* ───────── 上部のバー（画面のみ） ───────── */
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb, var(--paper) 84%, transparent);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--rule)}
+.topbar-in{max-width:1180px;margin:0 auto;padding:9px 16px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px;white-space:nowrap;text-decoration:none}
+.brand .dots{display:inline-flex;gap:4px;font-size:12px}
+.nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none;min-width:0}
+.nav::-webkit-scrollbar{display:none}
+.nav a{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--sub);padding:5px 11px;border-radius:999px;
+  border:1px solid transparent;white-space:nowrap;font-size:13px}
+.nav a:hover{background:var(--panel);border-color:var(--rule);color:var(--ink)}
+.pdf-btn{flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border:0;border-radius:999px;cursor:pointer;
+  background:var(--spark);color:#fff;font:700 13px/1.2 var(--f-body);white-space:nowrap}
+.pdf-btn:hover{filter:brightness(1.06)}
+@media (max-width:640px){.brand .txt{display:none}}
+
+/* ───────── 入力パネル（画面のみ） ───────── */
+.panel{max-width:1180px;margin:22px auto 0;padding:0 16px}
+.panel-card{background:var(--panel);border:1px solid var(--rule);border-radius:18px;box-shadow:var(--shadow);padding:22px 22px 20px}
+.p-head h1{font-size:22px;line-height:1.35}
+.p-head p{margin-top:6px;color:var(--sub);font-size:14px}
+.p-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0 18px;counter-reset:s}
+.p-steps li{counter-increment:s;position:relative;padding:11px 12px 11px 44px;border-radius:12px;background:var(--wash);font-size:13px;line-height:1.6}
+.p-steps li::before{content:counter(s);position:absolute;left:12px;top:11px;width:22px;height:22px;border-radius:50%;
+  background:var(--ink);color:var(--panel);font:800 12px/22px var(--f-label);text-align:center}
+.p-steps b{display:block;font-size:13.5px}
+.p-steps small{display:block;color:var(--sub);font-size:12px}
+@media (max-width:760px){.p-steps{grid-template-columns:1fr}}
+
+.p-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:900px){.p-grid{grid-template-columns:1fr}}
+.p-label{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-weight:700;font-size:13.5px;margin-bottom:6px}
+.p-label small{font-weight:500;color:var(--faint);font-size:12px}
+#src{width:100%;height:340px;resize:vertical;border:1.5px solid var(--rule);border-radius:12px;padding:12px 14px;background:var(--wash);color:var(--ink);
+  font:13px/1.65 ui-monospace,"BIZ UDGothic","MS Gothic",Consolas,monospace}
+#src:focus{outline:none;border-color:var(--spark);background:var(--panel)}
+.sample-note{display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;padding:9px 12px;border-radius:10px;
+  background:var(--warn-soft);font-size:12.5px;line-height:1.6}
+.sample-note.on{display:flex}
+.sample-note b{color:var(--ink)}
+.p-tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:10px;border:1px solid var(--rule);background:var(--panel);
+  cursor:pointer;font-size:13px;font-weight:700;line-height:1.2;white-space:nowrap}
+.btn:hover{border-color:var(--ink)}
+.btn .ic{color:var(--spark)}
+.btn.ghost{color:var(--sub)}
+.btn.small{padding:5px 10px;font-size:12px}
+
+.p-check{border:1px solid var(--rule);border-radius:14px;padding:14px 16px;background:var(--wash)}
+.p-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stat{background:var(--panel);border-radius:10px;padding:10px 12px}
+.stat small{display:block;font-size:11.5px;color:var(--sub);font-weight:700}
+.stat b{font:800 26px/1.15 var(--f-label);font-variant-numeric:tabular-nums}
+.stat b span{font:700 12px var(--f-body);color:var(--sub);margin-left:3px}
+.lvcount{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;font-size:12px;color:var(--sub)}
+.lvcount span{display:inline-flex;align-items:center;gap:5px}
+.lvcount .mk.lv1{background:var(--lv1)}.lvcount .mk.lv2{background:var(--lv2)}.lvcount .mk.lv3{background:var(--lv3)}
+.p-issues-h{display:flex;align-items:center;gap:8px;margin:14px 0 8px;font-size:13.5px;font-weight:700}
+.p-issues{display:grid;gap:6px;max-height:300px;overflow:auto}
+.p-issues li button{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:start;text-align:left;
+  padding:8px 10px;border-radius:9px;border:0;background:var(--panel);cursor:pointer;font-size:12.5px;line-height:1.55}
+.p-issues li button:hover{outline:1.5px solid var(--sub)}
+.p-issues .dot{width:9px;height:9px;border-radius:50%;margin-top:.45em}
+.p-issues .bad .dot{background:var(--bad)}
+.p-issues .warn .dot{background:var(--warn)}
+.p-issues .where{font-weight:700;display:block}
+.p-issues .msg{color:var(--sub)}
+.p-ok{display:flex;gap:8px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--ok-soft);font-size:13px;font-weight:700}
+.p-ok .ic{color:var(--ok)}
+.p-legend{display:flex;gap:14px;margin-top:8px;font-size:11.5px;color:var(--faint)}
+.p-legend span{display:inline-flex;align-items:center;gap:5px}
+.p-legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+.p-guide{margin-top:16px;border:1px solid var(--rule);border-radius:12px;background:var(--panel)}
+.p-guide summary{cursor:pointer;padding:12px 16px;font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:8px;list-style:none}
+.p-guide summary::-webkit-details-marker{display:none}
+.p-guide summary::before{content:"";width:7px;height:7px;border-right:2px solid var(--sub);border-bottom:2px solid var(--sub);transform:rotate(-45deg);transition:transform .15s}
+.p-guide[open] summary::before{transform:rotate(45deg)}
+.p-guide summary small{font-weight:500;color:var(--faint);font-size:12px}
+.p-guide-in{padding:0 16px 16px}
+.p-guide-in p{font-size:13px;color:var(--sub);margin-bottom:8px}
+.p-guide pre{margin:0;max-height:320px;overflow:auto;white-space:pre-wrap;padding:12px 14px;border-radius:10px;background:var(--wash);
+  font:12px/1.65 ui-monospace,"BIZ UDGothic","MS Gothic",Consolas,monospace}
+.p-guide .p-tools{margin-top:10px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;z-index:50;
+  background:var(--ink);color:var(--panel);padding:10px 16px;border-radius:999px;font-size:13px;font-weight:700;transition:.2s}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* PDF の案内（画面のみ） */
+.pdf-dlg{width:min(480px,calc(100vw - 32px));border:1px solid var(--rule);border-radius:16px;padding:22px 22px 18px;
+  background:var(--panel);color:var(--ink);box-shadow:0 24px 60px -20px rgba(0,0,0,.45)}
+.pdf-dlg::backdrop{background:rgba(11,15,23,.45)}
+.pdf-dlg h2{display:flex;align-items:center;gap:8px;font-size:18px;margin-bottom:8px}
+.pdf-dlg h2 .ic{color:var(--spark);font-size:20px}
+.pd-lead{font-size:13.5px;line-height:1.7;color:var(--sub)}
+.pd-steps{counter-reset:p;display:grid;gap:8px;margin:14px 0 12px}
+.pd-steps li{counter-increment:p;position:relative;padding:9px 12px 9px 40px;border-radius:10px;background:var(--wash);font-size:13px;line-height:1.6}
+.pd-steps li::before{content:counter(p);position:absolute;left:12px;top:10px;width:20px;height:20px;border-radius:50%;
+  background:var(--ink);color:var(--panel);font:800 11px/20px var(--f-label);text-align:center}
+.pd-steps small{display:block;font-size:11.5px;color:var(--faint)}
+.pd-warn{display:none;font-size:12.5px;line-height:1.6;padding:9px 12px;border-radius:10px;background:var(--warn-soft);margin-bottom:10px}
+.pd-warn.on{display:block}
+.pd-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pd-actions button{flex:1 1 140px;padding:10px 14px;border-radius:10px;font:700 14px/1.2 var(--f-body);cursor:pointer}
+.pd-go{border:0;background:var(--spark);color:#fff}
+.pd-cancel{border:1px solid var(--rule);background:var(--panel)}
+.book-h{max-width:calc(210mm + 32px);margin:30px auto 0;padding:0 16px;display:flex;justify-content:space-between;align-items:baseline;gap:12px;color:var(--sub);font-size:13px}
+.book-h b{font-size:15px;color:var(--ink)}
+
+/* ───────── 紙面（ここから下は印刷と同じ見た目） ───────── */
+.book{
+  --ink:#131a2c; --sub:#4a5470; --faint:#838ca3; --rule:#dce1ea; --wash:#f3f5f9; --sheet:#ffffff;
+  --lv1:#0a8a5f; --lv1-soft:#e0f3ea; --lv1-ink:#06603f;
+  --lv2:#2a5fd6; --lv2-soft:#e6edfc; --lv2-ink:#1a3f96;
+  --lv3:#1f2547; --lv3-soft:#e9eaf3; --lv3-ink:#1f2547;
+  --spark:#e4531f; --spark-soft:#fdeee7; --spark-ink:#a8360c;
+  color:var(--ink);display:grid;justify-items:center;gap:26px;padding:14px 16px 80px;color-scheme:light}
+
+.lv1{--lv:var(--lv1);--lv-soft:var(--lv1-soft);--lv-ink:var(--lv1-ink)}
+.lv2{--lv:var(--lv2);--lv-soft:var(--lv2-soft);--lv-ink:var(--lv2-ink)}
+.lv3{--lv:var(--lv3);--lv-soft:var(--lv3-soft);--lv-ink:var(--lv3-ink)}
+/* レベルの記号：初級＝●　中級＝■　上級＝◆（色が見分けにくくても形でわかる） */
+.mk{display:inline-block;width:.72em;height:.72em;background:var(--lv);flex:none;vertical-align:.02em}
+.mk.lv1{border-radius:50%}
+.mk.lv2{border-radius:2px}
+.mk.lv3{transform:rotate(45deg) scale(.84);border-radius:1px}
+
+.sheet{position:relative;width:210mm;height:297mm;background:var(--sheet);border-radius:4px;box-shadow:0 1px 2px rgba(19,26,44,.08), 0 18px 40px -24px rgba(19,26,44,.45);
+  padding:14mm 16mm 18mm;overflow:hidden;font-size:calc(13px * var(--fit,1));line-height:1.68;line-break:strict;overflow-wrap:anywhere}
+.sheet-in{height:100%;display:flex;flex-direction:column;overflow:hidden}
+.sheet-in > *{flex:none}
+.sheet-foot{position:absolute;left:16mm;right:16mm;bottom:7mm;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  border-top:1px solid var(--rule);padding-top:7px;font-family:var(--f-label);font-size:10.5px;letter-spacing:.04em;color:var(--faint)}
+.sheet-foot .pg{font-variant-numeric:tabular-nums;font-weight:700;color:var(--sub);white-space:nowrap}
+.sheet-foot .pg i{font-style:normal;font-weight:500;color:var(--faint)}
+.sheet.over{outline:3px solid #c53030;outline-offset:4px}
+.sheet.over::after{content:"1ページに収まっていません（文字を減らしてください）";position:absolute;top:4mm;left:50%;transform:translateX(-50%);
+  background:#c53030;color:#fff;font:700 11px/1 var(--f-body);padding:6px 10px;border-radius:999px;white-space:nowrap}
+
+/* つめ見出し（紙の右端のタブ） */
+.tab{position:absolute;right:0;width:22px;height:84px;display:flex;align-items:center;justify-content:center;background:var(--lv);color:#fff;
+  border-radius:8px 0 0 8px;writing-mode:vertical-rl;font-size:11px;font-weight:700;letter-spacing:.4em;padding-top:.4em}
+.lv1 > .tab{top:44mm}.lv2 > .tab{top:72mm}.lv3 > .tab{top:100mm}
+
+/* 共通の見出し */
+.ptitle{display:flex;flex-direction:column;gap:2px;padding-bottom:10px;margin-bottom:16px;border-bottom:2px solid var(--ink)}
+.ptitle .en{font-family:var(--f-label);font-size:11px;font-weight:800;letter-spacing:.22em;color:var(--spark)}
+.ptitle h2{font-size:26px;line-height:1.3}
+.sub-h{font-size:1.06em;font-weight:700;display:flex;align-items:center;gap:8px;margin:1.3em 0 .65em}
+.sub-h::before{content:"";width:16px;height:3px;border-radius:2px;background:var(--spark);flex:none}
+.sub-h:first-child{margin-top:0}
+.prose p + p{margin-top:.8em}
+.prose{font-size:1.04em;line-height:1.85}
+
+/* ───────── 表紙 ───────── */
+.cover{padding:16mm 16mm 20mm}
+.cover::before{content:"";position:absolute;inset:0 0 auto 0;height:8px;background:linear-gradient(90deg,var(--lv1) 0 33.3%,var(--lv2) 33.3% 66.6%,var(--lv3) 66.6%)}
+.cover-top{display:flex;justify-content:space-between;gap:12px;font-family:var(--f-label);font-size:11px;font-weight:800;letter-spacing:.22em;color:var(--sub)}
+.cover h1{margin-top:22mm;font-family:var(--f-display);font-weight:400;line-height:1.15;letter-spacing:.02em}
+.cover-sub{margin-top:12px;font-size:16px;line-height:1.75;color:var(--sub)}
+.cover-count{display:flex;align-items:flex-end;gap:22px;flex-wrap:wrap;margin-top:16mm}
+.cc-total{font-family:var(--f-label);font-weight:800;font-size:64px;line-height:.9;letter-spacing:-.02em}
+.cc-total small{font:700 15px var(--f-body);margin-left:6px;letter-spacing:0}
+.cc-lv{display:grid;gap:5px}
+.cc-lv li{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}
+.cc-lv b{color:var(--ink);font-size:14px}
+.cc-lv .n{font-family:var(--f-label);font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.mosaic{display:grid;gap:5px;margin-top:auto}
+.mosaic a{position:relative;aspect-ratio:1;border-radius:6px;background:var(--lv);color:#fff;text-decoration:none;display:flex;flex-direction:column;
+  justify-content:space-between;padding:6px 7px;font-family:var(--f-label);font-weight:800;font-size:11px;line-height:1;font-variant-numeric:tabular-nums}
+.mosaic a .mk{background:#fff;opacity:.85;font-size:9px;align-self:flex-end}
+.cover-foot{display:flex;justify-content:space-between;gap:12px;margin-top:12px;font-size:12px;color:var(--sub)}
+.cover-foot b{color:var(--ink)}
+
+/* ───────── はじめに ───────── */
+.where{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.where a{display:flex;flex-direction:column;gap:3px;padding:12px 13px;border-radius:12px;background:var(--lv-soft);text-decoration:none;border-top:4px solid var(--lv)}
+.where .nm{display:flex;align-items:center;gap:7px;font-weight:700;font-size:1.08em;color:var(--lv-ink)}
+.where .nm small{font-size:.8em;font-weight:700;color:var(--sub)}
+.where p{font-size:.92em;line-height:1.55;color:var(--ink)}
+.where .pp{margin-top:auto;padding-top:4px;font-family:var(--f-label);font-weight:800;font-size:.85em;color:var(--sub)}
+.notes{display:grid;gap:6px;font-size:.9em;color:var(--sub);line-height:1.6}
+.notes li{position:relative;padding-left:1.1em}
+.notes li::before{content:"";position:absolute;left:0;top:.68em;width:5px;height:5px;border-radius:50%;background:var(--faint)}
+
+/* ───────── 見方 ───────── */
+.lvtable{display:grid;gap:8px}
+.lvtable li{display:grid;grid-template-columns:8.6em minmax(0,1fr) minmax(0,.9fr);gap:12px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--lv-soft)}
+.lvtable .nm{display:flex;align-items:center;gap:8px;font-weight:700;font-size:1.2em;color:var(--lv-ink)}
+.lvtable .nm small{font-size:.72em;color:var(--sub);font-weight:700}
+.lvtable .tg{font-weight:700;line-height:1.5}
+.lvtable .tl{font-size:.86em;color:var(--sub);line-height:1.5}
+.lvtable .tl b{display:block;font-size:.92em;color:var(--ink)}
+.judge{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,13em);gap:8px 10px;align-items:center}
+.jq{padding:10px 12px;border-radius:12px;border:1.5px solid var(--ink);font-weight:700;line-height:1.5;font-size:.96em}
+.jq small{display:block;font-family:var(--f-label);font-weight:800;font-size:.75em;letter-spacing:.14em;color:var(--spark)}
+.jarrow{font-size:.8em;font-weight:700;color:var(--sub);white-space:nowrap;display:flex;align-items:center;gap:4px}
+.jarrow::after{content:"";width:22px;height:2px;background:var(--sub)}
+.jres{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:999px;background:var(--lv);color:#fff;font-weight:700;font-size:.96em}
+.jres .mk{background:#fff}
+.jdown{grid-column:1;justify-self:center;font-size:.8em;font-weight:700;color:var(--sub);display:flex;align-items:center;gap:6px}
+.jdown::before{content:"";width:2px;height:16px;background:var(--sub)}
+.jnote{font-size:.85em;color:var(--sub);margin-top:8px}
+.easegrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.easegrid li{display:flex;gap:8px;align-items:flex-start;padding:9px 11px;border-radius:10px;background:var(--wash);font-size:.88em;line-height:1.5}
+.easegrid b{display:block;font-size:1.05em}
+.easegrid .ic{font-size:1.3em;color:var(--spark);margin-top:.1em}
+.anat{display:grid;grid-template-columns:44mm minmax(0,1fr);gap:16px;align-items:start}
+.wire{border:1px solid var(--rule);border-radius:6px;padding:6px;display:grid;gap:4px;background:#fff;height:58mm;
+  grid-template-rows:2.2fr 1.5fr 1fr 2.6fr 1.5fr 1.3fr .6fr}
+.wire > div,.wire .w2 > div{position:relative;border-radius:3px;background:var(--wash)}
+.wire [data-n]::after{content:attr(data-n);position:absolute;left:4px;top:3px;width:14px;height:14px;border-radius:50%;background:var(--spark);color:#fff;
+  font:800 9px/14px var(--f-label);text-align:center}
+.wire > .w2{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:none}
+.wire > .blank{background:none}
+.anat-list{display:grid;gap:5px;counter-reset:a;font-size:.9em;line-height:1.5}
+.anat-list li{counter-increment:a;display:grid;grid-template-columns:18px minmax(0,1fr);gap:8px}
+.anat-list li::before{content:counter(a);width:18px;height:18px;border-radius:50%;background:var(--spark);color:#fff;font:800 10px/18px var(--f-label);text-align:center;margin-top:.15em}
+.anat-list b{font-weight:700}
+.anat-list span{color:var(--sub)}
+
+/* ───────── 目次 ───────── */
+.toc-mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 12px;margin-bottom:6px}
+.toc-mini a{display:flex;justify-content:space-between;gap:8px;padding:6px 10px;border-radius:8px;background:var(--wash);text-decoration:none;font-size:.9em;font-weight:700}
+.toc-mini .p{font-family:var(--f-label);font-weight:800;color:var(--sub);font-variant-numeric:tabular-nums}
+.toc-g{display:flex;align-items:center;gap:9px;margin-top:1.1em;padding:.35em 0;border-bottom:2px solid var(--lv);text-decoration:none}
+.toc-g .nm{font-weight:700;font-size:1.12em;color:var(--lv-ink)}
+.toc-g .tg{font-size:.85em;color:var(--sub)}
+.toc-g .p{margin-left:auto;font-family:var(--f-label);font-weight:800;color:var(--sub);font-variant-numeric:tabular-nums}
+.toc-g.cont .tg::after{content:"（つづき）"}
+.toc-r{display:grid;grid-template-columns:2.5em minmax(0,1fr) auto 2.4em;gap:.8em;align-items:center;padding:.38em .1em;border-bottom:1px solid var(--rule);text-decoration:none;font-size:.93em;line-height:1.45}
+.no{display:inline-flex;justify-content:center;align-items:center;min-width:2.4em;padding:.18em .3em;border-radius:5px;background:var(--lv);color:#fff;
+  font-family:var(--f-label);font-weight:800;font-size:.88em;line-height:1.1;font-variant-numeric:tabular-nums;text-decoration:none}
+.toc-r .t{font-weight:700}
+.toc-r .d{font-size:.85em;color:var(--sub);white-space:nowrap;max-width:13em;overflow:hidden;text-overflow:ellipsis}
+.toc-r .p{text-align:right;font-family:var(--f-label);font-weight:800;color:var(--sub);font-variant-numeric:tabular-nums}
+.empty{padding:14px;border-radius:10px;background:var(--wash);color:var(--sub);font-size:.92em}
+
+/* ───────── さくいん ───────── */
+.mx{width:100%;border-collapse:collapse;font-size:.9em}
+.mx th,.mx td{padding:.5em .55em;border-bottom:1px solid var(--rule);text-align:left;vertical-align:middle}
+.mx thead th{border-bottom:2px solid var(--ink);font-size:.92em;white-space:nowrap}
+.mx thead th .mk{margin-right:5px}
+.mx tbody th{font-weight:700;white-space:nowrap;width:9.5em}
+.mx td{width:30%}
+.mx .chips{display:flex;flex-wrap:wrap;gap:3px}
+.mx .n0{color:var(--faint)}
+.mx .sum{width:3.4em;text-align:right;font-family:var(--f-label);font-weight:800;color:var(--sub)}
+.tl-list{display:grid;gap:0}
+.tl-list li{display:grid;grid-template-columns:12.5em 2.2em minmax(0,1fr);gap:10px;align-items:center;padding:.45em 0;border-bottom:1px solid var(--rule);font-size:.9em}
+.tl-list .nm{font-weight:700}
+.tl-list .ct{font-family:var(--f-label);font-weight:800;color:var(--sub);text-align:right}
+.tl-list .chips{display:flex;flex-wrap:wrap;gap:3px}
+
+/* ───────── 章扉 ───────── */
+.chapter{padding:0}
+.ch-top{background:var(--lv);color:#fff;padding:18mm 16mm 12mm;position:relative}
+.ch-top .en{font-family:var(--f-label);font-weight:800;font-size:12px;letter-spacing:.24em;opacity:.85}
+.ch-top h2{display:flex;align-items:center;gap:18px;margin-top:8mm;font-family:var(--f-display);font-weight:400;font-size:80px;line-height:1}
+.ch-top h2 .mk{background:#fff;font-size:.62em}
+.ch-top h2 small{font-family:var(--f-body);font-weight:700;font-size:26px;opacity:.9;letter-spacing:.06em}
+.ch-top .tg{margin-top:6mm;font-size:20px;font-weight:700;line-height:1.5}
+.ch-body{padding:10mm 16mm 20mm;height:auto}
+.ch-body .prose{max-width:40em}
+.ch-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:1.4em}
+.ch-facts > div{padding:11px 13px;border-radius:12px;background:var(--wash)}
+.ch-facts small{display:block;font-size:.8em;font-weight:700;color:var(--sub)}
+.ch-facts b{font-family:var(--f-label);font-weight:800;font-size:1.9em;line-height:1.2}
+.ch-facts b span{font-family:var(--f-body);font-size:.45em;margin-left:3px;color:var(--sub)}
+.ch-facts .txt{font-size:.92em;font-weight:700;line-height:1.5;margin-top:3px}
+.tchips{display:flex;flex-wrap:wrap;gap:6px}
+.tchips span{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--rule);font-size:.86em;font-weight:700}
+.tchips span b{font-family:var(--f-label);color:var(--lv-ink)}
+.ch-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
+.ch-list a{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:center;padding:.36em 0;border-bottom:1px solid var(--rule);text-decoration:none;font-size:.88em;font-weight:700;line-height:1.4}
+.ch-list .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ───────── 事例ページ ───────── */
+.case{font-size:calc(12.4px * var(--fit,1));line-height:1.62;padding-top:15mm}
+.case::before{content:"";position:absolute;inset:0 0 auto 0;height:7px;background:var(--lv)}
+.c-meta{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px}
+.c-no{font-family:var(--f-label);font-weight:800;font-size:.86em;letter-spacing:.18em;color:var(--sub);display:flex;align-items:baseline;gap:5px}
+.c-no b{font-size:1.9em;letter-spacing:0;color:var(--lv-ink);line-height:1}
+.lvb{display:inline-flex;align-items:center;gap:6px;padding:.25em .75em;border-radius:999px;background:var(--lv);color:#fff;font-weight:700;font-size:.9em}
+.lvb .mk{background:#fff}
+.lvb small{font-size:.86em;opacity:.85}
+.tagc{display:inline-flex;align-items:center;gap:5px;padding:.2em .7em;border-radius:999px;border:1px solid var(--rule);font-size:.86em;font-weight:700;color:var(--sub)}
+.tagc .ic{color:var(--spark)}
+.c-title{margin-top:.5em;font-size:1.82em;line-height:1.36;font-weight:900;letter-spacing:.01em}
+.c-sub{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-top:.5em;font-size:.92em;color:var(--sub)}
+.c-sub .dept b{color:var(--ink);font-size:1.05em}
+.c-tools{display:flex;flex-wrap:wrap;gap:4px}
+.c-tools span{padding:.12em .6em;border-radius:5px;background:var(--wash);color:var(--ink);font-weight:700;font-size:.92em}
+.c-lead{margin-top:.75em;padding:.15em 0 .15em .85em;border-left:3px solid var(--lv);font-size:1.1em;font-weight:700;line-height:1.6}
+.c-sec{margin-top:1.05em}
+.c-h{display:flex;align-items:center;gap:7px;margin-bottom:.45em;font-size:.95em;font-weight:700}
+.c-h::before{content:"";width:14px;height:3px;border-radius:2px;background:var(--lv);flex:none}
+.c-h small{font-weight:500;color:var(--faint);font-size:.85em}
+.ba{display:grid;grid-template-columns:minmax(0,1fr) 1.7em minmax(0,1fr);gap:.4em;align-items:stretch}
+.ba > div{border-radius:10px;padding:.7em .9em .8em}
+.ba .b{background:var(--wash)}
+.ba .a{background:var(--lv-soft)}
+.ba .lbl{display:inline-block;font-size:.8em;font-weight:700;padding:.05em .7em;border-radius:999px;margin-bottom:.3em}
+.ba .b .lbl{background:#fff;color:var(--sub)}
+.ba .a .lbl{background:var(--lv);color:#fff}
+.ba .arr{display:flex;align-items:center;justify-content:center;color:var(--lv)}
+.ba .arr .ic{font-size:1.5em;stroke-width:2.6}
+.flow{display:grid;gap:1.3em;counter-reset:f}
+.flow li{counter-increment:f;position:relative;border:1.5px solid var(--lv);border-radius:9px;padding:.55em .6em .55em;text-align:center;font-weight:700;font-size:.93em;line-height:1.45;
+  display:flex;flex-direction:column;justify-content:center;background:#fff}
+.flow li::before{content:counter(f);display:block;font-family:var(--f-label);font-weight:800;font-size:.8em;color:var(--lv-ink);line-height:1;margin-bottom:.3em}
+.flow li + li::after{content:"";position:absolute;left:-1.05em;top:50%;transform:translateY(-50%);border:.42em solid transparent;border-left:.55em solid var(--lv);border-right:0}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.1em}
+.two.one{grid-template-columns:minmax(0,1fr)}
+.steps{display:grid;gap:.4em;counter-reset:st}
+.steps li{counter-increment:st;display:grid;grid-template-columns:1.6em minmax(0,1fr);gap:.55em;line-height:1.55}
+.steps li::before{content:counter(st);width:1.85em;height:1.85em;border-radius:50%;background:var(--lv-soft);color:var(--lv-ink);font:800 .85em/1.85em var(--f-label);text-align:center}
+.prompt{position:relative;border-radius:10px;background:#f6f7fb;border:1px solid var(--rule);padding:.8em .95em .85em}
+.prompt .pl{display:flex;gap:6px;align-items:center;margin-bottom:.35em;font-size:.78em;font-weight:700;color:var(--sub)}
+.prompt .pl .ex{padding:.05em .6em;border-radius:999px;background:var(--spark-soft);color:var(--spark-ink)}
+.prompt pre{margin:0;white-space:pre-wrap;font:500 .93em/1.62 var(--f-body);color:var(--ink);overflow-wrap:anywhere}
+.dots li{position:relative;padding-left:1.15em;line-height:1.55}
+.dots li + li{margin-top:.35em}
+.dots li::before{content:"";position:absolute;left:.1em;top:.62em;width:.42em;height:.42em;border-radius:50%;background:var(--lv)}
+.dots.tr li::before{background:var(--faint)}
+.out{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:1.1em;margin-top:1.15em}
+.out > div{border-radius:10px;padding:.8em .95em .9em}
+.eff{background:var(--lv-soft)}
+.eff .c-h::before{display:none}
+.eff .c-h .ic{color:var(--lv-ink)}
+.eff li{display:grid;grid-template-columns:1.1em minmax(0,1fr);gap:.4em;font-weight:700;line-height:1.5}
+.eff li + li{margin-top:.3em}
+.eff li .ic{color:var(--lv-ink);margin-top:.2em}
+.hint{background:var(--spark-soft)}
+.hint .c-h::before{display:none}
+.hint .c-h .ic{color:var(--spark-ink)}
+.hint p{line-height:1.6}
+
+/* ───────── 用語集・おわりに ───────── */
+.gl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 14px}
+.gl div{padding:10px 12px;border-radius:10px;background:var(--wash)}
+.gl dt{font-weight:700;font-size:1.02em}
+.gl dd{font-size:.9em;color:var(--sub);line-height:1.6;margin-top:2px}
+.next{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.next li{padding:12px 13px;border-radius:12px;background:var(--wash);font-size:.92em;line-height:1.55}
+.next b{display:block;font-size:1.06em;margin-bottom:3px}
+.next .n{display:block;font-family:var(--f-label);font-weight:800;color:var(--spark);font-size:.85em;letter-spacing:.14em}
+.colophon{margin-top:auto;border-top:2px solid var(--ink);padding-top:10px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 18px;font-size:.88em}
+.colophon dt{color:var(--sub);font-weight:700}
+.colophon .ttl{grid-column:1/-1;font-weight:700;font-size:1.15em;margin-bottom:4px}
+.colophon .care{grid-column:1/-1;margin-top:6px;color:var(--sub)}
+
+@page{size:A4;margin:0}
+@media print{
+  html,body{background:#fff}
+  body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .topbar,.panel,.pdf-dlg,.toast,.book-h{display:none!important}
+  .book{display:block;padding:0;zoom:1!important}
+  .sheet{border-radius:0;box-shadow:none;break-after:page;margin:0}
+  .sheet:last-child{break-after:auto}
+  .sheet.over{outline:0}
+  .sheet.over::after{display:none}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></symbol>
+  <symbol id="i-tool" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9 11h6M9 14h4"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4.5 4.5L19 7"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1.1 1.3 1.1 2.2h5c0-.9.5-1.7 1.1-2.2A6 6 0 0 0 12 3z"/></symbol>
+  <symbol id="i-sign" viewBox="0 0 24 24"><path d="M12 3v18M5 6h11l3 3-3 3H5zM8 15h-3l-2 2 2 2h3"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".6"/></symbol>
+  <symbol id="i-pdf" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9 14l3 3 3-3"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-open" viewBox="0 0 24 24"><path d="M12 20V9M7 14l5-5 5 5M5 4h14"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+</svg>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="#top"><span class="dots"><i class="mk lv1"></i><i class="mk lv2"></i><i class="mk lv3"></i></span><span class="txt">事例集メーカー</span></a>
+    <nav class="nav" aria-label="ページ内の移動">
+      <a href="#input">入力</a>
+      <a href="#toc">目次</a>
+      <a href="#ch-1"><i class="mk lv1"></i>初級</a>
+      <a href="#ch-2"><i class="mk lv2"></i>中級</a>
+      <a href="#ch-3"><i class="mk lv3"></i>上級</a>
+    </nav>
+    <button class="pdf-btn" type="button" id="pdfBtn"><svg class="ic"><use href="#i-pdf"/></svg>PDFにする</button>
+  </div>
+</header>
+
+<section class="panel" id="input">
+  <div class="panel-card" id="top">
+    <div class="p-head">
+      <h1>Copilot 活用事例集メーカー</h1>
+      <p>Copilot が書いた「事例テキスト」を下の枠に貼ると、初級・中級・上級に分かれた A4 の事例集が自動でできあがります。貼った文字はこのパソコンの中だけで使われ、どこにも送られません。</p>
+    </div>
+    <ol class="p-steps">
+      <li><b>Copilot に事例テキストを書いてもらう</b><small>発表スライドと設計書 PDF を渡して頼みます。</small></li>
+      <li><b>下の枠に貼る</b><small>「=== 事例 ===」から「=== おわり ===」まで。何件でも続けて貼れます。</small></li>
+      <li><b>チェックを見て、PDF にする</b><small>赤い項目を直してから「PDFにする」を押します。</small></li>
+    </ol>
+    <div class="p-grid">
+      <div class="p-input">
+        <div class="sample-note" id="sampleNote"><span><b>いまは見本が入っています。</b>自分の事例を貼る前に、見本を消してください。</span><button class="btn small" type="button" id="clearSample"><svg class="ic"><use href="#i-trash"/></svg>見本を消す</button></div>
+        <label class="p-label" for="src">事例テキスト<small>入力した内容は、このブラウザに自動で保存されます</small></label>
+        <textarea id="src" spellcheck="false" placeholder="=== 冊子情報 ===&#10;タイトル: Copilot 活用事例集&#10;…&#10;=== おわり ===&#10;&#10;=== 事例 ===&#10;レベル: 初級&#10;タイトル: …&#10;…&#10;=== おわり ==="></textarea>
+        <div class="p-tools">
+          <button class="btn" type="button" id="saveTxt"><svg class="ic"><use href="#i-save"/></svg>テキストを保存</button>
+          <button class="btn" type="button" id="openTxt"><svg class="ic"><use href="#i-open"/></svg>テキストを開く</button>
+          <button class="btn ghost" type="button" id="loadSample"><svg class="ic"><use href="#i-eye"/></svg>見本を入れる</button>
+          <button class="btn ghost" type="button" id="clearAll"><svg class="ic"><use href="#i-trash"/></svg>ぜんぶ消す</button>
+          <input type="file" id="fileIn" accept=".txt,text/plain" hidden>
+        </div>
+      </div>
+      <aside class="p-check" aria-live="polite">
+        <div class="p-stats">
+          <div class="stat"><small>事例</small><b id="stCases">0<span>件</span></b>
+            <div class="lvcount" id="stLv"></div></div>
+          <div class="stat"><small>ページ数</small><b id="stPages">0<span>ページ</span></b></div>
+        </div>
+        <div class="p-issues-h">チェック</div>
+        <div id="issues"></div>
+        <div class="p-legend"><span><i style="background:var(--bad)"></i>直してください</span><span><i style="background:var(--warn)"></i>確かめてください</span></div>
+      </aside>
+    </div>
+    <details class="p-guide">
+      <summary>Copilot に頼むときの指示文 <small>エージェント ビルダーの「指示」欄にそのまま貼れます</small></summary>
+      <div class="p-guide-in">
+        <p>Copilot Chat で頼むときは、この指示文と発表スライドを渡して「この指示に従って、スライドから事例テキストを作ってください」と頼みます。くわしくは設計書 PDF を見てください。</p>
+        <pre id="guideText"></pre>
+        <div class="p-tools">
+          <button class="btn" type="button" id="copyGuide"><svg class="ic"><use href="#i-copy"/></svg>指示文をコピー</button>
+          <a class="btn ghost" href="https://tbtb-k.github.io/diary/pages/template_copilot-jireishu-sekkeisho.pdf" target="_blank" rel="noopener"><svg class="ic"><use href="#i-pdf"/></svg>設計書 PDF を開く</a>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<div class="book-h"><b>プレビュー</b><span>このまま PDF になります</span></div>
+<main class="book" id="book" aria-label="冊子のプレビュー"></main>
+
+<dialog class="pdf-dlg" id="pdfDlg">
+  <h2><svg class="ic"><use href="#i-pdf"/></svg>PDF にする</h2>
+  <p class="pd-lead">このあと印刷の画面が開きます。次のように設定して保存してください。</p>
+  <ol class="pd-steps">
+    <li>プリンター（送信先）で「PDF として保存」を選ぶ<small>Chrome では「PDF に保存」という名前です。</small></li>
+    <li>「その他の設定」で、余白を「なし」、「背景のグラフィック」にチェック<small>用紙は A4 になるように作ってあります。「ヘッダーとフッター」のチェックは外します。</small></li>
+    <li>「保存」を押す</li>
+  </ol>
+  <p class="pd-warn" id="pdWarn"></p>
+  <div class="pd-actions">
+    <button class="pd-cancel" type="button" id="pdCancel">やめる</button>
+    <button class="pd-go" type="button" id="pdGo">印刷の画面を開く</button>
+  </div>
+</dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* Copilot に渡す指示文と、見本の事例テキスト（設計書 PDF と同じ内容） */
+const GUIDE_TEXT = "# 役割\nあなたは、社内の Copilot 事例共有会で発表されたスライド（PowerPoint）を読み、事例集に載せる原稿「事例テキスト」を書く編集者です。読み手は、Copilot を使い始めたばかりの社員です。\n\n# 作業の流れ\n1. 渡されたスライドを最後まで読み、「何に困っていたか」「何を使って、どう作ったか」「どう変わったか」をつかむ。\n2. 「個人情報・社外秘のルール」に従って、載せてはいけない情報を外す。\n3. 「レベルの決め方」で、レベルを1つ決める。\n4. 「事例テキストの書式」のとおりに、1件を1つのコードブロックで出力する。\n5. コードブロックの後に「確認してほしいこと」を箇条書きで書く（スライドから読み取れず推測した点、伏せた情報、判断に迷った点）。なければ「なし」と書く。\n- 1つのスライドに事例が複数あるときは、事例ごとにコードブロックを分ける。\n- ほかの会話や、前に出力した事例の内容を混ぜない。\n\n# レベルの決め方\n次の順に判定する。迷ったら低いほうにする。\n- Q1：エージェントもフローも作らず、その場で Copilot に頼む使い方か？ → はい：初級\n- Q2：自動で動く（メールの受信や決まった時刻などをきっかけに動く）、または、ほかのシステムへの登録・送信・更新までする（Power Automate のフロー、承認、コネクタなど）か？ → はい：上級／いいえ：中級\n目安\n- 初級（使う）：Copilot Chat、Word・Excel・PowerPoint・Outlook・Teams の Copilot を、その場で使う。\n- 中級（作る）：エージェント ビルダーや Copilot Studio で、指示と資料をセットしたエージェントを作る。よく使う指示文をテンプレートにしてチームで使い回すのも中級。\n- 上級（つなぐ）：Power Automate などと連携して、申請・承認・通知などの手続きや自動化まで任せる。\n\n# ラベルの選び方\n- 業務の種類（1つ）：文書・資料づくり／メール・連絡／会議／調べもの・情報整理／データ集計・分析／問い合わせ対応／申請・手続き／その他\n- まねしやすさ（1つ）：今日からできる（準備なしで試せる）／準備がいる（資料をそろえる・エージェントを作るなど）／管理者に相談（Power Automate の接続、共有範囲の設定など、管理者の許可がいる）\n- 使ったツール（最大4つ、「、」区切り）：Copilot Chat／Word の Copilot／Excel の Copilot／PowerPoint の Copilot／Outlook の Copilot／Teams の Copilot／エージェント ビルダー／Copilot Studio／Power Automate／SharePoint／Forms。この表記にそろえる。ほかの製品はスライドの表記のまま書く。\n\n# 個人情報・社外秘のルール（必ず守る）\n- 人の名前は書かない（発表者、同僚、上司、お客さま）。「担当者」「チームのメンバー」などに言いかえる。\n- 部署名は書く。発表者の所属部署を、スライドの表記のまま「部署」に入れる。わからなければ「（部署名を確認）」と書く。\n- メールアドレス、電話番号、社員番号、アカウント名、URL は書かない。\n- お客さま・取引先の名前、案件名、金額・売上などの数字は書かない。「あるお客さま」「○○」に置きかえる。\n- 社内システムの固有の名前は、一般的な呼び方にする（例：「勤怠システム」「申請システム」）。\n- 画面のスクリーンショットに写っている名前やデータは使わない。\n- 人事評価や、個人の成績にかかわる内容は書かない。\n\n# 書き方のルール\n- ですます調。やさしい言葉で書く。専門用語を使うときは、短く言いかえをそえる。\n- スライドに書かれていない事実や数字を作らない。\n- 効果の数字は、スライドにあるものだけを書き、「（発表者の実感）」「（発表資料より）」のように出どころをそえる。数字がなければ、変化を言葉で書く。\n- 指示文は、スライドに載っている実物をそのまま写す（人や会社の名前は○○にする）。スライドに無いときは、まねしやすい例を書き、先頭に「【例】」とつける。\n- 項目ごとの文字数を守る（書式の（ ）内）。長いときは、削ってから出力する。\n\n# 事例テキストの書式\n次の形を、項目名も記号もこのまま使って出力する。（ ）内は説明なので出力しない。\n=== 事例 ===\nレベル: （初級／中級／上級のどれか1つ）\nタイトル: （何をどう変えたかがわかる一文。30字以内）\n部署: （発表者の部署名）\n業務の種類: （ラベルから1つ）\nまねしやすさ: （ラベルから1つ）\n使ったツール: （最大4つ）\nひとこと: （事例のいちばんのポイント。60字以内）\nこれまで: （困っていたこと。100字以内）\nこれから: （使ってどう変わったか。100字以内）\nしくみ:\n- （動きの流れを3〜5個に分けて。各20字以内）\nやったこと:\n- （作った・使った手順を3〜5個。各50字以内）\n指示文:\n（実際に使った指示文。300字以内。改行してよい）\n工夫:\n- （うまくいったコツを1〜3個。各60字以内）\nつまずき:\n- （困ったことと、その解決を0〜2個。各60字以内。なければ「なし」）\n効果:\n- （変わったことを1〜3個。各40字以内）\nまねするヒント: （ほかの部署がまねするときの一言。80字以内）\n=== おわり ===\n\n# 冊子情報を頼まれたとき\n「冊子情報を書いて」と頼まれたら、次の形で出力する。会の目的や様子は、ユーザーが伝えた内容だけを使う。\n=== 冊子情報 ===\nタイトル: （冊子の名前）\nサブタイトル: （表紙にそえる一文。40字以内）\n発行日: （例：2026年12月）\n発行: （発行する部署やチーム名）\nはじめに:\n（冊子の目的と読み方。300字以内）\nおわりに:\n（読んだ人への一言と、次の一歩。200字以内）\n=== おわり ===\n";
+const SAMPLE_TEXT = "=== 冊子情報 ===\nタイトル: Copilot 活用事例集\nサブタイトル: 事例共有会で生まれた「やってみた」の記録（見本）\n発行日: 2026年12月\n発行: ○○部 Copilot 事例共有会 事務局\nはじめに:\nこの冊子は、Copilot 事例共有会で発表された活用事例をまとめたものです。\n事例は、まねしやすい順に「初級（使う）」「中級（作る）」「上級（つなぐ）」の3つのレベルに分けました。まだ Copilot に慣れていない方は初級から、エージェントづくりに興味がある方は中級から読んでみてください。\nどの事例にも、実際に使った指示文や、うまくいったコツ、つまずいたところを載せています。自分の仕事に置きかえて、気になったものから試してみてください。\nおわりに:\n最後まで読んでいただき、ありがとうございました。\nどの事例も、最初は小さな「試しにやってみた」から始まっています。まずは1つ、自分の仕事で試してみてください。うまくいったことも、つまずいたことも、次の共有会でぜひ聞かせてください。\n=== おわり ===\n\n=== 事例 ===\nレベル: 初級\nタイトル: 定例会議のメモ取りをやめて、話し合いに集中できた\n部署: 営業企画部\n業務の種類: 会議\nまねしやすさ: 今日からできる\n使ったツール: Teams の Copilot\nひとこと: 会議のあとに Copilot に頼むだけで、決まったことと ToDo が一覧になります。\nこれまで: 週1回の定例会議で、毎回だれかが議事録係になっていました。メモに追われて発言しにくく、まとめにも時間がかかっていました。\nこれから: 会議の文字起こしをオンにして、終わったら Copilot にまとめを頼むだけ。議事録係がいなくなり、全員が話し合いに参加できるようになりました。\nしくみ:\n- 会議で文字起こしをオン\n- いつもどおり話し合う\n- Copilot にまとめを頼む\n- 会議のチャットで共有\nやったこと:\n- 会議の最初に文字起こしを始めることを、チームの決まりにした\n- まとめ方の指示文を作り、チームのノートに置いて誰でも使えるようにした\n- まとめは担当者が読んで確かめてから、会議のチャットに投稿するようにした\n指示文:\nこの会議の内容を、次の形でまとめてください。\n1. 決まったこと（箇条書き）\n2. ToDo（担当・期限を表で。担当は役割名で）\n3. 次回までに確認すること\n話に出ていないことは推測で補わず、「未定」と書いてください。\n工夫:\n- 「推測で補わない」と書いておくと、話していないことが混ざりにくくなりました\n- ToDo を表にしてもらうと、そのまま貼って使えます\nつまずき:\n- 文字起こしを始め忘れることがあり、会議の招待文に一言そえるようにしました\n効果:\n- まとめの作業が30分→5分ほどに（発表者の実感）\n- 議事録係の当番がなくなった\nまねするヒント: まずは自分が出る会議で1回試すのがおすすめです。指示文はそのまま使えます。\n=== おわり ===\n\n=== 事例 ===\nレベル: 初級\nタイトル: アンケートの自由記述を、Excel の Copilot で分類した\n部署: 人事部\n業務の種類: データ集計・分析\nまねしやすさ: 今日からできる\n使ったツール: Excel の Copilot\nひとこと: 数百件の感想を、テーマごとの件数と代表的な声に整理できました。\nこれまで: 社内研修のアンケートは自由記述が多く、1件ずつ読んで手で分類していました。担当者によって分け方もばらばらでした。\nこれから: Excel の表を Copilot に渡し、テーマ分けと件数の集計を頼めるように。分け方の基準を指示文に書いたので、毎回同じ基準でまとめられます。\nしくみ:\n- 結果を Excel の表にする\n- Copilot にテーマ分けを頼む\n- テーマの列ができる\n- 件数をグラフにする\nやったこと:\n- アンケートの結果を、Excel のテーブル形式に整えた\n- テーマの候補（内容・講師・時間・環境・その他）を先に決めた\n- Copilot の結果を何件か読み、分け方が合っているか確かめた\n指示文:\nB列の感想を読み、次のどれか1つに分類した列を追加してください：内容／講師／時間／環境／その他。そのうえで、テーマごとの件数と、それぞれの代表的な意見を3つずつ教えてください。\n工夫:\n- テーマの候補を先に決めて渡すと、分け方がぶれにくくなりました\n- 最後は人が目で確かめる、をチームの決まりにしました\nつまずき:\n- なし\n効果:\n- 集計にかかる時間が半日→1時間ほどに（発表者の実感）\n- 基準がそろい、前回と比べやすくなった\nまねするヒント: 自由記述の多い集計なら、どの部署でも使えます。テーマの候補は自分たちの言葉で決めてください。\n=== おわり ===\n\n=== 事例 ===\nレベル: 中級\nタイトル: 「規程のどこに書いてある？」に答えるエージェント\n部署: 総務部\n業務の種類: 問い合わせ対応\nまねしやすさ: 準備がいる\n使ったツール: エージェント ビルダー、SharePoint\nひとこと: 規程集を読み込ませたエージェントが、根拠の場所をそえて答えてくれます。\nこれまで: 出張や経費のルールについて、同じような問い合わせが毎日のように届いていました。答えるたびに規程を探して、該当箇所を伝えていました。\nこれから: 規程を読み込ませたエージェントを部内に共有。よくある質問はエージェントが答え、担当者は判断が必要な相談に時間を使えるようになりました。\nしくみ:\n- 社員が質問する\n- エージェントが規程を探す\n- 根拠をそえて答える\n- 判断がいる相談は窓口へ\nやったこと:\n- 規程のファイルを SharePoint の1つのフォルダーにまとめた\n- エージェント ビルダーで、役割と答え方を日本語で説明した\n- ナレッジ（参考にする資料）に、規程のフォルダーを追加した\n- 部内で1週間試してもらい、答え方を直してから公開した\n指示文:\nあなたは総務部の規程案内係です。社員からの質問に、ナレッジにある規程だけをもとに答えてください。答えには、根拠となる規程の名前と条番号をそえてください。規程に書かれていないことや、判断が必要な相談には答えず、総務部の窓口に相談するよう案内してください。\n工夫:\n- 「規程に無いことは答えない」と書いたことで、あいまいな回答が減りました\n- 古い版の規程はフォルダーから外し、最新版だけにしました\nつまずき:\n- 表の中のルールを読み落とすことがあり、表の内容を文章で説明した資料を足しました\n効果:\n- よくある問い合わせへの対応が目に見えて減った\n- 回答の根拠がそろい、案内のばらつきが減った\nまねするヒント: 問い合わせの多い資料がある部署にぴったりです。まずは資料を1か所にまとめるところから始めましょう。\n=== おわり ===\n\n=== 事例 ===\nレベル: 中級\nタイトル: 提案書のたたき台を、過去の型から作るエージェント\n部署: 営業部\n業務の種類: 文書・資料づくり\nまねしやすさ: 準備がいる\n使ったツール: エージェント ビルダー、PowerPoint の Copilot\nひとこと: お客さまの課題を伝えると、部署の「提案書の型」にそった構成案が出てきます。\nこれまで: 提案書を作るたびに、過去の資料を探して構成を考えるところから始めていました。人によって構成がばらばらで、見直しにも時間がかかっていました。\nこれから: 提案書の型と構成ルールをエージェントに持たせ、課題を伝えるだけで構成案と各ページの要点が出るように。仕上げは PowerPoint の Copilot で行います。\nしくみ:\n- 課題と目的を伝える\n- エージェントが構成案を作る\n- 各ページの要点を確かめる\n- PowerPoint で仕上げる\nやったこと:\n- よく使う提案書の構成を、「型」として文章にまとめた\n- お客さまの情報が入っていない見本の資料だけを、ナレッジにした\n- 出力の形（ページごとの見出しと要点）を、指示文で決めた\n指示文:\nあなたは提案書づくりのアシスタントです。ユーザーが伝えたお客さまの課題と目的をもとに、ナレッジの「提案書の型」にそって、10ページ前後の構成案を作ってください。各ページは「見出し」「伝えたいこと（1文）」「入れる材料」の3つで示してください。数字や事実は推測せず、「○○（要確認）」と書いてください。\n工夫:\n- 数字を推測しないよう指示し、確かめるべき点が一目でわかるようにしました\n- ナレッジには見本の資料だけを入れ、お客さまの情報は入れないようにしました\nつまずき:\n- なし\n効果:\n- たたき台づくりが半日→1時間ほどに（発表者の実感）\n- 構成がそろい、上司の確認がしやすくなった\nまねするヒント: 報告書や企画書など、決まった型がある文書なら同じ作り方で応用できます。\n=== おわり ===\n\n=== 事例 ===\nレベル: 上級\nタイトル: 備品の申請をチャットで受け付け、承認まで自動で回す\n部署: 情報システム部\n業務の種類: 申請・手続き\nまねしやすさ: 管理者に相談\n使ったツール: Copilot Studio、Power Automate、SharePoint\nひとこと: Teams で話しかけるだけで申請が終わり、上長の承認まで自動で回ります。\nこれまで: PC 周辺機器の申請はメールで届き、足りない項目を何度も聞き返していました。一覧表への転記や、承認の催促も手作業でした。\nこれから: エージェントが必要な項目を順番に聞き取り、Power Automate のフローで一覧表に登録して承認を依頼。結果も申請者に自動で知らせます。\nしくみ:\n- Teams で申請を伝える\n- エージェントが項目を聞く\n- フローが一覧表に登録\n- 上長に承認を依頼\n- 結果を申請者に通知\nやったこと:\n- 申請に必要な項目（品名・数量・利用目的・希望日）を整理した\n- Copilot Studio で、項目を1つずつ聞くトピック（会話の流れ）を作った\n- Power Automate で、一覧表への登録と承認依頼のフローを作った\n- 使うコネクタと公開する範囲を、管理者と相談して決めた\n指示文:\nあなたは PC 周辺機器の申請受付係です。申請したい人に、品名、数量、利用目的、希望日を1つずつ質問してください。すべてそろったら内容をまとめて見せ、「この内容で申請しますか？」と確認してください。「はい」と答えたら、申請登録のフローを呼び出してください。\n工夫:\n- 聞き取りを1問ずつにしたことで、項目の抜けがほぼなくなりました\n- 申請の前に内容を確かめる一言を入れ、まちがいを防ぎました\nつまずき:\n- フローの接続には管理者の許可が必要で、早めに相談しておけばよかったと感じました\n効果:\n- 申請内容の聞き返しがほぼなくなった\n- 転記と、承認の催促の手作業がなくなった\nまねするヒント: 項目が決まっている申請なら応用できます。管理者への相談は、作り始める前がおすすめです。\n=== おわり ===\n\n=== 事例 ===\nレベル: 上級\nタイトル: 問い合わせメールを、届いたらすぐ仕分けて担当へ\n部署: カスタマーサポート部\n業務の種類: メール・連絡\nまねしやすさ: 管理者に相談\n使ったツール: Copilot Studio、Power Automate、Teams\nひとこと: 受付用アドレスにメールが届くと、エージェントが内容を読んで分類し、担当チームに知らせます。\nこれまで: 受付用アドレスに届く問い合わせを、当番が1通ずつ読んで担当チームに振り分けていました。休み明けはメールがたまり、対応が遅れがちでした。\nこれから: メールの受信をきっかけにエージェントが動き、分類と要約を担当チームの Teams チャネルに投稿。当番の振り分け作業がなくなりました。\nしくみ:\n- 受付用アドレスにメール\n- エージェントが内容を読む\n- 種類を分けて要約する\n- 担当チャネルに投稿\nやったこと:\n- 問い合わせの種類と、担当チームの対応表を作った\n- Copilot Studio で、メールの受信をきっかけに動くトリガーを設定した\n- 分類と要約のしかたを、指示文で決めた\n- 2週間は人の振り分けと並行して動かし、結果を見比べた\n指示文:\n届いたメールを読み、問い合わせの種類を次から1つ選んでください：製品の使い方／不具合／契約・請求／その他。あわせて要点を3行で要約し、急ぎの対応が必要かどうかを判断してください。個人の連絡先は要約に含めないでください。判断に迷うときは「その他」にしてください。\n工夫:\n- 迷ったら「その他」にするルールで、まちがった振り分けを減らしました\n- 要約に連絡先を含めないよう指示し、チャネルに個人情報が流れないようにしました\nつまずき:\n- 1通に複数の問い合わせがあるときに迷い、「主な内容で1つ選ぶ」と決めました\n効果:\n- 朝の振り分け作業がなくなった\n- 急ぎの問い合わせに早く気づけるようになった\nまねするヒント: いきなり全部を任せず、しばらく人と並行して動かすと安心です。\n=== おわり ===\n";
+
+const LEVELS = [
+  {name:"初級", cls:"lv1", en:"BASIC", verb:"使う", tag:"その場で頼んで、自分の作業を速くする",
+   desc:"Copilot Chat や、Word・Excel・PowerPoint・Outlook・Teams の Copilot に、その場で頼む使い方です。準備はほとんどいらないので、今日からまねできます。",
+   tools:"Copilot Chat、各アプリの Copilot", rule:"エージェントもフローも作らず、その場で Copilot に頼む"},
+  {name:"中級", cls:"lv2", en:"INTERMEDIATE", verb:"作る", tag:"指示と資料をセットして、くり返し使える形にする",
+   desc:"エージェント ビルダーや Copilot Studio で、役割・指示・資料をセットした専用のエージェントを作る使い方です。よく使う指示文をテンプレートにして、チームで使い回すのもここに入ります。",
+   tools:"エージェント ビルダー、Copilot Studio", rule:"エージェントや指示文のテンプレートを作る。ほかのシステムへの登録や自動化はしない"},
+  {name:"上級", cls:"lv3", en:"ADVANCED", verb:"つなぐ", tag:"ほかのシステムとつないで、手続きや自動化まで任せる",
+   desc:"Power Automate などと連携して、申請の登録や承認、メールの受信をきっかけにした処理まで任せる使い方です。管理者との相談が必要になることが多い段階です。",
+   tools:"Copilot Studio、Power Automate", rule:"自動で動く、または、ほかのシステムへの登録・送信・更新までする"},
+];
+const GYOMU = ["文書・資料づくり","メール・連絡","会議","調べもの・情報整理","データ集計・分析","問い合わせ対応","申請・手続き","その他"];
+const EASE = [
+  {name:"今日からできる", icon:"bolt", desc:"準備なしで、すぐに試せる"},
+  {name:"準備がいる", icon:"tool", desc:"資料をそろえる・エージェントを作るなどの準備がいる"},
+  {name:"管理者に相談", icon:"chat", desc:"接続や共有範囲の設定など、管理者の許可がいる"},
+];
+const TOOL_ORDER = ["Copilot Chat","Word の Copilot","Excel の Copilot","PowerPoint の Copilot","Outlook の Copilot","Teams の Copilot",
+  "エージェント ビルダー","Copilot Studio","Power Automate","SharePoint","Forms"];
+const GLOSSARY = [
+  ["Copilot Chat","Microsoft 365 で使える、チャット形式の AI。質問や文章づくりを、その場で頼めます。"],
+  ["アプリの Copilot","Word・Excel・PowerPoint・Outlook・Teams の中で使える Copilot。開いているファイルやメール、会議の内容をもとに手伝います。"],
+  ["指示文（プロンプト）","AI へのお願いの文章。目的・形・注意点を具体的に書くほど、ねらいどおりの答えが返りやすくなります。"],
+  ["エージェント","役割・指示・参考資料をセットした、専用の AI アシスタント。決まった仕事を、毎回同じやり方で手伝います。"],
+  ["エージェント ビルダー","Microsoft 365 Copilot の中で、日本語で説明するだけでエージェントを作れる機能。"],
+  ["Copilot Studio","会話の流れや、ほかのシステムとの連携まで組み込んだ、本格的なエージェントを作れるサービス。"],
+  ["ナレッジ","エージェントが答えるときに参考にする資料。SharePoint のファイルなどを指定します。"],
+  ["トピック","Copilot Studio で作る「会話の流れ」。何をどの順に聞くかを決めておけます。"],
+  ["Power Automate","「メールが届いたら、保存して、通知する」のような仕事の流れ（フロー）を自動にするサービス。"],
+  ["トリガー","自動の処理が動き出すきっかけ。メールの受信や、決まった時刻などがあります。"],
+  ["コネクタ","Outlook や SharePoint など、ほかのサービスとつなぐための部品。使うには管理者の許可がいることがあります。"],
+  ["承認","申請を上長などに回して、OK か NG かを返してもらうしくみ。Power Automate で自動にできます。"],
+];
+const DEFAULT_INFO = {
+  "タイトル":"Copilot 活用事例集", "サブタイトル":"", "発行日":"", "発行":"",
+  "はじめに":"この冊子は、Copilot 事例共有会で発表された活用事例をまとめたものです。\n事例は、まねしやすい順に「初級（使う）」「中級（作る）」「上級（つなぐ）」の3つのレベルに分けました。気になる事例から読んで、自分の仕事に置きかえて試してみてください。",
+  "おわりに":"最後まで読んでいただき、ありがとうございました。\nどの事例も、最初は小さな「試しにやってみた」から始まっています。まずは1つ、自分の仕事で試してみてください。",
+  "取り扱い":"社内向けの資料です。社外への共有はお控えください。",
+};
+const LIMITS = {title:30, lead:60, before:100, after:100, hint:80, prompt:300};
+const ITEM_LIMITS = {flow:[20,3,5,"しくみ"], steps:[50,3,5,"やったこと"], tips:[60,1,3,"工夫"], trips:[60,0,2,"つまずき"], effects:[40,1,3,"効果"]};
+const STORE_KEY = "copilot-jireishu-maker:text";
+
+/* ───────── 小さな道具 ───────── */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const len = s => [...String(s || "").replace(/\s/g, "")].length;
+const ic = (name, cls = "") => `<svg class="ic ${cls}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+const paras = s => String(s || "").split(/\n+/).map(t => t.trim()).filter(Boolean).map(t => `<p>${esc(t)}</p>`).join("");
+const store = {
+  get(){ try { return localStorage.getItem(STORE_KEY); } catch(e){ return null; } },
+  set(v){ try { localStorage.setItem(STORE_KEY, v); } catch(e){} },
+};
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("on");
+  clearTimeout(toast.tid); toast.tid = setTimeout(() => t.classList.remove("on"), 2200);
+}
+
+/* ───────── 事例テキストを読む ───────── */
+const CASE_KEYS = ["レベル","タイトル","部署","業務の種類","まねしやすさ","使ったツール","ひとこと","これまで","これから","しくみ","やったこと","指示文","工夫","つまずき","効果","まねするヒント"];
+const INFO_KEYS = ["タイトル","サブタイトル","発行日","発行","はじめに","おわりに","取り扱い"];
+const ALIAS = {"ツール":"使ったツール","業務":"業務の種類","ヒント":"まねするヒント","プロンプト":"指示文","使った指示文":"指示文","実際に使った指示文":"指示文",
+  "手順":"やったこと","流れ":"しくみ","部門":"部署","所属":"部署","発行者":"発行"};
+const LIST_KEYS = new Set(["しくみ","やったこと","工夫","つまずき","効果"]);
+const KEEP_LINES = new Set(["指示文","はじめに","おわりに"]);
+const ALL_KEYS = [...new Set([...CASE_KEYS, ...INFO_KEYS, ...Object.keys(ALIAS)])].sort((a, b) => b.length - a.length);
+const RE_KEY = new RegExp("^\\s*(?:#{1,6}\\s*)?(?:\\*\\*)?\\s*【?(" + ALL_KEYS.map(reEsc).join("|") + ")】?\\s*(?:\\*\\*)?\\s*[:：]\\s*(?:\\*\\*)?\\s*(.*)$");
+const RE_HEAD = /^\s*(?:#{1,6}\s*)?(?:\*\*)?\s*[=＝]{2,}\s*(.+?)\s*[=＝]{2,}\s*(?:\*\*)?\s*$/;
+const RE_MARK = /^\s*(?:[-*・•●○◦▪■□]|\d{1,2}\s*[.)．、）]|[①-⑳]|[(（]\d{1,2}[)）])\s*/;
+
+function parse(text){
+  const blocks = []; let cur = null, field = null;
+  String(text || "").replace(/\r\n?/g, "\n").split("\n").forEach((raw, i) => {
+    const line = raw.replace(/\s+$/, "");
+    if (/^\s*```/.test(line)) return;
+    const h = line.match(RE_HEAD);
+    if (h){
+      const name = h[1].replace(/\s/g, "");
+      cur = null; field = null;
+      if (/冊子/.test(name)) { cur = {kind:"info", raw:{}, line:i + 1}; blocks.push(cur); }
+      else if (/事例/.test(name)) { cur = {kind:"case", raw:{}, line:i + 1}; blocks.push(cur); }
+      return;
+    }
+    if (!cur) return;
+    const m = line.match(RE_KEY);
+    if (m){
+      const k = ALIAS[m[1]] || m[1];
+      const keys = cur.kind === "case" ? CASE_KEYS : INFO_KEYS;
+      /* まだ出てきていない項目名だけを「新しい項目」とみなす（指示文の中の「タイトル:」などを誤読しないため） */
+      if (keys.includes(k) && !(k in cur.raw)){
+        field = k; cur.raw[k] = [];
+        if (m[2].trim()) cur.raw[k].push(m[2]);
+        return;
+      }
+    }
+    if (field) cur.raw[field].push(line);
+  });
+  const info = blocks.find(b => b.kind === "info");
+  return {info: info ? finishInfo(info.raw) : null, cases: blocks.filter(b => b.kind === "case").map(finishCase)};
+}
+function clean(s){ return s.replace(/\*\*/g, "").trim(); }
+function joinText(lines, keep){
+  const ls = lines.map(clean);
+  while (ls.length && !ls[0]) ls.shift();
+  while (ls.length && !ls[ls.length - 1]) ls.pop();
+  return keep ? ls.join("\n") : ls.filter(Boolean).join("");
+}
+function toList(lines){
+  const ls = lines.map(clean).filter(Boolean);
+  if (ls.length === 1 && !RE_MARK.test(ls[0]) && /→|⇒|->/.test(ls[0])) return ls[0].split(/\s*(?:→|⇒|->)\s*/).filter(Boolean);
+  const marked = ls.some(l => RE_MARK.test(l));
+  const out = [];
+  ls.forEach(l => {
+    if (RE_MARK.test(l)) out.push(l.replace(RE_MARK, "").trim());
+    else if (marked && out.length) out[out.length - 1] += l;
+    else out.push(l);
+  });
+  return out.filter(s => s && !/^(なし|特になし|ありません|該当なし|-|—)$/.test(s));
+}
+function finishInfo(raw){
+  const o = {};
+  INFO_KEYS.forEach(k => { if (raw[k]) o[k] = joinText(raw[k], KEEP_LINES.has(k)); });
+  return o;
+}
+function finishCase(b){
+  const r = k => b.raw[k] ? joinText(b.raw[k], KEEP_LINES.has(k)) : "";
+  const L = k => b.raw[k] ? toList(b.raw[k]) : [];
+  let prompt = r("指示文"), example = false;
+  if (/^【例】/.test(prompt)){ example = true; prompt = prompt.replace(/^【例】\s*/, ""); }
+  return {line:b.line, has:b.raw,
+    lvRaw:r("レベル"), title:r("タイトル"), dept:r("部署"), gyomuRaw:r("業務の種類"), easeRaw:r("まねしやすさ"), toolsRaw:r("使ったツール"),
+    lead:r("ひとこと"), before:r("これまで"), after:r("これから"), flow:L("しくみ"), steps:L("やったこと"), prompt, example,
+    tips:L("工夫"), trips:L("つまずき"), effects:L("効果"), hint:r("まねするヒント")};
+}
+
+/* ───────── ことばをそろえる ───────── */
+function normLevel(s){
+  const t = s.replace(/\s/g, "");
+  if (/上級|つなぐ/.test(t)) return 2;
+  if (/中級|作る|つくる/.test(t)) return 1;
+  if (/初級|使う|つかう/.test(t)) return 0;
+  return -1;
+}
+function normGyomu(s){
+  const t = s.replace(/\s/g, "");
+  const hit = GYOMU.find(g => g.replace(/\s/g, "") === t);
+  if (hit) return hit;
+  const rules = [[/文書|資料|企画書|報告書|翻訳/,"文書・資料づくり"],[/メール|連絡|通知/,"メール・連絡"],[/会議|議事録|打ち合わせ/,"会議"],
+    [/調べ|情報整理|検索|要約/,"調べもの・情報整理"],[/データ|集計|分析|Excel/i,"データ集計・分析"],[/問い合わせ|問合せ|ヘルプ|FAQ/i,"問い合わせ対応"],
+    [/申請|手続|承認|登録/,"申請・手続き"]];
+  const r = rules.find(([re]) => re.test(t));
+  return r ? r[1] : null;
+}
+function normEase(s){
+  if (/今日|すぐ/.test(s)) return "今日からできる";
+  if (/管理者|相談/.test(s)) return "管理者に相談";
+  if (/準備/.test(s)) return "準備がいる";
+  return null;
+}
+function normTools(s){
+  return s.split(/[、,，／/]/).map(t => t.trim()).filter(Boolean).map(t => {
+    const u = t.replace(/\s+/g, " ");
+    if (/^(Microsoft 365 |M365 |Microsoft )?Copilot ?Chat$/i.test(u)) return "Copilot Chat";
+    if (/^(Agent ?Builder|エージェント ?ビルダー)$/i.test(u)) return "エージェント ビルダー";
+    if (/^(Microsoft )?Copilot ?Studio$/i.test(u)) return "Copilot Studio";
+    if (/^(Microsoft )?Power ?Automate$/i.test(u)) return "Power Automate";
+    const app = u.match(/^(Word|Excel|PowerPoint|Outlook|Teams)\s*(の)?\s*Copilot$|^Copilot\s*(in|for)\s*(Word|Excel|PowerPoint|Outlook|Teams)$/i);
+    if (app){ const a = (app[1] || app[4]); return a.charAt(0).toUpperCase() + a.slice(1).replace(/point/i, "Point") + " の Copilot"; }
+    return u;
+  });
+}
+
+/* ───────── チェック ───────── */
+const NAME_EXCLUDE = ["客","皆","各","担当者","利用者","申請者","社員","先方","上司","部長","課長","係長","社長","室長","店長","先輩","後輩","新人","職員","会員","受講者","参加者","発表者","講師","作成者","依頼者","相手","業者"];
+function privacyIssues(c){
+  const out = []; const all = [c.title, c.dept, c.lead, c.before, c.after, c.prompt, c.hint, ...c.flow, ...c.steps, ...c.tips, ...c.trips, ...c.effects].join("\n");
+  if (/[\w.+-]+@[\w-]+\.[\w.-]+/.test(all)) out.push(["bad","メールアドレスのような文字があります。消してください。"]);
+  if (/\d{2,4}[-‐－ー]\d{2,4}[-‐－ー]\d{3,4}/.test(all)) out.push(["bad","電話番号のような数字があります。消してください。"]);
+  if (/https?:\/\//i.test(all)) out.push(["bad","URL があります。社内のアドレスは載せないでください。"]);
+  const names = new Set();
+  for (const m of all.matchAll(/([一-龯々ァ-ヴー]{1,4})(さん|様|さま|氏|くん|ちゃん)/g)){
+    if (!NAME_EXCLUDE.some(e => m[1].endsWith(e))) names.add(m[0]);
+  }
+  if (names.size) out.push(["warn",`人の名前かもしれない言葉があります（${[...names].slice(0, 3).join("、")}）。名前なら「担当者」などに言いかえてください。`]);
+  return out;
+}
+function checkCase(c){
+  const is = [];
+  if (c.lv < 0) is.push(["bad", c.lvRaw ? `レベル「${c.lvRaw}」が読み取れません。初級・中級・上級のどれかにしてください。` : "レベルがありません。初級・中級・上級のどれかを入れてください。"]);
+  if (!c.title) is.push(["bad","タイトルがありません。"]);
+  if (!c.dept || /確認/.test(c.dept)) is.push(["warn","部署名を確かめてください。"]);
+  if (!c.gyomu) is.push(["warn", c.gyomuRaw ? `業務の種類「${c.gyomuRaw}」が決まった言葉と違うため、「その他」に入れました。` : "業務の種類がないため、「その他」に入れました。"]);
+  if (!c.ease) is.push(["warn","まねしやすさがありません（今日からできる／準備がいる／管理者に相談）。"]);
+  if (!c.before || !c.after) is.push(["warn","「これまで」か「これから」がありません。"]);
+  if (!c.steps.length) is.push(["warn","「やったこと」がありません。"]);
+  if (!c.prompt) is.push(["warn","指示文がありません。"]);
+  if (c.example) is.push(["warn","指示文が【例】です（スライドに実物がなかったもの）。内容を確かめてください。"]);
+  const names = {title:"タイトル", lead:"ひとこと", before:"これまで", after:"これから", hint:"まねするヒント", prompt:"指示文"};
+  Object.entries(LIMITS).forEach(([k, max]) => { const n = len(c[k]); if (n > max) is.push(["warn",`${names[k]}が長めです（${n}字／目安${max}字）。`]); });
+  Object.entries(ITEM_LIMITS).forEach(([k, [max, , most, label]]) => {
+    if (c[k].length > most) is.push(["warn",`${label}が${c[k].length}個あります（目安${most}個まで）。`]);
+    const long = c[k].filter(s => len(s) > max).length;
+    if (long) is.push(["warn",`${label}に長めの項目が${long}個あります（目安${max}字）。`]);
+  });
+  return is.concat(privacyIssues(c));
+}
+
+/* ───────── 冊子のデータにまとめる ───────── */
+function buildBook(text){
+  const {info, cases} = parse(text);
+  const I = Object.assign({}, DEFAULT_INFO, info || {});
+  const list = cases.map((c, i) => {
+    c.order = i; c.lv = normLevel(c.lvRaw); c.gyomu = normGyomu(c.gyomuRaw); c.ease = normEase(c.easeRaw); c.tools = normTools(c.toolsRaw);
+    c.issues = checkCase(c);
+    if (c.lv < 0) c.lv = 0;
+    return c;
+  }).sort((a, b) => a.lv - b.lv || a.order - b.order);
+  const pad = list.length >= 100 ? 3 : 2;
+  list.forEach((c, i) => { c.no = String(i + 1).padStart(pad, "0"); c.id = "case-" + c.no; });
+  const bookIssues = [];
+  if (!info && list.length) bookIssues.push(["warn","冊子情報がありません。表紙と「はじめに」には仮の文が入っています。"]);
+  if (String(text).trim() && !cases.length) bookIssues.push(["bad","事例テキストが見つかりません。「=== 事例 ===」の行があるか確かめてください。"]);
+  return {I, cases:list, byLv:[0, 1, 2].map(l => list.filter(c => c.lv === l)), bookIssues};
+}
+
+/* ───────── ページを組む ───────── */
+const sheet = (cls, inner, {id = "", tab = "", foot = true, lv = ""} = {}) =>
+  `<section class="sheet ${cls} ${lv}" ${id ? `id="${id}"` : ""}>${tab ? `<div class="tab">${tab}</div>` : ""}<div class="sheet-in">${inner}</div>${foot ? `<footer class="sheet-foot"><span class="ft"></span><span class="pg"></span></footer>` : ""}</section>`;
+const ptitle = (en, ja) => `<div class="ptitle"><span class="en">${en}</span><h2>${ja}</h2></div>`;
+const ref = id => `<span data-ref="${id}"></span>`;
+const no = c => `<a class="no ${LEVELS[c.lv].cls}" href="#${c.id}">${c.no}</a>`;
+
+function pageCover(B){
+  const {I, cases} = B; const n = cases.length;
+  const t = I["タイトル"]; const w = [...t].reduce((s, ch) => s + (/[\x20-\x7e]/.test(ch) ? .58 : 1), 0);
+  const fs = Math.max(38, Math.min(80, Math.floor(600 / Math.max(w, 1))));
+  const cols = Math.max(8, Math.ceil(Math.sqrt(n * 2.2)));
+  return sheet("cover", `
+    <div class="cover-top"><span>COPILOT CASEBOOK</span><span>${esc(I["発行日"])}</span></div>
+    <h1 style="font-size:${fs}px">${esc(t)}</h1>
+    ${I["サブタイトル"] ? `<p class="cover-sub">${esc(I["サブタイトル"])}</p>` : ""}
+    <div class="cover-count">
+      <div class="cc-total">${n}<small>の事例</small></div>
+      <ul class="cc-lv">${LEVELS.map((L, i) => `<li class="${L.cls}"><i class="mk ${L.cls}"></i><b>${L.name}</b>${L.verb}<span class="n">${B.byLv[i].length}</span>件</li>`).join("")}</ul>
+    </div>
+    <div class="mosaic" style="grid-template-columns:repeat(${cols},minmax(0,1fr))">${cases.map(c => `<a class="${LEVELS[c.lv].cls}" href="#${c.id}" aria-label="事例${c.no}"><i class="mk ${LEVELS[c.lv].cls}"></i><span>${c.no}</span></a>`).join("")}</div>
+    <div class="cover-foot"><span>${I["発行"] ? `発行　<b>${esc(I["発行"])}</b>` : ""}</span><span>${LEVELS.map(L => `<i class="mk ${L.cls}"></i> ${L.name}`).join("　")}</span></div>
+  `, {foot:false});
+}
+function pageIntro(B){
+  return sheet("intro fit", `
+    ${ptitle("INTRODUCTION","はじめに")}
+    <div class="prose">${paras(B.I["はじめに"])}</div>
+    <h3 class="sub-h">どこから読む？</h3>
+    <div class="where">${LEVELS.map((L, i) => `<a class="${L.cls}" href="#ch-${i + 1}"><span class="nm"><i class="mk ${L.cls}"></i>${L.name}<small>${L.verb}</small></span><p>${L.tag}</p><span class="pp">${B.byLv[i].length}件　p.${ref("ch-" + (i + 1))}〜</span></a>`).join("")}</div>
+    <h3 class="sub-h">この冊子について</h3>
+    <ul class="notes">
+      <li>事例は、事例共有会での発表をもとに、Copilot を使って原稿にまとめ、事務局が確認したものです。</li>
+      <li>発表者の個人名は載せていません。部署名は発表したときのものです。</li>
+      <li>効果の数字は、発表者の実感や発表資料にもとづくものです。どの職場でも同じ効果が出るとは限りません。</li>
+      <li>指示文に「例」の印があるものは、まねしやすいように事務局で用意した例です。</li>
+      <li>使える機能は、ライセンスや管理者の設定によって変わります。機能の名前は発表したときのものです。</li>
+      <li>個人情報を守るため、画面のスクリーンショットは載せていません。</li>
+    </ul>
+  `, {id:"intro"});
+}
+function pageHowto(){
+  return sheet("howto fit", `
+    ${ptitle("HOW TO READ","この冊子の見方")}
+    <h3 class="sub-h">3つのレベル</h3>
+    <ul class="lvtable">${LEVELS.map(L => `<li class="${L.cls}"><span class="nm"><i class="mk ${L.cls}"></i>${L.name}<small>${L.verb}</small></span><span class="tg">${L.tag}</span><span class="tl"><b>おもな道具</b>${L.tools}</span></li>`).join("")}</ul>
+    <h3 class="sub-h">レベルの決め方</h3>
+    <div class="judge">
+      <div class="jq"><small>Q1</small>エージェントもフローも作らず、その場で Copilot に頼む使い方？</div>
+      <span class="jarrow">はい</span><span class="jres lv1"><i class="mk lv1"></i>初級　使う</span>
+      <span class="jdown">いいえ</span><span></span><span></span>
+      <div class="jq"><small>Q2</small>自動で動く？ または、ほかのシステムへの登録・送信・更新までする？</div>
+      <span class="jarrow">はい</span><span class="jres lv3"><i class="mk lv3"></i>上級　つなぐ</span>
+      <span class="jdown">いいえ</span><span></span><span></span>
+      <span class="jres lv2" style="justify-self:center"><i class="mk lv2"></i>中級　作る</span>
+    </div>
+    <p class="jnote">迷ったときは、低いほうのレベルに入れています。</p>
+    <h3 class="sub-h">まねしやすさ</h3>
+    <ul class="easegrid">${EASE.map(e => `<li>${ic(e.icon)}<span><b>${e.name}</b>${e.desc}</span></li>`).join("")}</ul>
+    <h3 class="sub-h">事例ページの見方</h3>
+    <div class="anat">
+      <div class="wire" aria-hidden="true"><div data-n="1"></div><div data-n="2"></div><div data-n="3"></div>
+        <div class="w2"><div data-n="4"></div><div data-n="5"></div></div><div data-n="6"></div><div data-n="7"></div><div class="blank"></div></div>
+      <ol class="anat-list">
+        <li><span><b>タイトルと見出し</b>　<span>レベル・業務の種類・まねしやすさ・部署・使ったツール</span></span></li>
+        <li><span><b>これまで／これから</b>　<span>困っていたことと、使ってどう変わったか</span></span></li>
+        <li><span><b>しくみ</b>　<span>動きの流れを、順番に</span></span></li>
+        <li><span><b>やったこと</b>　<span>作った・使った手順</span></span></li>
+        <li><span><b>指示文</b>　<span>実際に使った指示文。そのまま試せます</span></span></li>
+        <li><span><b>工夫／つまずき</b>　<span>うまくいったコツと、困ったところ</span></span></li>
+        <li><span><b>効果／まねするヒント</b>　<span>変わったことと、まねするときの一言</span></span></li>
+      </ol>
+    </div>
+  `, {id:"howto"});
+}
+function tocRows(B){
+  const rows = [];
+  LEVELS.forEach((L, i) => {
+    rows.push({g:true, lv:i, html:(cont) => `<a class="toc-g ${L.cls} ${cont ? "cont" : ""}" href="#ch-${i + 1}"><i class="mk ${L.cls}"></i><span class="nm">${L.name}　${L.verb}</span><span class="tg">${L.tag}</span><span class="p">${ref("ch-" + (i + 1))}</span></a>`});
+    if (!B.byLv[i].length) rows.push({lv:i, html:() => `<p class="empty">この章の事例はまだありません。</p>`});
+    B.byLv[i].forEach(c => rows.push({lv:i, html:() => `<a class="toc-r ${L.cls}" href="#${c.id}"><span class="no">${c.no}</span><span class="t">${esc(c.title || "（タイトルなし）")}</span><span class="d">${esc(c.dept)}</span><span class="p">${ref(c.id)}</span></a>`}));
+  });
+  return rows;
+}
+const tocHead = () => `${ptitle("CONTENTS","目次")}<div class="toc-mini">
+  ${[["はじめに","intro"],["この冊子の見方","howto"],["さくいん","index"],["用語集","glossary"],["おわりに","afterword"]].map(([t, id]) => `<a href="#${id}"><span>${t}</span><span class="p">${ref(id)}</span></a>`).join("")}</div>`;
+function pageIndex(B){
+  const cell = (g, i) => { const cs = B.byLv[i].filter(c => (c.gyomu || "その他") === g); return cs.length ? `<div class="chips">${cs.map(no).join("")}</div>` : `<span class="n0">—</span>`; };
+  const tools = new Map();
+  B.cases.forEach(c => c.tools.forEach(t => { if (!tools.has(t)) tools.set(t, []); tools.get(t).push(c); }));
+  const tl = [...tools.entries()].sort((a, b) => {
+    const ia = TOOL_ORDER.indexOf(a[0]), ib = TOOL_ORDER.indexOf(b[0]);
+    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || b[1].length - a[1].length;
+  });
+  return sheet("index fit", `
+    ${ptitle("INDEX","さくいん")}
+    <h3 class="sub-h">業務から探す</h3>
+    <table class="mx"><thead><tr><th>業務の種類</th>${LEVELS.map(L => `<th class="${L.cls}"><i class="mk ${L.cls}"></i>${L.name}</th>`).join("")}<th class="sum">件数</th></tr></thead>
+      <tbody>${GYOMU.map(g => `<tr><th>${g}</th>${LEVELS.map((L, i) => `<td>${cell(g, i)}</td>`).join("")}<td class="sum">${B.cases.filter(c => (c.gyomu || "その他") === g).length}</td></tr>`).join("")}</tbody></table>
+    <h3 class="sub-h">ツールから探す</h3>
+    ${tl.length ? `<ul class="tl-list">${tl.map(([t, cs]) => `<li><span class="nm">${esc(t)}</span><span class="ct">${cs.length}</span><span class="chips">${cs.map(no).join("")}</span></li>`).join("")}</ul>` : `<p class="empty">まだ事例がありません。</p>`}
+  `, {id:"index"});
+}
+function pageChapter(B, i){
+  const L = LEVELS[i], cs = B.byLv[i];
+  const tools = new Map(); cs.forEach(c => c.tools.forEach(t => tools.set(t, (tools.get(t) || 0) + 1)));
+  const ease = EASE.map(e => [e.name, cs.filter(c => c.ease === e.name).length]).sort((a, b) => b[1] - a[1])[0];
+  return sheet("chapter fit", `
+    <div class="ch-top"><span class="en">CHAPTER ${i + 1}　${L.en}</span><h2><i class="mk ${L.cls}"></i>${L.name}<small>${L.verb}</small></h2><p class="tg">${L.tag}</p></div>
+    <div class="ch-body">
+      <div class="prose"><p>${L.desc}</p></div>
+      <div class="ch-facts">
+        <div><small>この章の事例</small><b>${cs.length}<span>件</span></b><div class="txt">${cs.length ? `No.${cs[0].no}〜${cs[cs.length - 1].no}` : "まだありません"}</div></div>
+        <div><small>見分け方</small><div class="txt">${L.rule}</div></div>
+        <div><small>多かったまねしやすさ</small><div class="txt">${ease && ease[1] ? ease[0] : "—"}</div></div>
+      </div>
+      ${tools.size ? `<h3 class="sub-h">使われたツール</h3><div class="tchips">${[...tools.entries()].sort((a, b) => b[1] - a[1]).map(([t, n]) => `<span>${esc(t)}<b>${n}</b></span>`).join("")}</div>` : ""}
+      ${cs.length && cs.length <= 32 ? `<h3 class="sub-h">この章の事例</h3><div class="ch-list">${cs.map(c => `<a href="#${c.id}"><span class="no">${c.no}</span><span class="t">${esc(c.title || "（タイトルなし）")}</span></a>`).join("")}</div>` : ""}
+    </div>
+  `, {id:"ch-" + (i + 1), lv:L.cls, tab:L.name});
+}
+function pageCase(c){
+  const L = LEVELS[c.lv]; const ease = EASE.find(e => e.name === c.ease);
+  const list = (a, cls = "dots") => `<ul class="${cls}">${a.map(s => `<li>${esc(s)}</li>`).join("")}</ul>`;
+  const flowCols = Math.min(Math.max(c.flow.length, 1), 6);
+  return sheet("case", `
+    <header>
+      <div class="c-meta"><span class="c-no">CASE<b>${c.no}</b></span><span class="lvb"><i class="mk ${L.cls}"></i>${L.name}<small>${L.verb}</small></span>
+        <span class="tagc">${esc(c.gyomu || "その他")}</span>${ease ? `<span class="tagc">${ic(ease.icon)}${ease.name}</span>` : ""}</div>
+      <h2 class="c-title">${esc(c.title || "（タイトルなし）")}</h2>
+      <div class="c-sub"><span class="dept">部署　<b>${esc(c.dept || "—")}</b></span>${c.tools.length ? `<span class="c-tools">${c.tools.map(t => `<span>${esc(t)}</span>`).join("")}</span>` : ""}</div>
+      ${c.lead ? `<p class="c-lead">${esc(c.lead)}</p>` : ""}
+    </header>
+    ${c.before || c.after ? `<div class="c-sec ba"><div class="b"><span class="lbl">これまで</span><p>${esc(c.before)}</p></div><span class="arr">${ic("arrow")}</span><div class="a"><span class="lbl">これから</span><p>${esc(c.after)}</p></div></div>` : ""}
+    ${c.flow.length ? `<div class="c-sec"><h3 class="c-h">しくみ</h3><ol class="flow" style="grid-template-columns:repeat(${flowCols},minmax(0,1fr))">${c.flow.map(s => `<li>${esc(s)}</li>`).join("")}</ol></div>` : ""}
+    ${c.steps.length || c.prompt ? `<div class="c-sec two ${c.steps.length && c.prompt ? "" : "one"}">
+      ${c.steps.length ? `<div><h3 class="c-h">やったこと</h3><ol class="steps">${c.steps.map(s => `<li><span>${esc(s)}</span></li>`).join("")}</ol></div>` : ""}
+      ${c.prompt ? `<div><h3 class="c-h">${c.example ? "指示文の例" : "実際に使った指示文"}</h3><div class="prompt"><div class="pl">${c.example ? `<span class="ex">例</span>事務局で用意した例です` : "そのまま試せます"}</div><pre>${esc(c.prompt)}</pre></div></div>` : ""}
+    </div>` : ""}
+    ${c.tips.length || c.trips.length ? `<div class="c-sec two ${c.tips.length && c.trips.length ? "" : "one"}">
+      ${c.tips.length ? `<div><h3 class="c-h">工夫</h3>${list(c.tips)}</div>` : ""}
+      ${c.trips.length ? `<div><h3 class="c-h">つまずき</h3>${list(c.trips, "dots tr")}</div>` : ""}
+    </div>` : ""}
+    ${c.effects.length || c.hint ? `<div class="out">
+      ${c.effects.length ? `<div class="eff"><h3 class="c-h">${ic("target")}効果</h3><ul>${c.effects.map(s => `<li>${ic("check")}<span>${esc(s)}</span></li>`).join("")}</ul></div>` : ""}
+      ${c.hint ? `<div class="hint"><h3 class="c-h">${ic("bulb")}まねするヒント</h3><p>${esc(c.hint)}</p></div>` : ""}
+    </div>` : ""}
+  `, {id:c.id, lv:L.cls, tab:L.name});
+}
+function pageGlossary(){
+  return sheet("glossary fit", `${ptitle("GLOSSARY","用語集")}<dl class="gl">${GLOSSARY.map(([t, d]) => `<div><dt>${t}</dt><dd>${d}</dd></div>`).join("")}</dl>`, {id:"glossary"});
+}
+function pageAfter(B){
+  const I = B.I;
+  return sheet("afterword fit", `
+    ${ptitle("AFTERWORD","おわりに")}
+    <div class="prose">${paras(I["おわりに"])}</div>
+    <h3 class="sub-h">次の一歩</h3>
+    <ol class="next">
+      <li><span class="n">STEP 1</span><b>初級から1つ試す</b>指示文をそのまま使える事例が、いちばんの近道です。</li>
+      <li><span class="n">STEP 2</span><b>自分の仕事に置きかえる</b>「業務から探す」で、近い仕事の事例を見つけてみてください。</li>
+      <li><span class="n">STEP 3</span><b>やってみたことを共有する</b>うまくいったことも、つまずいたことも、次の共有会で聞かせてください。</li>
+    </ol>
+    <dl class="colophon">
+      <dd class="ttl">${esc(I["タイトル"])}</dd>
+      ${I["発行日"] ? `<dt>発行日</dt><dd>${esc(I["発行日"])}</dd>` : ""}
+      ${I["発行"] ? `<dt>発行</dt><dd>${esc(I["発行"])}</dd>` : ""}
+      <dt>掲載事例</dt><dd>${B.cases.length}件（${LEVELS.map((L, i) => `${L.name}${B.byLv[i].length}件`).join("・")}）</dd>
+      ${I["取り扱い"] ? `<dd class="care">${esc(I["取り扱い"])}</dd>` : ""}
+    </dl>
+  `, {id:"afterword"});
+}
+
+/* ───────── 描く・測る ───────── */
+const book = $("#book"); let B = null, tocRowsCache = [];
+function render(){
+  B = buildBook($("#src").value);
+  tocRowsCache = tocRows(B);
+  const parts = [pageCover(B), pageIntro(B), pageHowto(),
+    `<div id="toc-slot"></div>`, pageIndex(B)];
+  LEVELS.forEach((L, i) => { parts.push(pageChapter(B, i)); B.byLv[i].forEach(c => parts.push(pageCase(c))); });
+  parts.push(pageGlossary(), pageAfter(B));
+  book.innerHTML = parts.join("");
+  layout();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+}
+const isOver = s => { const el = s.querySelector(".sheet-in"); return el.scrollHeight - el.clientHeight > 1; };
+function paginateToc(){
+  const slot = $("#toc-slot"); if (!slot) return;
+  book.querySelectorAll(".sheet.toc").forEach(s => s.remove());
+  const frag = h => { const w = document.createElement("div"); w.innerHTML = h; return w.firstElementChild; };
+  const newSheet = first => { const s = frag(sheet("toc", first ? tocHead() : ptitle("CONTENTS","目次（つづき）"), first ? {id:"toc"} : {})); slot.before(s); return s; };
+  let s = newSheet(true), body = s.querySelector(".sheet-in"), placed = 0;
+  tocRowsCache.forEach((r, k) => {
+    const el = frag(r.html(false)); body.append(el);
+    /* 見出しだけがページの最後に残らないよう、次の1行と一緒に収まるか確かめる */
+    const next = r.g && tocRowsCache[k + 1] ? frag(tocRowsCache[k + 1].html(false)) : null;
+    if (next) body.append(next);
+    const over = isOver(s);
+    if (next) next.remove();
+    if (over && placed){
+      el.remove();
+      s = newSheet(false); body = s.querySelector(".sheet-in"); placed = 0;
+      if (!r.g) body.append(frag(tocRowsCache.find(x => x.g && x.lv === r.lv).html(true)));
+      body.append(el);
+    }
+    placed++;
+  });
+}
+/* 1ページに収まらないときは、収まるいちばん大きい文字の大きさを探す（下限より小さくはしない） */
+function fitSheet(s){
+  const min = s.classList.contains("case") ? .84 : .8;
+  const set = f => s.style.setProperty("--fit", f.toFixed(3));
+  s.style.removeProperty("--fit");
+  if (!isOver(s)) return true;
+  set(min);
+  if (isOver(s)) return false;
+  let lo = min, hi = 1;
+  for (let k = 0; k < 6; k++){ const mid = (lo + hi) / 2; set(mid); if (isOver(s)) hi = mid; else lo = mid; }
+  set(lo);
+  return true;
+}
+function layout(){
+  if (!B) return;
+  book.style.zoom = "";
+  paginateToc();
+  const overs = [];
+  book.querySelectorAll(".sheet.case, .sheet.fit").forEach(s => { s.classList.remove("over"); if (!fitSheet(s)){ s.classList.add("over"); overs.push(s.id); } });
+  const sheets = [...book.querySelectorAll(".sheet")]; const total = sheets.length; const pad = n => String(n).padStart(2, "0");
+  const pageOf = {};
+  sheets.forEach((s, i) => {
+    if (s.id) pageOf[s.id] = i + 1;
+    const pg = s.querySelector(".pg"); if (pg) pg.innerHTML = `p.${pad(i + 1)} <i>/ ${total}</i>`;
+    const ft = s.querySelector(".ft"); if (ft) ft.textContent = B.I["タイトル"];
+  });
+  book.querySelectorAll("[data-ref]").forEach(r => { r.textContent = pageOf[r.dataset.ref] ? pad(pageOf[r.dataset.ref]) : "—"; });
+  updatePanel(total, overs);
+  applyZoom();
+}
+function applyZoom(){
+  const need = 210 * 96 / 25.4 + 32; const z = Math.min(1, window.innerWidth / need);
+  book.style.zoom = z < 1 ? z.toFixed(3) : "";
+}
+
+/* ───────── パネル ───────── */
+function updatePanel(total, overs){
+  $("#stCases").innerHTML = `${B.cases.length}<span>件</span>`;
+  $("#stPages").innerHTML = `${total}<span>ページ</span>`;
+  $("#stLv").innerHTML = LEVELS.map((L, i) => `<span><i class="mk ${L.cls}"></i>${L.name} ${B.byLv[i].length}</span>`).join("");
+  const items = [];
+  B.bookIssues.forEach(([t, m]) => items.push({t, where:"冊子全体", m, id:"top"}));
+  B.cases.forEach(c => {
+    if (overs.includes(c.id)) items.push({t:"bad", where:`No.${c.no} ${c.title}`, m:"1ページに収まりません。長い項目を短くしてください。", id:c.id});
+    c.issues.forEach(([t, m]) => items.push({t, where:`No.${c.no} ${c.title || "（タイトルなし）"}`, m, id:c.id}));
+  });
+  overs.filter(id => !id.startsWith("case-")).forEach(id => items.push({t:"bad", where:"冊子のページ", m:"1ページに収まっていません。文を短くしてください。", id}));
+  items.sort((a, b) => (a.t === "bad" ? 0 : 1) - (b.t === "bad" ? 0 : 1));
+  const box = $("#issues");
+  if (!B.cases.length && !items.length){ box.innerHTML = `<p class="empty" style="font-size:13px">事例テキストを貼ると、ここにチェックの結果が出ます。</p>`; return; }
+  if (!items.length){ box.innerHTML = `<p class="p-ok">${ic("check")}問題は見つかりませんでした</p>`; return; }
+  box.innerHTML = `<ul class="p-issues">${items.map(x => `<li class="${x.t}"><button type="button" data-go="${x.id}"><span class="dot"></span><span><span class="where">${esc(x.where)}</span><span class="msg">${esc(x.m)}</span></span></button></li>`).join("")}</ul>`;
+}
+$("#issues").addEventListener("click", e => {
+  const b = e.target.closest("[data-go]"); if (!b) return;
+  const el = document.getElementById(b.dataset.go); if (el) el.scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* ───────── 入力まわり ───────── */
+const src = $("#src");
+function syncSampleNote(){ $("#sampleNote").classList.toggle("on", src.value.trim() === SAMPLE_TEXT.trim()); }
+let tid = 0;
+src.addEventListener("input", () => { clearTimeout(tid); tid = setTimeout(() => { store.set(src.value); render(); syncSampleNote(); }, 450); });
+function setText(v){ src.value = v; store.set(v); render(); syncSampleNote(); }
+$("#clearSample").addEventListener("click", () => { setText(""); src.focus(); });
+$("#clearAll").addEventListener("click", () => { if (!src.value.trim() || confirm("貼りつけた事例テキストを、ぜんぶ消しますか？（元に戻せません）")) setText(""); });
+$("#loadSample").addEventListener("click", () => {
+  if (src.value.trim() && src.value.trim() !== SAMPLE_TEXT.trim() && !confirm("いまの内容を、見本に入れかえますか？（先に「テキストを保存」しておくと安心です）")) return;
+  setText(SAMPLE_TEXT);
+});
+$("#saveTxt").addEventListener("click", () => {
+  const d = new Date(); const ymd = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}`;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob(["﻿" + src.value], {type:"text/plain;charset=utf-8"}));
+  a.download = `事例テキスト_${ymd}.txt`; document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  toast("テキストを保存しました");
+});
+$("#openTxt").addEventListener("click", () => $("#fileIn").click());
+$("#fileIn").addEventListener("change", e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    const v = String(r.result).replace(/^﻿/, "");
+    if (src.value.trim() && src.value.trim() !== SAMPLE_TEXT.trim() && !confirm("いまの内容を、開いたファイルの内容に入れかえますか？")) return;
+    setText(v); toast("テキストを開きました");
+  };
+  r.readAsText(f, "utf-8"); e.target.value = "";
+});
+$("#guideText").textContent = GUIDE_TEXT;
+$("#copyGuide").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(GUIDE_TEXT); }
+  catch(e){ const t = document.createElement("textarea"); t.value = GUIDE_TEXT; document.body.append(t); t.select(); document.execCommand("copy"); t.remove(); }
+  toast("指示文をコピーしました");
+});
+
+/* ───────── PDF ───────── */
+const dlg = $("#pdfDlg");
+$("#pdfBtn").addEventListener("click", () => {
+  const bad = $("#issues").querySelectorAll(".bad").length;
+  const w = $("#pdWarn"); w.classList.toggle("on", bad > 0);
+  w.textContent = bad ? `チェックに「直してください」が${bad}件あります。このまま PDF にもできますが、先に直すのがおすすめです。` : "";
+  if (dlg.showModal) dlg.showModal(); else doPrint();
+});
+$("#pdCancel").addEventListener("click", () => dlg.close());
+$("#pdGo").addEventListener("click", () => { dlg.close(); setTimeout(doPrint, 120); });
+function doPrint(){
+  const t = document.title; document.title = B ? B.I["タイトル"] : t;
+  window.print();
+  setTimeout(() => { document.title = t; }, 500);
+}
+window.addEventListener("beforeprint", () => { book.style.zoom = ""; });
+window.addEventListener("afterprint", applyZoom);
+let rz = 0; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(applyZoom, 150); });
+if (document.fonts) document.fonts.addEventListener("loadingdone", () => { clearTimeout(layout.tid); layout.tid = setTimeout(layout, 120); });
+
+/* はじめて開いたときは見本を入れておく */
+const saved = store.get();
+src.value = saved === null ? SAMPLE_TEXT : saved;
+render(); syncSampleNote();
+</script>
+</body>
+</html>
