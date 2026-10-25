@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Microsoft 認定試験 AI-103（Developing AI Apps and Agents on Azure）に4週間・約45時間で合格するための学習ロードマップ。公式の出題範囲・配点・学習パスをもとに 2026-10-25 時点で作成。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>AI-103 合格ロードマップ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  /* Layout: 受験票の半券ヘッダー → 配点グラフ → 一本の路線図（駅＝週）→ 当日の作戦・用語・出典。読む幅は約48rem の1カラム */
+  --bg:#EEF1F5;
+  --surface:#FFFFFF;
+  --sunk:#E4E9F0;
+  --ink:#142030;
+  --sub:#4E5C6E;
+  --faint:#7F8B9B;
+  --line:#D3DAE3;
+  --accent:#2356C2;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#E2EAFA;
+  --accent-tint:rgba(35,86,194,.32);
+  --minor-tint:rgba(127,139,155,.32);
+  --hl:#FFDB66;
+  --ok:#1C7A52;
+  --ok-soft:#DFF2E8;
+  --warn:#A44E14;
+  --warn-soft:#FBEBDD;
+
+  --f-display:"Bricolage Grotesque","Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  --radius:14px;
+  --shadow:0 1px 2px rgba(20,32,48,.05),0 12px 32px -18px rgba(20,32,48,.28);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D131B;
+    --surface:#151E2A;
+    --sunk:#1C2735;
+    --ink:#E5ECF5;
+    --sub:#A3B0C1;
+    --faint:#728093;
+    --line:#2A3646;
+    --accent:#7FA6FF;
+    --accent-ink:#0D131B;
+    --accent-soft:#1C2A47;
+    --accent-tint:rgba(127,166,255,.34);
+    --minor-tint:rgba(114,128,147,.4);
+    --hl:rgba(240,188,60,.42);
+    --ok:#5FC79B;
+    --ok-soft:#173327;
+    --warn:#F0A26E;
+    --warn-soft:#3A2416;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 34px -18px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D131B;
+  --surface:#151E2A;
+  --sunk:#1C2735;
+  --ink:#E5ECF5;
+  --sub:#A3B0C1;
+  --faint:#728093;
+  --line:#2A3646;
+  --accent:#7FA6FF;
+  --accent-ink:#0D131B;
+  --accent-soft:#1C2A47;
+  --accent-tint:rgba(127,166,255,.34);
+  --minor-tint:rgba(114,128,147,.4);
+  --hl:rgba(240,188,60,.42);
+  --ok:#5FC79B;
+  --ok-soft:#173327;
+  --warn:#F0A26E;
+  --warn-soft:#3A2416;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 34px -18px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:1rem;
+  line-height:1.85;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:clamp(20px, 5vw, 48px) 56px;
+}
+.wrap{max-width:48rem; margin:0 auto; display:grid; gap:clamp(40px, 7vw, 64px)}
+a{color:var(--accent); text-underline-offset:3px; text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px}
+h1,h2,h3{margin:0; text-wrap:balance; line-height:1.35; word-break:auto-phrase}
+.plan b,.task label b,.grid2 b,.skip b,.callout b{word-break:auto-phrase}
+p{margin:0}
+ul,ol{margin:0; padding:0}
+.mono{font-family:var(--f-mono)}
+.hl{background:linear-gradient(transparent 60%, var(--hl) 60%); padding-inline:.1em}
+.ref{font-family:var(--f-mono); font-size:.72em; color:var(--faint); text-decoration:none; vertical-align:.25em; margin-left:.15em; white-space:nowrap}
+.ref:hover{color:var(--accent)}
+
+/* ── section heads ── */
+.sec{display:grid; gap:20px; min-width:0}
+.sec-head{display:grid; gap:6px}
+.eyebrow{font-family:var(--f-mono); font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:500}
+.sec-head h2{font-size:clamp(1.35rem, 3.6vw, 1.65rem); font-weight:900; letter-spacing:.01em}
+.sec-head p{color:var(--sub); max-width:40rem}
+
+/* ── ticket header ── */
+.ticket{
+  display:grid; grid-template-columns:minmax(0,1fr) auto;
+  background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow);
+  position:relative; overflow:hidden;
+}
+.ticket-main{padding:clamp(22px, 4.5vw, 36px); display:grid; gap:14px; min-width:0}
+.ticket .eyebrow{color:var(--sub)}
+.ticket h1{font-family:var(--f-display); font-weight:800; font-size:clamp(2rem, 6.4vw, 3.1rem); letter-spacing:-.01em; line-height:1.15}
+.ticket h1 .code{color:var(--accent)}
+.lead{font-size:1.05rem; color:var(--ink); max-width:34rem}
+.lead .en{font-family:var(--f-display); font-weight:600}
+.meta{font-family:var(--f-mono); font-size:.75rem; color:var(--faint); display:flex; flex-wrap:wrap; gap:4px 14px}
+.ticket-stub{
+  position:relative; padding:clamp(22px, 4.5vw, 32px) clamp(20px, 4vw, 30px);
+  border-left:2px dashed var(--line); background:var(--accent-soft);
+  display:grid; align-content:center; min-width:12.5rem;
+}
+.ticket-stub::before,.ticket-stub::after{
+  content:""; position:absolute; left:-12px; width:22px; height:22px; border-radius:50%; background:var(--bg);
+}
+.ticket-stub::before{top:-11px}
+.ticket-stub::after{bottom:-11px}
+.stub-list{display:grid; gap:12px; margin:0}
+.stub-list div{display:grid; gap:0}
+.stub-list dt{font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--sub)}
+.stub-list dd{margin:0; font-family:var(--f-display); font-weight:700; font-size:1.3rem; line-height:1.25; font-variant-numeric:tabular-nums}
+.stub-list dd small{font-family:var(--f-body); font-weight:500; font-size:.8rem; color:var(--sub); margin-left:4px}
+@media (max-width:640px){
+  .ticket{grid-template-columns:1fr}
+  .ticket-stub{border-left:0; border-top:2px dashed var(--line); min-width:0}
+  .ticket-stub::before,.ticket-stub::after{top:-12px; bottom:auto}
+  .ticket-stub::before{left:-11px}
+  .ticket-stub::after{left:auto; right:-11px}
+  .stub-list{grid-template-columns:repeat(2, minmax(0,1fr))}
+}
+
+/* ── strategy ── */
+.plan{display:grid; gap:14px; counter-reset:plan; list-style:none}
+.plan li{
+  display:grid; grid-template-columns:auto minmax(0,1fr); gap:4px 16px; align-items:start;
+  padding:18px 20px; background:var(--surface); border-radius:var(--radius); border:1px solid var(--line);
+}
+.plan li::before{
+  counter-increment:plan; content:counter(plan);
+  grid-row:span 2; font-family:var(--f-display); font-weight:800; font-size:1.6rem; line-height:1; color:var(--accent);
+  width:2.2rem; padding-top:4px;
+}
+.plan b{font-size:1.06rem; font-weight:700; line-height:1.6}
+.plan li > span{color:var(--sub); font-size:.95rem}
+
+/* ── weights chart ── */
+.chart{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:clamp(18px, 4vw, 28px); display:grid; gap:14px}
+.chart-title{font-weight:700; font-size:1rem}
+.chart-title small{display:block; font-weight:400; color:var(--sub); font-size:.85rem}
+.bars{display:grid; gap:10px; list-style:none}
+.bar-row{display:grid; grid-template-columns:minmax(0, 15rem) minmax(0,1fr); gap:6px 16px; align-items:center; padding:6px 8px; margin-inline:-8px; border-radius:8px}
+.bar-row:hover{background:var(--sunk)}
+.bar-label{display:grid; line-height:1.4; min-width:0}
+.bar-label b{font-weight:700; font-size:.95rem}
+.bar-label small{font-family:var(--f-mono); font-size:.68rem; color:var(--faint); overflow-wrap:anywhere}
+.bar-plot{display:grid; grid-template-columns:minmax(0,1fr) 4.6rem; gap:10px; align-items:center}
+.track{position:relative; height:18px;
+  background:
+    linear-gradient(to right, var(--line) 1px, transparent 1px) 0 0 / 25% 100% repeat-x;
+}
+.track::after{content:""; position:absolute; right:0; top:0; bottom:0; width:1px; background:var(--line)}
+.seg-min,.seg-max{position:absolute; top:2px; bottom:2px; left:0; border-radius:0 4px 4px 0}
+.seg-max{background:var(--accent-tint)}
+.seg-min{background:var(--accent)}
+.bar-row.minor .seg-min{background:var(--faint)}
+.bar-row.minor .seg-max{background:var(--minor-tint)}
+.val{font-family:var(--f-mono); font-weight:600; font-size:.9rem; font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap}
+.axis{display:grid; grid-template-columns:minmax(0, 15rem) minmax(0,1fr); gap:16px}
+.axis-scale{display:grid; grid-template-columns:minmax(0,1fr) 4.6rem; gap:10px}
+.axis-ticks{position:relative; height:1.1rem; font-family:var(--f-mono); font-size:.68rem; color:var(--faint)}
+.axis-ticks span{position:absolute; transform:translateX(-50%)}
+.axis-ticks span:first-child{transform:none}
+.axis-ticks span:last-child{transform:translateX(-100%)}
+.chart-key{display:flex; flex-wrap:wrap; gap:6px 18px; font-size:.8rem; color:var(--sub)}
+.chart-key i{display:inline-block; width:18px; height:10px; border-radius:2px; vertical-align:middle; margin-right:6px}
+.callout{
+  display:grid; gap:4px; padding:16px 20px; border-radius:var(--radius);
+  background:var(--accent-soft); color:var(--ink);
+}
+.callout b{font-size:1.02rem}
+.callout span{color:var(--sub); font-size:.92rem}
+@media (max-width:640px){
+  .bar-row,.axis{grid-template-columns:1fr}
+  .axis > :first-child{display:none}
+}
+
+/* ── tracker panel ── */
+.tracker{
+  display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:clamp(18px, 4vw, 26px);
+}
+.field{display:grid; gap:8px; align-content:start}
+.field label{font-weight:700; font-size:.95rem}
+.field input[type="date"]{
+  font:inherit; font-family:var(--f-mono); font-size:1rem; color:var(--ink); background:var(--bg);
+  border:1px solid var(--line); border-radius:10px; padding:10px 12px; width:100%; max-width:15rem;
+}
+.field .help{font-size:.82rem; color:var(--sub)}
+.countdown{display:grid; gap:6px; align-content:start}
+.countdown .big{font-family:var(--f-display); font-weight:800; font-size:2.4rem; line-height:1.1; font-variant-numeric:tabular-nums}
+.countdown .big small{font-family:var(--f-body); font-size:1rem; font-weight:700; margin-left:4px}
+.countdown p{color:var(--sub); font-size:.9rem}
+.progress{grid-column:1 / -1; display:grid; gap:8px; padding-top:16px; border-top:1px solid var(--line)}
+.progress-top{display:flex; justify-content:space-between; gap:12px; font-size:.9rem; flex-wrap:wrap}
+.progress-top b{font-family:var(--f-mono); font-variant-numeric:tabular-nums}
+.meter{height:8px; background:var(--sunk); border-radius:99px; overflow:hidden}
+.meter i{display:block; height:100%; width:0; background:var(--ok); border-radius:99px; transition:width .5s cubic-bezier(.16,1,.3,1)}
+.reset{justify-self:start; font:inherit; font-size:.8rem; color:var(--sub); background:none; border:1px solid var(--line); border-radius:99px; padding:4px 12px; cursor:pointer}
+.reset:hover{color:var(--ink); border-color:var(--faint)}
+@media (max-width:640px){ .tracker{grid-template-columns:1fr} }
+
+/* ── route (timeline) ── */
+.route{list-style:none; display:grid; gap:0; position:relative}
+.stop{position:relative; display:grid; grid-template-columns:2.75rem minmax(0,1fr); gap:0 14px; padding-bottom:28px}
+.stop::before{ /* the line */
+  content:""; position:absolute; left:calc(1.375rem - 2px); top:2.75rem; bottom:0; width:4px; background:var(--accent); opacity:.28; border-radius:2px;
+}
+.stop:last-child{padding-bottom:0}
+.stop:last-child::before{display:none}
+.node{
+  width:2.75rem; height:2.75rem; border-radius:50%; display:grid; place-items:center;
+  background:var(--surface); border:3px solid var(--accent); color:var(--accent);
+  font-family:var(--f-display); font-weight:800; font-size:.95rem; position:relative; z-index:1;
+}
+.stop.final .node{background:var(--accent); color:var(--accent-ink)}
+.stop.is-now .node{background:var(--accent); color:var(--accent-ink); box-shadow:0 0 0 6px var(--accent-soft)}
+.stop.is-done .node{border-color:var(--ok); color:var(--ok)}
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+  padding:clamp(16px, 3.6vw, 24px); display:grid; gap:14px; min-width:0;
+}
+.stop.is-now .card{border-color:var(--accent); box-shadow:var(--shadow)}
+.card-head{display:grid; gap:6px}
+.card-top{display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px}
+.card-top .when{font-family:var(--f-mono); font-size:.75rem; letter-spacing:.06em; color:var(--sub)}
+.now-chip{display:none; font-size:.72rem; font-weight:700; color:var(--accent-ink); background:var(--accent); padding:1px 10px; border-radius:99px}
+.stop.is-now .now-chip{display:inline-block}
+.card h3{font-size:1.2rem; font-weight:900}
+.goal{color:var(--sub); font-size:.95rem}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{font-size:.75rem; line-height:1.5; padding:2px 10px; border-radius:99px; background:var(--sunk); color:var(--sub); white-space:nowrap}
+.chip.hot{background:var(--accent-soft); color:var(--accent); font-weight:700}
+.chip.time{font-family:var(--f-mono); background:transparent; border:1px solid var(--line)}
+.tasks{list-style:none; display:grid; gap:2px}
+.task{display:grid; grid-template-columns:auto minmax(0,1fr); gap:12px; align-items:start; padding:8px 8px; margin-inline:-8px; border-radius:8px}
+.task:hover{background:var(--sunk)}
+.task input{appearance:none; -webkit-appearance:none; margin:3px 0 0; width:20px; height:20px; border:2px solid var(--faint); border-radius:6px; display:grid; place-items:center; cursor:pointer; background:var(--surface)}
+.task input::after{content:""; width:10px; height:6px; border-left:2.5px solid var(--accent-ink); border-bottom:2.5px solid var(--accent-ink); transform:translateY(-1px) rotate(-45deg); opacity:0}
+.task input:checked{background:var(--ok); border-color:var(--ok)}
+.task input:checked::after{opacity:1; border-color:var(--surface)}
+.task label{cursor:pointer; display:grid; gap:2px; min-width:0}
+.task label b{font-weight:700; font-size:.98rem; line-height:1.6}
+.task label span{color:var(--sub); font-size:.88rem; line-height:1.7}
+.task input:checked + label b{color:var(--sub); text-decoration:line-through; text-decoration-color:var(--faint)}
+.tip{font-size:.88rem; color:var(--ink); background:var(--sunk); border-radius:10px; padding:12px 14px; display:grid; gap:2px}
+.tip b{font-size:.8rem; color:var(--sub); font-weight:700; letter-spacing:.04em}
+.count{font-family:var(--f-mono); font-size:.75rem; color:var(--faint); margin-left:auto; font-variant-numeric:tabular-nums}
+
+/* ── tactics / skip list ── */
+.grid2{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px; list-style:none}
+.grid2 li{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; display:grid; gap:6px; align-content:start; min-width:0}
+.grid2 b{font-size:1rem; line-height:1.6}
+.grid2 p{color:var(--sub); font-size:.9rem}
+.grid2 .num{font-family:var(--f-display); font-weight:800; color:var(--accent); font-size:1.5rem; line-height:1.1; font-variant-numeric:tabular-nums}
+.skip{list-style:none; display:grid; gap:0; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden}
+.skip li{display:grid; grid-template-columns:auto minmax(0,1fr); gap:14px; padding:16px 20px; border-top:1px solid var(--line)}
+.skip li:first-child{border-top:0}
+.skip .x{font-family:var(--f-mono); font-weight:600; font-size:.72rem; color:var(--warn); background:var(--warn-soft); border-radius:6px; padding:2px 8px; height:max-content; margin-top:3px; white-space:nowrap}
+.skip b{display:block; font-size:1rem; line-height:1.6}
+.skip p{color:var(--sub); font-size:.9rem}
+@media (max-width:640px){ .grid2{grid-template-columns:1fr} }
+
+/* ── glossary ── */
+.glossary{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:0 28px; margin:0}
+.glossary div{padding:14px 0; border-top:1px solid var(--line); min-width:0}
+.glossary dt{font-weight:700; font-size:.98rem}
+.glossary dt small{font-family:var(--f-mono); font-weight:400; font-size:.7rem; color:var(--faint); margin-left:6px}
+.glossary dd{margin:2px 0 0; color:var(--sub); font-size:.9rem; line-height:1.75}
+@media (max-width:640px){ .glossary{grid-template-columns:1fr} }
+
+/* ── sources ── */
+.sources{list-style:none; display:grid; gap:0; counter-reset:src}
+.sources li{display:grid; grid-template-columns:2.4rem minmax(0,1fr); gap:2px 12px; padding:14px 0; border-top:1px solid var(--line)}
+.sources li::before{counter-increment:src; content:"[" counter(src) "]"; font-family:var(--f-mono); font-size:.8rem; color:var(--faint); padding-top:2px; grid-row:span 3}
+.src-title{font-weight:700; font-size:.95rem; line-height:1.55}
+.src-meta{display:flex; flex-wrap:wrap; gap:4px 10px; font-size:.78rem; color:var(--sub); align-items:center}
+.tag{font-family:var(--f-mono); font-size:.68rem; padding:1px 8px; border-radius:99px; background:var(--ok-soft); color:var(--ok); font-weight:600}
+.src-note{font-size:.86rem; color:var(--sub); line-height:1.7}
+.src-url{font-family:var(--f-mono); font-size:.7rem; color:var(--faint); overflow-wrap:anywhere}
+
+.note-box{font-size:.88rem; color:var(--sub); background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px 20px; display:grid; gap:6px}
+.note-box b{color:var(--ink)}
+footer{font-size:.8rem; color:var(--faint); border-top:1px solid var(--line); padding-top:20px; display:grid; gap:4px}
+footer .mono{font-size:.75rem}
+
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important; scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 受験票ふうヘッダー -->
+  <header class="ticket">
+    <div class="ticket-main">
+      <p class="eyebrow">Microsoft 認定資格 · アソシエイト</p>
+      <h1><span class="code">AI-103</span> 合格ロードマップ</h1>
+      <p class="lead"><span class="en">Developing AI Apps and Agents on Azure</span> を、4週間・約45時間で取りにいくための学習ルートです。合格すると <b>Azure AI Apps and Agents Developer Associate</b> が取れます。<a class="ref" href="#src-2">[2]</a></p>
+      <p class="meta"><span>調査日 2026-10-25</span><span>出題範囲 2026-04-16 版</span><span>公式情報ベース</span></p>
+    </div>
+    <div class="ticket-stub">
+      <dl class="stub-list">
+        <div><dt>試験時間</dt><dd>120<small>分</small></dd></div>
+        <div><dt>合格ライン</dt><dd>700<small>/ 1000点</small></dd></div>
+        <div><dt>受験言語</dt><dd>日本語<small>OK</small></dd></div>
+        <div><dt>試験中の参照</dt><dd>Learn<small>可</small></dd></div>
+      </dl>
+    </div>
+  </header>
+
+  <!-- 結論 -->
+  <section class="sec" aria-labelledby="h-plan">
+    <div class="sec-head">
+      <p class="eyebrow">Strategy</p>
+      <h2 id="h-plan">最短ルートの作戦は3つだけ</h2>
+    </div>
+    <ol class="plan">
+      <li><b>今日、受験日を4週間後で予約する</b><span>締め切りを先に決めると迷いが消えます。平日1時間＋週末3〜4時間で、合計およそ45時間の計画です。</span></li>
+      <li><b>配点の6割を占める2分野に、時間の半分以上を使う</b><span>「計画・管理」と「生成AI・エージェント実装」だけで出題の55〜65%。残り3分野は浅く広くで間に合います。<a class="ref" href="#src-1">[1]</a></span></li>
+      <li><b>公式の無料練習問題を軸に回し、Learnを「引ける」状態にする</b><span>本番でもMicrosoft Learnを開けます。ただし時間は増えないので、暗記より<span class="hl">どのページに何があるかを知っておく</span>ほうが効きます。<a class="ref" href="#src-3">[3]</a></span></li>
+    </ol>
+  </section>
+
+  <!-- 配点 -->
+  <section class="sec" aria-labelledby="h-weights">
+    <div class="sec-head">
+      <p class="eyebrow">Skills measured</p>
+      <h2 id="h-weights">出題範囲と配点</h2>
+      <p>公式の study guide に載っている5分野です。配点は幅で示されています。<a class="ref" href="#src-1">[1]</a></p>
+    </div>
+    <figure class="chart" style="margin:0">
+      <figcaption class="chart-title">分野ごとの配点（出題に占める割合）<small>濃い部分＝下限、薄い部分＝上限までの幅</small></figcaption>
+      <ul class="bars">
+        <li class="bar-row">
+          <div class="bar-label"><b>生成AI・エージェントの実装</b><small>Implement generative AI and agentic solutions</small></div>
+          <div class="bar-plot"><div class="track" aria-hidden="true"><i class="seg-max" style="width:87.5%"></i><i class="seg-min" style="width:75%"></i></div><span class="val">30–35%</span></div>
+        </li>
+        <li class="bar-row">
+          <div class="bar-label"><b>AIソリューションの計画・管理</b><small>Plan and manage an Azure AI solution</small></div>
+          <div class="bar-plot"><div class="track" aria-hidden="true"><i class="seg-max" style="width:75%"></i><i class="seg-min" style="width:62.5%"></i></div><span class="val">25–30%</span></div>
+        </li>
+        <li class="bar-row minor">
+          <div class="bar-label"><b>コンピュータービジョン</b><small>Implement computer vision solutions</small></div>
+          <div class="bar-plot"><div class="track" aria-hidden="true"><i class="seg-max" style="width:37.5%"></i><i class="seg-min" style="width:25%"></i></div><span class="val">10–15%</span></div>
+        </li>
+        <li class="bar-row minor">
+          <div class="bar-label"><b>テキスト分析（言語・音声）</b><small>Implement text analysis solutions</small></div>
+          <div class="bar-plot"><div class="track" aria-hidden="true"><i class="seg-max" style="width:37.5%"></i><i class="seg-min" style="width:25%"></i></div><span class="val">10–15%</span></div>
+        </li>
+        <li class="bar-row minor">
+          <div class="bar-label"><b>情報抽出（検索・文書）</b><small>Implement information extraction solutions</small></div>
+          <div class="bar-plot"><div class="track" aria-hidden="true"><i class="seg-max" style="width:37.5%"></i><i class="seg-min" style="width:25%"></i></div><span class="val">10–15%</span></div>
+        </li>
+      </ul>
+      <div class="axis" aria-hidden="true">
+        <div></div>
+        <div class="axis-scale">
+          <div class="axis-ticks"><span style="left:0">0%</span><span style="left:25%">10</span><span style="left:50%">20</span><span style="left:75%">30</span><span style="left:100%">40%</span></div>
+          <div></div>
+        </div>
+      </div>
+      <div class="chart-key"><span><i style="background:var(--accent)"></i>最優先の2分野</span><span><i style="background:var(--faint)"></i>浅く広く押さえる3分野</span></div>
+    </figure>
+    <div class="callout">
+      <b>上の2分野だけで 55〜65%。勉強時間の6割をここに使います。</b>
+      <span>合格は1000点中700点。全分野を完璧にする必要はなく、重い分野を落とさないことが最短ルートです。</span>
+    </div>
+  </section>
+
+  <!-- 進み具合 -->
+  <section class="sec" aria-labelledby="h-tracker">
+    <div class="sec-head">
+      <p class="eyebrow">Your pace</p>
+      <h2 id="h-tracker">受験日と進み具合</h2>
+      <p>受験日を入れると、各週の日付と「いまここ」が表示されます。チェックと日付はこのブラウザにだけ保存されます。</p>
+    </div>
+    <div class="tracker">
+      <div class="field">
+        <label for="exam-date">受験日</label>
+        <input type="date" id="exam-date">
+        <p class="help">まだ決めていなければ、今日から4週間後がおすすめです。</p>
+      </div>
+      <div class="countdown" id="countdown" aria-live="polite">
+        <div class="big" id="cd-big">—</div>
+        <p id="cd-text">受験日を入れると、残り日数と今週やることが表示されます。</p>
+      </div>
+      <div class="progress">
+        <div class="progress-top"><span>やることリストの完了</span><b id="prog-text">0 / 0</b></div>
+        <div class="meter" role="progressbar" aria-label="完了した項目の割合" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="prog-meter"><i id="prog-bar"></i></div>
+        <button class="reset" type="button" id="reset-btn">チェックをすべて外す</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ルート -->
+  <section class="sec" aria-labelledby="h-route">
+    <div class="sec-head">
+      <p class="eyebrow">Route</p>
+      <h2 id="h-route">4週間のルート</h2>
+      <p>教材はすべて無料の Microsoft Learn です。公式の講師付きコース（4日間）も同じ4つのラーニングパスを使っています。<a class="ref" href="#src-4">[4]</a> 時間は、ハンズオンを少しやる前提の目安です。</p>
+    </div>
+
+    <ol class="route">
+      <!-- Day 0 -->
+      <li class="stop" data-phase="d0">
+        <div class="node" aria-hidden="true">0</div>
+        <article class="card">
+          <div class="card-head">
+            <div class="card-top"><span class="when" data-when>予約した日</span><span class="now-chip">いまここ</span><span class="count" data-count></span></div>
+            <h3>Day 0　受験日を決めて、現在地を知る</h3>
+            <p class="goal">ゴール：締め切りと、自分の「知らない言葉リスト」ができている状態。</p>
+            <div class="chips"><span class="chip time">約1時間</span></div>
+          </div>
+          <ul class="tasks">
+            <li class="task"><input type="checkbox" id="d0-1"><label for="d0-1"><b>受験日を予約する（今日から約4週間後）</b><span><a href="https://learn.microsoft.com/ja-jp/credentials/certifications/azure-ai-apps-and-agents-developer-associate/" target="_blank" rel="noopener">認定資格ページ</a>から Pearson VUE で申し込みます。個人の Microsoft アカウントでの登録が公式推奨です（会社アカウントだと、退職時に受験記録が消えます）。<a class="ref" href="#src-2">[2]</a></span></label></li>
+            <li class="task"><input type="checkbox" id="d0-2"><label for="d0-2"><b>試験のデモ画面（Exam sandbox）を触る</b><span><a href="https://aka.ms/examdemo" target="_blank" rel="noopener">aka.ms/examdemo</a> で、問題形式や見直しマーク、Learn の開き方を確認します。<a class="ref" href="#src-11">[11]</a></span></label></li>
+            <li class="task"><input type="checkbox" id="d0-3"><label for="d0-3"><b>公式の練習問題を1回だけ解く（無料）</b><span><a href="https://aiskillsnavigator.microsoft.com/credentials/cert-3fb198f57997226a824aa5f52a1a22af9a4597941b2288ed39371c7a9e6bd7c9" target="_blank" rel="noopener">AI Skills Navigator の Practice Assessment</a>（サインインが必要）。点数は気にせず、分からなかった言葉をメモします。<a class="ref" href="#src-12">[12]</a></span></label></li>
+            <li class="task"><input type="checkbox" id="d0-4"><label for="d0-4"><b>ハンズオン用の Azure 環境を用意する</b><span>個人の無料アカウントか、会社の検証用サブスクリプション。演習は料金がかかることがあるので、終わったらリソースグループごと削除する習慣をつけます。</span></label></li>
+          </ul>
+        </article>
+      </li>
+
+      <!-- Week 1 -->
+      <li class="stop" data-phase="w1">
+        <div class="node" aria-hidden="true">1</div>
+        <article class="card">
+          <div class="card-head">
+            <div class="card-top"><span class="when" data-when>1週目</span><span class="now-chip">いまここ</span><span class="count" data-count></span></div>
+            <h3>地図を手に入れて、生成AIアプリを作る</h3>
+            <p class="goal">ゴール：「Foundry でモデルを選んで、デプロイして、アプリから呼ぶ」流れを説明できる。</p>
+            <div class="chips"><span class="chip time">約12時間</span><span class="chip hot">計画・管理</span><span class="chip hot">生成AI・エージェント</span></div>
+          </div>
+          <ul class="tasks">
+            <li class="task"><input type="checkbox" id="w1-1"><label for="w1-1"><b>ラーニングパス「Get started with AI applications and agents on Azure」</b><span><a href="https://learn.microsoft.com/ja-jp/training/paths/get-started-ai-apps-agents/" target="_blank" rel="noopener">7モジュール・初級</a>。生成AI、エージェント、テキスト、音声、画像、情報抽出、Foundry IQ を一周して全体の地図を作ります。<a class="ref" href="#src-9">[9]</a></span></label></li>
+            <li class="task"><input type="checkbox" id="w1-2"><label for="w1-2"><b>Python は「読める」まででOK</b><span>公式の受験者像に「Python でのアプリ開発経験」とあります。<a class="ref" href="#src-1">[1]</a> import、関数、辞書（JSON の形）、with 文が何をしているか分かれば、教材のサンプルコードが読めます。</span></label></li>
+            <li class="task"><input type="checkbox" id="w1-3"><label for="w1-3"><b>ラーニングパス「Develop generative AI apps in Azure」</b><span><a href="https://learn.microsoft.com/ja-jp/training/paths/develop-generative-ai-apps/" target="_blank" rel="noopener">6モジュール</a>。準備と計画、モデルの選択・デプロイ・評価、チャットアプリ、ツール、プロンプト／RAG／ファインチューニングの使い分け、責任あるAI。<a class="ref" href="#src-5">[5]</a></span></label></li>
+            <li class="task"><input type="checkbox" id="w1-4"><label for="w1-4"><b>ハンズオン1本：Foundry でチャットアプリを動かす</b><span>上のパスの演習から1本だけ。全部やる必要はありません。</span></label></li>
+            <li class="task"><input type="checkbox" id="w1-5"><label for="w1-5"><b>週末：study guide の「Plan and manage」を読む</b><span><a href="https://learn.microsoft.com/ja-jp/credentials/certifications/resources/study-guides/ai-103" target="_blank" rel="noopener">study guide</a> の箇条書きを見て、説明できない言葉に印をつけます。2週目以降で埋めていきます。<a class="ref" href="#src-1">[1]</a></span></label></li>
+          </ul>
+        </article>
+      </li>
+
+      <!-- Week 2 -->
+      <li class="stop" data-phase="w2">
+        <div class="node" aria-hidden="true">2</div>
+        <article class="card">
+          <div class="card-head">
+            <div class="card-top"><span class="when" data-when>2週目</span><span class="now-chip">いまここ</span><span class="count" data-count></span></div>
+            <h3>エージェントを作り、守り、見張る</h3>
+            <p class="goal">ゴール：ツール・知識・複数エージェントの組み方と、監視・安全・セキュリティの設定場所が分かる。</p>
+            <div class="chips"><span class="chip time">約12時間</span><span class="chip hot">生成AI・エージェント</span><span class="chip hot">計画・管理</span></div>
+          </div>
+          <ul class="tasks">
+            <li class="task"><input type="checkbox" id="w2-1"><label for="w2-1"><b>ラーニングパス「Develop AI agents on Azure」</b><span><a href="https://learn.microsoft.com/ja-jp/training/paths/develop-ai-agents-azure/" target="_blank" rel="noopener">9モジュール</a>。Agent Service、カスタムツール、MCP、Foundry IQ、Microsoft 365 連携、ワークフロー、Agent Framework、マルチエージェント、A2A。最大配点の分野なので一番時間をかけます。<a class="ref" href="#src-6">[6]</a></span></label></li>
+            <li class="task"><input type="checkbox" id="w2-2"><label for="w2-2"><b>ハンズオン2本：ツール付きエージェント／Foundry IQ で資料に答えるエージェント</b><span>「ツールを呼ぶ」「資料を検索して根拠つきで答える」の2つを体験しておくと、問題文の状況がイメージできます。</span></label></li>
+            <li class="task"><input type="checkbox" id="w2-3"><label for="w2-3"><b>運用まわりを拾い読み：監視・トレース・評価・コンテンツ安全</b><span><a href="https://learn.microsoft.com/ja-jp/azure/foundry/" target="_blank" rel="noopener">Microsoft Foundry のドキュメント</a>の「Observability and evaluation」「Foundry Control Plane」の見出しを中心に。ここは「計画・管理」分野の得点源です。<a class="ref" href="#src-10">[10]</a></span></label></li>
+            <li class="task"><input type="checkbox" id="w2-4"><label for="w2-4"><b>セキュリティ用語を説明できるようにする</b><span>マネージドID、キーレス認証、プライベートネットワーク、ロール（権限）。study guide に名指しで出てくる言葉です。<a class="ref" href="#src-1">[1]</a></span></label></li>
+            <li class="task"><input type="checkbox" id="w2-5"><label for="w2-5"><b>週末：練習問題をもう1回</b><span>Day 0 から何点伸びたか確認。落とした問題の分野をメモします。</span></label></li>
+          </ul>
+          <p class="tip"><b>Copilot Studio を触ったことがあるなら</b><span>Foundry のエージェントも「指示・ツール・知識」で組み立てる考え方は同じです。作ったエージェントを Teams や Microsoft 365 Copilot に公開するモジュールもあります。<a class="ref" href="#src-6">[6]</a></span></p>
+        </article>
+      </li>
+
+      <!-- Week 3 -->
+      <li class="stop" data-phase="w3">
+        <div class="node" aria-hidden="true">3</div>
+        <article class="card">
+          <div class="card-head">
+            <div class="card-top"><span class="when" data-when>3週目</span><span class="now-chip">いまここ</span><span class="count" data-count></span></div>
+            <h3>残り3分野を浅く広く回収する</h3>
+            <p class="goal">ゴール：「この要件ならこのサービス」を即答できる。細かい設定値までは追わない。</p>
+            <div class="chips"><span class="chip time">約11時間</span><span class="chip">ビジョン</span><span class="chip">テキスト分析</span><span class="chip">情報抽出</span></div>
+          </div>
+          <ul class="tasks">
+            <li class="task"><input type="checkbox" id="w3-1"><label for="w3-1"><b>ラーニングパス「Develop natural language solutions in Azure」</b><span><a href="https://learn.microsoft.com/ja-jp/training/paths/develop-language-solutions-azure-ai/" target="_blank" rel="noopener">7モジュール</a>。テキスト分析、Language の MCP サーバー、音声対応アプリ、Speech、Voice Live、翻訳。<a class="ref" href="#src-7">[7]</a></span></label></li>
+            <li class="task"><input type="checkbox" id="w3-2"><label for="w3-2"><b>ラーニングパス「Extract insights from visual data on Azure」</b><span><a href="https://learn.microsoft.com/ja-jp/training/paths/insight-visual-data/" target="_blank" rel="noopener">8モジュール</a>。画像を理解するチャット、画像生成、動画生成、Content Understanding（3本）、Document Intelligence、AI Search。<a class="ref" href="#src-8">[8]</a></span></label></li>
+            <li class="task"><input type="checkbox" id="w3-3"><label for="w3-3"><b>ハンズオン1本：Content Understanding で文書から項目を抜き出す</b><span>「情報抽出」と「ビジョン」の両方にまたがるサービスなので、1本で2分野の理解が進みます。</span></label></li>
+            <li class="task"><input type="checkbox" id="w3-4"><label for="w3-4"><b>検索の種類と、RAG への取り込みの流れを図にする</b><span>キーワード検索・ベクター検索・ハイブリッド検索・セマンティック検索の違いと、「文書を読み取る（OCR）→ 索引を作る → エージェントにつなぐ」の流れ。<a class="ref" href="#src-1">[1]</a></span></label></li>
+          </ul>
+          <p class="tip"><b>時短のコツ</b><span>各分野は10〜15%。モジュールの「概要」と「まとめ」を先に読み、問題を解いて分からなかったところだけ本文に戻る順番だと速く進みます。</span></p>
+        </article>
+      </li>
+
+      <!-- Week 4 -->
+      <li class="stop" data-phase="w4">
+        <div class="node" aria-hidden="true">4</div>
+        <article class="card">
+          <div class="card-head">
+            <div class="card-top"><span class="when" data-when>4週目</span><span class="now-chip">いまここ</span><span class="count" data-count></span></div>
+            <h3>練習問題を回して、穴だけ埋める</h3>
+            <p class="goal">ゴール：練習問題で安定して合格圏。苦手は「どの Learn ページを見ればいいか」まで分かっている。</p>
+            <div class="chips"><span class="chip time">約10時間</span><span class="chip">全分野</span></div>
+          </div>
+          <ul class="tasks">
+            <li class="task"><input type="checkbox" id="w4-1"><label for="w4-1"><b>練習問題を2〜3周する</b><span>間違えた問題は、解説のリンク先の Learn ページを読みます。答えを覚えるより、なぜそれが正解かを一言で言えるように。</span></label></li>
+            <li class="task"><input type="checkbox" id="w4-2"><label for="w4-2"><b>study guide の全項目を「説明できる／あやしい」に仕分ける</b><span>あやしい項目だけを復習します。全部をやり直さないのが最短のコツです。<a class="ref" href="#src-1">[1]</a></span></label></li>
+            <li class="task"><input type="checkbox" id="w4-3"><label for="w4-3"><b>Learn の「引き方」を練習する</b><span>苦手テーマごとに「このページを開く」を5〜10個決めておきます。ページ内は Ctrl+F（Mac は command+F）で検索できます。<a class="ref" href="#src-3">[3]</a></span></label></li>
+            <li class="task"><input type="checkbox" id="w4-4"><label for="w4-4"><b>自宅で受けるなら、受験環境を事前チェック</b><span>Pearson VUE のシステムテストを済ませ、机の上を片付けておきます。会場受験なら場所と持ち物（本人確認書類）を確認。</span></label></li>
+            <li class="task"><input type="checkbox" id="w4-5"><label for="w4-5"><b>前日は新しいことをやらない</b><span>苦手メモを見返して、早めに寝ます。</span></label></li>
+          </ul>
+        </article>
+      </li>
+
+      <!-- Exam day -->
+      <li class="stop final" data-phase="exam">
+        <div class="node" aria-hidden="true">★</div>
+        <article class="card">
+          <div class="card-head">
+            <div class="card-top"><span class="when" data-when>受験日</span><span class="now-chip">いまここ</span></div>
+            <h3>本番：時間配分を守って700点を取りにいく</h3>
+            <p class="goal">下の「試験当日の立ち回り」を一度読んでから臨んでください。</p>
+          </div>
+        </article>
+      </li>
+    </ol>
+
+    <p class="note-box"><span><b>Python や Azure の開発経験がある人は</b>、1・2週目と3・4週目をそれぞれ1週にまとめた2週間プランでも十分狙えます。逆に、初めて触る言葉が多いと感じたら、2週目を2週間に延ばすのが一番効果的です。</span></p>
+  </section>
+
+  <!-- 当日 -->
+  <section class="sec" aria-labelledby="h-day">
+    <div class="sec-head">
+      <p class="eyebrow">Exam day</p>
+      <h2 id="h-day">試験当日の立ち回り</h2>
+      <p>どれも公式の受験ルールに書かれている内容です。<a class="ref" href="#src-3">[3]</a></p>
+    </div>
+    <ul class="grid2">
+      <li><span class="num">約2分 / 問</span><b>ペースは1問2分弱</b><p>120分。問題数は試験ごとに変わりますが、多くの試験は40〜60問程度と公式に書かれています。</p></li>
+      <li><span class="num">Learn</span><b>調べるのは「調べれば確実に取れる問題」だけ</b><p>試験中も Microsoft Learn を開けますが、時間は増えません。全部調べると時間内に終わらない設計だと公式が明言しています。</p></li>
+      <li><span class="num">休憩</span><b>休憩の前に見直しを済ませる</b><p>休憩は取れますが、時計は止まらず、休憩前に見た問題には戻れません。</p></li>
+      <li><span class="num">ラボ</span><b>実機操作やケーススタディが出ても慌てない</b><p>120分は「ラボを含む可能性がある」区分の試験時間です。出るかどうかは試験開始時の説明画面で分かります。</p></li>
+      <li><span class="num">見直し</span><b>迷ったら印をつけて先へ進む</b><p>最後の見直し画面からまとめて戻れます。1問に粘りすぎないこと。</p></li>
+      <li><span class="num">24時間</span><b>落ちても24時間後から再受験できる</b><p>2回目以降は待ち時間が延びます。スコアレポートの分野別の結果を、次の作戦に使います。<a class="ref" href="#src-2">[2]</a></p></li>
+    </ul>
+  </section>
+
+  <!-- やらないこと -->
+  <section class="sec" aria-labelledby="h-skip">
+    <div class="sec-head">
+      <p class="eyebrow">Skip list</p>
+      <h2 id="h-skip">最短で受かるために、やらなくていいこと</h2>
+    </div>
+    <ul class="skip">
+      <li><span class="x">SKIP</span><div><b>旧試験 AI-102 向けの教材を主軸にする</b><p>AI-103 の公式出題範囲には、Custom Vision や CLU（会話言語理解）など AI-102 時代の定番テーマが載っていません。教材を選ぶときは「2026年4月16日版の出題範囲に対応」と書かれているか確認します。<a class="ref" href="#src-1">[1]</a></p></div></li>
+      <li><span class="x">SKIP</span><div><b>全モジュールの演習を全部やる</b><p>ハンズオンは合計5本程度に絞ります。お金と時間の節約になり、理解度もほとんど変わりません。</p></div></li>
+      <li><span class="x">SKIP</span><div><b>満点を目指す</b><p>合格は700点。配点10〜15%の3分野は「どのサービスで何ができるか」が言えれば十分です。<a class="ref" href="#src-1">[1]</a></p></div></li>
+      <li><span class="x">SKIP</span><div><b>コードやパラメーターの丸暗記</b><p>本番で Learn を引けます。覚えるのは「どのページに何が書いてあるか」です。<a class="ref" href="#src-3">[3]</a></p></div></li>
+      <li><span class="x">SKIP</span><div><b>有料の講師付きコースが必須だと思い込む</b><p>公式コース AI-103T00（4日間）が使うのは、このページの4つのラーニングパスです。自習でも同じ内容を無料で学べます。<a class="ref" href="#src-4">[4]</a></p></div></li>
+    </ul>
+  </section>
+
+  <!-- 用語 -->
+  <section class="sec" aria-labelledby="h-terms">
+    <div class="sec-head">
+      <p class="eyebrow">Glossary</p>
+      <h2 id="h-terms">最初につまずく用語ミニ辞典</h2>
+      <p>教材を読む前に、ざっくり意味をつかんでおくと読むスピードが上がります。</p>
+    </div>
+    <dl class="glossary">
+      <div><dt>Microsoft Foundry</dt><dd>AIアプリやエージェントを作る・試す・公開する・見張るための Azure の作業場。この試験の主役です。</dd></div>
+      <div><dt>Foundry Tools</dt><dd>文章分析（Language）、音声（Speech）、翻訳（Translator）、文書読み取りなど、用途別のAI部品の総称。</dd></div>
+      <div><dt>モデル<small>LLM / SLM</small></dt><dd>文章を考える頭脳。大きくて賢い LLM と、小さくて軽い・安い SLM（小規模言語モデル）があります。</dd></div>
+      <div><dt>デプロイ</dt><dd>モデルやエージェントを、アプリから呼び出せる状態に設置すること。</dd></div>
+      <div><dt>RAG<small>検索拡張生成</small></dt><dd>先に資料を検索して、その内容を根拠に答えさせる仕組み。社内文書に答えるAIの基本形です。</dd></div>
+      <div><dt>ベクター／ハイブリッド検索</dt><dd>意味の近さで探すのがベクター検索。キーワードと意味の両方で探すのがハイブリッド検索です。</dd></div>
+      <div><dt>エージェント</dt><dd>指示・ツール・知識を持ち、自分で手順を考えて動くAI。</dd></div>
+      <div><dt>ツール／関数呼び出し</dt><dd>エージェントが外部のサービスや計算を呼び出す仕組み。「AIの手足」にあたります。</dd></div>
+      <div><dt>MCP</dt><dd>AIとツールをつなぐための共通規格。USB のように、対応していれば差し替えて使えます。</dd></div>
+      <div><dt>マルチエージェント</dt><dd>役割の違う複数のエージェントが分担して仕事を進める構成。</dd></div>
+      <div><dt>Foundry IQ</dt><dd>エージェントが社内データを検索して、根拠つきで答えるための知識の土台。</dd></div>
+      <div><dt>Content Understanding</dt><dd>文書・画像・音声・動画から、必要な情報を取り出して整理するサービス。</dd></div>
+      <div><dt>Azure AI Search</dt><dd>社内データを検索できるように索引を作るサービス。RAG の土台になります。</dd></div>
+      <div><dt>マネージドID／キーレス</dt><dd>パスワードや鍵を使わず、Azure が発行する「社員証」で安全に接続する方法。</dd></div>
+      <div><dt>ガードレール／コンテンツフィルター</dt><dd>有害な入力や出力を止める安全装置。</dd></div>
+      <div><dt>評価・トレース</dt><dd>回答の正確さや安全性を点数で測るのが評価。AIが中で何をしたかを記録して後から追えるようにするのがトレースです。</dd></div>
+    </dl>
+  </section>
+
+  <!-- 出典 -->
+  <section class="sec" aria-labelledby="h-src">
+    <div class="sec-head">
+      <p class="eyebrow">Sources</p>
+      <h2 id="h-src">根拠にした情報</h2>
+      <p>すべて Microsoft の公式ページです。日付は各ページのメタ情報にある最終更新日で、2026-10-25 に確認しました。</p>
+    </div>
+    <ol class="sources">
+      <li id="src-1"><a class="src-title" href="https://learn.microsoft.com/ja-jp/credentials/certifications/resources/study-guides/ai-103" target="_blank" rel="noopener">Study guide for Exam AI-103: Developing AI Apps and Agents on Azure</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-15</span><span>出題範囲は 2026-04-16 版</span></span><span class="src-note">5分野と配点、各分野の出題項目、受験者像（Python の開発経験）、合格点700点、年1回の無料更新。</span></li>
+      <li id="src-2"><a class="src-title" href="https://learn.microsoft.com/ja-jp/credentials/certifications/azure-ai-apps-and-agents-developer-associate/" target="_blank" rel="noopener">Microsoft Certified: Azure AI Apps and Agents Developer Associate</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-08-11</span></span><span class="src-note">試験時間120分、日本語を含む10言語、Pearson VUE での予約、個人アカウントでの登録推奨、24時間後からの再受験。</span></li>
+      <li id="src-3"><a class="src-title" href="https://learn.microsoft.com/ja-jp/credentials/support/exam-duration-exam-experience" target="_blank" rel="noopener">Exam duration and exam experience</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-06-04</span></span><span class="src-note">試験中の Microsoft Learn 参照（時間は増えない）、多くの試験は40〜60問、120分はラボを含む可能性がある区分、休憩のルール。</span></li>
+      <li id="src-4"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/courses/ai-103t00" target="_blank" rel="noopener">Course AI-103T00-A: Develop AI apps and agents on Azure</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-04-17</span></span><span class="src-note">4日間の講師付きコース。構成する4つのラーニングパス（生成AIアプリ、エージェント、自然言語、ビジュアルデータ）。</span></li>
+      <li id="src-5"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/paths/develop-generative-ai-apps/" target="_blank" rel="noopener">Develop generative AI apps in Azure</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-21</span></span><span class="src-note">6モジュールの構成。</span></li>
+      <li id="src-6"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/paths/develop-ai-agents-azure/" target="_blank" rel="noopener">Develop AI agents on Azure</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-21</span></span><span class="src-note">9モジュールの構成。Teams と Microsoft 365 Copilot への公開モジュールを含む。</span></li>
+      <li id="src-7"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/paths/develop-language-solutions-azure-ai/" target="_blank" rel="noopener">Develop natural language solutions in Azure</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-21</span></span><span class="src-note">7モジュールの構成。</span></li>
+      <li id="src-8"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/paths/insight-visual-data/" target="_blank" rel="noopener">Extract insights from visual data on Azure</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-21</span></span><span class="src-note">8モジュールの構成。</span></li>
+      <li id="src-9"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/paths/get-started-ai-apps-agents/" target="_blank" rel="noopener">Get started with AI applications and agents on Azure</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-21</span></span><span class="src-note">7モジュール・初級。全分野の入門。</span></li>
+      <li id="src-10"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/" target="_blank" rel="noopener">Microsoft Foundry documentation</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-19</span></span><span class="src-note">Agent Service、Foundry IQ、Foundry Tools、Observability and evaluation、Control Plane の入口。</span></li>
+      <li id="src-11"><a class="src-title" href="https://aka.ms/examdemo" target="_blank" rel="noopener">Exam sandbox</a><span class="src-meta"><span class="tag">公式</span><span>日付不明</span></span><span class="src-note">本番と同じ画面で問題形式を試せるデモ。</span></li>
+      <li id="src-12"><a class="src-title" href="https://aiskillsnavigator.microsoft.com/credentials/cert-3fb198f57997226a824aa5f52a1a22af9a4597941b2288ed39371c7a9e6bd7c9" target="_blank" rel="noopener">Practice Assessment（AI Skills Navigator）</a><span class="src-meta"><span class="tag">公式</span><span>日付不明</span><span>サインインが必要</span></span><span class="src-note">無料の練習問題。study guide と認定資格ページから案内されています。</span></li>
+    </ol>
+  </section>
+
+  <footer>
+    <span>調査日 2026-10-25。出題範囲や教材は更新されることがあります。受験前に study guide の「Skills measured as of …」の日付が 2026-04-16 から変わっていないか確認してください。</span>
+    <span>学習時間と週ごとの割り振りは、公式の配点をもとにした目安です。受験料は受験する国や地域で変わるため、予約画面で確認してください。</span>
+    <span class="mono">出典の日付：[1] 2026-10-15 ／ [2] 2026-08-11 ／ [3] 2026-06-04 ／ [4] 2026-04-17 ／ [5]–[9] 2026-10-21 ／ [10] 2026-10-19 ／ [11][12] 日付不明</span>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const KEY = "ai103-roadmap:v1";
+  const DAY = 86400000;
+  const WEEK_DAYS = ["日","月","火","水","木","金","土"];
+  // 受験日から逆算した各フェーズの「残り日数」の範囲（両端を含む）
+  const PHASES = [
+    { id:"w1", from:28, to:22 },
+    { id:"w2", from:21, to:15 },
+    { id:"w3", from:14, to:8 },
+    { id:"w4", from:7,  to:1 },
+  ];
+  const PHASE_NAME = { d0:"Day 0", w1:"1週目", w2:"2週目", w3:"3週目", w4:"4週目", exam:"本番" };
+
+  const $ = id => document.getElementById(id);
+  const boxes = [...document.querySelectorAll('.task input[type="checkbox"]')];
+  const stops = [...document.querySelectorAll(".stop")];
+
+  let state = { date:"", done:{} };
+  try{
+    const saved = JSON.parse(localStorage.getItem(KEY) || "null");
+    if(saved && typeof saved === "object"){
+      state.date = typeof saved.date === "string" ? saved.date : "";
+      state.done = saved.done && typeof saved.done === "object" ? saved.done : {};
+    }
+  }catch(_){}
+  const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(_){} };
+
+  function parseDate(v){
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || "");
+    return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+  }
+  function today(){ const t = new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); }
+  function addDays(d, n){ return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n); }
+  function fmt(d){ return `${d.getMonth() + 1}/${d.getDate()}（${WEEK_DAYS[d.getDay()]}）`; }
+  function daysBetween(a, b){ return Math.round((b - a) / DAY); }
+
+  // 残り日数 → いまのフェーズ
+  function phaseFor(left){
+    if(left < 0) return null;
+    if(left === 0) return "exam";
+    if(left > 28) return "d0";
+    const p = PHASES.find(p => left <= p.from && left >= p.to);
+    return p ? p.id : null;
+  }
+
+  function paintProgress(){
+    const total = boxes.length;
+    const done = boxes.filter(b => b.checked).length;
+    $("prog-text").textContent = `${done} / ${total}`;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    $("prog-bar").style.width = pct + "%";
+    $("prog-meter").setAttribute("aria-valuenow", pct);
+    stops.forEach(stop => {
+      const list = [...stop.querySelectorAll('.task input')];
+      const c = stop.querySelector("[data-count]");
+      if(!list.length || !c) return;
+      const n = list.filter(b => b.checked).length;
+      c.textContent = `${n} / ${list.length}`;
+      stop.classList.toggle("is-done", n === list.length);
+    });
+  }
+
+  function paintDates(){
+    const exam = parseDate(state.date);
+    const big = $("cd-big"), text = $("cd-text");
+    stops.forEach(s => s.classList.remove("is-now"));
+    const whenDefault = { d0:"予約した日", w1:"1週目", w2:"2週目", w3:"3週目", w4:"4週目", exam:"受験日" };
+    if(!exam){
+      stops.forEach(s => { const w = s.querySelector("[data-when]"); if(w) w.textContent = whenDefault[s.dataset.phase]; });
+      big.textContent = "—";
+      text.textContent = "受験日を入れると、残り日数と今週やることが表示されます。";
+      return;
+    }
+    const start = addDays(exam, -28);
+    stops.forEach(s => {
+      const id = s.dataset.phase, w = s.querySelector("[data-when]");
+      if(!w) return;
+      if(id === "d0"){ w.textContent = `${fmt(start)} までに`; return; }
+      if(id === "exam"){ w.textContent = `受験日 ${fmt(exam)}`; return; }
+      const p = PHASES.find(p => p.id === id);
+      w.textContent = `${PHASE_NAME[id]}　${fmt(addDays(exam, -p.from))} 〜 ${fmt(addDays(exam, -p.to))}`;
+    });
+
+    const left = daysBetween(today(), exam);
+    const now = phaseFor(left);
+    if(now){ const s = stops.find(s => s.dataset.phase === now); if(s) s.classList.add("is-now"); }
+
+    big.replaceChildren();
+    if(left < 0){
+      big.textContent = "終了";
+      text.textContent = "受験日を過ぎています。次の受験日を入れ直すと、計画を引き直せます。";
+      return;
+    }
+    if(left === 0){
+      big.textContent = "本番";
+      text.textContent = "今日が受験日です。下の「試験当日の立ち回り」を見てから臨んでください。";
+      return;
+    }
+    big.append(String(left));
+    const unit = document.createElement("small"); unit.textContent = "日"; big.append(unit);
+    if(now === "d0"){
+      text.textContent = `余裕があります。${fmt(start)} から1週目を始めましょう。それまでに Day 0 を済ませておくと安心です。`;
+    }else if(left <= 21){
+      text.textContent = `いまは${PHASE_NAME[now]}です。前の週にやり残しがあれば、配点の重い1・2週目の内容を優先してください。`;
+    }else{
+      text.textContent = `いまは${PHASE_NAME[now]}です。計画どおりに進めれば間に合います。`;
+    }
+  }
+
+  boxes.forEach(b => {
+    b.checked = !!state.done[b.id];
+    b.addEventListener("change", () => {
+      if(b.checked) state.done[b.id] = true; else delete state.done[b.id];
+      save(); paintProgress();
+    });
+  });
+  const dateInput = $("exam-date");
+  dateInput.value = state.date;
+  dateInput.addEventListener("change", () => { state.date = dateInput.value; save(); paintDates(); });
+  $("reset-btn").addEventListener("click", () => {
+    state.done = {}; boxes.forEach(b => { b.checked = false; }); save(); paintProgress();
+  });
+
+  paintProgress();
+  paintDates();
+})();
+</script>
+</body>
+</html>
