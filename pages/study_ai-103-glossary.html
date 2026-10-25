@@ -1,0 +1,1078 @@
+<!doctype html>
+<html lang="ja" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Microsoft 認定試験 AI-103（Developing AI Apps and Agents on Azure）の出題範囲に出てくる用語を、5分野＋基礎に分けてかみ砕いて解説した用語集。検索・分野の絞り込み・テストモード・覚えたチェックつき。公式ドキュメントの出典と日付を掲載。2026-10-25 時点。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>AI-103 用語集</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<script>
+  /* 一覧ページ（Learning Shelf）で選んだライト／ダークを引き継ぐ */
+  try{ const t = localStorage.getItem("ls-theme"); if(t === "light" || t === "dark") document.documentElement.dataset.theme = t; }catch(_){}
+</script>
+<style>
+:root{
+  /* Layout: 受験票ふうヘッダー → 使い方と目次 → 検索バー → 分野ごとの用語カード → まぎらわしいペア → 名前が変わった用語 → 注意点・出典。ロードマップのページと同じ配色 */
+  --bg:#EEF1F5;
+  --surface:#FFFFFF;
+  --sunk:#E4E9F0;
+  --ink:#142030;
+  --sub:#4E5C6E;
+  --faint:#7F8B9B;
+  --line:#D3DAE3;
+  --accent:#2356C2;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#E2EAFA;
+  --hl:#FFDB66;
+  --ok:#1C7A52;
+  --ok-soft:#DFF2E8;
+  --warn:#A44E14;
+  --warn-soft:#FBEBDD;
+  --bar-bg:rgba(238,241,245,.88);
+
+  --f-display:"Bricolage Grotesque","Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  --radius:14px;
+  --shadow:0 1px 2px rgba(20,32,48,.05),0 12px 32px -18px rgba(20,32,48,.28);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D131B;
+    --surface:#151E2A;
+    --sunk:#1C2735;
+    --ink:#E5ECF5;
+    --sub:#A3B0C1;
+    --faint:#728093;
+    --line:#2A3646;
+    --accent:#7FA6FF;
+    --accent-ink:#0D131B;
+    --accent-soft:#1C2A47;
+    --hl:rgba(240,188,60,.42);
+    --ok:#5FC79B;
+    --ok-soft:#173327;
+    --warn:#F0A26E;
+    --warn-soft:#3A2416;
+    --bar-bg:rgba(13,19,27,.86);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 34px -18px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D131B;
+  --surface:#151E2A;
+  --sunk:#1C2735;
+  --ink:#E5ECF5;
+  --sub:#A3B0C1;
+  --faint:#728093;
+  --line:#2A3646;
+  --accent:#7FA6FF;
+  --accent-ink:#0D131B;
+  --accent-soft:#1C2A47;
+  --hl:rgba(240,188,60,.42);
+  --ok:#5FC79B;
+  --ok-soft:#173327;
+  --warn:#F0A26E;
+  --warn-soft:#3A2416;
+  --bar-bg:rgba(13,19,27,.86);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 34px -18px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:1rem;
+  line-height:1.85;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:clamp(20px, 5vw, 48px) 56px;
+}
+.wrap{max-width:64rem; margin:0 auto; display:grid; gap:clamp(36px, 6vw, 56px)}
+.narrow{max-width:48rem}
+a{color:var(--accent); text-underline-offset:3px; text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px}
+h1,h2,h3,h4{margin:0; text-wrap:balance; line-height:1.4; word-break:auto-phrase}
+p{margin:0}
+ul,ol{margin:0; padding:0}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.hl{background:linear-gradient(transparent 60%, var(--hl) 60%); padding-inline:.1em}
+
+/* ── section heads ── */
+.sec{display:grid; gap:20px; min-width:0}
+.sec-head{display:grid; gap:6px}
+.eyebrow{font-family:var(--f-mono); font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:500}
+.sec-head h2{font-size:clamp(1.35rem, 3.6vw, 1.65rem); font-weight:900; letter-spacing:.01em}
+.sec-head p{color:var(--sub); max-width:44rem}
+
+/* ── ticket header ── */
+.ticket{
+  display:grid; grid-template-columns:minmax(0,1fr) auto;
+  background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow);
+  position:relative; overflow:hidden;
+}
+.ticket-main{padding:clamp(22px, 4.5vw, 36px); display:grid; gap:14px; min-width:0}
+.ticket .eyebrow{color:var(--sub)}
+.ticket h1{font-family:var(--f-display); font-weight:800; font-size:clamp(2rem, 6.4vw, 3.1rem); letter-spacing:-.01em; line-height:1.15}
+.ticket h1 .code{color:var(--accent)}
+.lead{font-size:1.05rem; max-width:38rem}
+.lead .en{font-family:var(--f-display); font-weight:600}
+.meta{font-family:var(--f-mono); font-size:.75rem; color:var(--faint); display:flex; flex-wrap:wrap; gap:4px 14px; align-items:center}
+.meta a{font-family:var(--f-body); font-size:.85rem; font-weight:700}
+.ticket-stub{
+  position:relative; padding:clamp(22px, 4.5vw, 32px) clamp(20px, 4vw, 30px);
+  border-left:2px dashed var(--line); background:var(--accent-soft);
+  display:grid; align-content:center; min-width:12.5rem;
+}
+.ticket-stub::before,.ticket-stub::after{content:""; position:absolute; left:-12px; width:22px; height:22px; border-radius:50%; background:var(--bg)}
+.ticket-stub::before{top:-11px}
+.ticket-stub::after{bottom:-11px}
+.stub-list{display:grid; gap:12px; margin:0}
+.stub-list div{display:grid; gap:0}
+.stub-list dt{font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--sub)}
+.stub-list dd{margin:0; font-family:var(--f-display); font-weight:700; font-size:1.3rem; line-height:1.25; font-variant-numeric:tabular-nums}
+.stub-list dd small{font-family:var(--f-body); font-weight:500; font-size:.8rem; color:var(--sub); margin-left:4px}
+@media (max-width:640px){
+  .ticket{grid-template-columns:1fr}
+  .ticket-stub{border-left:0; border-top:2px dashed var(--line); min-width:0}
+  .ticket-stub::before,.ticket-stub::after{top:-12px; bottom:auto}
+  .ticket-stub::before{left:-11px}
+  .ticket-stub::after{left:auto; right:-11px}
+  .stub-list{grid-template-columns:repeat(2, minmax(0,1fr))}
+}
+
+/* ── how to use + toc ── */
+.howto{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; list-style:none}
+.howto li{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px; display:grid; gap:4px; align-content:start}
+.howto b{font-size:1rem; line-height:1.6}
+.howto p{color:var(--sub); font-size:.88rem; line-height:1.75}
+.howto .k{font-family:var(--f-display); font-weight:800; color:var(--accent); font-size:1.15rem; line-height:1.2}
+.toc{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; list-style:none}
+.toc a{
+  display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:2px 12px;
+  padding:12px 14px; border-radius:12px; background:var(--surface); border:1px solid var(--line);
+  color:var(--ink); text-decoration:none; height:100%;
+}
+.toc a:hover{border-color:var(--accent)}
+.toc .no{grid-row:span 2; width:2.1rem; height:2.1rem; border-radius:50%; display:grid; place-items:center; border:2px solid var(--accent); color:var(--accent); font-family:var(--f-display); font-weight:800; font-size:.85rem}
+.toc .base .no{border-color:var(--faint); color:var(--sub)}
+.toc b{font-size:.95rem; line-height:1.45}
+.toc small{grid-column:2; font-family:var(--f-mono); font-size:.7rem; color:var(--faint)}
+.toc .n{grid-row:1 / span 2; grid-column:3; font-family:var(--f-mono); font-size:.8rem; color:var(--sub); font-variant-numeric:tabular-nums; white-space:nowrap}
+@media (max-width:820px){ .howto,.toc{grid-template-columns:repeat(2, minmax(0,1fr))} }
+@media (max-width:520px){ .howto,.toc{grid-template-columns:1fr} }
+
+/* ── toolbar ── */
+.no-js .toolbar{display:none}
+.toolbar{
+  display:grid; gap:10px; padding:14px 16px; border-radius:var(--radius);
+  background:var(--bar-bg); border:1px solid var(--line); box-shadow:var(--shadow);
+  -webkit-backdrop-filter:saturate(1.4) blur(10px); backdrop-filter:saturate(1.4) blur(10px);
+  min-width:0;
+}
+@media (min-width:721px){ .toolbar{position:sticky; top:10px; z-index:5} }
+.search{display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:0 12px; min-width:0}
+.search:focus-within{border-color:var(--accent)}
+.search svg{width:18px; height:18px; color:var(--faint); flex:none}
+.search input{flex:1; min-width:0; font:inherit; font-size:1rem; color:var(--ink); background:transparent; border:0; outline:0; padding:9px 0}
+.search kbd{font-family:var(--f-mono); font-size:.7rem; color:var(--faint); border:1px solid var(--line); border-radius:6px; padding:0 6px}
+@media (hover:none){ .search kbd{display:none} }
+.bar-row{display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; justify-content:space-between; min-width:0}
+.chips,.toggles{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; min-width:0; padding-block:2px}
+.chips::-webkit-scrollbar,.toggles::-webkit-scrollbar{display:none}
+.chip,.tg{
+  font:inherit; font-size:.8rem; line-height:1.4; white-space:nowrap; cursor:pointer;
+  padding:5px 12px; border-radius:99px; border:1px solid var(--line); background:var(--surface); color:var(--sub);
+}
+.chip:hover,.tg:hover{color:var(--ink); border-color:var(--faint)}
+.chip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:700}
+.tg[aria-pressed="true"]{background:var(--accent-soft); border-color:var(--accent); color:var(--accent); font-weight:700}
+.status{font-size:.8rem; color:var(--sub); font-variant-numeric:tabular-nums}
+.status b{font-family:var(--f-mono); color:var(--ink)}
+.empty{background:var(--surface); border:1px dashed var(--line); border-radius:var(--radius); padding:28px 20px; text-align:center; color:var(--sub)}
+.empty b{display:block; color:var(--ink); font-size:1.05rem}
+
+/* ── domains ── */
+.domains{display:grid; gap:clamp(36px, 6vw, 52px)}
+.dom{display:grid; gap:18px; min-width:0; scroll-margin-top:12rem}
+.dom-head{display:grid; grid-template-columns:auto minmax(0,1fr); gap:4px 16px; align-items:start}
+.dom-no{
+  grid-row:span 3; width:3rem; height:3rem; border-radius:50%; display:grid; place-items:center;
+  background:var(--accent); color:var(--accent-ink); font-family:var(--f-display); font-weight:800; font-size:1.1rem;
+}
+.dom[data-dom="base"] .dom-no{background:var(--sub); color:var(--surface)}
+.dom-head h2{font-size:clamp(1.3rem, 3.4vw, 1.6rem); font-weight:900}
+.dom-head p{color:var(--sub); font-size:.93rem; max-width:44rem}
+.dom-head .eyebrow b{font-weight:600}
+.sub{display:grid; gap:12px; min-width:0}
+.sub h3{font-size:.95rem; font-weight:700; color:var(--sub); display:flex; align-items:center; gap:12px}
+.sub h3::after{content:""; flex:1; height:1px; background:var(--line)}
+.terms{display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap:12px}
+
+/* ── term card ── */
+.term{
+  display:flex; flex-direction:column; gap:8px; min-width:0; scroll-margin-top:12rem;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px 12px;
+  transition:border-color .2s;
+}
+.term:target{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft)}
+.t-name{font-size:1.05rem; font-weight:900; line-height:1.5; display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 8px}
+.t-name small{flex-basis:100%; font-family:var(--f-mono); font-weight:400; font-size:.72rem; color:var(--faint); line-height:1.5; overflow-wrap:anywhere}
+.star{font-family:var(--f-mono); font-size:.66rem; font-weight:600; color:var(--accent); background:var(--accent-soft); border-radius:99px; padding:1px 8px; letter-spacing:.04em; white-space:nowrap; transform:translateY(-2px)}
+.def{font-size:.93rem; line-height:1.8}
+.tip{font-size:.85rem; line-height:1.75; color:var(--ink); background:var(--sunk); border-radius:10px; padding:9px 12px}
+.tip b{font-size:.75rem; font-weight:700; color:var(--accent); letter-spacing:.06em; margin-right:6px}
+.t-foot{display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:auto; padding-top:4px}
+.refs{font-family:var(--f-mono); font-size:.7rem; color:var(--faint); margin-right:auto; display:flex; flex-wrap:wrap; gap:0 4px}
+.refs a{color:var(--faint); text-decoration:none}
+.refs a:hover{color:var(--accent)}
+.got,.peek{font:inherit; font-size:.75rem; line-height:1.4; cursor:pointer; padding:3px 10px; border-radius:99px; border:1px solid var(--line); background:transparent; color:var(--sub); white-space:nowrap}
+.got:hover,.peek:hover{color:var(--ink); border-color:var(--faint)}
+.got[aria-pressed="true"]{background:var(--ok); border-color:var(--ok); color:var(--surface); font-weight:700}
+.term.is-got{border-color:color-mix(in srgb, var(--ok) 45%, var(--line))}
+.peek{display:none}
+.quiz .peek{display:inline-block}
+.quiz .term:not(.open) .def,.quiz .term:not(.open) .tip{filter:blur(6px); user-select:none; -webkit-user-select:none}
+.def,.tip{transition:filter .25s}
+
+/* ── pairs ── */
+.pairs{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px}
+.pair{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; display:flex; flex-direction:column; gap:10px; min-width:0}
+.pair h3{font-size:1.02rem; font-weight:900; line-height:1.5}
+.pair h3 i{font-style:normal; font-family:var(--f-mono); font-weight:500; font-size:.75rem; color:var(--faint); margin-inline:6px}
+.pair dl{margin:0; display:grid; gap:6px}
+.pair dl div{display:grid; grid-template-columns:minmax(0, 7.5rem) minmax(0,1fr); gap:10px; font-size:.88rem; line-height:1.7}
+.pair dt{font-weight:700}
+.pair dd{margin:0; color:var(--sub)}
+.rule{font-size:.86rem; background:var(--accent-soft); border-radius:10px; padding:9px 12px; line-height:1.7}
+.rule b{color:var(--accent); font-size:.75rem; letter-spacing:.06em; margin-right:6px}
+.pair .refs{margin:auto 0 0}
+@media (max-width:720px){ .pairs{grid-template-columns:1fr} }
+@media (max-width:420px){ .pair dl div{grid-template-columns:1fr; gap:0} }
+
+/* ── renames table ── */
+.table-wrap{overflow-x:auto; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius)}
+table{width:100%; min-width:40rem; border-collapse:collapse; font-size:.88rem; line-height:1.65}
+th,td{text-align:left; vertical-align:top; padding:12px 16px; border-top:1px solid var(--line)}
+thead th{border-top:0; font-size:.75rem; font-family:var(--f-mono); letter-spacing:.06em; color:var(--sub); font-weight:500; background:var(--sunk)}
+td.old{color:var(--sub)}
+td.new{font-weight:700}
+td.note{color:var(--sub)}
+td.r{font-family:var(--f-mono); font-size:.72rem; white-space:nowrap}
+td.r a{color:var(--faint); text-decoration:none}
+
+/* ── notes, sources ── */
+.notes{list-style:none; display:grid; gap:0; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden}
+.notes li{display:grid; grid-template-columns:auto minmax(0,1fr); gap:14px; padding:16px 20px; border-top:1px solid var(--line)}
+.notes li:first-child{border-top:0}
+.notes .x{font-family:var(--f-mono); font-weight:600; font-size:.72rem; color:var(--warn); background:var(--warn-soft); border-radius:6px; padding:2px 8px; height:max-content; margin-top:3px; white-space:nowrap}
+.notes b{display:block; font-size:.98rem; line-height:1.6}
+.notes p{color:var(--sub); font-size:.88rem}
+.sources{list-style:none; display:grid; gap:0; counter-reset:src}
+.sources li{display:grid; grid-template-columns:2.6rem minmax(0,1fr); gap:2px 12px; padding:12px 0; border-top:1px solid var(--line); scroll-margin-top:12rem}
+.sources li::before{counter-increment:src; content:"[" counter(src) "]"; font-family:var(--f-mono); font-size:.8rem; color:var(--faint); padding-top:2px; grid-row:span 3}
+.sources li:target{background:var(--accent-soft); border-radius:8px}
+.src-title{font-weight:700; font-size:.93rem; line-height:1.55}
+.src-meta{display:flex; flex-wrap:wrap; gap:4px 10px; font-size:.78rem; color:var(--sub); align-items:center}
+.tag{font-family:var(--f-mono); font-size:.68rem; padding:1px 8px; border-radius:99px; background:var(--ok-soft); color:var(--ok); font-weight:600}
+.src-note{font-size:.85rem; color:var(--sub); line-height:1.7}
+.src-cols{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:0 32px}
+@media (max-width:820px){ .src-cols{grid-template-columns:1fr} }
+footer{font-size:.8rem; color:var(--faint); border-top:1px solid var(--line); padding-top:20px; display:grid; gap:4px}
+
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important; scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 受験票ふうヘッダー -->
+  <header class="ticket">
+    <div class="ticket-main">
+      <p class="eyebrow">Microsoft 認定資格 · アソシエイト · Glossary</p>
+      <h1><span class="code">AI-103</span> 用語集</h1>
+      <p class="lead"><span class="en">Developing AI Apps and Agents on Azure</span> の出題範囲に出てくる言葉を、分野ごとにかみ砕いて解説します。試験で「どれを選ぶか」の判断に効くポイントも添えました。</p>
+      <p class="meta"><span>調査日 2026-10-25</span><span>出題範囲 2026-04-16 版</span><span>公式ドキュメントで確認</span><a href="study_ai-103-roadmap.html">→ AI-103 合格ロードマップ</a></p>
+    </div>
+    <div class="ticket-stub">
+      <dl class="stub-list">
+        <div><dt>収録</dt><dd><span data-total>187</span><small>語</small></dd></div>
+        <div><dt>★ 重要</dt><dd><span data-stars>71</span><small>語</small></dd></div>
+        <div><dt>分野</dt><dd>5<small>＋基礎</small></dd></div>
+        <div><dt>出典</dt><dd>30<small>ページ</small></dd></div>
+      </dl>
+    </div>
+  </header>
+
+  <!-- 使い方と目次 -->
+  <section class="sec" aria-labelledby="h-howto">
+    <div class="sec-head">
+      <p class="eyebrow">How to use</p>
+      <h2 id="h-howto">まずは「★」だけで一周するのがおすすめです</h2>
+      <p>★は、公式の出題範囲（study guide）に名指しで出てくる言葉や、選択肢を選ぶ判断に直結する言葉です。<a class="refs-inline" href="#src-1">[1]</a></p>
+    </div>
+    <ul class="howto">
+      <li><span class="k">1. さがす</span><b>検索と分野で絞り込む</b><p>「PTU」「マスク」のように、知らない言葉をそのまま入れると見つかります。キーボードの / で検索欄に移動します。</p></li>
+      <li><span class="k">2. ためす</span><b>テストモードで暗記チェック</b><p>説明がぼかされます。言葉を見て意味を言えるか試し、「意味を見る」で答え合わせします。</p></li>
+      <li><span class="k">3. つぶす</span><b>「覚えた」で印をつける</b><p>覚えた語は「未習得だけ」で隠せます。印はこのブラウザにだけ保存されます。</p></li>
+    </ul>
+    <nav aria-label="分野の目次">
+      <ol class="toc">
+        <li class="base"><a href="#d-base"><span class="no">0</span><b>基礎（全分野共通）</b><small>AI の基本用語</small><span class="n" data-dcount="base">—</span></a></li>
+        <li><a href="#d-plan"><span class="no">1</span><b>AIソリューションの計画・管理</b><small>配点 25–30%</small><span class="n" data-dcount="plan">—</span></a></li>
+        <li><a href="#d-gen"><span class="no">2</span><b>生成AI・エージェントの実装</b><small>配点 30–35%</small><span class="n" data-dcount="gen">—</span></a></li>
+        <li><a href="#d-vision"><span class="no">3</span><b>コンピュータービジョン</b><small>配点 10–15%</small><span class="n" data-dcount="vision">—</span></a></li>
+        <li><a href="#d-text"><span class="no">4</span><b>テキスト分析（言語・音声）</b><small>配点 10–15%</small><span class="n" data-dcount="text">—</span></a></li>
+        <li><a href="#d-extract"><span class="no">5</span><b>情報抽出（検索・文書）</b><small>配点 10–15%</small><span class="n" data-dcount="extract">—</span></a></li>
+      </ol>
+    </nav>
+  </section>
+
+  <!-- 用語本体 -->
+  <section class="sec" aria-labelledby="h-terms">
+    <div class="sec-head">
+      <p class="eyebrow">Glossary</p>
+      <h2 id="h-terms">分野別の用語</h2>
+      <p>各カードの [番号] は、下の「根拠にした情報」の番号です。「ツボ」は試験で選択肢を選ぶときの手がかりです。</p>
+    </div>
+
+    <div class="toolbar" id="toolbar">
+      <label class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+        <input type="search" id="q" placeholder="用語をさがす（例：PTU、マスク、承認）" autocomplete="off" aria-label="用語をさがす">
+        <kbd>/</kbd>
+      </label>
+      <div class="bar-row">
+        <div class="chips" role="group" aria-label="分野で絞り込み">
+          <button type="button" class="chip" data-dom="all" aria-pressed="true">すべて</button>
+          <button type="button" class="chip" data-dom="base" aria-pressed="false">基礎</button>
+          <button type="button" class="chip" data-dom="plan" aria-pressed="false">1 計画・管理</button>
+          <button type="button" class="chip" data-dom="gen" aria-pressed="false">2 生成AI・エージェント</button>
+          <button type="button" class="chip" data-dom="vision" aria-pressed="false">3 ビジョン</button>
+          <button type="button" class="chip" data-dom="text" aria-pressed="false">4 テキスト分析</button>
+          <button type="button" class="chip" data-dom="extract" aria-pressed="false">5 情報抽出</button>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="toggles" role="group" aria-label="表示の切り替え">
+          <button type="button" class="tg" data-toggle="star" aria-pressed="false">★ だけ</button>
+          <button type="button" class="tg" data-toggle="todo" aria-pressed="false">未習得だけ</button>
+          <button type="button" class="tg" data-toggle="quiz" aria-pressed="false">テストモード</button>
+        </div>
+        <p class="status" aria-live="polite"><b id="shown">—</b> 語を表示 ・ 覚えた <b id="gotn">0</b> / <span data-total>187</span></p>
+      </div>
+    </div>
+
+    <p class="empty" id="empty" hidden><b>該当する用語がありません</b>言葉を短くするか、分野や「★ だけ」「未習得だけ」の絞り込みを外してみてください。</p>
+
+    <div class="domains">
+
+    <!-- ───────── 0 基礎 ───────── -->
+    <section class="dom" id="d-base" data-dom="base" aria-labelledby="h-base">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">0</span>
+        <p class="eyebrow">Basics · 全分野共通</p>
+        <h2 id="h-base">基礎（全分野共通）</h2>
+        <p>どの分野の問題文にも出てくる、AI の土台になる言葉です。ここがあいまいだと他の説明が頭に入りにくくなります。</p>
+      </div>
+      <div class="sub">
+        <h3>モデルの種類</h3>
+        <div class="terms">
+          <article class="term" id="t-llm" data-star><h4 class="t-name">LLM（大規模言語モデル）<span class="star">★ 重要</span><small>Large language model</small></h4><p class="def">大量の文章で学習した、文章を理解して書く AI モデルです。会話・要約・推論・コード生成など、幅広くこなします。</p><p class="tip"><b>ツボ</b>「難しい推論」「幅広い用途」なら LLM。安さ・速さが条件なら SLM と比べて選ぶ、という形で問われます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-slm"><h4 class="t-name">SLM（小規模言語モデル）<small>Small language model</small></h4><p class="def">中身の規模が小さく、軽くて安く速いモデルです。Microsoft の Phi シリーズなどがあります。</p><p class="tip"><b>ツボ</b>単純な分類や定型処理で、低コスト・低遅延が条件なら SLM が候補です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-27">[27]</a></span></div></article>
+          <article class="term" id="t-multimodal" data-star><h4 class="t-name">マルチモーダルモデル<span class="star">★ 重要</span><small>Multimodal model</small></h4><p class="def">文章だけでなく、画像・音声・動画もいっしょに入力して理解できるモデルです。</p><p class="tip"><b>ツボ</b>「写真について質問に答える」「図表を読む」なら、マルチモーダルモデルを選びます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-code"><h4 class="t-name">コードモデル<small>Code model</small></h4><p class="def">プログラムの生成・説明・修正が得意なモデルです。出題範囲では「デプロイして使うモデル」の1つとして挙がっています。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-reasoning"><h4 class="t-name">推論モデル<small>Reasoning model</small></h4><p class="def">答える前に、内部で段階的に考えてから回答するモデルです。複雑な問題に強い代わりに、時間とトークンを多く使います。</p><div class="t-foot"><span class="refs"><a href="#src-11">[11]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>入力と出力の単位</h3>
+        <div class="terms">
+          <article class="term" id="t-token" data-star><h4 class="t-name">トークン<span class="star">★ 重要</span><small>Token</small></h4><p class="def">モデルが文章を読み書きするときの細かい単位です。料金、1分あたりの上限（TPM）、一度に読める量は、すべてトークン数で決まります。</p><div class="t-foot"><span class="refs"><a href="#src-4">[4]</a></span></div></article>
+          <article class="term" id="t-context"><h4 class="t-name">コンテキストウィンドウ<small>Context window</small></h4><p class="def">モデルが1回で読める量（トークン数）の上限です。会話の履歴や検索結果を詰め込みすぎると、ここを超えてしまいます。</p><div class="t-foot"><span class="refs"><a href="#src-11">[11]</a></span></div></article>
+          <article class="term" id="t-prompt"><h4 class="t-name">プロンプトと指示（システムメッセージ）<small>Prompt / instructions</small></h4><p class="def">プロンプトは AI への入力文です。指示（instructions、システムメッセージ）は、AI の役割・ルール・口調を最初に決めておく文章です。</p><div class="t-foot"><span class="refs"><a href="#src-3">[3]</a></span></div></article>
+          <article class="term" id="t-embedding" data-star><h4 class="t-name">埋め込み（ベクター）<span class="star">★ 重要</span><small>Embedding</small></h4><p class="def">文章や画像の「意味」を数字の並びに変えたものです。意味が近いものほど数字も近くなるので、言い換えでも見つけられる「意味の検索」ができます。</p><div class="t-foot"><span class="refs"><a href="#src-28">[28]</a><a href="#src-29">[29]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>品質と提供状態</h3>
+        <div class="terms">
+          <article class="term" id="t-grounding" data-star><h4 class="t-name">グラウンディング<span class="star">★ 重要</span><small>Grounding</small></h4><p class="def">AI の回答を、社内文書や検索結果などの信頼できる情報に「根拠づける」ことです。RAG は代表的なグラウンディングの方法です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-5">[5]</a></span></div></article>
+          <article class="term" id="t-fabrication" data-star><h4 class="t-name">ハルシネーション（作り話）<span class="star">★ 重要</span><small>Fabrication / hallucination</small></h4><p class="def">根拠がないのに、もっともらしい内容を AI が作ってしまうことです。出題範囲では fabrications（作り話）の検出として出てきます。</p><p class="tip"><b>ツボ</b>対策の答えは「グラウンディング」と「根拠性（Groundedness）の評価・検出」です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-15">[15]</a></span></div></article>
+          <article class="term" id="t-ga"><h4 class="t-name">GA とプレビュー<small>General availability / Preview</small></h4><p class="def">GA は正式提供、プレビューはお試し提供（品質保証の SLA なし）です。試験は主に GA の機能から出ますが、よく使われるプレビュー機能が出ることもあります。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-sdk"><h4 class="t-name">SDK と REST API<small>SDK / REST API</small></h4><p class="def">どちらもプログラムからサービスを使う方法です。REST API は URL に直接リクエストを送る窓口、SDK はそれを Python などから簡単に呼べるようにした部品集です。</p><p class="tip"><b>ツボ</b>受験者像は「Python でアプリを開発した経験がある人」です。コードは読める程度に慣れておきます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-2">[2]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── 1 計画・管理 ───────── -->
+    <section class="dom" id="d-plan" data-dom="plan" aria-labelledby="h-plan">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">1</span>
+        <p class="eyebrow">Domain 1 · 配点 <b>25–30%</b></p>
+        <h2 id="h-plan">AIソリューションの計画・管理</h2>
+        <p>Foundry の仕組み、モデルの置き方、権限とネットワーク、監視、責任あるAIの設定です。「この条件ならどの設定か」を問う問題が多い分野です。</p>
+      </div>
+      <div class="sub">
+        <h3>Foundry の基本</h3>
+        <div class="terms">
+          <article class="term" id="t-foundry" data-star><h4 class="t-name">Microsoft Foundry<span class="star">★ 重要</span><small>旧 Azure AI Foundry／Azure AI Studio</small></h4><p class="def">エージェント・モデル・ツールを1か所にまとめて、作る・試す・公開する・見張るための Azure の基盤です。権限・ネットワーク・ポリシーも1つの単位で管理できます。</p><p class="tip"><b>ツボ</b>この試験の主役です。教材や問題文の「Azure AI Foundry」は同じものを指します。</p><div class="t-foot"><span class="refs"><a href="#src-2">[2]</a></span></div></article>
+          <article class="term" id="t-resource"><h4 class="t-name">Foundry リソース<small>Foundry resource</small></h4><p class="def">Azure 上に作る「親の箱」です。管理・セキュリティ・監視の境界になり、この中にプロジェクトを作ります。以前の「Hub＋Azure OpenAI＋AI Services」の組み合わせが1つにまとまりました。</p><div class="t-foot"><span class="refs"><a href="#src-2">[2]</a><a href="#src-12">[12]</a></span></div></article>
+          <article class="term" id="t-project" data-star><h4 class="t-name">Foundry プロジェクト<span class="star">★ 重要</span><small>Foundry project</small></h4><p class="def">リソースの中に作る、チームごとの作業部屋です。エージェント・データ・権限をプロジェクト単位で分けます。アプリは「プロジェクトのエンドポイント」1つに接続して使います。</p><p class="tip"><b>ツボ</b>出題範囲に「アプリを Foundry プロジェクトに接続する設定」がはっきり書かれています。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-2">[2]</a><a href="#src-12">[12]</a></span></div></article>
+          <article class="term" id="t-portal"><h4 class="t-name">Foundry ポータル<small>ai.azure.com</small></h4><p class="def">ブラウザで使う Foundry の画面です。プレイグラウンド（お試し画面）で、モデルやエージェントをコードなしで試せます。旧画面は Foundry (classic) と呼ばれます。</p><div class="t-foot"><span class="refs"><a href="#src-2">[2]</a></span></div></article>
+          <article class="term" id="t-tools" data-star><h4 class="t-name">Foundry Tools<span class="star">★ 重要</span><small>旧 Azure AI Services</small></h4><p class="def">Speech（音声）、Translator（翻訳）、Language（文章分析）、Document Intelligence、Content Understanding、Vision など、用途別の AI 部品の総称です。</p><div class="t-foot"><span class="refs"><a href="#src-2">[2]</a></span></div></article>
+          <article class="term" id="t-catalog"><h4 class="t-name">Foundry Models（モデルカタログ）<small>Model catalog</small></h4><p class="def">Microsoft、OpenAI、Anthropic、Meta などの1万を超えるモデルから選べる一覧です。</p><div class="t-foot"><span class="refs"><a href="#src-2">[2]</a></span></div></article>
+          <article class="term" id="t-benchmark"><h4 class="t-name">モデルベンチマーク<small>Model benchmarks</small></h4><p class="def">公開データや自社のデータで、モデルの品質や性能を比べる機能です。どのモデルを使うかを決める判断材料になります。</p><div class="t-foot"><span class="refs"><a href="#src-14">[14]</a></span></div></article>
+          <article class="term" id="t-router"><h4 class="t-name">モデルルーター<small>Model router</small></h4><p class="def">1つのデプロイの裏側で、質問ごとに最適なモデルを自動で選ぶ仕組みです。Balanced（既定）、Quality（品質優先）、Cost（コスト優先）の3つのモードがあります。</p><p class="tip"><b>ツボ</b>「簡単な質問は安いモデル、難しい質問は賢いモデルに自動で振り分けたい」ならこれです。</p><div class="t-foot"><span class="refs"><a href="#src-11">[11]</a></span></div></article>
+          <article class="term" id="t-azd"><h4 class="t-name">Azure Developer CLI（azd）<small>azd</small></h4><p class="def">コマンドで、AI アプリやホステッドエージェントのひな形作成・テスト・デプロイを行うツールです。</p><div class="t-foot"><span class="refs"><a href="#src-2">[2]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>デプロイとキャパシティ</h3>
+        <div class="terms">
+          <article class="term" id="t-deploy"><h4 class="t-name">デプロイ<small>Deployment</small></h4><p class="def">モデルを、アプリから呼び出せる状態に設置することです。アプリはデプロイ名を指定して呼びます。一部のモデルは、デプロイせず名前だけで呼べる「インスタントアクセス（プレビュー）」も使えます。</p><div class="t-foot"><span class="refs"><a href="#src-4">[4]</a></span></div></article>
+          <article class="term" id="t-deploytype" data-star><h4 class="t-name">デプロイの種類<span class="star">★ 重要</span><small>Deployment types</small></h4><p class="def">「データをどこで処理するか（Global／Data Zone／地域）」と「どう払うか（従量課金／予約／バッチ）」の組み合わせです。</p><p class="tip"><b>ツボ</b>迷ったら Global Standard から始める、というのが公式の推奨です。理由（データの所在・予約・一括処理）があるときだけ他を選びます。</p><div class="t-foot"><span class="refs"><a href="#src-4">[4]</a></span></div></article>
+          <article class="term" id="t-gs"><h4 class="t-name">Global Standard<small>GlobalStandard</small></h4><p class="def">既定のおすすめです。新しいモデルが最初に出て、価格が一番安く、使える地域も最多です。代わりに、どの地域で処理されるかは選べません。</p><div class="t-foot"><span class="refs"><a href="#src-4">[4]</a></span></div></article>
+          <article class="term" id="t-dz"><h4 class="t-name">Data Zone<small>DataZoneStandard など</small></h4><p class="def">処理を US・EU・APAC（アジア太平洋）の範囲内に限定する種類です。「EU の外で処理してはいけない」などの要件があるときに選びます。</p><div class="t-foot"><span class="refs"><a href="#src-4">[4]</a></span></div></article>
+          <article class="term" id="t-ptu" data-star><h4 class="t-name">プロビジョンド（PTU）<span class="star">★ 重要</span><small>Provisioned throughput unit</small></h4><p class="def">処理能力を PTU という単位で予約する方式です。遅延のばらつきが小さく、毎日安定して大量に使う本番向けです。</p><p class="tip"><b>ツボ</b>「予測できる大量の負荷」「遅延を安定させたい」→ PTU。</p><div class="t-foot"><span class="refs"><a href="#src-4">[4]</a></span></div></article>
+          <article class="term" id="t-batch"><h4 class="t-name">バッチ<small>Global Batch／Data Zone Batch</small></h4><p class="def">大量のリクエストを1ファイルにまとめて送り、あとで結果を受け取る方式です。24時間以内の完了が目標で、Global Standard より50%安くなります。</p><p class="tip"><b>ツボ</b>「急がない大量処理を安く」→ バッチ。リアルタイム応答には使えません。</p><div class="t-foot"><span class="refs"><a href="#src-4">[4]</a></span></div></article>
+          <article class="term" id="t-developer"><h4 class="t-name">Developer デプロイ<small>DeveloperTier</small></h4><p class="def">ファインチューニングしたモデルを試すためだけの種類です。24時間で自動的に削除され、SLA もありません。</p><div class="t-foot"><span class="refs"><a href="#src-4">[4]</a></span></div></article>
+          <article class="term" id="t-serverless"><h4 class="t-name">サーバーレス API とマネージドコンピューティング<small>Serverless API / Managed compute</small></h4><p class="def">サーバーレスは、Microsoft が運用するモデルを従量課金で使う方式です。マネージドコンピューティングは、オープンソースや独自のモデルを専用の計算資源に載せる方式です。上の「デプロイの種類」はサーバーレス側の話です。</p><div class="t-foot"><span class="refs"><a href="#src-4">[4]</a></span></div></article>
+          <article class="term" id="t-quota" data-star><h4 class="t-name">クォータ（TPM／RPM）<span class="star">★ 重要</span><small>Quota</small></h4><p class="def">1分あたりに使えるトークン数（TPM）とリクエスト数（RPM）の上限です。デプロイや地域ごとに割り当てて使います。</p><div class="t-foot"><span class="refs"><a href="#src-4">[4]</a><a href="#src-11">[11]</a></span></div></article>
+          <article class="term" id="t-429"><h4 class="t-name">レート制限と 429 エラー<small>Rate limit</small></h4><p class="def">上限を超えたときに返る「混みすぎ」のエラーです。時間をあけての再試行、クォータの増加申請、別の地域の利用、PTU への切り替えなどで対処します。</p><div class="t-foot"><span class="refs"><a href="#src-4">[4]</a><a href="#src-22">[22]</a></span></div></article>
+          <article class="term" id="t-cost"><h4 class="t-name">コストの管理<small>Cost footprint</small></h4><p class="def">生成AIの費用は、おもに「トークン量 × 単価」で決まります。小さいモデル、バッチ、モデルルーター、プロンプトキャッシュの活用で下げられます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-4">[4]</a><a href="#src-11">[11]</a></span></div></article>
+          <article class="term" id="t-cicd" data-star><h4 class="t-name">CI/CD<span class="star">★ 重要</span><small>Continuous integration / deployment</small></h4><p class="def">コードの変更を自動でテストし、本番環境まで自動で届ける仕組みです（GitHub Actions、Azure DevOps など）。プロンプトエージェントも、SDK や REST で定義すればパイプラインに組み込めます。</p><p class="tip"><b>ツボ</b>評価を「品質の関門（品質ゲート）」としてパイプラインに入れる考え方も押さえます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-3">[3]</a><a href="#src-14">[14]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>セキュリティ</h3>
+        <div class="terms">
+          <article class="term" id="t-entra"><h4 class="t-name">Microsoft Entra ID<small>旧 Azure Active Directory</small></h4><p class="def">Microsoft の ID とアクセス管理の仕組みです。人・アプリ・エージェントが「誰なのか」を証明します。</p><div class="t-foot"><span class="refs"><a href="#src-12">[12]</a></span></div></article>
+          <article class="term" id="t-keyless" data-star><h4 class="t-name">キーレス認証<span class="star">★ 重要</span><small>Keyless credentials</small></h4><p class="def">API キー（合鍵のような文字列）を使わず、Entra ID で認証することです。キーは全権を持ち、役割による制限が効きません。</p><p class="tip"><b>ツボ</b>「RBAC で細かく権限を絞りたい」「キーの漏えいを防ぎたい」→ キーレス（Entra ID）。</p><div class="t-foot"><span class="refs"><a href="#src-12">[12]</a></span></div></article>
+          <article class="term" id="t-mi" data-star><h4 class="t-name">マネージド ID<span class="star">★ 重要</span><small>Managed identity</small></h4><p class="def">Azure がアプリやプロジェクトに自動で発行する「社員証」です。パスワードやキーを管理せずに、ほかの Azure サービスへ安全にアクセスできます。</p><p class="tip"><b>ツボ</b>例：プロジェクトのマネージド ID に、ストレージの「Storage Blob Data Reader」ロールを付けて資料を読ませる。</p><div class="t-foot"><span class="refs"><a href="#src-12">[12]</a></span></div></article>
+          <article class="term" id="t-rbac" data-star><h4 class="t-name">RBAC（ロールベースのアクセス制御）<span class="star">★ 重要</span><small>Role-based access control</small></h4><p class="def">「誰に」「どの範囲（スコープ）で」「どの役割（ロール）を」与えるかで権限を決める仕組みです。必要最小限の権限だけを与えるのが基本です。</p><div class="t-foot"><span class="refs"><a href="#src-12">[12]</a></span></div></article>
+          <article class="term" id="t-roles" data-star><h4 class="t-name">Foundry の組み込みロール<span class="star">★ 重要</span><small>Foundry User ほか</small></h4><p class="def">目安は、Foundry User＝作って試す開発者、Foundry Project Manager＝プロジェクトの管理とエージェントの公開、Foundry Account Owner＝リソースとモデルの管理、Foundry Owner＝すべて、Foundry Agent Consumer＝エージェントを呼ぶだけ、です。</p><p class="tip"><b>ツボ</b>旧名は Azure AI User、Azure AI Project Manager など。教材によって旧名のことがあります。</p><div class="t-foot"><span class="refs"><a href="#src-12">[12]</a></span></div></article>
+          <article class="term" id="t-network" data-star><h4 class="t-name">プライベートネットワーク<span class="star">★ 重要</span><small>Private networking / VNet</small></h4><p class="def">インターネットに出さず、会社の仮想ネットワーク（VNet）の中だけで通信させる構成です。プライベートエンドポイントで、Azure のサービスを社内側につなぎます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-3">[3]</a></span></div></article>
+          <article class="term" id="t-agentid"><h4 class="t-name">エージェント ID<small>Agent identity</small></h4><p class="def">エージェントごとに専用の Entra ID を持たせ、アクセスできる範囲を個別に絞る仕組みです。利用者本人の権限で動かす OBO（On-Behalf-Of）にも対応します。</p><div class="t-foot"><span class="refs"><a href="#src-3">[3]</a></span></div></article>
+          <article class="term" id="t-policy"><h4 class="t-name">Azure Policy<small>Azure Policy</small></h4><p class="def">組織のルールを強制する仕組みです。例：特定のデプロイの種類を使えなくする、使ってよいモデルを制限する。</p><div class="t-foot"><span class="refs"><a href="#src-4">[4]</a><a href="#src-11">[11]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>監視とガバナンス</h3>
+        <div class="terms">
+          <article class="term" id="t-controlplane"><h4 class="t-name">Foundry Control Plane<small>Foundry Control Plane</small></h4><p class="def">複数のプロジェクトにまたがるエージェント・モデル・ツールを一覧し、品質・コンプライアンス・セキュリティ・コスト・トークン使用量をまとめて管理する画面です（ポータルの Operate）。</p><div class="t-foot"><span class="refs"><a href="#src-13">[13]</a></span></div></article>
+          <article class="term" id="t-gateway"><h4 class="t-name">AI ゲートウェイ<small>Azure API Management</small></h4><p class="def">モデルの手前に置く「関所」です。トークン上限の強制など、高度なガバナンス機能を使うときに必要です。</p><div class="t-foot"><span class="refs"><a href="#src-13">[13]</a></span></div></article>
+          <article class="term" id="t-appinsights"><h4 class="t-name">Application Insights／Azure Monitor<small>Application Insights</small></h4><p class="def">トレースや数値（トークン量・遅延・エラー率）を保存し、ダッシュボードやアラートで確認する Azure の監視サービスです。</p><div class="t-foot"><span class="refs"><a href="#src-14">[14]</a></span></div></article>
+          <article class="term" id="t-drift" data-star><h4 class="t-name">ドリフト<span class="star">★ 重要</span><small>Drift</small></h4><p class="def">時間がたつにつれてデータや使われ方が変わり、AI の品質がじわじわ落ちていくことです。テストデータで定期的に評価して見つけます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-14">[14]</a></span></div></article>
+          <article class="term" id="t-index-health"><h4 class="t-name">取り込みの品質とインデックスの健全性<small>Ingestion quality / index health</small></h4><p class="def">RAG の検索側の監視です。取り込みの失敗や古いデータがないか、検索の当たり具合（関連性）が落ちていないかを見ます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>責任あるAI</h3>
+        <div class="terms">
+          <article class="term" id="t-responsible"><h4 class="t-name">責任あるAI<small>Responsible AI</small></h4><p class="def">AI を安全・公平に使うための考え方と仕組みです。Microsoft は、公平性、信頼性と安全性、プライバシーとセキュリティ、包括性、透明性、説明責任の6原則を掲げています。</p><p class="tip"><b>ツボ</b>出題範囲では、フィルター・評価・監査・承認フローといった「具体的な設定」として出てきます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-guardrail" data-star><h4 class="t-name">ガードレールとコントロール<span class="star">★ 重要</span><small>Guardrails and controls</small></h4><p class="def">ガードレールは安全対策の設定のまとまりで、中身は複数のコントロールです。1つのコントロールは「どのリスクを」「どこで（介入ポイント）」「どうするか（注釈／ブロック）」を決めます。モデルの既定は Microsoft.DefaultV2 です。</p><p class="tip"><b>ツボ</b>エージェントに割り当てたガードレールは、モデル側の設定を完全に上書きします。割り当てがなければ、モデルのものを引き継ぎます。</p><div class="t-foot"><span class="refs"><a href="#src-16">[16]</a></span></div></article>
+          <article class="term" id="t-intervention" data-star><h4 class="t-name">介入ポイント<span class="star">★ 重要</span><small>Intervention points</small></h4><p class="def">チェックをかける場所のことで、ユーザー入力・ツール呼び出し・ツールの応答・最終出力の4つです。ツールの2つはエージェントだけ（プレビュー）です。</p><div class="t-foot"><span class="refs"><a href="#src-16">[16]</a></span></div></article>
+          <article class="term" id="t-harm"><h4 class="t-name">有害カテゴリとブロックレベル<small>Hate／Sexual／Violence／Self-harm</small></h4><p class="def">ヘイト・性的・暴力・自傷の4つを重大度で判定します。ブロックレベル Low は「重大度が高いものだけ止める（ゆるい）」、High は「低〜高まで全部止める（厳しい）」です。</p><p class="tip"><b>ツボ</b>名前と厳しさが逆に感じやすいので注意。正当な文章まで止まるときは、レベルを下げるか「注釈のみ」にします。</p><div class="t-foot"><span class="refs"><a href="#src-16">[16]</a></span></div></article>
+          <article class="term" id="t-contentsafety"><h4 class="t-name">Azure AI Content Safety<small>Content Safety</small></h4><p class="def">文章や画像の有害な内容を見つけるサービスです。ガードレールの判定もこの分類モデルを使っています。単体の API としても使えます。</p><div class="t-foot"><span class="refs"><a href="#src-16">[16]</a><a href="#src-18">[18]</a></span></div></article>
+          <article class="term" id="t-promptshields" data-star><h4 class="t-name">Prompt Shields<span class="star">★ 重要</span><small>旧 Jailbreak risk detection</small></h4><p class="def">AI を乗っ取ろうとする入力を見つける盾です。利用者が直接仕掛ける「ユーザープロンプト攻撃」と、資料の中に命令を隠す「ドキュメント攻撃」の2種類を検出します。</p><p class="tip"><b>ツボ</b>ユーザー側は既定でオン、ドキュメント側は既定でオフです。外部の資料を読ませるなら自分で有効にします。</p><div class="t-foot"><span class="refs"><a href="#src-17">[17]</a></span></div></article>
+          <article class="term" id="t-xpia" data-star><h4 class="t-name">間接プロンプトインジェクション（XPIA）<span class="star">★ 重要</span><small>Cross-prompt injection attack</small></h4><p class="def">文書・メール・Web ページ・画像の文字などに「指示を無視して〜せよ」と隠しておき、それを読んだ AI を操る攻撃です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-17">[17]</a></span></div></article>
+          <article class="term" id="t-spotlight"><h4 class="t-name">スポットライティング<small>Spotlighting（プレビュー）</small></h4><p class="def">外部の文書を base64 という形式に変換して「信用度の低いデータ」だと分からせ、中の命令に従いにくくする追加の防御です。トークンが増え、Chat Completions API でのみ使えます。</p><div class="t-foot"><span class="refs"><a href="#src-17">[17]</a></span></div></article>
+          <article class="term" id="t-protected"><h4 class="t-name">保護された素材の検出<small>Protected material</small></h4><p class="def">歌詞や記事など既知の文章や、既存のコードと一致する出力を見つけます。著作権まわりの対策です。</p><div class="t-foot"><span class="refs"><a href="#src-16">[16]</a><a href="#src-18">[18]</a></span></div></article>
+          <article class="term" id="t-groundedness-detect"><h4 class="t-name">根拠性の検出<small>Groundedness detection（プレビュー）</small></h4><p class="def">回答が渡した資料に基づいているかを、その場でチェックする安全機能です。モデルには使えますが、エージェントにはまだ使えません。</p><div class="t-foot"><span class="refs"><a href="#src-16">[16]</a><a href="#src-18">[18]</a></span></div></article>
+          <article class="term" id="t-taskadherence"><h4 class="t-name">タスク準拠<small>Task adherence</small></h4><p class="def">エージェントのツールの使い方が、依頼の内容からずれていないか、早すぎないかを見つけます。</p><div class="t-foot"><span class="refs"><a href="#src-16">[16]</a><a href="#src-18">[18]</a></span></div></article>
+          <article class="term" id="t-eval" data-star><h4 class="t-name">評価とエバリュエーター<span class="star">★ 重要</span><small>Evaluation / evaluators</small></h4><p class="def">AI の回答の品質・安全性を点数で測ることです。エバリュエーターは採点方法のことで、判定役の AI が採点するものと、計算で出すものがあります。</p><p class="tip"><b>ツボ</b>モデル選び → 公開前のテスト → 公開後の継続評価、の3段階で使います。</p><div class="t-foot"><span class="refs"><a href="#src-14">[14]</a><a href="#src-15">[15]</a></span></div></article>
+          <article class="term" id="t-safety-eval"><h4 class="t-name">安全性の評価<small>Risk and safety evaluators</small></h4><p class="def">ヘイト・暴力などの有害さ、保護された素材、間接攻撃（XPIA）への弱さ、生成したコードの脆弱性、機密データの漏えいなどを採点します。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a></span></div></article>
+          <article class="term" id="t-redteam"><h4 class="t-name">AI レッドチーミングエージェント<small>AI Red Teaming Agent</small></h4><p class="def">わざと攻撃を仕掛けて弱点を探す自動テストです（Microsoft の PyRIT を使用）。人によるレビューと組み合わせて使います。</p><div class="t-foot"><span class="refs"><a href="#src-14">[14]</a></span></div></article>
+          <article class="term" id="t-audit" data-star><h4 class="t-name">監査と来歴メタデータ<span class="star">★ 重要</span><small>Auditing / provenance metadata</small></h4><p class="def">「誰が・いつ・何を実行／承認したか」「この回答はどの資料から来たか」の記録を残すことです。トレースのログ、出典の情報、承認のログで実現します。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-7">[7]</a></span></div></article>
+          <article class="term" id="t-hitl" data-star><h4 class="t-name">承認フロー（ヒューマン・イン・ザ・ループ）<span class="star">★ 重要</span><small>Approval workflow / human-in-the-loop</small></h4><p class="def">重要な操作の前で止まり、人の承認を待つ仕組みです。例：MCP ツールの require_approval を always にすると、ツールを使う前に毎回承認を求めます。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a><a href="#src-9">[9]</a></span></div></article>
+          <article class="term" id="t-toolaccess"><h4 class="t-name">ツールのアクセス制御<small>allowed_tools</small></h4><p class="def">エージェントが使ってよいツールを、許可リストで絞ることです。データを書き換えるツールほど、承認とセットにします。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a></span></div></article>
+          <article class="term" id="t-oversight"><h4 class="t-name">監督モードと制約<small>Oversight modes / constraints</small></h4><p class="def">出題範囲の言葉で、エージェントにどこまで任せ、どこで人が見張るかを決めることを指します。使えるツールの制限や承認の有無で調整します。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── 2 生成AI・エージェント ───────── -->
+    <section class="dom" id="d-gen" data-dom="gen" aria-labelledby="h-gen">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">2</span>
+        <p class="eyebrow">Domain 2 · 配点 <b>30–35%</b></p>
+        <h2 id="h-gen">生成AI・エージェントの実装</h2>
+        <p>配点が一番大きい分野です。RAG、プロンプト、エージェントの種類、ツール、メモリ、複数エージェントの連携、評価と最適化までを扱います。</p>
+      </div>
+      <div class="sub">
+        <h3>生成AIアプリの基本</h3>
+        <div class="terms">
+          <article class="term" id="t-rag" data-star><h4 class="t-name">RAG（検索拡張生成）<span class="star">★ 重要</span><small>Retrieval-augmented generation</small></h4><p class="def">質問に関係する資料を先に検索して、その内容をモデルにいっしょに渡して答えさせる方法です。社内データや最新情報に答えられ、出典も示せます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-5">[5]</a></span></div></article>
+          <article class="term" id="t-chunk"><h4 class="t-name">チャンク分割<small>Chunking</small></h4><p class="def">長い文書を、検索しやすい大きさの小片（チャンク）に切り分けることです。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a><a href="#src-28">[28]</a></span></div></article>
+          <article class="term" id="t-prompteng" data-star><h4 class="t-name">プロンプトエンジニアリング<span class="star">★ 重要</span><small>Prompt engineering</small></h4><p class="def">指示の書き方を工夫して、出力を良くすることです。役割・手順・出力の形・例を具体的に書くのが基本です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-fewshot"><h4 class="t-name">フューショット（例示）<small>Few-shot</small></h4><p class="def">指示の中に「入力と正しい出力の例」をいくつか入れて、形式や判断の基準をまねさせる方法です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-params" data-star><h4 class="t-name">モデルのパラメーター<span class="star">★ 重要</span><small>temperature／top_p／max tokens</small></h4><p class="def">temperature を下げると回答が安定し、上げると多様になります。top_p も多様さの調整です。max tokens は出力の長さの上限です。</p><p class="tip"><b>ツボ</b>「毎回ぶれない、事実ベースの答えがほしい」→ temperature を下げます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-structured" data-star><h4 class="t-name">構造化出力（JSON スキーマ）<span class="star">★ 重要</span><small>Structured outputs</small></h4><p class="def">出力を、決めておいた JSON の形に合わせさせる機能です。後ろのプログラムがそのまま読めるので、データ抽出やシステム連携に向きます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-9">[9]</a></span></div></article>
+          <article class="term" id="t-finetune" data-star><h4 class="t-name">ファインチューニング<span class="star">★ 重要</span><small>Fine-tuning</small></h4><p class="def">自分のデータでモデルを追加で学習させることです。口調・出力の形式・特定の作業のやり方を覚えさせるのに向きます。</p><p class="tip"><b>ツボ</b>新しい知識を足したいだけなら、RAG のほうが手軽で更新もしやすい、が定番の判断です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-4">[4]</a></span></div></article>
+          <article class="term" id="t-responses"><h4 class="t-name">Responses API<small>旧 Assistants API</small></h4><p class="def">Foundry でモデルやツールを呼ぶための標準の API です（Agents v2）。会話の状態やツールの呼び出しもまとめて扱えます。</p><div class="t-foot"><span class="refs"><a href="#src-2">[2]</a><a href="#src-3">[3]</a></span></div></article>
+          <article class="term" id="t-foundrysdk"><h4 class="t-name">Foundry SDK<small>azure-ai-projects</small></h4><p class="def">プロジェクトのエンドポイント1つに接続して、モデル・エージェント・評価などを使うための統一の部品集です。OpenAI 互換のクライアントと組み合わせて使います。</p><div class="t-foot"><span class="refs"><a href="#src-2">[2]</a></span></div></article>
+          <article class="term" id="t-cache"><h4 class="t-name">プロンプトキャッシュ<small>Prompt caching</small></h4><p class="def">同じ書き出しのプロンプトを再利用して、コストと待ち時間を減らす仕組みです。</p><div class="t-foot"><span class="refs"><a href="#src-11">[11]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>エージェントの作り方</h3>
+        <div class="terms">
+          <article class="term" id="t-agent"><h4 class="t-name">エージェント<small>Agent</small></h4><p class="def">モデルに指示とツールを組み合わせ、依頼について考えて行動まで行う AI です。</p><div class="t-foot"><span class="refs"><a href="#src-2">[2]</a></span></div></article>
+          <article class="term" id="t-agentservice" data-star><h4 class="t-name">Foundry Agent Service<span class="star">★ 重要</span><small>Agent Service</small></h4><p class="def">エージェントを作る・動かす・公開する・規模を広げるための、管理されたサービスです。</p><div class="t-foot"><span class="refs"><a href="#src-3">[3]</a></span></div></article>
+          <article class="term" id="t-promptagent" data-star><h4 class="t-name">プロンプトエージェント<span class="star">★ 重要</span><small>Prompt agent</small></h4><p class="def">指示・モデル・ツールを設定するだけで作るエージェントです。コードやサーバーの管理はいらず、Foundry が実行します。</p><div class="t-foot"><span class="refs"><a href="#src-3">[3]</a></span></div></article>
+          <article class="term" id="t-hostedagent" data-star><h4 class="t-name">ホステッドエージェント<span class="star">★ 重要</span><small>Hosted agent</small></h4><p class="def">自分で書いたコード（Agent Framework、LangGraph など）をコンテナにして、Foundry 上で動かすエージェントです。一番自由度が高く、独自の段取り（オーケストレーション）も組めます。</p><div class="t-foot"><span class="refs"><a href="#src-3">[3]</a></span></div></article>
+          <article class="term" id="t-voiceagent"><h4 class="t-name">音声プロンプトエージェント<small>Voice-based prompt agent（プレビュー）</small></h4><p class="def">Voice Live を通じて、リアルタイムに声で会話できる管理型のエージェントです。電話（Teams Phone、Twilio）にもつなげられます。</p><div class="t-foot"><span class="refs"><a href="#src-3">[3]</a></span></div></article>
+          <article class="term" id="t-ephemeral"><h4 class="t-name">エフェメラルエージェント<small>Ephemeral agent</small></h4><p class="def">Foundry にエージェントを保存せず、アプリのコードの中で指示やツールを組み立てて Responses API を直接呼ぶ使い方です。</p><div class="t-foot"><span class="refs"><a href="#src-3">[3]</a></span></div></article>
+          <article class="term" id="t-conv"><h4 class="t-name">Conversation／Item／Response／Agent version<small>旧 Thread／Message／Run／Assistant</small></h4><p class="def">会話（Conversation）は一連のやり取り、アイテム（Item）はその中の1つ1つのメッセージなど、レスポンス（Response）は1回の応答、エージェントバージョンは保存するたびに残る版です。</p><p class="tip"><b>ツボ</b>古い教材は Thread／Run という言葉で説明しています。対応関係を覚えておけば読み替えられます。</p><div class="t-foot"><span class="refs"><a href="#src-2">[2]</a></span></div></article>
+          <article class="term" id="t-rolegoal"><h4 class="t-name">役割・目標・会話の追跡<small>Roles, goals, conversation tracking</small></h4><p class="def">エージェントを設計するときに最初に決めることです。何者で（役割）、何を達成し（目標）、会話の履歴をどう持ち回るか（追跡の方法）を、指示や設定に落とし込みます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-publish"><h4 class="t-name">公開とバージョン管理<small>Publishing / versioning</small></h4><p class="def">保存するたびにバージョンが残り、公開すると安定したエンドポイントができます。Microsoft Teams や Microsoft 365 Copilot へ配布できます。</p><div class="t-foot"><span class="refs"><a href="#src-3">[3]</a></span></div></article>
+          <article class="term" id="t-optimizer"><h4 class="t-name">エージェントオプティマイザー<small>Agent optimizer（プレビュー）</small></h4><p class="def">エージェントの動きを評価して、より良い指示・ツールの説明・モデルの選択を自動で提案する機能です。</p><div class="t-foot"><span class="refs"><a href="#src-3">[3]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>ツールと記憶</h3>
+        <div class="terms">
+          <article class="term" id="t-tool"><h4 class="t-name">ツール<small>Tools</small></h4><p class="def">エージェントが外の世界に働きかける手段です。組み込み（Web 検索、ファイル検索、コードインタープリター、Azure AI Search など）と、自作（関数、OpenAPI、MCP）があります。</p><div class="t-foot"><span class="refs"><a href="#src-3">[3]</a><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-function" data-star><h4 class="t-name">関数呼び出し<span class="star">★ 重要</span><small>Function calling</small></h4><p class="def">モデルが「この関数をこの引数で呼んで」と返し、実際の実行はアプリ側で行う仕組みです。社内システムの処理を AI から使わせたいときに使います。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-schema" data-star><h4 class="t-name">ツールスキーマ<span class="star">★ 重要</span><small>Tool schema</small></h4><p class="def">ツールの名前・説明・引数の形を JSON で書いた「取扱説明書」です。モデルはこれを読んでツールを選ぶので、説明文の分かりやすさが精度を左右します。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-openapi"><h4 class="t-name">OpenAPI ツール<small>OpenAPI</small></h4><p class="def">Web API の設計書（OpenAPI 仕様）を渡すだけで、その API をツールとして呼べるようにする仕組みです。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-mcp" data-star><h4 class="t-name">MCP<span class="star">★ 重要</span><small>Model Context Protocol</small></h4><p class="def">AI とツールをつなぐための共通規格です。MCP サーバーとして公開されたツールなら、対応するエージェントから同じ方法で使えます。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a><a href="#src-7">[7]</a></span></div></article>
+          <article class="term" id="t-toolbox"><h4 class="t-name">ツールボックス<small>Toolbox</small></h4><p class="def">よく使うツールを1つの箱にまとめ、1つの MCP 互換の窓口から複数のエージェントに配る仕組みです。認証・ガードレール・バージョンをまとめて管理できます。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-toolsearch"><h4 class="t-name">ツール検索とスキル<small>Tool search / Skills（プレビュー）</small></h4><p class="def">ツール検索は、大量のツールから必要なものだけをその場で探す仕組みです。スキルは、複数の手順を「やり方」としてまとめて再利用する部品です。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-codeinterp"><h4 class="t-name">コードインタープリター<small>Code interpreter</small></h4><p class="def">エージェントが安全な隔離環境（サンドボックス）で Python を動かし、計算・グラフ作成・ファイル処理をするツールです。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-filesearch"><h4 class="t-name">ファイル検索<small>File search</small></h4><p class="def">利用者がその場でアップロードした文書を検索して答えるためのツールです。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a><a href="#src-8">[8]</a></span></div></article>
+          <article class="term" id="t-websearch"><h4 class="t-name">Web 検索<small>Web search／Grounding with Bing</small></h4><p class="def">Web の最新情報を調べて答えるためのツールです。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-computeruse"><h4 class="t-name">ブラウザー自動化と Computer use<small>Browser automation / computer use</small></h4><p class="def">Web ページや画面を見て、クリックや入力を代わりに行うツールです。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-shortmem"><h4 class="t-name">会話の履歴（短期の記憶）<small>Short-term memory</small></h4><p class="def">いま進んでいる会話の流れのことです。会話（Conversation）の中に保持されます。</p><div class="t-foot"><span class="refs"><a href="#src-8">[8]</a></span></div></article>
+          <article class="term" id="t-memory" data-star><h4 class="t-name">メモリ（長期の記憶）<span class="star">★ 重要</span><small>Memory（プレビュー）</small></h4><p class="def">会話をまたいで、利用者の好みや過去の話題を覚えておく仕組みです。ユーザープロフィール、チャットの要約、手順（procedural）の3種類があります。</p><div class="t-foot"><span class="refs"><a href="#src-8">[8]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>複数エージェントとワークフロー</h3>
+        <div class="terms">
+          <article class="term" id="t-multiagent" data-star><h4 class="t-name">マルチエージェント<span class="star">★ 重要</span><small>Multi-agent</small></h4><p class="def">役割の違う複数のエージェントが、分担・連携して1つの仕事を進める構成です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-10">[10]</a></span></div></article>
+          <article class="term" id="t-orchestration" data-star><h4 class="t-name">オーケストレーション<span class="star">★ 重要</span><small>Orchestration</small></h4><p class="def">複数のエージェントや処理の動かし方の段取りです。順番に渡す「順次（sequential）」、状況に応じて話し手を替える「グループチャット」、人の確認をはさむ「ヒューマン・イン・ザ・ループ」などのパターンがあります。</p><div class="t-foot"><span class="refs"><a href="#src-9">[9]</a><a href="#src-10">[10]</a></span></div></article>
+          <article class="term" id="t-a2a" data-star><h4 class="t-name">A2A（Agent-to-Agent）<span class="star">★ 重要</span><small>A2A protocol</small></h4><p class="def">別々に作られたエージェント同士が、仕事を頼み合うための共通規格です。Foundry では v1.0 が GA です。</p><div class="t-foot"><span class="refs"><a href="#src-3">[3]</a><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-maf" data-star><h4 class="t-name">Microsoft Agent Framework<span class="star">★ 重要</span><small>Semantic Kernel と AutoGen の後継</small></h4><p class="def">エージェントとワークフローをコードで作るための、Microsoft のオープンソースの開発キットです（Python、.NET など）。</p><p class="tip"><b>ツボ</b>「関数で書ける処理なら、AI エージェントではなく関数で」という考え方が公式に書かれています。</p><div class="t-foot"><span class="refs"><a href="#src-10">[10]</a></span></div></article>
+          <article class="term" id="t-workflow" data-star><h4 class="t-name">ワークフロー<span class="star">★ 重要</span><small>Workflow</small></h4><p class="def">手順・分岐・人の承認をあらかじめ決めておき、エージェントや処理をその通りに動かす仕組みです。</p><p class="tip"><b>ツボ</b>Foundry のビジュアルなワークフロー（プレビュー）は 2026年12月1日に廃止予定で、Agent Framework への移行が推奨されています。</p><div class="t-foot"><span class="refs"><a href="#src-9">[9]</a><a href="#src-10">[10]</a></span></div></article>
+          <article class="term" id="t-autonomous"><h4 class="t-name">自律型と半自律型<small>Autonomous / semiautonomous</small></h4><p class="def">人の確認なしで最後まで動く（自律型）か、要所で人が承認する（半自律型）かの違いです。お金やデータの変更など、影響の大きい操作には承認を入れます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-7">[7]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>評価と最適化</h3>
+        <div class="terms">
+          <article class="term" id="t-groundedness" data-star><h4 class="t-name">根拠性（Groundedness）<span class="star">★ 重要</span><small>Groundedness evaluator</small></h4><p class="def">回答が、検索した資料に基づいているかを採点するエバリュエーターです。作り話（ハルシネーション）を見つけるのに使います。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a></span></div></article>
+          <article class="term" id="t-relevance"><h4 class="t-name">関連性（Relevance）<small>Relevance evaluator</small></h4><p class="def">回答が、質問にきちんと答えているかを採点します。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a></span></div></article>
+          <article class="term" id="t-coherence"><h4 class="t-name">一貫性と流暢さ<small>Coherence / Fluency</small></h4><p class="def">話の筋が通っているか（一貫性）、言葉として自然か（流暢さ）を採点します。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a></span></div></article>
+          <article class="term" id="t-retrieval-eval"><h4 class="t-name">検索の評価<small>Retrieval / Document Retrieval</small></h4><p class="def">RAG で、必要な資料をうまく取ってこられたかを採点します。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a></span></div></article>
+          <article class="term" id="t-agent-eval"><h4 class="t-name">エージェントの評価<small>Intent Resolution／Task Adherence／Tool Call Accuracy</small></h4><p class="def">依頼の意図を正しくつかんだか、指示どおりに進めたか、正しいツールを正しい引数で呼んだか、などを採点します。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a></span></div></article>
+          <article class="term" id="t-similarity"><h4 class="t-name">類似度の指標<small>F1／BLEU／ROUGE</small></h4><p class="def">正解の文章と、どれだけ言葉が重なるかで測る指標です。翻訳や要約の評価によく使われます。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a></span></div></article>
+          <article class="term" id="t-error-analysis"><h4 class="t-name">エラー分析（クラスター分析）<small>Error analysis / cluster analysis</small></h4><p class="def">失敗した回答をパターンごとにまとめて、原因を見つけやすくする機能です。</p><div class="t-foot"><span class="refs"><a href="#src-14">[14]</a></span></div></article>
+          <article class="term" id="t-cot"><h4 class="t-name">思考の連鎖<small>Chain-of-thought</small></h4><p class="def">答えにたどり着くまでの考えを、段階的に書かせる手法です。出題範囲では、その考え方が妥当かを評価する話として出てきます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-reflection"><h4 class="t-name">リフレクションと自己批評ループ<small>Model reflection / self-critique loops</small></h4><p class="def">AI に一度答えさせたあと、自分で見直して採点・修正させることを繰り返す手法です。品質は上がりますが、時間とトークンは増えます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-observability"><h4 class="t-name">可観測性（オブザーバビリティ）<small>Observability</small></h4><p class="def">評価・監視・トレースによって、AI の中で何が起きているかと、その品質を見えるようにすることです。</p><div class="t-foot"><span class="refs"><a href="#src-14">[14]</a></span></div></article>
+          <article class="term" id="t-trace" data-star><h4 class="t-name">トレース<span class="star">★ 重要</span><small>Tracing</small></h4><p class="def">1回の処理の中で、どのモデル呼び出し・ツール呼び出し・判断が、どの順番で何秒かかったかを記録したものです。OpenTelemetry という標準の形式で、Application Insights に保存します。</p><p class="tip"><b>ツボ</b>出題範囲の「トークン分析」「安全シグナル」「遅延の内訳」は、トレースと監視で見ます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-14">[14]</a></span></div></article>
+          <article class="term" id="t-hybrid-rules"><h4 class="t-name">LLM とルールエンジンの組み合わせ<small>Hybrid LLM and rules engines</small></h4><p class="def">決まったルールで処理できる部分は普通のプログラムに、あいまいな判断だけを LLM に任せる構成です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-10">[10]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── 3 ビジョン ───────── -->
+    <section class="dom" id="d-vision" data-dom="vision" aria-labelledby="h-vision">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">3</span>
+        <p class="eyebrow">Domain 3 · 配点 <b>10–15%</b></p>
+        <h2 id="h-vision">コンピュータービジョン</h2>
+        <p>画像・動画の生成と編集、画像を「理解」させる使い方、画像ならではの安全対策です。</p>
+      </div>
+      <div class="sub">
+        <h3>画像・動画の生成と編集</h3>
+        <div class="terms">
+          <article class="term" id="t-imagegen" data-star><h4 class="t-name">画像生成<span class="star">★ 重要</span><small>Text-to-image</small></h4><p class="def">文章の指示（と参照画像）から画像を作ることです。Foundry では GPT-image 系のモデル（gpt-image-1、1.5、2 など）を使います。</p><p class="tip"><b>ツボ</b>DALL-E 3 は 2026年3月4日に提供を終了しています。古い教材に注意。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-imageedit"><h4 class="t-name">画像の編集と参照画像<small>Image edits / reference images</small></h4><p class="def">元の画像と指示を渡して描き変える機能です。参照画像は最大16枚まで渡せ、input_fidelity で顔や画風をどれだけ残すかを調整できます。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-inpaint" data-star><h4 class="t-name">インペインティング（マスク編集）<span class="star">★ 重要</span><small>Inpainting / mask-based edits</small></h4><p class="def">画像の一部分だけを描き直すことです。マスクは元画像と同じサイズの PNG で、透明にした部分が描き直しの対象になります。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-imgparams"><h4 class="t-name">生成の調整パラメーター<small>size／quality／n／background</small></h4><p class="def">画像の大きさ、品質、枚数、透明な背景などを指定する設定です。出題範囲の「生成と編集の制御」にあたります。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-videogen" data-star><h4 class="t-name">動画生成（Sora 2）<span class="star">★ 重要</span><small>Text-to-video（プレビュー）</small></h4><p class="def">文章・画像・作った動画から、音声つきの動画を作るモデルです。長さは4・8・12秒から選び、「作成を依頼 → 状態を確認 → ダウンロード」の順に非同期で処理します。</p><p class="tip"><b>ツボ</b>実在の人物は生成できず、人の顔が写った入力画像は拒否されます。</p><div class="t-foot"><span class="refs"><a href="#src-20">[20]</a></span></div></article>
+          <article class="term" id="t-remix"><h4 class="t-name">リミックス（動画の編集）<small>Remix</small></h4><p class="def">作った動画を一から作り直さず、部分的に調整する機能です。</p><div class="t-foot"><span class="refs"><a href="#src-20">[20]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>画像・動画を理解する</h3>
+        <div class="terms">
+          <article class="term" id="t-vision-understand" data-star><h4 class="t-name">画像の理解（マルチモーダル）<span class="star">★ 重要</span><small>Visual understanding</small></h4><p class="def">マルチモーダルモデルに画像を渡して、説明・比較・質問への回答をさせることです。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-caption"><h4 class="t-name">キャプション<small>Caption</small></h4><p class="def">画像の内容を説明する文です。1行の簡潔なものと、詳しいものを使い分けます。複数の画像をまとめて説明させることもできます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-alttext" data-star><h4 class="t-name">代替テキスト（alt テキスト）<span class="star">★ 重要</span><small>Alt text</small></h4><p class="def">画面読み上げソフトを使う人などのための、画像の説明文です。アクセシビリティ（誰でも使えること）の指針に沿って、短い alt と詳しい説明を使い分けます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-vqa"><h4 class="t-name">画像に基づく質問応答<small>Visual question answering</small></h4><p class="def">画像に写っている内容だけを根拠にして、質問に答えさせることです。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-detection"><h4 class="t-name">物体・領域の検出<small>Object / region detection</small></h4><p class="def">画像や動画の中から物・部品・領域を見つけ、その位置を示すことです。位置は囲み枠（バウンディングボックス）で表します。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-video-analysis"><h4 class="t-name">動画の分析<small>Video analysis</small></h4><p class="def">動画を区切り（セグメント）に分け、場面ごとに説明・要約・情報の抽出を行うことです。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-21">[21]</a></span></div></article>
+          <article class="term" id="t-cu-vision"><h4 class="t-name">Content Understanding（画像・動画）<small>Azure Content Understanding</small></h4><p class="def">画像や動画から、写っているものや特徴を決まった形で取り出すのにも使います。仕組みは「情報抽出」の Content Understanding の項目を見てください。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-21">[21]</a></span></div></article>
+          <article class="term" id="t-promode"><h4 class="t-name">プロモードとエージェントモード<small>Pro mode → Agentic mode</small></h4><p class="def">出題範囲には Content Understanding の「単一タスク」と「プロモード」が出てきます。プロモードは提供終了したプレビュー API だけの機能で、今は後継の「エージェントモード（プレビュー）」が、資料の複数の箇所を突き合わせた推論・計算・検証を担います。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-22">[22]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>画像の安全対策</h3>
+        <div class="terms">
+          <article class="term" id="t-visual-filter"><h4 class="t-name">画像の安全フィルター<small>Visual content filters</small></h4><p class="def">画像の入力と出力も、有害カテゴリで分類してブロックできます。</p><div class="t-foot"><span class="refs"><a href="#src-16">[16]</a><a href="#src-18">[18]</a></span></div></article>
+          <article class="term" id="t-image-injection" data-star><h4 class="t-name">画像の文字を使ったプロンプトインジェクション<span class="star">★ 重要</span><small>Indirect prompt injection via embedded text</small></h4><p class="def">画像の中の文字に「これまでの指示を無視して〜」と書いて AI を操る攻撃です。画像から読んだ文字も「信用しない外部データ」として扱い、ドキュメント攻撃の検出をかけます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-17">[17]</a></span></div></article>
+          <article class="term" id="t-visual-policy"><h4 class="t-name">ビジュアルポリシー<small>Watermarks, prohibited symbols, brand rules</small></h4><p class="def">生成した画像に透かし（ウォーターマーク）を入れる、禁止された記号を見つける、ロゴの使い方のルールを守らせる、といった画像についての決まりです。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── 4 テキスト分析 ───────── -->
+    <section class="dom" id="d-text" data-dom="text" aria-labelledby="h-text">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">4</span>
+        <p class="eyebrow">Domain 4 · 配点 <b>10–15%</b></p>
+        <h2 id="h-text">テキスト分析（言語・音声）</h2>
+        <p>文章の分析、翻訳、音声です。専用サービス（Foundry Tools）でやるか、LLM にやらせるかの使い分けがよく問われます。</p>
+      </div>
+      <div class="sub">
+        <h3>文章の分析</h3>
+        <div class="terms">
+          <article class="term" id="t-language" data-star><h4 class="t-name">Azure Language<span class="star">★ 重要</span><small>Foundry Tools の文章分析</small></h4><p class="def">文章を分析するサービスです。今の中心機能は PII 検出・言語検出・固有表現抽出・医療テキスト分析で、感情分析・要約・キーフレーズ抽出・CLU などは既存利用向けの「レガシー機能」という位置づけです。</p><div class="t-foot"><span class="refs"><a href="#src-24">[24]</a></span></div></article>
+          <article class="term" id="t-ner" data-star><h4 class="t-name">固有表現抽出（NER）<span class="star">★ 重要</span><small>Named entity recognition</small></h4><p class="def">文章から人名・地名・組織名・日付などを抜き出して分類します。カスタム NER なら、自社独自の項目も抜き出せます。</p><div class="t-foot"><span class="refs"><a href="#src-24">[24]</a></span></div></article>
+          <article class="term" id="t-pii" data-star><h4 class="t-name">PII 検出<span class="star">★ 重要</span><small>Personally identifiable information</small></h4><p class="def">氏名・住所・電話番号・口座番号などの個人情報を見つけて、伏せ字にします。文章・会話・文書ファイルに対応しています。</p><div class="t-foot"><span class="refs"><a href="#src-24">[24]</a></span></div></article>
+          <article class="term" id="t-langdetect"><h4 class="t-name">言語検出<small>Language detection</small></h4><p class="def">文章が何語で書かれているかを判定します。</p><div class="t-foot"><span class="refs"><a href="#src-24">[24]</a></span></div></article>
+          <article class="term" id="t-sentiment"><h4 class="t-name">感情分析とオピニオンマイニング<small>Sentiment analysis / opinion mining</small></h4><p class="def">文章が肯定的か否定的かを判定し、「何について」そう感じているかまで結びつけます。</p><div class="t-foot"><span class="refs"><a href="#src-24">[24]</a></span></div></article>
+          <article class="term" id="t-summary"><h4 class="t-name">要約（抽出型と生成型）<small>Extractive / abstractive summarization</small></h4><p class="def">抽出型は元の文章から大事な文を選んで並べる方法、生成型は新しい文で言い換えてまとめる方法です。</p><div class="t-foot"><span class="refs"><a href="#src-24">[24]</a></span></div></article>
+          <article class="term" id="t-keyphrase"><h4 class="t-name">キーフレーズ抽出<small>Key phrase extraction</small></h4><p class="def">文章の中の重要な語句を一覧で取り出します。トピックをつかむのに使います。</p><div class="t-foot"><span class="refs"><a href="#src-24">[24]</a></span></div></article>
+          <article class="term" id="t-genextract" data-star><h4 class="t-name">生成AIによる抽出<span class="star">★ 重要</span><small>Generative prompting</small></h4><p class="def">LLM に出力の形（スキーマ）を渡して、エンティティ・トピック・要約などを JSON で出させる方法です。柔軟ですが、コストと出力の揺れに注意します。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-tone"><h4 class="t-name">トーン・機微情報の検出<small>Tone, safety, sensitive content</small></h4><p class="def">文章の口調や、有害・機微な内容が含まれていないかを見つけることです。Content Safety、PII 検出、LLM への指示を組み合わせます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-18">[18]</a><a href="#src-24">[24]</a></span></div></article>
+          <article class="term" id="t-domain"><h4 class="t-name">業務に合わせた調整<small>Domain customization</small></h4><p class="def">コンプライアンス向けの要約や、業界特有の項目の抽出など、特定の業務に合わせて出力を調整することです。指示・例示・ファインチューニングで行います。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-langmcp"><h4 class="t-name">Language の MCP サーバー<small>Azure Language MCP server</small></h4><p class="def">Language の機能を、エージェントのツールとして使えるようにした MCP サーバーです。</p><div class="t-foot"><span class="refs"><a href="#src-24">[24]</a></span></div></article>
+          <article class="term" id="t-clu"><h4 class="t-name">CLU（会話言語理解）<small>Conversational language understanding</small></h4><p class="def">発話の意図と重要な語句を判定する、自分で学習させるモデルです。</p><p class="tip"><b>ツボ</b>AI-102 時代の定番ですが、AI-103 の出題範囲には載っていません。深追いは不要です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-24">[24]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>翻訳</h3>
+        <div class="terms">
+          <article class="term" id="t-translator" data-star><h4 class="t-name">Azure Translator<span class="star">★ 重要</span><small>Translator</small></h4><p class="def">文章や文書を翻訳するサービスです。最新版のテキスト翻訳では、翻訳に使う LLM を選ぶこともできます。</p><div class="t-foot"><span class="refs"><a href="#src-25">[25]</a></span></div></article>
+          <article class="term" id="t-doctrans"><h4 class="t-name">文書翻訳<small>Document translation</small></h4><p class="def">Word や PDF などの書式を保ったまま翻訳します。大量のファイルは Blob ストレージ経由の非同期（バッチ）、1ファイルなら同期で処理します。</p><div class="t-foot"><span class="refs"><a href="#src-25">[25]</a></span></div></article>
+          <article class="term" id="t-customtrans"><h4 class="t-name">Custom Translator と適応型カスタム翻訳<small>Custom Translator / adaptive custom translation</small></h4><p class="def">業界の専門用語や言い回しに合わせて、翻訳を調整する機能です。適応型カスタム翻訳は、対訳のペアを登録して LLM の翻訳を調整します。</p><div class="t-foot"><span class="refs"><a href="#src-25">[25]</a></span></div></article>
+          <article class="term" id="t-llmtrans"><h4 class="t-name">LLM による翻訳<small>LLM-powered translation</small></h4><p class="def">生成AIのモデルに翻訳させる方法です。文脈や口調を細かく指示できます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-25">[25]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>音声</h3>
+        <div class="terms">
+          <article class="term" id="t-speech"><h4 class="t-name">Azure Speech<small>Speech</small></h4><p class="def">音声のサービスです。音声→文字（音声認識）、文字→音声（音声合成）、音声翻訳などができます。</p><div class="t-foot"><span class="refs"><a href="#src-26">[26]</a></span></div></article>
+          <article class="term" id="t-stt" data-star><h4 class="t-name">音声テキスト変換（STT）<span class="star">★ 重要</span><small>Speech to text</small></h4><p class="def">話し言葉を文字にします。リアルタイム、録音ファイル向けの高速文字起こし、大量のファイル向けのバッチの3種類があります。</p><div class="t-foot"><span class="refs"><a href="#src-26">[26]</a></span></div></article>
+          <article class="term" id="t-customspeech"><h4 class="t-name">カスタム音声認識モデル<small>Custom speech</small></h4><p class="def">雑音の多い環境や業界用語に合わせて、認識の精度を上げるために学習させるモデルです。手軽な方法として、単語を登録するフレーズリストもあります。</p><div class="t-foot"><span class="refs"><a href="#src-26">[26]</a><a href="#src-27">[27]</a></span></div></article>
+          <article class="term" id="t-tts" data-star><h4 class="t-name">テキスト読み上げ（TTS）<span class="star">★ 重要</span><small>Text to speech</small></h4><p class="def">文字を自然な声で読み上げます。標準の声のほか、ブランド専用の声（カスタム音声。利用には審査あり）も作れます。</p><div class="t-foot"><span class="refs"><a href="#src-26">[26]</a><a href="#src-27">[27]</a></span></div></article>
+          <article class="term" id="t-ssml"><h4 class="t-name">SSML<small>Speech Synthesis Markup Language</small></h4><p class="def">読み上げの高さ・速さ・発音・音量などを、タグで細かく指定するための書き方です。</p><div class="t-foot"><span class="refs"><a href="#src-26">[26]</a></span></div></article>
+          <article class="term" id="t-speechtrans"><h4 class="t-name">音声翻訳<small>Speech translation</small></h4><p class="def">話した言葉を、別の言語の文字や音声にリアルタイムで翻訳します。</p><div class="t-foot"><span class="refs"><a href="#src-26">[26]</a></span></div></article>
+          <article class="term" id="t-voicelive"><h4 class="t-name">Voice Live API<small>Voice Live</small></h4><p class="def">音声認識・生成AI・音声合成を1つにまとめた、遅延の少ない音声対話の API です。雑音の抑制、エコーの除去、割り込みの検出、話し終わりの検出、アバターに対応しています。</p><div class="t-foot"><span class="refs"><a href="#src-27">[27]</a></span></div></article>
+          <article class="term" id="t-realtime"><h4 class="t-name">音声→音声モデルとカスケード型<small>Speech-to-speech / cascaded</small></h4><p class="def">音声を直接受け取って直接答えるリアルタイムモデル（gpt-realtime など）は、自然で速いのが特長です。「認識 → 文章のモデル → 合成」と順につなぐカスケード型は、選べるモデルや声が多く細かく制御できますが、遅延が積み上がります。</p><div class="t-foot"><span class="refs"><a href="#src-3">[3]</a><a href="#src-27">[27]</a></span></div></article>
+          <article class="term" id="t-audio-reasoning"><h4 class="t-name">音声からの推論<small>Multimodal reasoning from audio</small></h4><p class="def">音声の内容（必要なら話し方も）を理解して、判断や回答につなげることです。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-agent-speech"><h4 class="t-name">エージェントの音声対応<small>Speech as an agent modality</small></h4><p class="def">エージェントの入出力に音声を加えることです。音声認識・音声合成、カスタム音声モデル、Voice Live を組み合わせます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-3">[3]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── 5 情報抽出 ───────── -->
+    <section class="dom" id="d-extract" data-dom="extract" aria-labelledby="h-extract">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">5</span>
+        <p class="eyebrow">Domain 5 · 配点 <b>10–15%</b></p>
+        <h2 id="h-extract">情報抽出（検索・文書）</h2>
+        <p>RAG の「検索する側」の作り方と、文書から情報を取り出す方法です。Azure AI Search と Content Understanding が中心です。</p>
+      </div>
+      <div class="sub">
+        <h3>検索の土台</h3>
+        <div class="terms">
+          <article class="term" id="t-aisearch" data-star><h4 class="t-name">Azure AI Search<span class="star">★ 重要</span><small>旧 Azure Cognitive Search</small></h4><p class="def">データを取り込んで索引を作り、キーワード・ベクター・ハイブリッドで検索できるサービスです。Foundry IQ の土台でもあります。</p><div class="t-foot"><span class="refs"><a href="#src-28">[28]</a><a href="#src-29">[29]</a></span></div></article>
+          <article class="term" id="t-index"><h4 class="t-name">インデックス<small>Search index</small></h4><p class="def">検索できるように整理したデータの置き場所です。本の巻末にある索引のようなものです。</p><div class="t-foot"><span class="refs"><a href="#src-28">[28]</a></span></div></article>
+          <article class="term" id="t-indexer"><h4 class="t-name">インデクサーとデータソース<small>Indexer / data source</small></h4><p class="def">データソース（Blob ストレージなど）から中身を読み込み、インデックスに入れる自動の取り込み係です。定期的に実行もできます。</p><div class="t-foot"><span class="refs"><a href="#src-28">[28]</a></span></div></article>
+          <article class="term" id="t-skillset" data-star><h4 class="t-name">スキルセット（AI エンリッチメント）<span class="star">★ 重要</span><small>Skillset / AI enrichment</small></h4><p class="def">取り込みの途中で、OCR・画像分析・翻訳・エンティティ抽出・ベクター化などの AI 処理（スキル）をかける仕組みです。</p><div class="t-foot"><span class="refs"><a href="#src-28">[28]</a></span></div></article>
+          <article class="term" id="t-customskill"><h4 class="t-name">組み込みスキルとカスタムスキル<small>Built-in / custom skills</small></h4><p class="def">組み込みスキルは Foundry Tools を使う既製品、カスタムスキルは自分のコードを Web API として呼び出すものです。</p><div class="t-foot"><span class="refs"><a href="#src-28">[28]</a></span></div></article>
+          <article class="term" id="t-intvec"><h4 class="t-name">統合ベクター化<small>Integrated vectorization</small></h4><p class="def">取り込みの時に、文書の分割（Text Split スキル）からベクター化（埋め込みスキル）までを自動で行う仕組みです。</p><div class="t-foot"><span class="refs"><a href="#src-28">[28]</a></span></div></article>
+          <article class="term" id="t-kstore"><h4 class="t-name">ナレッジストア<small>Knowledge store</small></h4><p class="def">AI 処理の結果を Azure Storage に表やファイルとして保存し、Power BI などで分析できるようにするものです。</p><div class="t-foot"><span class="refs"><a href="#src-28">[28]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>検索の種類</h3>
+        <div class="terms">
+          <article class="term" id="t-fulltext"><h4 class="t-name">全文検索（キーワード検索）<small>Full-text search / BM25</small></h4><p class="def">言葉の一致で探す検索です。型番・人名・日付など、ぴったり一致させたいものに強いです。</p><div class="t-foot"><span class="refs"><a href="#src-29">[29]</a></span></div></article>
+          <article class="term" id="t-vector" data-star><h4 class="t-name">ベクター検索<span class="star">★ 重要</span><small>Vector search</small></h4><p class="def">埋め込み（意味を表す数字）の近さで探す検索です。言い換えや表記のゆれにも強いです。</p><div class="t-foot"><span class="refs"><a href="#src-29">[29]</a></span></div></article>
+          <article class="term" id="t-hybrid" data-star><h4 class="t-name">ハイブリッド検索<span class="star">★ 重要</span><small>Hybrid search</small></h4><p class="def">キーワード検索とベクター検索を同時に行い、結果を1つにまとめる検索です。まとめ方には RRF を使います。</p><div class="t-foot"><span class="refs"><a href="#src-29">[29]</a></span></div></article>
+          <article class="term" id="t-rrf"><h4 class="t-name">RRF<small>Reciprocal Rank Fusion</small></h4><p class="def">複数の検索結果を、それぞれの「順位」をもとに混ぜ合わせる方法です。</p><div class="t-foot"><span class="refs"><a href="#src-29">[29]</a></span></div></article>
+          <article class="term" id="t-semantic" data-star><h4 class="t-name">セマンティックランカー<span class="star">★ 重要</span><small>Semantic ranker</small></h4><p class="def">最初の検索結果の上位50件を、言語を理解するモデルで並べ替える「2段目の採点」です。要点（キャプション）や回答の抜き出しもします。新しい文章は作りません。</p><div class="t-foot"><span class="refs"><a href="#src-30">[30]</a></span></div></article>
+          <article class="term" id="t-agentic" data-star><h4 class="t-name">エージェント型検索<span class="star">★ 重要</span><small>Agentic retrieval</small></h4><p class="def">LLM が複雑な質問を小さな質問に分け、並行して検索し、結果を並べ替えてまとめる検索の仕組みです。Foundry IQ の中心です。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>知識をエージェントにつなぐ</h3>
+        <div class="terms">
+          <article class="term" id="t-foundryiq" data-star><h4 class="t-name">Foundry IQ<span class="star">★ 重要</span><small>Foundry IQ</small></h4><p class="def">社内のさまざまなデータをまとめた「ナレッジベース」を作り、エージェントに、権限を守った根拠つきの回答材料を渡す知識の層です。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a></span></div></article>
+          <article class="term" id="t-kb"><h4 class="t-name">ナレッジベースとナレッジソース<small>Knowledge base / knowledge sources</small></h4><p class="def">ナレッジソースはつなぐデータ（Blob ストレージ、SharePoint、OneLake、Web など）、ナレッジベースはそれらをまとめて検索する窓口です。複数のエージェントで共有できます。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a></span></div></article>
+          <article class="term" id="t-acl"><h4 class="t-name">権限に応じた検索結果<small>ACL / Purview sensitivity labels</small></h4><p class="def">質問した人が見てよい文書だけを返す仕組みです。アクセス権の設定や Microsoft Purview の秘密度ラベルを、検索の時点で反映します。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a></span></div></article>
+          <article class="term" id="t-searchtool"><h4 class="t-name">Azure AI Search ツール<small>Azure AI Search tool</small></h4><p class="def">エージェントから、既存の検索インデックスを直接検索するためのツールです。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-ragflow" data-star><h4 class="t-name">RAG の取り込みの流れ<span class="star">★ 重要</span><small>RAG ingestion flow</small></h4><p class="def">文書を読み取る（OCR・レイアウト分析）→ 分割する → ベクター化する → インデックスに入れる → エージェントのツールやナレッジにつなぐ、の順番です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-5">[5]</a><a href="#src-28">[28]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>文書から情報を取り出す</h3>
+        <div class="terms">
+          <article class="term" id="t-ocr" data-star><h4 class="t-name">OCR（光学文字認識）<span class="star">★ 重要</span><small>Optical character recognition</small></h4><p class="def">画像やスキャンした PDF の文字を読み取って、テキストにすることです。</p><div class="t-foot"><span class="refs"><a href="#src-21">[21]</a><a href="#src-28">[28]</a></span></div></article>
+          <article class="term" id="t-layout" data-star><h4 class="t-name">レイアウト分析<span class="star">★ 重要</span><small>Layout analysis</small></h4><p class="def">段落・見出し・表・チェックボックスなど、文書の構造を読み取ることです。表を崩さずに取り込めるので、RAG の質が上がります。</p><div class="t-foot"><span class="refs"><a href="#src-21">[21]</a><a href="#src-23">[23]</a></span></div></article>
+          <article class="term" id="t-field" data-star><h4 class="t-name">フィールド抽出<span class="star">★ 重要</span><small>Field extraction</small></h4><p class="def">請求書の「合計金額」のように、あらかじめ決めた項目（スキーマ）の値を取り出すことです。Content Understanding では「抽出（extract）」「分類（classify）」「生成（generate）」の3つの方法があります。</p><div class="t-foot"><span class="refs"><a href="#src-21">[21]</a></span></div></article>
+          <article class="term" id="t-cu" data-star><h4 class="t-name">Content Understanding<span class="star">★ 重要</span><small>Azure Content Understanding in Foundry Tools</small></h4><p class="def">文書・画像・音声・動画を生成AIで処理し、Markdown や決まった形の JSON で出力するサービスです。値ごとに確からしさ（信頼度）と、元のどこから取ったか（根拠の位置）も返します。</p><div class="t-foot"><span class="refs"><a href="#src-21">[21]</a></span></div></article>
+          <article class="term" id="t-analyzer" data-star><h4 class="t-name">アナライザー<span class="star">★ 重要</span><small>Analyzer（prebuilt / custom）</small></h4><p class="def">Content Understanding で「何を・どう処理して・どんな形で出すか」をまとめた設定です。請求書・契約書・通話分析などの既製アナライザーと、自分で作るカスタムアナライザーがあります。</p><div class="t-foot"><span class="refs"><a href="#src-21">[21]</a></span></div></article>
+          <article class="term" id="t-markdown"><h4 class="t-name">Markdown 出力<small>Markdown output</small></h4><p class="def">見出しや表を保ったまま、きれいなテキストにする出力形式です。RAG やエージェントが読みやすくなります。</p><div class="t-foot"><span class="refs"><a href="#src-21">[21]</a></span></div></article>
+          <article class="term" id="t-confidence"><h4 class="t-name">信頼度スコアと根拠の位置<small>Confidence scores / grounding</small></h4><p class="def">取り出した値がどれくらい確かか（0〜1）と、元の文書のどこから取ったかの情報です。人が確認する手間を減らす判断材料になります。</p><div class="t-foot"><span class="refs"><a href="#src-21">[21]</a></span></div></article>
+          <article class="term" id="t-classify"><h4 class="t-name">分類と分割<small>Classification / segmentation</small></h4><p class="def">1つのファイルに混ざった複数の書類を種類ごとに分け、それぞれに合うアナライザーへ回すことです。</p><div class="t-foot"><span class="refs"><a href="#src-21">[21]</a></span></div></article>
+          <article class="term" id="t-docintel"><h4 class="t-name">Document Intelligence<small>旧 Form Recognizer</small></h4><p class="def">決まった形式の書類から、確実に情報を抜き出す文書処理サービスです。Read（文字）、Layout（構造）、事前構築モデル（請求書・領収書など）、カスタムモデル（テンプレート・ニューラル・合成・分類）があります。</p><div class="t-foot"><span class="refs"><a href="#src-23">[23]</a></span></div></article>
+          <article class="term" id="t-pipeline"><h4 class="t-name">マルチモーダルな抽出パイプライン<small>OCR + layout + field extraction</small></h4><p class="def">OCR・レイアウト分析・フィールド抽出を組み合わせて、文書や画像から整理された情報を作る一連の処理です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-21">[21]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+
+    </div>
+  </section>
+
+  <!-- まぎらわしいペア -->
+  <section class="sec" aria-labelledby="h-pairs">
+    <div class="sec-head">
+      <p class="eyebrow">Look-alikes</p>
+      <h2 id="h-pairs">試験で迷いやすい、まぎらわしい組み合わせ</h2>
+      <p>選択肢に並んで出てきやすい組み合わせです。「見分け方」の1行を覚えておくと、消去法が速くなります。</p>
+    </div>
+    <div class="pairs">
+      <article class="pair">
+        <h3>プロンプトエージェント<i>vs</i>ホステッドエージェント</h3>
+        <dl>
+          <div><dt>プロンプト</dt><dd>指示・モデル・ツールを設定するだけ。コードもサーバー管理も不要。</dd></div>
+          <div><dt>ホステッド</dt><dd>自分のコードをコンテナで動かす。独自の処理の流れや社内コードの呼び出しに。</dd></div>
+        </dl>
+        <p class="rule"><b>見分け方</b>「最小の手間で」→ プロンプト。「独自のオーケストレーション」「既存フレームワークのコード」→ ホステッド。</p>
+        <p class="refs"><a href="#src-3">[3]</a></p>
+      </article>
+      <article class="pair">
+        <h3>Global Standard<i>vs</i>Data Zone<i>vs</i>PTU<i>vs</i>バッチ</h3>
+        <dl>
+          <div><dt>Global Standard</dt><dd>既定。最新・最安・地域が最多。</dd></div>
+          <div><dt>Data Zone</dt><dd>処理を US／EU／APAC 内に限定。</dd></div>
+          <div><dt>PTU</dt><dd>能力を予約。安定した大量負荷と低い遅延のばらつき。</dd></div>
+          <div><dt>バッチ</dt><dd>24時間以内目標の一括処理。50%安い。</dd></div>
+        </dl>
+        <p class="rule"><b>見分け方</b>条件がなければ Global Standard。「データの所在」→ Data Zone、「安定・大量」→ PTU、「急がない大量」→ バッチ。</p>
+        <p class="refs"><a href="#src-4">[4]</a></p>
+      </article>
+      <article class="pair">
+        <h3>プロンプト<i>vs</i>RAG<i>vs</i>ファインチューニング</h3>
+        <dl>
+          <div><dt>プロンプト</dt><dd>指示や例を工夫する。一番手軽で最初に試す。</dd></div>
+          <div><dt>RAG</dt><dd>外部の資料を検索して渡す。知識を足し、出典を示す。</dd></div>
+          <div><dt>ファイン<wbr>チューニング</dt><dd>追加で学習させる。口調・形式・作業のやり方を固定する。</dd></div>
+        </dl>
+        <p class="rule"><b>見分け方</b>「社内の最新情報に答えたい」→ RAG。「いつも同じ形式・口調で」→ ファインチューニング。まずはプロンプトから。</p>
+        <p class="refs"><a href="#src-1">[1]</a></p>
+      </article>
+      <article class="pair">
+        <h3>Foundry IQ<i>vs</i>メモリ<i>vs</i>ファイル検索</h3>
+        <dl>
+          <div><dt>Foundry IQ</dt><dd>組織で整えた資料に根拠づける。</dd></div>
+          <div><dt>メモリ</dt><dd>利用者ごとの好みや過去のやり取りを覚える。</dd></div>
+          <div><dt>ファイル検索</dt><dd>その会話で渡された文書を探す。</dd></div>
+        </dl>
+        <p class="rule"><b>見分け方</b>「誰の・いつの情報か」で選びます。会社の資料 → IQ、その人の情報 → メモリ、いま渡された資料 → ファイル検索。</p>
+        <p class="refs"><a href="#src-8">[8]</a><a href="#src-5">[5]</a></p>
+      </article>
+      <article class="pair">
+        <h3>ハイブリッド検索<i>vs</i>セマンティックランカー</h3>
+        <dl>
+          <div><dt>ハイブリッド</dt><dd>キーワードとベクターで「探す」（1段目）。RRF でまとめる。</dd></div>
+          <div><dt>セマンティック</dt><dd>見つかった上位50件を「並べ替える」（2段目）。</dd></div>
+        </dl>
+        <p class="rule"><b>見分け方</b>役割が違うので対立しません。「探し方」と「並べ替え」で、併用すると一番よく効きます。</p>
+        <p class="refs"><a href="#src-29">[29]</a><a href="#src-30">[30]</a></p>
+      </article>
+      <article class="pair">
+        <h3>Content Understanding<i>vs</i>Document Intelligence</h3>
+        <dl>
+          <div><dt>Content Understanding</dt><dd>生成AIで、非定型の文書や画像・音声・動画まで柔軟に処理。Markdown 出力。</dd></div>
+          <div><dt>Document Intelligence</dt><dd>定型の書類から、決まった方法で確実に抜き出す。</dd></div>
+        </dl>
+        <p class="rule"><b>見分け方</b>「マルチモーダル」「RAG やエージェント向けの整ったテキスト」→ CU。「定型の帳票を確実に」→ DI。</p>
+        <p class="refs"><a href="#src-21">[21]</a><a href="#src-23">[23]</a></p>
+      </article>
+      <article class="pair">
+        <h3>ユーザープロンプト攻撃<i>vs</i>ドキュメント攻撃</h3>
+        <dl>
+          <div><dt>ユーザー</dt><dd>利用者が入力欄から直接「ルールを無視して」と仕掛ける。既定でオン。</dd></div>
+          <div><dt>ドキュメント</dt><dd>資料・メール・Web・画像の中に命令を隠す（間接攻撃）。既定でオフ。</dd></div>
+        </dl>
+        <p class="rule"><b>見分け方</b>「どこから入ってきた命令か」。外部の資料やツールの応答なら、ドキュメント攻撃の検出を有効にします。</p>
+        <p class="refs"><a href="#src-17">[17]</a></p>
+      </article>
+      <article class="pair">
+        <h3>評価<i>vs</i>トレース<i>vs</i>監視</h3>
+        <dl>
+          <div><dt>評価</dt><dd>回答の品質や安全性を「採点」する。</dd></div>
+          <div><dt>トレース</dt><dd>1回の処理の中身を「追跡」する。</dd></div>
+          <div><dt>監視</dt><dd>本番の数値を「見張り」、異常でアラートを出す。</dd></div>
+        </dl>
+        <p class="rule"><b>見分け方</b>「なぜこの回答になったか調べたい」→ トレース。「品質が落ちていないか」→ 評価と監視。</p>
+        <p class="refs"><a href="#src-14">[14]</a></p>
+      </article>
+      <article class="pair">
+        <h3>根拠性の評価<i>vs</i>根拠性の検出</h3>
+        <dl>
+          <div><dt>評価</dt><dd>開発・運用の中で、回答の根拠性を点数にする（エバリュエーター）。</dd></div>
+          <div><dt>検出</dt><dd>その場で根拠のない回答を見つける安全機能（ガードレール、プレビュー）。</dd></div>
+        </dl>
+        <p class="rule"><b>見分け方</b>「テストして測る」→ 評価。「本番の回答をリアルタイムで止める」→ 検出。</p>
+        <p class="refs"><a href="#src-15">[15]</a><a href="#src-16">[16]</a></p>
+      </article>
+      <article class="pair">
+        <h3>関数呼び出し<i>vs</i>MCP<i>vs</i>OpenAPI ツール</h3>
+        <dl>
+          <div><dt>関数呼び出し</dt><dd>実際の実行はアプリ側。アプリに組み込んだ処理を呼ぶ。</dd></div>
+          <div><dt>MCP</dt><dd>共通規格のサーバーにつなぐ。他のエージェントでも使い回せる。</dd></div>
+          <div><dt>OpenAPI</dt><dd>API の設計書から、Web API をそのままツールにする。</dd></div>
+        </dl>
+        <p class="rule"><b>見分け方</b>「既存の Web API と設計書がある」→ OpenAPI。「複数のエージェントで共通のツールを」→ MCP。</p>
+        <p class="refs"><a href="#src-6">[6]</a><a href="#src-7">[7]</a></p>
+      </article>
+      <article class="pair">
+        <h3>エージェント<i>vs</i>ワークフロー</h3>
+        <dl>
+          <div><dt>エージェント</dt><dd>自由に考えてツールを使う。答えの道筋が決まっていない作業向け。</dd></div>
+          <div><dt>ワークフロー</dt><dd>手順を先に決めておく。順番や承認をきっちり守らせたい作業向け。</dd></div>
+        </dl>
+        <p class="rule"><b>見分け方</b>「手順が決まっている」「複数の部品の実行順を管理したい」→ ワークフロー。</p>
+        <p class="refs"><a href="#src-10">[10]</a></p>
+      </article>
+      <article class="pair">
+        <h3>マネージド ID<i>vs</i>API キー</h3>
+        <dl>
+          <div><dt>マネージド ID</dt><dd>Azure が管理する社員証。保管不要で、ロールで権限を絞れる。</dd></div>
+          <div><dt>API キー</dt><dd>合鍵。全権を持ち、ロールの制限が効かない。漏れると危険。</dd></div>
+        </dl>
+        <p class="rule"><b>見分け方</b>「セキュリティを高めたい」「最小権限」と書かれていたら、まずマネージド ID とキーレス。</p>
+        <p class="refs"><a href="#src-12">[12]</a></p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 名前の変更 -->
+  <section class="sec" aria-labelledby="h-renames">
+    <div class="sec-head">
+      <p class="eyebrow">Renamed</p>
+      <h2 id="h-renames">名前が変わった用語・終わった機能</h2>
+      <p>この分野は名前の変更が続いています。教材や問題文に古い名前が出てきても、同じものだと分かれば迷いません。</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">以前の名前・機能</th><th scope="col">いまの名前・移行先</th><th scope="col">メモ</th><th scope="col">出典</th></tr></thead>
+        <tbody>
+          <tr><td class="old">Azure AI Studio／Azure AI Foundry</td><td class="new">Microsoft Foundry</td><td class="note">ポータルの旧画面は Foundry (classic)。</td><td class="r"><a href="#src-2">[2]</a></td></tr>
+          <tr><td class="old">Azure AI Services（Cognitive Services）</td><td class="new">Foundry Tools</td><td class="note">Speech、Language などの部品群の呼び名。</td><td class="r"><a href="#src-2">[2]</a></td></tr>
+          <tr><td class="old">Hub ＋ Azure OpenAI ＋ AI Services</td><td class="new">Foundry リソース（中にプロジェクト）</td><td class="note">Hub 型プロジェクトは旧画面で引き続き使えます。</td><td class="r"><a href="#src-2">[2]</a></td></tr>
+          <tr><td class="old">Assistants API（Agents v0.5／v1）</td><td class="new">Responses API（Agents v2）</td><td class="note">API の版は v1 の安定ルート（/openai/v1/）に。</td><td class="r"><a href="#src-2">[2]</a></td></tr>
+          <tr><td class="old">Thread／Message／Run／Assistant</td><td class="new">Conversation／Item／Response／Agent version</td><td class="note">考え方はほぼ同じで、呼び方が変わりました。</td><td class="r"><a href="#src-2">[2]</a></td></tr>
+          <tr><td class="old">Azure AI User／Azure AI Owner／Azure AI Account Owner／Azure AI Project Manager</td><td class="new">Foundry User／Foundry Owner／Foundry Account Owner／Foundry Project Manager</td><td class="note">ロールの ID と権限は変わっていません。</td><td class="r"><a href="#src-12">[12]</a></td></tr>
+          <tr><td class="old">Jailbreak risk detection</td><td class="new">Prompt Shields（ユーザープロンプト攻撃）</td><td class="note">ドキュメント攻撃の検出とあわせて Prompt Shields。</td><td class="r"><a href="#src-17">[17]</a></td></tr>
+          <tr><td class="old">コンテンツフィルター（content filters）</td><td class="new">ガードレールとコントロール（guardrails）</td><td class="note">新しい画面での呼び方。資料によって両方が混在します。</td><td class="r"><a href="#src-16">[16]</a></td></tr>
+          <tr><td class="old">DALL-E 3</td><td class="new">GPT-image 系モデル</td><td class="note">DALL-E 3 は 2026-03-04 に提供終了。</td><td class="r"><a href="#src-19">[19]</a></td></tr>
+          <tr><td class="old">Content Understanding のプロモード</td><td class="new">エージェントモード（プレビュー）</td><td class="note">プロモードの API（2025-05-01-preview）は提供終了。</td><td class="r"><a href="#src-22">[22]</a></td></tr>
+          <tr><td class="old">Semantic Kernel／AutoGen</td><td class="new">Microsoft Agent Framework</td><td class="note">同じチームが作った直接の後継です。</td><td class="r"><a href="#src-10">[10]</a></td></tr>
+          <tr><td class="old">Foundry のビジュアルなワークフロー（プレビュー）</td><td class="new">Agent Framework（推奨）／Azure Logic Apps／A2A</td><td class="note">2026-12-01 に廃止予定。YAML の定義はホステッドエージェントとして動かせます。</td><td class="r"><a href="#src-9">[9]</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 注意点 -->
+  <section class="sec narrow" aria-labelledby="h-notes">
+    <div class="sec-head">
+      <p class="eyebrow">Caveats</p>
+      <h2 id="h-notes">使うときの注意点</h2>
+    </div>
+    <ul class="notes">
+      <li><span class="x">範囲</span><div><b>出題範囲は 2026年4月16日版です</b><p>英語版の試験が先に更新され、日本語などの翻訳版はおよそ8週間後に更新されます。受験前に study guide の「Skills measured as of …」の日付を確認してください。<a href="#src-1">[1]</a></p></div></li>
+      <li><span class="x">GA</span><div><b>試験は主に GA の機能から出ます</b><p>ただし、よく使われているプレビュー機能が出ることもあります。このページでは、プレビューの機能に「（プレビュー）」と書いています。<a href="#src-1">[1]</a></p></div></li>
+      <li><span class="x">名前</span><div><b>製品名と機能名は変わり続けています</b><p>問題文や教材が旧名で書かれていることがあります。上の「名前が変わった用語」で読み替えてください。</p></div></li>
+      <li><span class="x">要約</span><div><b>説明は試験対策のためにかみ砕いた要約です</b><p>temperature や few-shot のような一般的な AI 用語は、特定の製品ページではなく一般的な意味を説明しています。この場合の出典 [1] は「出題範囲に出てくる言葉である」ことの根拠です。正確な仕様や上限値は、各出典のページで確認してください。</p></div></li>
+    </ul>
+  </section>
+
+  <!-- 出典 -->
+  <section class="sec" aria-labelledby="h-src">
+    <div class="sec-head">
+      <p class="eyebrow">Sources</p>
+      <h2 id="h-src">根拠にした情報</h2>
+      <p>すべて Microsoft の公式ドキュメントです。日付は英語版ページのメタ情報にある最終更新日で、2026-10-25 に確認しました。リンク先は日本語版です（日本語版は翻訳の反映が遅れることがあります）。</p>
+    </div>
+    <div class="src-cols">
+      <ol class="sources">
+        <li id="src-1"><a class="src-title" href="https://learn.microsoft.com/ja-jp/credentials/certifications/resources/study-guides/ai-103" target="_blank" rel="noopener">Study guide for Exam AI-103: Developing AI Apps and Agents on Azure</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-15</span></span><span class="src-note">5分野と配点、出題項目の全文、受験者像、GA とプレビューの扱い、翻訳版の更新時期。</span></li>
+        <li id="src-2"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/what-is-foundry" target="_blank" rel="noopener">What is Microsoft Foundry?</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-09-24</span></span><span class="src-note">Foundry の全体像、プロンプト／ホステッドエージェント、旧名と新名の対応表。</span></li>
+        <li id="src-3"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/agents/overview" target="_blank" rel="noopener">What is Microsoft Foundry Agent Service?</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-15</span></span><span class="src-note">エージェントの種類と比較、音声エージェント、ツール、エージェント ID、公開、A2A。</span></li>
+        <li id="src-4"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/foundry-models/concepts/deployment-types" target="_blank" rel="noopener">Understanding deployment types in Microsoft Foundry Models</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-08-12</span></span><span class="src-note">Global／Data Zone／Standard、Provisioned、Batch、Developer の違いと選び方。</span></li>
+        <li id="src-5"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/agents/concepts/what-is-foundry-iq" target="_blank" rel="noopener">What is Foundry IQ?</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-08-01</span></span><span class="src-note">ナレッジベース、ナレッジソース、エージェント型検索、権限の反映。</span></li>
+        <li id="src-6"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/agents/concepts/toolbox-overview" target="_blank" rel="noopener">What is Toolbox in Microsoft Foundry?</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-07-31</span></span><span class="src-note">ツールボックス、ツール検索、スキル、対応ツールの一覧。</span></li>
+        <li id="src-7"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/agents/how-to/tools/model-context-protocol" target="_blank" rel="noopener">Connect agents to MCP server endpoints</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-23</span></span><span class="src-note">MCP ツール、require_approval による承認、allowed_tools、承認と呼び出しの記録。</span></li>
+        <li id="src-8"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/agents/concepts/what-is-memory" target="_blank" rel="noopener">What is Memory?</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-06-04</span><span>プレビュー</span></span><span class="src-note">短期と長期の記憶、3種類のメモリ、Foundry IQ・ファイル検索との使い分け。</span></li>
+        <li id="src-9"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/agents/concepts/workflow" target="_blank" rel="noopener">Build a workflow in Microsoft Foundry (Preview)</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-19</span></span><span class="src-note">ワークフローのパターン、JSON スキーマ出力、2026-12-01 の廃止予定と移行先。</span></li>
+        <li id="src-10"><a class="src-title" href="https://learn.microsoft.com/ja-jp/agent-framework/overview/" target="_blank" rel="noopener">Microsoft Agent Framework Overview</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-08-25</span></span><span class="src-note">エージェントとワークフローの使い分け、Semantic Kernel と AutoGen の後継であること。</span></li>
+        <li id="src-11"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/openai/concepts/model-router" target="_blank" rel="noopener">Model router for Microsoft Foundry concepts</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-19</span></span><span class="src-note">ルーティングの3モード、推論モデル、コンテキストの上限、TPM／RPM、プロンプトキャッシュ。</span></li>
+        <li id="src-12"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/concepts/rbac-foundry" target="_blank" rel="noopener">Role-based access control for Microsoft Foundry</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-09-22</span></span><span class="src-note">組み込みロールと権限、旧ロール名、キー認証では RBAC が効かないこと、マネージド ID。</span></li>
+        <li id="src-13"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/control-plane/overview" target="_blank" rel="noopener">What is Microsoft Foundry Control Plane?</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-23</span></span><span class="src-note">フリートの一元管理、コンプライアンス、AI ゲートウェイ、クォータ。</span></li>
+        <li id="src-14"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/concepts/observability" target="_blank" rel="noopener">Observability in Generative AI</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-17</span></span><span class="src-note">評価・監視・トレース、OpenTelemetry、レッドチーミング、ドリフトの検知、CI/CD の品質ゲート。</span></li>
+        <li id="src-15"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/concepts/built-in-evaluators" target="_blank" rel="noopener">Built-in Evaluators Reference</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-08</span></span><span class="src-note">品質・RAG・安全性・エージェントの各エバリュエーター。</span></li>
+      </ol>
+      <ol class="sources" start="16" style="counter-reset:src 15">
+        <li id="src-16"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/guardrails/guardrails-overview" target="_blank" rel="noopener">Guardrails and controls overview in Microsoft Foundry</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-14</span></span><span class="src-note">リスク、4つの介入ポイント、ブロックレベル、既定のガードレール、上書きのルール。</span></li>
+        <li id="src-17"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/openai/concepts/content-filter-prompt-shields" target="_blank" rel="noopener">Prompt Shields in Microsoft Foundry</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-09-18</span></span><span class="src-note">ユーザープロンプト攻撃とドキュメント攻撃、既定の設定、スポットライティング。</span></li>
+        <li id="src-18"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/ai-services/content-safety/overview" target="_blank" rel="noopener">What is Azure AI Content Safety?</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-01</span></span><span class="src-note">Prompt Shields、根拠性の検出、保護された素材、タスク準拠、文章・画像の分析。</span></li>
+        <li id="src-19"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/openai/how-to/dall-e" target="_blank" rel="noopener">How to Use Image Generation Models from OpenAI</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-07-13</span></span><span class="src-note">GPT-image 系モデル、生成と編集、マスク、参照画像、パラメーター、DALL-E 3 の提供終了。</span></li>
+        <li id="src-20"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/openai/concepts/video-generation" target="_blank" rel="noopener">Sora 2 video generation overview (preview)</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-06-05</span><span>プレビュー</span></span><span class="src-note">入力の種類、音声つき生成、リミックス、長さと解像度、生成できない内容。</span></li>
+        <li id="src-21"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/ai-services/content-understanding/overview" target="_blank" rel="noopener">What is Azure Content Understanding in Foundry Tools?</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-19</span></span><span class="src-note">アナライザー、OCR とレイアウト、フィールド抽出の3方式、信頼度と根拠、Markdown 出力、GA の API 版。</span></li>
+        <li id="src-22"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/ai-services/content-understanding/concepts/agentic-mode" target="_blank" rel="noopener">Agentic mode overview for document analysis (preview)</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-19</span><span>プレビュー</span></span><span class="src-note">エージェントモードの用途、プロモードからの移行、429 エラーを避けるための TPM。</span></li>
+        <li id="src-23"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/ai-services/document-intelligence/overview" target="_blank" rel="noopener">What Is Azure Document Intelligence in Foundry Tools?</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-19</span></span><span class="src-note">Read／Layout／事前構築／カスタムの各モデル、Content Understanding との関係。</span></li>
+        <li id="src-24"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/ai-services/language-service/overview" target="_blank" rel="noopener">What is Azure Language in Foundry Tools</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-07-22</span></span><span class="src-note">中心機能とレガシー機能の区分、NER、PII、要約の2方式、MCP サーバー。</span></li>
+        <li id="src-25"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/ai-services/translator/overview" target="_blank" rel="noopener">What is Azure Translator in Foundry Tools?</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-07-23</span></span><span class="src-note">テキスト翻訳（LLM の選択）、文書翻訳の非同期と同期、カスタム翻訳。</span></li>
+        <li id="src-26"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/ai-services/speech-service/overview" target="_blank" rel="noopener">What Is Azure Speech?</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-19</span></span><span class="src-note">音声認識の3方式、カスタム音声認識、音声合成と SSML、音声翻訳。</span></li>
+        <li id="src-27"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/ai-services/speech-service/voice-live" target="_blank" rel="noopener">Voice Live API Overview</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-10-18</span></span><span class="src-note">会話向けの機能（雑音抑制・割り込み検出など）、対応モデル、フレーズリスト、カスタム音声。</span></li>
+        <li id="src-28"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/search/cognitive-search-concept-intro" target="_blank" rel="noopener">AI Enrichment Overview - Azure AI Search</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-09-17</span></span><span class="src-note">インデクサー、スキルセット、組み込みとカスタムのスキル、統合ベクター化、ナレッジストア。</span></li>
+        <li id="src-29"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/search/hybrid-search-overview" target="_blank" rel="noopener">Hybrid Search Overview - Azure AI Search</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-09-01</span></span><span class="src-note">全文検索とベクター検索の組み合わせ、RRF、キーワード検索が強い場面。</span></li>
+        <li id="src-30"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/search/semantic-search-overview" target="_blank" rel="noopener">Semantic Ranking Overview - Azure AI Search</a><span class="src-meta"><span class="tag">公式</span><span>最終更新 2026-09-17</span></span><span class="src-note">2段目の並べ替え、上位50件、キャプションと回答、新しい文章は作らないこと。</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span>調査日 2026-10-25。出題範囲は 2026-04-16 版をもとにしています。製品名や機能は更新が続いているため、受験前に出典のページで最新の状態を確認してください。</span>
+    <span>あわせて読む：<a href="study_ai-103-roadmap.html">AI-103 合格ロードマップ</a>（4週間の学習ルート）</span>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const KEY = "ai103-glossary:v1";
+  const root = document.documentElement;
+  root.classList.remove("no-js");
+
+  const $ = id => document.getElementById(id);
+  const terms = [...document.querySelectorAll(".term")];
+  const doms = [...document.querySelectorAll(".dom")];
+  const subs = [...document.querySelectorAll(".sub")];
+  const norm = s => s.normalize("NFKC").toLowerCase().replace(/\s+/g, " ");
+  terms.forEach(t => { t.dataset.text = norm(t.querySelector(".t-name").textContent + " " + t.querySelector(".def").textContent + " " + (t.querySelector(".tip")?.textContent || "")); });
+
+  // 語数を数えて表示（ヘッダー・目次・状態表示）
+  const total = terms.length;
+  document.querySelectorAll("[data-total]").forEach(n => { n.textContent = total; });
+  document.querySelectorAll("[data-stars]").forEach(n => { n.textContent = terms.filter(t => t.hasAttribute("data-star")).length; });
+  doms.forEach(d => {
+    const n = d.querySelectorAll(".term").length;
+    document.querySelectorAll(`[data-dcount="${d.dataset.dom}"]`).forEach(x => { x.textContent = n + "語"; });
+  });
+
+  // 「覚えた」はこのブラウザにだけ保存
+  let got = {};
+  try{
+    const saved = JSON.parse(localStorage.getItem(KEY) || "null");
+    if(saved && saved.got && typeof saved.got === "object") got = saved.got;
+  }catch(_){}
+  const save = () => { try{ localStorage.setItem(KEY, JSON.stringify({ got })); }catch(_){} };
+
+  const state = { q:"", dom:"all", star:false, todo:false, quiz:false };
+
+  terms.forEach(t => {
+    const foot = t.querySelector(".t-foot");
+    const peek = document.createElement("button");
+    peek.type = "button"; peek.className = "peek"; peek.textContent = "意味を見る";
+    peek.addEventListener("click", () => {
+      const open = t.classList.toggle("open");
+      peek.textContent = open ? "かくす" : "意味を見る";
+    });
+    const btn = document.createElement("button");
+    btn.type = "button"; btn.className = "got";
+    const paint = on => {
+      btn.setAttribute("aria-pressed", String(on));
+      btn.textContent = on ? "覚えた ✓" : "覚えた";
+      t.classList.toggle("is-got", on);
+    };
+    paint(!!got[t.id]);
+    btn.addEventListener("click", () => {
+      const on = btn.getAttribute("aria-pressed") !== "true";
+      if(on) got[t.id] = 1; else delete got[t.id];
+      save(); paint(on); apply();
+    });
+    foot.append(peek, btn);
+  });
+
+  function apply(){
+    const words = norm(state.q).trim().split(" ").filter(Boolean);
+    let shown = 0;
+    terms.forEach(t => {
+      const ok = (state.dom === "all" || t.closest(".dom").dataset.dom === state.dom)
+        && (!state.star || t.hasAttribute("data-star"))
+        && (!state.todo || !got[t.id])
+        && words.every(w => t.dataset.text.includes(w));
+      t.hidden = !ok;
+      if(ok) shown++;
+    });
+    subs.forEach(s => { s.hidden = !s.querySelector(".term:not([hidden])"); });
+    doms.forEach(d => { d.hidden = !d.querySelector(".term:not([hidden])"); });
+    $("shown").textContent = shown;
+    $("gotn").textContent = terms.filter(t => got[t.id]).length;
+    $("empty").hidden = shown > 0;
+  }
+
+  const q = $("q");
+  q.addEventListener("input", () => { state.q = q.value; apply(); });
+  q.addEventListener("keydown", e => { if(e.key === "Escape"){ q.value = ""; state.q = ""; apply(); } });
+  addEventListener("keydown", e => {
+    if(e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+    const tag = (document.activeElement && document.activeElement.tagName) || "";
+    if(tag === "INPUT" || tag === "TEXTAREA") return;
+    e.preventDefault(); q.focus();
+  });
+
+  const chips = [...document.querySelectorAll(".chip")];
+  chips.forEach(c => c.addEventListener("click", () => {
+    state.dom = c.dataset.dom;
+    chips.forEach(x => x.setAttribute("aria-pressed", String(x === c)));
+    apply();
+  }));
+
+  document.querySelectorAll(".tg").forEach(b => b.addEventListener("click", () => {
+    const k = b.dataset.toggle;
+    state[k] = !state[k];
+    b.setAttribute("aria-pressed", String(state[k]));
+    if(k === "quiz"){
+      root.classList.toggle("quiz", state.quiz);
+      terms.forEach(t => {
+        t.classList.remove("open");
+        const p = t.querySelector(".peek"); if(p) p.textContent = "意味を見る";
+      });
+    }
+    apply();
+  }));
+
+  apply();
+})();
+</script>
+</body>
+</html>
