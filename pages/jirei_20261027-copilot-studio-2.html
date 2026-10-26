@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Morningstar）。2026年10月27日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>顧客との面談準備が「数時間」から「数回の指示」へ。Morningstar は Copilot Studio のエージェントで調べものを任せています</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月27日／金融サービス（Morningstar）・資産運用アドバイザーの調査と面談準備</p>
+
+  <h1>顧客との面談準備が「数時間」から「数回の指示」へ。Morningstar は Copilot Studio のエージェントで調べものを任せています</h1>
+
+  <div class="lead">
+    <p>投資情報会社の Morningstar では、資産運用のアドバイザーの1日のうち約2〜3割が事務的な作業に使われ、顧客との面談の準備にも1人あたり数時間かかっていました。</p>
+    <p>同社は自社の調査データを Microsoft 365 Copilot につなぎ、Copilot Studio（AI エージェントを作る Microsoft のツール）で、データを選んで組み合わせるエージェントを作りました。</p>
+    <p>面談準備は「数回の指示」でできるようになり、10〜15年分の履歴調べも数分で終わった例があります。時間の削減率などは公表されていません。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>顧客との面談の前に、保有資産の状況、市場の動き、調査レポートを、いくつものシステムから集めて回る。画面を行ったり来たりするだけで、準備の時間が過ぎてしまう。そんな経験は、営業や企画の仕事にもあるはずです。</p>
+  <p>出典によると、アドバイザーの1日の約20〜30%は事務的な作業でした。複数のシステムからデータを引き出す必要があり、記事はこれを「swivel-chair effect（椅子を回して別の画面に向かう手間）」と呼んでいます。面談の準備は、顧客1人あたり「数時間」かかっていました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Microsoft 365 Copilot を入り口にして、Morningstar の調査データを MCP（AI が外部のデータや道具を呼び出すための共通の約束事）のサーバー経由で取り込みました。Copilot Studio で作ったエージェントが、どの道具を呼ぶかを判断し、情報を集めて組み合わせます。</p>
+  <p>規制のある業界のため、エージェントは承認されたデータだけを使い、決められた手順で動き、後から確かめられる形にしています。さらに、非公開企業のデータ（PitchBook）と組み合わせ、企業が資金調達から上場、上場後の動きまでたどるエージェントも作りました。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Morningstar のエージェントが調査をまとめる流れ">
+      <li><div class="box">Copilot で<br>依頼する</div></li>
+      <li><div class="box">MCP で<br>調査データを取得</div></li>
+      <li><div class="box">エージェントが<br>情報を組み合わせる</div></li>
+      <li><div class="box">アドバイザーが<br>確認・修正</div></li>
+    </ol>
+    <figcaption>Morningstar のエージェントが調査をまとめる流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>アドバイザーが、入り口の Microsoft 365 Copilot で依頼を出します。</li>
+    <li>Copilot が MCP サーバーを通じて Morningstar のデータを取得します。</li>
+    <li>Copilot Studio のエージェントが使う道具を選び、複数の情報源から集めて組み合わせます。</li>
+    <li>面談用の資料や、ポートフォリオの話題の案ができます。アドバイザーが確認して手直しし、最終判断は人が持ちます。</li>
+  </ol>
+  <p class="src-note">※ 手順は出典の説明を整理したもので、画面上の操作や設定の細部は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>複数のシステムを行き来してデータを集め、顧客1人の面談準備に数時間かけていました。</p></div>
+    <div class="after"><h3>いま</h3><p>数回の指示で、面談用の資料やポートフォリオの話題の案ができます。10〜15年分の履歴を調べる作業をエージェントが数分で終えた例も紹介されています。</p></div>
+  </div>
+  <p>「約20〜30%」「数時間」「数分」は、Morningstar が公表した説明です。出典の成果欄にも「準備の数時間が数分に」とありますが、削減率のような数字は公表されていません。</p>
+  <p>同社は社内の学習プログラム（AI Academy）も用意しており、指示の書き方、エージェントの組み合わせ方、安全面の注意を学ぶ場に、数百人の社員が登録しているとのことです。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>毎回、複数の資料や画面から情報を集める業務を1つ選びます。</li>
+    <li>集める情報の「元の場所」と、そのうち正しいと確認済みのものを書き出します。</li>
+    <li>Copilot Studio で、確認済みの情報だけを使う小さなエージェントを作り、出力を人が見直す手順で試します。</li>
+  </ol>
+  <p>準備するもの：Copilot Studio を使える権限と、使ってよい社内データの一覧です。MCP でつなぐ部分は IT 部門の協力が要ります。使える機能や料金は、ライセンスや社内の設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>「正しいデータだけを使う」ことが前提でした</strong>
+    <p>出典は、インターネット上の広い情報は質が低かったり偏っていたりするため、確認済みのデータに基づかせることが大切だと伝えています。規制のある環境では、エージェントが承認されたデータだけを使い、決められた流れで動き、後から確認できる状態にしています。</p>
+  </div>
+  <p>真似するときは、エージェントが見てよいデータの範囲を先に決めましょう。顧客の個人情報は特に注意が必要です。AI の出力は、そのまま顧客に渡さず、必ず人が確かめてください。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、新しい画面を足すのではなく、アドバイザーが普段使う Copilot の中にデータを入れたことです。「人が普段いる場所に、確認済みの情報をつなぐ」という考え方は、どの業務にも応用できます。</p>
+  <p>自分の職場に置き換えると、営業の訪問前の情報集めや、会議前の資料集めが候補になりそうです。まず「毎回、同じ場所から同じ情報を集めている作業」を探してみてください。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「Morningstar advances wealth advisory with Copilot and Copilot Studio」（ページ表示日 2026年4月8日）<br>
+    <a href="https://www.microsoft.com/en/customers/story/26333-morningstar-inc-microsoft-copilot">https://www.microsoft.com/en/customers/story/26333-morningstar-inc-microsoft-copilot</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月27日作成）。数字は出典元の公表値です。</p>
+  </footer>
+</div>
+</body>
+</html>

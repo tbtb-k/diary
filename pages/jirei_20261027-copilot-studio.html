@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Cemex）。2026年10月27日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>人事の同じ質問に24時間答える。Cemex は Copilot Studio の HR エージェントで、申請の受け付けまでつなげました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月27日／建設資材（Cemex）・人事の問い合わせ対応</p>
+
+  <h1>人事の同じ質問に24時間答える。Cemex は Copilot Studio の HR エージェントで、申請の受け付けまでつなげました</h1>
+
+  <div class="lead">
+    <p>建設資材の Cemex（約4万人）では、人事の問い合わせが電話・メール・担当者への直接の相談に頼っていて、同じ質問への対応で返事が遅れがちでした。</p>
+    <p>人事部門と IT 部門は、Copilot Studio（ノーコード・ローコードで AI エージェントを作れる Microsoft のツール）で、人事の質問に答える「Consult HR」を作りました。</p>
+    <p>2026年1月26日に本番開始し、メキシコ中部の約800人が使っています。問い合わせ件数の減少など、数字の成果は公表されていません。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>「眼鏡の補助は今年いくらまで出るのだろう」。規程は社内ポータルに載っているのに、探すより人事に聞くほうが早い。そう考えて、つい電話やメールをしてしまう場面は、どの会社にもあります。</p>
+  <p>出典によると Cemex でも、規程やよくある質問は社内サイトにありましたが、社員は人事の担当者に直接聞くことを好みました。人事の担当者は同じ質問に何度も答えることになり、返事の遅れや二度手間が出ていました。時間外や多言語での対応もできていませんでした。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Consult HR は、Copilot Studio で作った会話型の人事エージェントです。Teams（職場のチャットツール）のエージェントとして動き、Microsoft 365 Copilot からも使えます。SharePoint Online（社内の共有ファイル置き場）の一覧表と PDF の文書をもとに、自然な言葉で答えます。</p>
+  <p>質問に答えるだけでなく、申請の受け付けまでつないでいる点が特徴です。ServiceNow（問い合わせや依頼を管理するシステム）と連携し、社員が申請すると追跡用の番号が返ってきます。SAP SuccessFactors（人事のシステム）とも順次つなぎ、休暇申請や在職証明の依頼を使えるようにしている途中です。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Consult HR で質問から申請までを進める流れ">
+      <li><div class="box">Teams で<br>人事の質問</div></li>
+      <li><div class="box">最新の<br>情報を回答</div></li>
+      <li><div class="box">入力画面で<br>内容・請求書を送る</div></li>
+      <li><div class="box">チケット発行<br>番号で追跡</div></li>
+    </ol>
+    <figcaption>Consult HR で質問から申請までを進める流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>社員が Teams で質問します（出典の例は、その年の眼鏡の補助制度です）。</li>
+    <li>エージェントが最新の情報を答え、そのまま申請を始めるか尋ねます。</li>
+    <li>入力用のカード（フォームのような画面）に内容を書き、請求書をアップロードして送ります。</li>
+    <li>申請は ServiceNow に届き、社員は追跡用のチケット番号を受け取ります。人事側も進み具合を見られます。</li>
+  </ol>
+  <p class="src-note">※ 手順の細かい画面の動きは、出典の説明にもとづいて整理しました。Cemex が実際に使った設定や文面は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>人事の担当者に電話やメールで聞く。同じ質問が何度も届き、返事が遅れたり、担当者に仕事が集中したりしていました。時間外や他の言語での対応も困難でした。</p></div>
+    <div class="after"><h3>いま</h3><p>Teams で質問すると、いつでも最新の情報が返ります。申請もそのままエージェントから出せて、チケットの番号で追えます。Cemex のメキシコ中部では、人事の「最優先の自己解決ツール」と位置づけられています。</p></div>
+  </div>
+  <p>経過は次のとおりです。2025年度の終わりごろに着手し、試作（PoC）、25人での限定的な試行を経て、2026年1月26日に約800人で本番開始しました。これらは Cemex が公表した情報です。</p>
+  <p>問い合わせ件数や対応時間がどれだけ減ったかといった数字は公表されていません。次の段階として、対応言語の追加、利用者の拡大、SAP SuccessFactors とのさらなる連携が挙げられています。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>よく聞かれる人事の質問を、上位10件ほど書き出します。</li>
+    <li>答えの元になる規程や一覧表を、SharePoint など 1 か所に整理します。</li>
+    <li>Copilot Studio の画面で、その文書を知識源にした小さなエージェントを作り、まず数人で試します。</li>
+  </ol>
+  <p>準備するもの：Copilot Studio を使える権限と、回答の元になる最新の文書です。使える機能や料金は、お使いのライセンスや社内の設定で変わります。Cemex の連携先（ServiceNow、SAP）は、自社のシステムに合わせて読み替えてください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>新しい技術でも、小さく始めるのが近道でした</strong>
+    <p>出典は、Copilot Studio が Cemex にとって「とても新しい技術」だったと伝えています。それでも、ローコードで開発者に頼りすぎずに改善を重ねられたとのことです。担当者は「怖がらずに始めて、学びながら進めること」を勧めています（意訳）。</p>
+  </div>
+  <p>社員の個人情報や給与に関わる質問を扱うときは、誰がどこまで見てよいかの権限を先に決めましょう。AI は、もっともらしい間違い（ハルシネーション）を答えることがあります。規程の最新版を元にし、迷う内容は人事の担当者につなぐ道も残してください。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、答えて終わりにせず、申請の受け付けまでつないだことです。「問い合わせに答える」から「手続きを進める」へ広げる考え方は、人事に限らず、総務・経理・情報システムの窓口にも使えます。</p>
+  <p>自分の職場に置き換えると、総務への「会議室の使い方」や情報システムへの「パスワードの再設定」など、同じ質問が繰り返し届く窓口が候補になりそうです。まずは質問を数えて、いちばん多いものから試してみてください。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「Cemex builds an always-on HR experience with a Copilot Studio agent」（ページ表示日 2026年8月11日）<br>
+    <a href="https://www.microsoft.com/en/customers/story/26985-cemex-microsoft-copilot-studio">https://www.microsoft.com/en/customers/story/26985-cemex-microsoft-copilot-studio</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月27日作成）。数字は出典元の公表値です。</p>
+  </footer>
+</div>
+</body>
+</html>

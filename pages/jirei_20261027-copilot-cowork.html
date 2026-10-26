@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Cowork の活用事例（Williams）。2026年10月27日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>設備の数値を見に行く仕事を、Cowork に見張らせる。米国のガス会社 Williams の現場担当者の取り組み</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Cowork</span>2026年10月27日／エネルギー（Williams）・設備の異常の見張り</p>
+
+  <h1>設備の数値を見に行く仕事を、Cowork に見張らせる。米国のガス会社 Williams の現場担当者の取り組み</h1>
+
+  <div class="lead">
+    <p>米国の天然ガス会社 Williams の現場の技術者は、タービン（発電や圧縮に使う回転機械）の調子を、現地まで行って数値を読み、目で見て確かめていました。</p>
+    <p>この技術者は Copilot Cowork（やってほしいことを伝えると、AI が作業を進めてくれる Microsoft 365 Copilot の機能）で、異常を知らせる仕組みを自分で作りました。</p>
+    <p>問題が大きくなる前に気づけるようになったと本人は話しています。この部分の数字は公表されていません。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>毎日の見回りで、機械のところまで行き、数値を読み、状態を見て判断する。大事な仕事ですが、人が見ていない時間の変化には気づけません。工場や設備の現場でなくても、「定期的に数字を見に行く」作業は多くの職場にあります。</p>
+  <p>出典によると、Operations Technician Senior の技術者は、以前は「タービンまで行って、数値を読み、目で確かめていた」そうです（意訳）。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>出典の説明では、Cowork は Outlook の配信リストに届く設備データのレポートを取り込みます。そのデータを基準となる設備の数値と比べ、ずれがあれば警告を出します。例として、熱電対（温度センサー）の温度上昇、油圧の低下、振動の増加が挙げられています。</p>
+  <p>本人は、この異常を知らせる仕組みを自動化したと話しています。依頼文や設定の細部、基準値の決め方は公開されていません。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Cowork が設備の異常を知らせる流れ">
+      <li><div class="box">Outlook に<br>設備レポートが届く</div></li>
+      <li><div class="box">基準の数値と<br>比べる</div></li>
+      <li><div class="box">ずれを<br>見つける</div></li>
+      <li><div class="box">警告を<br>出す</div></li>
+    </ol>
+    <figcaption>Cowork が設備の異常を知らせる流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>設備のデータが、Outlook の配信リストにレポートとして届きます。</li>
+    <li>Cowork がレポートを読み、基準となる設備の数値と比べます。</li>
+    <li>温度の上昇、油圧の低下、振動の増加などのずれを見つけます。</li>
+    <li>異常があれば警告で知らせ、人が対応を判断します。</li>
+  </ol>
+  <p class="src-note">※ 手順は出典の短い説明を4つに整理したものです。Cowork に何と頼んだか、承認の流れ、基準値の設定は出典に書かれておらず、公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>現地まで行って数値を読み、目で見て効率や異常を判断していました。</p></div>
+    <div class="after"><h3>いま</h3><p>届くレポートを Cowork が基準と比べ、異常があれば知らせてくれます。本人は「異常を知らせる仕組みを自動化した」と話しています。</p></div>
+  </div>
+  <p>Williams が公表した数字は、会社全体の AI の利用が「1桁％から90％超」に増えたこと（社員は6,000人以上）です。この Cowork の取り組みについて、検知の精度や減った時間などの数字は公表されていません。</p>
+  <p>記事は顧客自身の紹介で、第三者が効果を確かめたものではありません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>毎日・毎週、同じ場所で数字を確認している作業を1つ選びます。</li>
+    <li>「どの数字が、どうなったら知らせてほしいか」を文章で書き出します。</li>
+    <li>Cowork に、その確認と知らせ方を頼みます。最初は人が結果を見て、正しいか確かめます。</li>
+  </ol>
+  <p>準備するもの：Microsoft 365 Copilot のライセンスです。加えて、管理者が Cowork を有効にし、使った分だけ課金される仕組み（従量課金。Copilot Credits というポイントで支払います）をオンにしている必要があります（Microsoft Learn「Get started with Copilot Cowork」、2026年9月14日更新）。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>この事例では、細かい作り方は公開されていません</strong>
+    <p>出典に書かれているのは、仕組みのあらましと本人の感想までです。基準の決め方、誤報（異常でないのに知らせてしまうこと）、見逃しの扱いは書かれていません。</p>
+  </div>
+  <p>設備の安全に関わる判断は、AI の知らせだけに頼らないでください。自分の職場で試すときは、まず人の確認と並べて動かして、基準が合っているか確かめましょう。Microsoft Learn によると、Cowork はメール送信などの前に利用者の承認を求めます。見てよいデータの範囲も、先に決めておきます。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、現場の担当者が、自分の仕事の見張り番を作ったことです。「届いたものを基準と比べ、ずれたら知らせる」という形は、設備に限らず、売上、在庫、問い合わせの件数など、数字を見る仕事に広げられます。</p>
+  <p>自分の職場に置き換えると、毎朝見ている数字の表や、定例のレポートが候補になりそうです。ただし、この事例は出典の情報が限られています。試すときは、小さな範囲から始めてください。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「Williams」（Microsoft 365 Copilot の導入事例）（ページ表示日 2026年9月9日）<br>
+    <a href="https://www.microsoft.com/en/customers/story/27209-williams-microsoft-365-copilot">https://www.microsoft.com/en/customers/story/27209-williams-microsoft-365-copilot</a></p>
+    <p>使うための条件：Microsoft Learn「Get started with Copilot Cowork」（2026年9月14日更新）<br>
+    <a href="https://learn.microsoft.com/en-us/copilot/microsoft-365/cowork/get-started">https://learn.microsoft.com/en-us/copilot/microsoft-365/cowork/get-started</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月27日作成）。数字は出典元の公表値です。</p>
+  </footer>
+</div>
+</body>
+</html>

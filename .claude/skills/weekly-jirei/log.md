@@ -35,6 +35,9 @@
 | 2026-10-25 | Copilot Studio | Capita | pages/jirei_20261025-copilot-studio.html | https://www.microsoft.com/en/customers/story/25164-capita-microsoft-copilot-studio/ |
 | 2026-10-25 | Copilot Studio（Agent Builder 枠の代替） | HELLENiQ ENERGY | pages/jirei_20261025-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/24670-helleniq-energy-microsoft-365-copilot |
 | 2026-10-26 | Copilot Cowork | Microsoft（社内・Inside Track） | pages/jirei_20261026-copilot-cowork.html | https://www.microsoft.com/insidetrack/blog/from-ai-assistant-to-capable-teammate-how-copilot-cowork-is-changing-the-way-we-work-at-microsoft/ |
+| 2026-10-27 | Copilot Studio | Cemex | pages/jirei_20261027-copilot-studio.html | https://www.microsoft.com/en/customers/story/26985-cemex-microsoft-copilot-studio |
+| 2026-10-27 | Copilot Studio（Agent Builder 枠の代替） | Morningstar | pages/jirei_20261027-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/26333-morningstar-inc-microsoft-copilot |
+| 2026-10-27 | Copilot Cowork | Williams | pages/jirei_20261027-copilot-cowork.html | https://www.microsoft.com/en/customers/story/27209-williams-microsoft-365-copilot |
 
 ## ネタ帳（候補）
 
@@ -54,9 +57,6 @@
   https://www.microsoft.com/ja-jp/customers/story/26435-kirin-holdings-company-microsoft-365-copilot
   Agent Builder は一言のみ（「習熟はそこまで難しくない」）。Copilot 普及施策の事例としては厚い。Agent Builder 枠には弱い。
 
-- **Copilot Cowork**｜Williams（米国の天然ガス会社）（2026-09-09 公開、本文確認済み）
-  https://www.microsoft.com/en/customers/story/27209-williams-microsoft-365-copilot
-  現場の技術者（Operations Technician Senior）が、Cowork で設備の異常を知らせるしくみを作った。Outlook の配信リストに届く設備データのレポートを基準値と比べ、熱電対の温度上昇・油圧の低下・振動の増加があれば警告する。以前はタービンまで行って数値を読み、目で見て判断していた。Cowork 部分の数字はなし。記事全体は Microsoft 365 Copilot の現場展開（AI の利用率が1桁台から90%超へ）の事例なので、数字の出どころを分けて書くこと。Cowork 枠の次の候補。
 - **Copilot Cowork?**｜Microsoft 365 ブログ「Copilot Cowork is now generally available」（2026-06-16 公開、本文確認済み）
   https://www.microsoft.com/en-us/microsoft-365/blog/2026/06/16/copilot-cowork-is-now-generally-available/
   組織名のないチームの例が3つ（2つの製品版の約4,000ファイルを比較＝数週間かかる作業、止まった商談の洗い出し＝1週間の手作業が半日、バッチ処理の表の編集と依存関係の図づくり）。名前の出る組織（Accenture、Capital Group、Zurich Insurance など）は社名だけで中身なし。単独では8ブロックが埋まりにくい。
@@ -94,3 +94,4 @@
 - 2026-10-26：持ち主の依頼で Copilot Cowork 枠を追加（見つかった回だけ1本、最大3本）。事前に探した範囲では、Microsoft の顧客事例（customers/story）と日本企業の Cowork 事例は見つからず、読めたのは Inside Track と Microsoft 365 ブログのみ（上のネタ帳に追加）。ブロックされたホストなし。
 - 2026-10-26：持ち主の依頼で、定期実行の外で Cowork 枠だけを1本作成（Inside Track、2026-08-20）。Inside Track は curl だとボット確認ページが返るため WebFetch で本文を読んだ。04 の利用条件は Microsoft Learn「Get started with Copilot Cowork」（2026-09-14 更新）と GA 発表ブログで確認。ブロックされたホストなし。
 - 2026-10-26：Cowork の事例を追加で探した。顧客事例は Microsoft 365 Copilot 全体の事例に Cowork が一部出てくる形が多く、具体的な使い方まで書かれていたのは Williams のみ（ネタ帳に追加）。京都府・JBS・GET AI などは見送りに追加。QES（www.qes.co.jp）の「Copilot Cowork を社内業務で使ってみた」検証記事は、環境のネットワーク設定で許可されておらず読めなかった（403）。
+- 2026-10-27：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（Cemex、Morningstar）にした。2本とも Agent Builder の記載なし。Cowork 枠はネタ帳の Williams（本文を再確認。Cowork の細部は出典に乏しい）。Cowork 公式ページには名前入りの動画紹介のみで顧客事例の本文なし。ネタ帳候補（検索で見つけ未読）：Banco Hipotecario（Copilot Studio、https://www.microsoft.com/en/customers/story/26969-banco-hipotecario-github-copilot ）。ブロックされたホストなし。
