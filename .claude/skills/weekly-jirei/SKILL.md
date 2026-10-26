@@ -45,7 +45,7 @@ ls pages/jirei_${D}-* 2>/dev/null     # すでにあれば今回分は作成済�
    - `site:microsoft.com/en/customers/story Copilot Studio agent`
    - `site:microsoft.com/insidetrack/blog agent`
    - `site:techtarget.itmedia.co.jp Copilot Studio 事例` / `site:itmedia.co.jp エージェント ビルダー 事例` / `site:xtech.nikkei.com Copilot Studio エージェント`
-   - Copilot Cowork 枠：`site:microsoft.com/insidetrack/blog Cowork` / `site:microsoft.com/en/customers/story "Copilot Cowork"` / `site:microsoft.com/ja-jp/customers/story Cowork` / `site:microsoft.com/en-us/microsoft-365/blog Copilot Cowork` / `"Copilot Cowork" customer` / `Copilot Cowork 事例`
+   - Copilot Cowork 枠：`site:microsoft.com/insidetrack/blog Cowork` / `site:microsoft.com/en/customers/story Cowork` / `site:microsoft.com/ja-jp/customers/story Cowork` / `site:microsoft.com/en-us/microsoft-365/blog Copilot Cowork` / `"Copilot Cowork" customer` / `Copilot Cowork 事例`
 2. 候補の本文を **WebFetch で必ず読みます**。検索結果の要約だけで数字や事実を書いてはいけません。
 3. 次の条件で1本ずつ選びます。
    - 本文にツール名が明記されている。Agent Builder 枠は「Agent Builder」「エージェント ビルダー」、または旧称の「Copilot Studio agent builder」「Copilot Studio lite」の記載があるもの。Copilot Studio 枠は Copilot Studio でエージェントを作ったもの。Copilot Cowork 枠は、本文に「Copilot Cowork」（または Microsoft 365 Copilot の「Cowork」）と書かれ、Cowork に仕事を任せた具体例があるもの。Anthropic の「Claude Cowork」だけの話は対象外です。
@@ -58,7 +58,7 @@ ls pages/jirei_${D}-* 2>/dev/null     # すでにあれば今回分は作成済�
 
 **Agent Builder の事例は少なめです**（2026-10 時点）。見つかりやすい順に、Microsoft の日本語・英語の顧客事例 → 日本の IT メディア（TechTarget ジャパン、ITmedia、日経クロステック）の導入事例記事 → Microsoft の公式ブログ（Copilot ブログ、Microsoft 365 ブログ、Inside Track）で特定の組織の使い方を紹介した記事、の順に探します。公開から1年以内のものが尽きたら、2年以内まで広げてかまいません。
 
-**Copilot Cowork の事例はさらに少なめです**（2026-10 時点。2026-03 発表、2026-06-16 一般提供開始の新しい機能です）。Microsoft の顧客事例（customers/story）や日本企業の事例はまだ見つかっていません。見つかりやすい順に、Microsoft の Inside Track（社内での使い方）→ Microsoft 365 ブログ・Copilot ブログの発表記事で特定の組織やチームの使い方を紹介した部分 → Microsoft の顧客事例 → 日本の IT メディア、の順に探します。製品ページやパートナー企業の解説記事にある「こんなことができます」という架空の使い方の例は、事例ではないので使いません。組織名やチームの具体的な話がなく8ブロックが埋まらないものは見送ります。
+**Copilot Cowork の事例はさらに少なめです**（2026-10 時点。2026-03 発表、2026-06-16 一般提供開始の新しい機能です）。Microsoft 365 Copilot 全体の顧客事例の中に、Cowork の話が一部だけ出てくる形が多いので、顧客事例は本文の中で Cowork の部分を探して、それだけで8ブロックが埋まるかを見ます（2026-10 時点で具体的な使い方まで書かれていたのは Williams のみ）。見つかりやすい順に、Microsoft の Inside Track（社内での使い方）→ Microsoft 365 ブログ・Copilot ブログの発表記事で特定の組織やチームの使い方を紹介した部分 → Microsoft の顧客事例 → 日本の IT メディア、の順に探します。製品ページやパートナー企業の解説記事にある「こんなことができます」という架空の使い方の例は、事例ではないので使いません。組織名やチームの具体的な話がなく8ブロックが埋まらないものは見送ります。
 
 **ネットワーク（2026-10-02 更新）**：環境で `*.microsoft.com`、`*.itmedia.co.jp`、`xtech.nikkei.com` を許可しています。Microsoft の顧客事例に加えて、learn.microsoft.com、techcommunity.microsoft.com、TechTarget ジャパン（techtarget.itmedia.co.jp）、ITmedia、日経クロステックの事例記事も出典に使えます。
 
