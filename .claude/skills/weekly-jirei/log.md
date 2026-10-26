@@ -34,6 +34,7 @@
 | 2026-10-23 | Copilot Studio（Agent Builder 枠の代替） | Tiendas Cuadra | pages/jirei_20261023-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/26459-tiendas-cuadra-microsoft-copilot-studio |
 | 2026-10-25 | Copilot Studio | Capita | pages/jirei_20261025-copilot-studio.html | https://www.microsoft.com/en/customers/story/25164-capita-microsoft-copilot-studio/ |
 | 2026-10-25 | Copilot Studio（Agent Builder 枠の代替） | HELLENiQ ENERGY | pages/jirei_20261025-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/24670-helleniq-energy-microsoft-365-copilot |
+| 2026-10-26 | Copilot Cowork | Microsoft（社内・Inside Track） | pages/jirei_20261026-copilot-cowork.html | https://www.microsoft.com/insidetrack/blog/from-ai-assistant-to-capable-teammate-how-copilot-cowork-is-changing-the-way-we-work-at-microsoft/ |
 
 ## ネタ帳（候補）
 
@@ -53,9 +54,6 @@
   https://www.microsoft.com/ja-jp/customers/story/26435-kirin-holdings-company-microsoft-365-copilot
   Agent Builder は一言のみ（「習熟はそこまで難しくない」）。Copilot 普及施策の事例としては厚い。Agent Builder 枠には弱い。
 
-- **Copilot Cowork**｜Microsoft（社内・Inside Track）（2026-08-20 公開、本文確認済み）
-  https://www.microsoft.com/insidetrack/blog/from-ai-assistant-to-capable-teammate-how-copilot-cowork-is-changing-the-way-we-work-at-microsoft/
-  社内公開から3週間で約2万人が利用。クラウドソリューションアーキテクトが、お客様との打ち合わせ内容から動く試作ページを作る例、会議の時間探し → 資料づくり → 招待の下書き → 確認してから送信、の例あり。「下書きを頼むのではなく、作業の流れごと任せた人ほど効果が出た」という学び。時間短縮の数字はなし。Cowork 枠の1本目に向く。
 - **Copilot Cowork?**｜Microsoft 365 ブログ「Copilot Cowork is now generally available」（2026-06-16 公開、本文確認済み）
   https://www.microsoft.com/en-us/microsoft-365/blog/2026/06/16/copilot-cowork-is-now-generally-available/
   組織名のないチームの例が3つ（2つの製品版の約4,000ファイルを比較＝数週間かかる作業、止まった商談の洗い出し＝1週間の手作業が半日、バッチ処理の表の編集と依存関係の図づくり）。名前の出る組織（Accenture、Capital Group、Zurich Insurance など）は社名だけで中身なし。単独では8ブロックが埋まりにくい。
@@ -88,3 +86,4 @@
 - 2026-10-23：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（Dunaway、Tiendas Cuadra。ネタ帳の候補を本文確認して採用）にした。2本とも Agent Builder の記載なし。ネタ帳候補（未読）：Singapore Civil Defence Force は検索で裏づけが取れず。ブロックされたホストなし。
 - 2026-10-25：Agent Builder 枠は、WebSearch（標準・拡張）でも顧客事例が出ず、Copilot Studio を2本（Capita、HELLENiQ ENERGY）にした。2本とも本文を WebFetch で確認。Agent Builder の記載は Capita に一文のみ、HELLENiQ にはなし。ブロックされたホストなし。
 - 2026-10-26：持ち主の依頼で Copilot Cowork 枠を追加（見つかった回だけ1本、最大3本）。事前に探した範囲では、Microsoft の顧客事例（customers/story）と日本企業の Cowork 事例は見つからず、読めたのは Inside Track と Microsoft 365 ブログのみ（上のネタ帳に追加）。ブロックされたホストなし。
+- 2026-10-26：持ち主の依頼で、定期実行の外で Cowork 枠だけを1本作成（Inside Track、2026-08-20）。Inside Track は curl だとボット確認ページが返るため WebFetch で本文を読んだ。04 の利用条件は Microsoft Learn「Get started with Copilot Cowork」（2026-09-14 更新）と GA 発表ブログで確認。ブロックされたホストなし。

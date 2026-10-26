@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Cowork の活用事例（Microsoft 社内）。2026年10月26日作成。公開情報（Microsoft Inside Track）をもとにまとめています。">
+<title>AI に「下書き」ではなく「仕事の流れ」を任せる。Microsoft では Copilot Cowork を社内公開から3週間で2万人が使い始めました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Cowork</span>2026年10月26日／IT・ソフトウェア（Microsoft 社内）・会議の準備や資料づくりなど日々の仕事の任せ方</p>
+
+  <h1>AI に「下書き」ではなく「仕事の流れ」を任せる。Microsoft では Copilot Cowork を社内公開から3週間で2万人が使い始めました</h1>
+
+  <div class="lead">
+    <p>Microsoft の社員は、AI に下書きや要約を頼めても、その先の「実際に進める」作業は自分の手でつなぐ必要がありました。</p>
+    <p>そこで社内の IT 部門（Microsoft Digital）は、やってほしい結果を伝えると手順を計画して作業を進める Copilot Cowork を先に社内で使い、研修で「任せ方」を広げました。</p>
+    <p>社内公開から3週間で2万人が使い始め、下書きではなく仕事の流れごと任せた人ほど効果が出たと、Microsoft は伝えています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>来週の打ち合わせのために、みんなの空いている時間を探し、資料を作り、招待メールを書く。AI に資料の下書きは頼めても、日程を探す・資料をそろえる・招待を送る、の一つ一つは自分でつないでいる。そんな場面は、どの職場にもあります。</p>
+  <p>出典によると、これまでの職場の AI は、下書きを速く作る、要約する、答えを早く返す、といった「作業の手伝い」が中心でした。やりたいことと、実際にやり終えることの間には、まだ隔たりがあったと書かれています。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Cowork は、やってほしいことを伝えると、AI が手順を計画し、メール・会議・ファイルなどをまたいで作業を進めてくれる Microsoft 365 Copilot の機能です。Work IQ（社内の人・資料・会議のつながりを AI に伝えるしくみ）を使って、組織の事情をふまえて動きます。メールを送るなどの大事な操作の前には、いったん止まって利用者の確認（承認）を待ちます。決まった時間に同じ依頼を自動で実行する機能や、パソコンを閉じてもクラウド上で作業が続く機能もあります。</p>
+  <p>Microsoft は、自社の製品を最初に使ってみる「Customer Zero（最初の利用者）」として、Cowork を社内で使いました。社員は1回の依頼で、プレゼン資料を作る、Teams のチャットを立ち上げる、定期的なフォローアップを予約する、戦略の文書を書き始める、といった仕事を任せています。メール・チャット・資料・ニュースをまとめた説明資料（ブリーフィング）づくりにも使われています。</p>
+  <p>Microsoft 365 Copilot の AI ビジネス ソリューション部門の技術職（プリンシパル クラウド ソリューション アーキテクト）は、Cowork を毎日の仕事に取り入れています。お客様との打ち合わせの内容から、その場で動く試作のウェブページを作り、相手の反応を見ながら直したこともあります。会議の時間を探し、資料を作り、招待の下書きまでを任せ、送る前に自分で中身を確かめています。本人は「日々の仕事の頼れる相棒になった」と話しています（意訳）。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Copilot Cowork に仕事を任せる流れ">
+      <li><div class="box">ほしい結果を<br>伝えて依頼</div></li>
+      <li><div class="box">Cowork が<br>手順を計画</div></li>
+      <li><div class="box">アプリをまたいで<br>作業を進める</div></li>
+      <li><div class="box">送る前に<br>確認して承認</div></li>
+    </ol>
+    <figcaption>Copilot Cowork に仕事を任せる流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>「打ち合わせを設定して、資料と招待をそろえる」のように、できあがりの形を伝えて頼みます。</li>
+    <li>Cowork が手順を計画し、空いている時間を探したり、資料を作ったりします。</li>
+    <li>招待を送るなどの操作の前に、Cowork が止まって確認を求めます。中身を見て承認すると実行されます。</li>
+    <li>毎回くり返す作業は、決まった時間に自動で実行するように登録します。</li>
+  </ol>
+  <p class="src-note">※ 手順1の頼み方は、Copilot Cowork の一般的な使い方で補っています。Microsoft の社員が実際に書いた依頼文は公開されていません。</p>
+  <p>Microsoft Digital のシニア ビジネス プログラム マネージャーは、「複雑な仕事を手渡してパソコンを閉じても、自分の代わりに仕事が進む」という新しい働き方だと話しています（意訳）。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>AI に頼めるのは下書き・要約・答えまででした。日程を探す、資料をそろえる、招待を送る、といったつなぎの作業は自分で進めていました（出典の説明にもとづく整理です）。</p></div>
+    <div class="after"><h3>いま</h3><p>ほしい結果を伝えると、Cowork が手順をつないで進めます。人は途中の確認と、送る前の承認を受け持ちます。</p></div>
+  </div>
+  <p>「社内公開から3週間で2万人が利用した」は、Microsoft が公表した数字です。作業時間がどれだけ減ったかなどの数字は公表されていません。出典は、まだ初期の段階だとしたうえで、事務的な負担が減り、仕事が早く進むと感じるチームが出てきていると書いています。</p>
+  <p>効果の差も見えてきました。Cowork を「少し便利なチャット」として使った人の効果は小さめでした。一方で、下書きではなく作業の流れごと任せた人や、要約ではなく「何を作れば終わりか」が決まった調査を任せた人ほど、効果が大きかったそうです。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>毎週くり返している、いくつもの手順がつながった仕事を1つ選びます。会議の準備と後追いや、情報を集めた報告づくりが候補です。</li>
+    <li>「下書きを作って」ではなく、「何ができあがれば終わりか」を書いて頼みます。</li>
+    <li>送信や予定の登録の前に出る確認画面で、中身を見てから承認します。慣れてきたら、決まった時間の自動実行も試してみてください。</li>
+  </ol>
+  <p>必要なもの：Microsoft 365 Copilot のライセンスに加えて、管理者が Cowork を有効にし、使った分だけ料金がかかる仕組み（従量課金です。Copilot Credits というポイントで支払います）をオンにしている必要があります。ブラウザーで Microsoft Copilot（copilot.cloud.microsoft）を開き、Chat の隣の「Cowork」を選ぶと使えます（Microsoft Learn の2026年9月時点の説明です）。使えるかどうかは、会社のライセンスや管理者の設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>「賢いチャット」のつもりで使うと、効果は小さくなります</strong>
+    <p>出典は、広まるかどうかは技術と同じくらい、使う人の仕事の進め方が変わるかどうかにかかっていると書いています。また、Cowork はまだ初期の段階で、動作の安定、社内データや外部システムとのつながり、できあがりの質を改善している途中だとしています。今のやり方を一晩で置きかえるものではない、とも書かれています。</p>
+  </div>
+  <p>社内で真似するときは、Cowork に触れさせてよいメール・予定・資料の範囲を先に確かめ、機密情報は社内ルールに従って扱いましょう。確認画面で「常に許可（Always allow）」を選ぶと、同じやりとりの中では似た操作の確認が出なくなります。はじめは1件ずつ確認するのがおすすめです。AI が作った資料やメールは間違いを含むことがあるので、送る前に中身を見てください。使った分だけ料金がかかるため、試す範囲と上限は管理者と相談してください。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、AI に「何を書くか」ではなく「何ができあがれば終わりか」を渡したことです。Microsoft は研修プログラム（Agent Launchpad）で、くり返し発生する仕事を見つけ、いくつもの手順をまとめた依頼を試す練習の場を社員に用意しました。つなぎの作業は AI に任せ、人は途中の確認と最後の承認を受け持つ、という役割分担です。</p>
+  <p>自分の職場に置き換えると、定例会議の準備（日程の確認、資料の更新、案内の送信）や、毎週の情報集めと報告づくりが候補になりそうです。まずは1つの仕事を「できあがりの形」から書いて、Cowork に任せてみてください。</p>
+
+  <footer>
+    <p>出典：Microsoft Inside Track「From AI assistant to capable teammate: How Copilot Cowork is changing the way we work at Microsoft」（2026年8月20日公開）<br>
+    <a href="https://www.microsoft.com/insidetrack/blog/from-ai-assistant-to-capable-teammate-how-copilot-cowork-is-changing-the-way-we-work-at-microsoft/">https://www.microsoft.com/insidetrack/blog/from-ai-assistant-to-capable-teammate-how-copilot-cowork-is-changing-the-way-we-work-at-microsoft/</a><br>
+    使うための条件：Microsoft Learn「Get started with Copilot Cowork」（2026年9月14日更新）<br>
+    <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/get-started">https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/get-started</a><br>
+    Microsoft 365 ブログ「Copilot Cowork is now generally available」（2026年6月16日公開）<br>
+    <a href="https://www.microsoft.com/en-us/microsoft-365/blog/2026/06/16/copilot-cowork-is-now-generally-available/">https://www.microsoft.com/en-us/microsoft-365/blog/2026/06/16/copilot-cowork-is-now-generally-available/</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月26日作成）。数字は出典元の公表値です。</p>
+  </footer>
+</div>
+</body>
+</html>
