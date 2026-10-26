@@ -1,11 +1,11 @@
 ---
 name: weekly-jirei
-description: 2日に1回、Microsoft 365 Copilot の Agent Builder と Copilot Studio の活用事例を1本ずつ記事HTMLにまとめ、学習記録サイト（tbtb-k/diary の pages/）の main に公開する手順。「今回の事例」「定期事例」「週次事例」「weekly-jirei」と言われたとき、または定期実行から呼ばれたときに使う。
+description: 2日に1回、Microsoft 365 Copilot の Agent Builder・Copilot Studio・Copilot Cowork の活用事例を1本ずつ記事HTMLにまとめ、学習記録サイト（tbtb-k/diary の pages/）の main に公開する手順。「今回の事例」「定期事例」「週次事例」「weekly-jirei」と言われたとき、または定期実行から呼ばれたときに使う。
 ---
 
-# 定期の AI 活用事例（Agent Builder / Copilot Studio）
+# 定期の AI 活用事例（Agent Builder / Copilot Studio / Copilot Cowork）
 
-2日に1回（日本時間の奇数日の朝 8:50）、公開されている事例から **Agent Builder 枠1本・Copilot Studio 枠1本** を選び、1記事1事例のHTMLにして、サイト（https://tbtb-k.github.io/diary/）に公開します。持ち主の希望は「毎回2本」です。
+2日に1回（日本時間の奇数日の朝 8:50）、公開されている事例から **Agent Builder 枠1本・Copilot Studio 枠1本・Copilot Cowork 枠1本** を選び、1記事1事例のHTMLにして、サイト（https://tbtb-k.github.io/diary/）に公開します。持ち主の希望は「Agent Builder と Copilot Studio で毎回2本、Copilot Cowork は事例が見つかった回に1本足す（最大3本）」です。
 
 - 読み手：AI を使い始めたばかりの人。非エンジニア前提で、専門用語には必ず一言そえます。
 - 公開先：`tbtb-k/diary` リポジトリの `main` ブランチ。`pages/` に置くと、トップの一覧に自動で並びます。
@@ -17,6 +17,7 @@ description: 2日に1回、Microsoft 365 Copilot の Agent Builder と Copilot S
 |---|---|
 | `pages/jirei_YYYYMMDD-agent-builder.html` | Agent Builder の事例1本 |
 | `pages/jirei_YYYYMMDD-copilot-studio.html` | Copilot Studio の事例1本 |
+| `pages/jirei_YYYYMMDD-copilot-cowork.html` | Copilot Cowork の事例1本（見つかった回だけ） |
 | `.claude/skills/weekly-jirei/log.md` | 掲載済み表とネタ帳を更新 |
 
 `YYYYMMDD` は実行日（日本時間）です。`TZ=Asia/Tokyo date +%Y%m%d` で求めます。ファイル名の `jirei_` は一覧のカテゴリになるので変えません。
@@ -44,16 +45,20 @@ ls pages/jirei_${D}-* 2>/dev/null     # すでにあれば今回分は作成済�
    - `site:microsoft.com/en/customers/story Copilot Studio agent`
    - `site:microsoft.com/insidetrack/blog agent`
    - `site:techtarget.itmedia.co.jp Copilot Studio 事例` / `site:itmedia.co.jp エージェント ビルダー 事例` / `site:xtech.nikkei.com Copilot Studio エージェント`
+   - Copilot Cowork 枠：`site:microsoft.com/insidetrack/blog Cowork` / `site:microsoft.com/en/customers/story "Copilot Cowork"` / `site:microsoft.com/ja-jp/customers/story Cowork` / `site:microsoft.com/en-us/microsoft-365/blog Copilot Cowork` / `"Copilot Cowork" customer` / `Copilot Cowork 事例`
 2. 候補の本文を **WebFetch で必ず読みます**。検索結果の要約だけで数字や事実を書いてはいけません。
 3. 次の条件で1本ずつ選びます。
-   - 本文にツール名が明記されている。Agent Builder 枠は「Agent Builder」「エージェント ビルダー」、または旧称の「Copilot Studio agent builder」「Copilot Studio lite」の記載があるもの。Copilot Studio 枠は Copilot Studio でエージェントを作ったもの。
+   - 本文にツール名が明記されている。Agent Builder 枠は「Agent Builder」「エージェント ビルダー」、または旧称の「Copilot Studio agent builder」「Copilot Studio lite」の記載があるもの。Copilot Studio 枠は Copilot Studio でエージェントを作ったもの。Copilot Cowork 枠は、本文に「Copilot Cowork」（または Microsoft 365 Copilot の「Cowork」）と書かれ、Cowork に仕事を任せた具体例があるもの。Anthropic の「Claude Cowork」だけの話は対象外です。
    - 困りごと（before）と変化（after）が書ける。数字があればなお良い。
    - 新しいもの優先（公開から1年以内が目安）。
    - 「掲載済み」と同じ事例は選ばない。直近3回の掲載と同じ組織は避ける。日本と海外の事例がかたよらないようにする。
    - 「Agent Builder を全社員に開放した」のような一文だけの記載では記事にしない（8ブロックが埋まらないため）。ネタ帳の「見送り」にあるものは読み直さなくてよい。
-4. 片方の枠で条件を満たす事例が見つからないときは、**もう片方のツールの事例をもう1本**にして、毎回2本を保ちます。ファイル名は `pages/jirei_YYYYMMDD-copilot-studio-2.html`（または `-agent-builder-2.html`）にし、報告に「Agent Builder 枠は事例が見つからず、Copilot Studio を2本にしました」のように書きます。両方とも見つからなければ休みにして報告します。**事例をでっち上げたり、別の事例の数字を混ぜたりしないでください。**
+4. Agent Builder と Copilot Studio のうち片方の枠で条件を満たす事例が見つからないときは、**もう片方のツールの事例をもう1本**にして、毎回2本を保ちます。ファイル名は `pages/jirei_YYYYMMDD-copilot-studio-2.html`（または `-agent-builder-2.html`）にし、報告に「Agent Builder 枠は事例が見つからず、Copilot Studio を2本にしました」のように書きます。両方とも見つからなければ、この2枠は休みにして報告します。**事例をでっち上げたり、別の事例の数字を混ぜたりしないでください。**
+5. Copilot Cowork 枠は、条件を満たす事例が見つからなければ **その回は休み** にします。代わりの1本は立てず、報告に「Copilot Cowork 枠は事例が見つからず休みにしました」と書きます。反対に、Agent Builder／Copilot Studio 枠の代わりに Cowork の事例を使うこともしません（数が少ないので Cowork 枠のためにとっておきます）。
 
 **Agent Builder の事例は少なめです**（2026-10 時点）。見つかりやすい順に、Microsoft の日本語・英語の顧客事例 → 日本の IT メディア（TechTarget ジャパン、ITmedia、日経クロステック）の導入事例記事 → Microsoft の公式ブログ（Copilot ブログ、Microsoft 365 ブログ、Inside Track）で特定の組織の使い方を紹介した記事、の順に探します。公開から1年以内のものが尽きたら、2年以内まで広げてかまいません。
+
+**Copilot Cowork の事例はさらに少なめです**（2026-10 時点。2026-03 発表、2026-06-16 一般提供開始の新しい機能です）。Microsoft の顧客事例（customers/story）や日本企業の事例はまだ見つかっていません。見つかりやすい順に、Microsoft の Inside Track（社内での使い方）→ Microsoft 365 ブログ・Copilot ブログの発表記事で特定の組織やチームの使い方を紹介した部分 → Microsoft の顧客事例 → 日本の IT メディア、の順に探します。製品ページやパートナー企業の解説記事にある「こんなことができます」という架空の使い方の例は、事例ではないので使いません。組織名やチームの具体的な話がなく8ブロックが埋まらないものは見送ります。
 
 **ネットワーク（2026-10-02 更新）**：環境で `*.microsoft.com`、`*.itmedia.co.jp`、`xtech.nikkei.com` を許可しています。Microsoft の顧客事例に加えて、learn.microsoft.com、techcommunity.microsoft.com、TechTarget ジャパン（techtarget.itmedia.co.jp）、ITmedia、日経クロステックの事例記事も出典に使えます。
 
@@ -76,6 +81,13 @@ ls pages/jirei_${D}-* 2>/dev/null     # すでにあれば今回分は作成済�
 7. **05 つまずきやすいところ**：出典にある苦労・注意点と、権限・機密情報・AI の間違いへの注意。
 8. **06 おわりに**：感想で終わらせず、他の業務にも応用できる形に一段広げる。「自分の職場に置き換えると、〜」の段落を必ず入れる。フッターに出典（媒体名・記事タイトル・公開日・URL）と「相談窓口：○○」を残す。
 
+Copilot Cowork の記事で気をつけること：
+
+- Cowork はエージェントを「作る」ツールではなく、やってほしい結果を伝えて仕事を「任せる」機能です。一言説明の例：「Copilot Cowork（やってほしいことを伝えると、AI が手順を計画し、メール・会議・ファイルなどをまたいで作業を進めてくれる Microsoft 365 Copilot の機能）」。02 の流れ図も「依頼する → 計画ができる → 作業が進む → 確認して承認」のように、任せ方の流れで描きます。
+- メール送信などの大事な操作の前に、利用者の確認（承認）を待つ点が特徴です。出典に書かれていれば 02 か 05 で触れます。
+- 04 の準備物には「Microsoft 365 Copilot のライセンスに加えて、使った分だけ Copilot Credits（従量課金のポイント）を使うこと」「管理者が有効にしないと使えないこと」を一言入れます。料金や提供状況は変わりやすいので、書く前に Microsoft Learn（`learn.microsoft.com/copilot/microsoft-365/cowork/`）で確かめ、確かめられないことは書きません。
+- テンプレートの注記（`src-note`）の「一般的な作り方」は、Cowork の記事では「一般的な使い方」と書きかえます。
+
 文章のルール：
 
 - **全文ですます調**。見出しも含めて常体を混ぜない。1文は60字程度まで。
@@ -90,7 +102,7 @@ ls pages/jirei_${D}-* 2>/dev/null     # すでにあれば今回分は作成済�
 
 ### 4. 仕上げ前のチェック
 
-- [ ] ファイル名が `pages/jirei_YYYYMMDD-agent-builder.html` / `pages/jirei_YYYYMMDD-copilot-studio.html`（代わりの2本目なら `-2` つき。`.html.html` になっていない）
+- [ ] ファイル名が `pages/jirei_YYYYMMDD-agent-builder.html` / `pages/jirei_YYYYMMDD-copilot-studio.html` / `pages/jirei_YYYYMMDD-copilot-cowork.html`（代わりの2本目なら `-2` つき。`.html.html` になっていない）
 - [ ] `{{` が残っていない（`grep -n '{{' pages/jirei_${D}-*.html` が空）
 - [ ] 8ブロックがこの順番でそろい、流れ図が1つ入っている
 - [ ] 全文ですます調。専門用語に説明がある
@@ -107,7 +119,7 @@ ls pages/jirei_${D}-* 2>/dev/null     # すでにあれば今回分は作成済�
 
 ```bash
 git add pages/jirei_${D}-*.html .claude/skills/weekly-jirei/log.md
-git commit -m "Add weekly case studies ${D} (Agent Builder / Copilot Studio)"
+git commit -m "Add weekly case studies ${D} (Agent Builder / Copilot Studio / Copilot Cowork)"   # カッコ内は実際に入れた枠にする（例：Copilot Studio x2 / Copilot Cowork）
 git push origin HEAD:main
 ```
 
@@ -128,6 +140,9 @@ git push origin HEAD:main
   https://tbtb-k.github.io/diary/pages/jirei_YYYYMMDD-agent-builder.html
 ・Copilot Studio：<タイトル>（<組織名>）
   https://tbtb-k.github.io/diary/pages/jirei_YYYYMMDD-copilot-studio.html
+・Copilot Cowork：<タイトル>（<組織名>）
+  https://tbtb-k.github.io/diary/pages/jirei_YYYYMMDD-copilot-cowork.html
+  （見つからなかった回は「Copilot Cowork：今回は休み（事例が見つからず）」）
 補った点：<出典になく自分で補った箇所を1〜3点。なければ「なし」>
 ```
 
