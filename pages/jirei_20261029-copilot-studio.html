@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（GET AI）。2026年10月29日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>社内の問い合わせをエージェントに任せ、案件の受け付けは数か月から数日になりました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月29日／IT サービス・アドバイザリー（GET AI）・社内業務</p>
+
+  <h1>社内の問い合わせをエージェントに任せ、案件の受け付けは数か月から数日になりました</h1>
+
+  <div class="lead">
+    <p>オーストラリアの Microsoft パートナー企業 GET AI は、お客様に「AI は試作品で終わらず、本当に使える」と示す必要がありました。</p><p>そこで、まず自社の仕事で Microsoft の AI を使い、社内向けのエージェントを Copilot Studio（ノーコードで AI エージェントを作れる Microsoft のツール）などで作って運用しました。</p><p>公表された社内の見積もりでは、案件の受け付けは数か月から数日になり、調べる手間は最大70%減りました。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>社内の方針を誰かに聞いたら、人によって答えが違った。出張や経費の申請の流れが分からず、そのたびに同僚に尋ねた。こんな経験はないでしょうか。</p><p>GET AI では、アイデアを検討できる形の「ユースケース（AI を使う場面の案）」にまとめるまでに、ワークショップやレビュー、資料づくりで数週間かかっていました。また、AI を試した後に、管理のルール、セキュリティ、利用者への定着、効果の測り方でつまずく組織が多いことも、お客様の支援で見えていました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>GET AI は「カスタマー ゼロ」（お客様に勧める前に、まず自社で使ってみること）の考え方で、社内でエージェントを作って動かしました。Copilot Studio は、プログラミングをしなくても、AI に業務を任せる仕組みを作れる道具です。</p><p>公表された社内エージェントは、方針の質問に答えるもの、出張や経費の申請を支えるもの、HR・IT・運用の質問に答えるもの、そして案件の受け付けを支える「AI Intake Agent」です。受け付けエージェントは、会話を通じてあいまいなアイデアを、判断できる形のユースケースに整えます。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="GET AI が社内の経験をお客様に広げる流れ">
+      <li><div class="box">社内で使う<br>（まず自社で試す）</div></li><li><div class="box">効果と管理を<br>確かめる</div></li><li><div class="box">うまくいった<br>エージェントを選ぶ</div></li><li><div class="box">お客様向けの<br>提案に広げる</div></li>
+    </ol>
+    <figcaption>GET AI が社内の経験をお客様に広げる流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>新しい Microsoft の AI 機能を、お客様に勧める前に社内で使います。</li><li>社内の使い方から、必要な管理（コントロール）や効果の測り方を確かめ、やり方を磨きます。</li><li>成果の出た社内エージェントを、お客様に導入する候補にします。</li><li>運用・管理を含めた支援（マネージドサービス）の形に育てます。</li>
+  </ol>
+  <p class="src-note">※ 流れの説明は公開記事の記載にそっています。受け付けエージェントがどのツールで作られたかは、記事に明記されていません。各エージェントの画面や設定の細部も公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>以前は、アイデアをユースケースにするまでに、ワークショップ・レビュー・資料づくりで数週間かかっていました。</p></div>
+    <div class="after"><h3>いま</h3><p>会話形式の受け付けエージェントが、アイデアを判断できるユースケースに整えます。案件の受け付けは数か月から数日になりました。</p></div>
+  </div>
+  <p>数字は GET AI が公表した社内の運用上の見積もりです。受け付けは「数か月から数日」、調べる作業は最大70%減、年間で数百時間分のコンサルタントの時間が生まれたとしています。ほかに、日々の Copilot とエージェントの利用で知識業務の生産性が平均15%上がり、利用者1人あたり年間約260時間が増えたと公表しています。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>自分がよく聞かれる質問（社内ルール、申請方法など）を3つ書き出します。</li><li>答えのもとになる文書を1か所に集め、Copilot Studio で質問に答える小さなエージェントを作ります。</li><li>数人に試してもらい、答えが合っているかと、人に引き継ぐ場面を確かめます。</li>
+  </ol>
+  <p>準備物は、Microsoft 365 Copilot などのライセンスと、エージェントを作る権限です。ライセンスや社内の設定によって使えるツールが変わるので、先に情報システム部門に確認してください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>知識ベースの手入れとエージェントの管理が必要です</strong>
+    <p>GET AI は課題として、知識ベース（答えのもとになる資料）を最新に保つこと、アクセスを守ること、性能を見守ること、データを管理すること、そしてエージェントがいつ人に引き継ぐかを決めることを挙げています。</p>
+  </div>
+  <p>社内で真似するときは、エージェントが読める文書の範囲と、機密情報の扱いを先に決めます。AI はもっともらしい間違いを答えること（ハルシネーション）があるので、大事な判断は人が確かめてください。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>社内の問い合わせ対応から、案件の受け付けまで、「くり返し聞かれる質問」と「あいまいな相談を整理する仕事」はエージェントに向いています。まず自分たちで使ってみて、管理の方法ごと整える進め方は、会社の大きさに関係なく参考になります。</p>
+  <p>自分の職場に置き換えると、よく聞かれる質問に答える担当（総務、情報システム、人事など）から始め、その答えのもとの文書を整えることが、最初の一歩になりそうです。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「GET AI runs its business on agents built with Microsoft Copilot Studio」（2026年9月22日公開）<br>
+    <a href="https://www.microsoft.com/en/customers/story/27280-get-ai-microsoft-365-copilot">https://www.microsoft.com/en/customers/story/27280-get-ai-microsoft-365-copilot</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月29日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -38,6 +38,8 @@
 | 2026-10-27 | Copilot Studio | Cemex | pages/jirei_20261027-copilot-studio.html | https://www.microsoft.com/en/customers/story/26985-cemex-microsoft-copilot-studio |
 | 2026-10-27 | Copilot Studio（Agent Builder 枠の代替） | Morningstar | pages/jirei_20261027-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/26333-morningstar-inc-microsoft-copilot |
 | 2026-10-27 | Copilot Cowork | Williams | pages/jirei_20261027-copilot-cowork.html | https://www.microsoft.com/en/customers/story/27209-williams-microsoft-365-copilot |
+| 2026-10-29 | Copilot Studio | GET AI | pages/jirei_20261029-copilot-studio.html | https://www.microsoft.com/en/customers/story/27280-get-ai-microsoft-365-copilot |
+| 2026-10-29 | Copilot Studio（Agent Builder 枠の代替） | mobilezone（新しい事例） | pages/jirei_20261029-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/27511-mobilezone-microsoft-copilot-studio |
 
 ## ネタ帳（候補）
 
@@ -95,3 +97,4 @@
 - 2026-10-26：持ち主の依頼で、定期実行の外で Cowork 枠だけを1本作成（Inside Track、2026-08-20）。Inside Track は curl だとボット確認ページが返るため WebFetch で本文を読んだ。04 の利用条件は Microsoft Learn「Get started with Copilot Cowork」（2026-09-14 更新）と GA 発表ブログで確認。ブロックされたホストなし。
 - 2026-10-26：Cowork の事例を追加で探した。顧客事例は Microsoft 365 Copilot 全体の事例に Cowork が一部出てくる形が多く、具体的な使い方まで書かれていたのは Williams のみ（ネタ帳に追加）。京都府・JBS・GET AI などは見送りに追加。QES（www.qes.co.jp）の「Copilot Cowork を社内業務で使ってみた」検証記事は、環境のネットワーク設定で許可されておらず読めなかった（403）。
 - 2026-10-27：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（Cemex、Morningstar）にした。2本とも Agent Builder の記載なし。Cowork 枠はネタ帳の Williams（本文を再確認。Cowork の細部は出典に乏しい）。Cowork 公式ページには名前入りの動画紹介のみで顧客事例の本文なし。ネタ帳候補（検索で見つけ未読）：Banco Hipotecario（Copilot Studio、https://www.microsoft.com/en/customers/story/26969-banco-hipotecario-github-copilot ）。ブロックされたホストなし。
+- 2026-10-29：Agent Builder 枠は、WebSearch（標準・拡張）でも顧客事例が出ず、Copilot Studio を2本（GET AI、mobilezone の新事例 27511）にした。Cowork 枠は休み（新しい事例なし。Cowork 公式ページはロゴのみ。GET AI は Cowork を道具の一つとして挙げるだけ）。ネタ帳候補（未採用）：Pets at Home・McKinsey（news.microsoft.com、2024-10 公開で古く数字も乏しい）、Banco Hipotecario（Dynamics 移行が中心で Studio は一部）、Brisbane Catholic Education（未読）。ブロックされたホストなし。

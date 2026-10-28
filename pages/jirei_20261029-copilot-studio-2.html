@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（mobilezone）。2026年10月29日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>毎朝7時に店舗の不具合が届き、受注入力は1件5〜10分短くなりました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月29日／通信機器販売（mobilezone）・店舗サポートと受注業務</p>
+
+  <h1>毎朝7時に店舗の不具合が届き、受注入力は1件5〜10分短くなりました</h1>
+
+  <div class="lead">
+    <p>mobilezone の小さな IT サポートチームは、125店舗・183台のレジ端末（POS）を見守り、受注の入力も人の手で行っていました。</p><p>そこで Copilot Studio（ノーコードで AI エージェントを作れる Microsoft のツール）で、店舗の見守りと、受注入力の下書きづくりのエージェントを作りました。</p><p>公表された結果では、調査の対象は24時間分のレポートから約3〜6時間分に絞られ、受注1件あたり5〜10分が短くなりました。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>お店のレジが止まってから初めて問題に気づく。取引先から届く PDF の注文書を、手でシステムに打ち込む。そんな場面はないでしょうか。</p><p>mobilezone では、サポート担当は4人で、125店舗・183台のレジ端末を見守っていました。不具合は、取引が止まってから分かることが多くありました。また、B2B（企業間取引）の受注では、PDF の注文データを ERP（会社の基幹業務システム）に写す作業に、1件あたり数分かかっていました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio で、2つのエージェントを作りました。1つ目は「店舗モニタリングエージェント」で、用意されているテンプレートをもとに、約3週間で動かしました。2つ目は「受注作成エージェント」で、ERP の Dynamics 365 と、MCP（AI が外部のシステムとつながるための共通の取り決め）でつなぎました。</p><p>商品登録用の3つ目のエージェントも作っており、残りの要件がそろえば本番に進む予定です。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="mobilezone の2つのエージェントの流れ">
+      <li><div class="box">レジ端末の<br>ログを集める</div></li><li><div class="box">エージェントが<br>毎朝7時に Teams へ</div></li><li><div class="box">担当者が<br>気になる端末を質問</div></li><li><div class="box">PDF の注文書から<br>下書きを作り、人が確認</div></li>
+    </ol>
+    <figcaption>mobilezone の2つのエージェントの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>Azure Monitor のエージェントが、各レジ端末から必要なログを集めます。</li><li>Copilot Studio のエージェントがログを整理し、毎朝7時に Microsoft Teams へ、エラーの多い端末・種類・最新の発生時刻を投稿します。店の開店は9時です。</li><li>担当者は、気になる端末について自然な言葉で質問できます。</li><li>受注では、担当者が Teams のエージェントに PDF を渡します。エージェントが内容を取り出して下書きの受注を作り、人が Dynamics 365 で確認して確定します。</li>
+  </ol>
+  <p class="src-note">※ 流れは公開記事の記載にそっています。各エージェントの設定画面や指示文の細部は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>以前は、問題が起きてから気づくことが多く、調べる対象は24時間分のレポートでした。受注は PDF を見て手で入力していました。</p></div>
+    <div class="after"><h3>いま</h3><p>毎朝7時に、エラーの多い端末が Teams に届きます。調べる範囲は約3〜6時間分に絞られました。受注は下書きを人が確認するだけで済みます。</p></div>
+  </div>
+  <p>数字は mobilezone が公表したものです。毎朝1〜2件の問題を事前に見つけ、調査は24時間分から約3〜6時間分に、受注は1件5〜10分の短縮（最初に自動化したお客様で月30〜40件）、サポートへの最初の返事は30分以内（以前は3日から1週間の滞り）と公表されています。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>毎日同じ時間に見ている一覧やレポートを1つ選びます。</li><li>その内容を Teams に毎朝まとめて送る小さなエージェントを、テンプレートから作ります。</li><li>数日使って、役立つ項目と要らない項目を見直します。</li>
+  </ol>
+  <p>準備物は、Copilot Studio を使える権限と、読ませるデータの保管場所です。ライセンスや社内の設定によって使える機能が変わるので、先に情報システム部門に確認してください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>信頼を得るまで、人の確認を残します</strong>
+    <p>mobilezone は課題として、サポート担当の AI 経験が少なかったこと、お客様ごとに書類の形式を確かめてから広げる必要があること、数量や金額の正確さへの信頼が要ることを挙げています。エージェントは、情報が足りない欄を推測で埋めず、空欄のまま知らせる作りにしています。</p>
+  </div>
+  <p>社内で真似するときは、AI に任せる範囲と、人が確定する場面を分けます。AI はもっともらしい間違いをすることがあるので、金額や数量のような大事な項目は、人が確かめてください。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>毎朝のチェックと、書類から転記する仕事は、AI エージェントの入り口として取り組みやすい業務です。小さな範囲で始め、人の確認を残すことで、信頼を積み上げられます。</p>
+  <p>自分の職場に置き換えると、毎朝見ている画面や、書類を見ながら入力している作業を1つ選び、「集めて知らせる」と「下書きを作る」のどちらから任せられるか、考えてみるとよさそうです。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「mobilezone redefines productivity with Microsoft Copilot Studio agents」（2026年10月26日公開）<br>
+    <a href="https://www.microsoft.com/en/customers/story/27511-mobilezone-microsoft-copilot-studio">https://www.microsoft.com/en/customers/story/27511-mobilezone-microsoft-copilot-studio</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月29日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
