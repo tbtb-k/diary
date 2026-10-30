@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（pladis）。2026年10月31日作成。公開情報（Microsoft 顧客事例）をもとにまとめています。">
+<title>現場チームが写真から安全リスクを下見するエージェントを作り、年800時間の節約を見込んでいます</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月31日／食品メーカー（pladis）・現場の安全管理</p>
+
+  <h1>現場チームが写真から安全リスクを下見するエージェントを作り、年800時間の節約を見込んでいます</h1>
+
+  <div class="lead">
+    <p>英国に本社を置くお菓子メーカー pladis では、工場の現場でも事務部門でも、日々の定型作業に多くの時間がかかっていました。</p>
+    <p>Carlisle の拠点では、安全衛生環境（HSE）チームが Copilot Studio（コードを書かずに AI エージェントを作れる Microsoft のツール）で、リスクアセスメントを手伝うエージェントを作りました。</p>
+    <p>このエージェントによる節約は年間約800時間と見積もられています。会社全体では、Microsoft 365 Copilot を使いこなす人が月に平均12時間以上を取り戻したと公表されています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>作業場所の安全チェックを、毎回ゼロから文書にまとめる場面を想像してください。写真を撮り、基準を調べ、書式に整える作業は、地味ですが時間がかかります。</p>
+  <p>pladis では、人事・財務・調達・マーケティング・研究開発・オペレーションの各部門で、下書き、要約、レポート作成といった定型作業に毎週何時間もかかっていました。AI の経験や自信にも差があり、バラバラに広がるおそれがありました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、画面上の操作でエージェントを組み立てられるツールです。Carlisle 拠点では、現場の HSE チームが自分たちで作りました。使い方は、作業や場所の写真を撮ってエージェントに渡すだけです。</p>
+  <p>エージェントは写真を英国の安全衛生ガイダンスと照らし合わせ、整った形式で回答を返します。あわせて pladis は、8週間の研修プログラム「Steal Back 10 Hours（10時間を取り戻そう）」、社内の AI コミュニティ、各部門の推進役を用意しました。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Carlisle 拠点の安全リスクアセスメント用エージェントの流れ">
+      <li><div class="box">現場の作業や場所を写真に撮る</div></li>
+      <li><div class="box">エージェントに写真を渡す</div></li>
+      <li><div class="box">英国の安全衛生ガイダンスと照らし合わせる</div></li>
+      <li><div class="box">整った形式の回答を確認する</div></li>
+    </ol>
+    <figcaption>Carlisle 拠点の安全リスクアセスメント用エージェントの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>HSE（安全衛生環境）チームが Copilot Studio でエージェントを作ります。</li>
+    <li>利用者は作業や場所の写真を撮ります。</li>
+    <li>エージェントが写真を英国の安全衛生ガイダンスと照らし合わせます。</li>
+    <li>整った形式の回答が返ってくるので、人が内容を確かめて使います。</li>
+  </ol>
+  <p class="src-note">※ 4つめの「人が確かめて使う」は、一般的な使い方として補っています。回答の確認方法や、Copilot Studio の具体的な設定は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>安全のリスクアセスメントを、人が一から調べて書いていました。</p></div>
+    <div class="after"><h3>いま</h3><p>写真をもとに、エージェントが基準と照らして整った回答を返します。</p></div>
+  </div>
+  <p>Carlisle の安全エージェントの節約は、pladis による見積もりで年間約800時間です。月12時間という数字は、第1期の研修に参加した70人のうち、全課程を終えた48人の自己申告と生産性トラッカー（記録表）にもとづきます。48人で月580時間、平均で目標10時間を上回りました。調達部門でも、市場の動きや供給リスクを一か所にまとめるエージェントが使われています。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>まず、毎週繰り返している「写真や資料を見て、基準に照らして書く」作業を1つ選びます。</li>
+    <li>照らし合わせる基準（ガイドライン）の文書を、あらかじめそろえます。</li>
+    <li>小さなエージェントを作り、同僚2〜3人に試してもらいます。</li>
+  </ol>
+  <p>Copilot Studio の利用には、ライセンスや管理者の設定が必要です。組織によって使える範囲が違うため、情報システム部門に確認してください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>AI への不安と、バラバラな広がり</strong>
+    <p>pladis では、最初は AI への恐れや慎重さがありました。調整なしだと、使い方が部門ごとにバラバラになるおそれもありました。専門的すぎる質問で研修が脱線しないよう、パートナー企業（Mindworks）とガバナンス（利用ルールの管理）を用意したと述べられています。</p>
+  </div>
+  <p>写真や社内文書を AI に渡すときは、機密情報や個人情報が含まれていないかを確認してください。安全に関わる回答は、AI が間違えることがあります。最終判断は必ず人が行います。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例の大事な点は、ツールを配るだけでなく、研修・推進役・相談の場とセットで広げたことです。現場の人が自分で作ったエージェントなので、使う人の困りごとに合ったものになります。</p>
+  <p>自分の職場に置き換えると、「写真や書類を基準に照らして確認する」仕事（備品点検、書類の形式チェック、衛生確認など）が、同じ形で置き換えられないか、探してみてください。</p>
+
+  <footer>
+    <p>出典：Microsoft 顧客事例「pladis engaged users save 12+ hours a month on average with Microsoft 365 Copilot」（2026年9月10日公開）<br>
+    <a href="https://www.microsoft.com/en/customers/story/27237-pladis-global-microsoft-365-copilot">https://www.microsoft.com/en/customers/story/27237-pladis-global-microsoft-365-copilot</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月31日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

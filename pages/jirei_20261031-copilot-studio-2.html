@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Nexi Group）。2026年10月31日作成。公開情報（Microsoft Learn）をもとにまとめています。">
+<title>カード会社の問い合わせ窓口に、1日3,000件以上に答えるチャット担当ができました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年10月31日／決済サービス（Nexi Group）・カスタマーサポート</p>
+
+  <h1>カード会社の問い合わせ窓口に、1日3,000件以上に答えるチャット担当ができました</h1>
+
+  <div class="lead">
+    <p>欧州の決済会社 Nexi Group のコンタクトセンターでは、膨大なカードの資料を、担当者が手で探しながらお客様に答えていました。</p>
+    <p>そこで Copilot Studio（コードをほとんど書かずに AI エージェントを作れる Microsoft のツール）と Azure の AI 機能で、自社サイト上の会話型エージェントを作りました。</p>
+    <p>現在は1日3,000件以上のやり取りに対応し、満足度は70%です。人への引き継ぎも大きく減ったと説明されています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>お客様から「このカードの再発行はどうすればいいですか」と聞かれ、担当者が何種類もの資料をめくって探す。同じようなカードでも条件が少しずつ違い、答えるまでに時間がかかる、という場面はないでしょうか。</p>
+  <p>Nexi は25の国と地域でカード事業を支えています。カードの種類や契約条件が多く、情報も複数の場所に散らばっていました。担当者は手作業で探す必要があり、対応時間が延びて、一定の品質で素早く答えるのが難しい状態でした。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Nexi のエージェントは、同社のサイト上でお客様と自然な言葉で会話します。カードの停止や再発行、取引の一覧表示といった手続きも、会話の中で進められます。</p>
+  <p>資料の検索には、Azure AI Search（検索の仕組み）と Azure OpenAI を使い、カードの等級などの情報を付けて資料を整理しました。社内システムとのやり取りは、Azure Functions と Key Vault（パスワードなどの保管庫）で安全につないでいます。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Nexi のエージェントが質問に答える流れ">
+      <li><div class="box">お客様がサイトで質問する</div></li>
+      <li><div class="box">Copilot Studio が内容を判断する</div></li>
+      <li><div class="box">資料の検索、または手続きの実行</div></li>
+      <li><div class="box">答えられないときは担当者へ引き継ぎ</div></li>
+    </ol>
+    <figcaption>Nexi のエージェントが質問に答える流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>お客様がチャットで質問します。サイトの利用者は、最初はログインなしで一般的な情報を聞けます。</li>
+    <li>カードごとの手続きが必要なときは、ログインを求められます。</li>
+    <li>資料に関する質問は検索で答え、カードの停止や再発行は社内システムにつないで実行します。</li>
+    <li>回答で足りないときは、会話の内容を保ったまま担当者（Genesys Cloud）に引き継ぎます。</li>
+  </ol>
+  <p class="src-note">※ 4つのステップは公開記事の流れにそっています。画面の細かな設定や、使われている資料の中身は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>担当者が複数の資料を探して答えていました。手続きの案内も手作業が中心でした。</p></div>
+    <div class="after"><h3>いま</h3><p>エージェントが等級に合った情報で答え、停止や再発行などの手続きも会話の中で進められます。</p></div>
+  </div>
+  <p>1日3,000件以上のやり取りと、満足度70%は、Nexi が Microsoft Learn の事例で公表した数字です。引き継ぎの件数が減ったとありますが、減少の割合は公表されていません。Nexi は今後、やり取りの記録から満足度の低かった質問を自動で見つけ、資料の抜けを報告するエージェントを作る計画です。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>よく聞かれる質問と、答えの根拠になる資料を10件ほど選びます。</li>
+    <li>Copilot Studio でエージェントを作り、その資料だけをもとに答えるようにします。</li>
+    <li>答えられない質問は人に渡す道筋を、最初から決めておきます。</li>
+  </ol>
+  <p>Copilot Studio の利用にはライセンスが必要です。Nexi は Azure の検索機能なども併用しており、同じ構成が必要かどうかは組織によって変わります。まずは小さく始めてください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>検索を工夫しないと、答えがぶれる</strong>
+    <p>Nexi は、単に資料をアップロードするだけでは足りないと考えました。カードの等級などの情報を付けて資料を整理し直すことで、似た資料が重なっても、お客様に合う答えが出るようにしたと説明されています。</p>
+  </div>
+  <p>カードの停止のような手続きは、本人確認を必ず通してから実行する設計になっています。社内で真似するときも、個人情報に関わる操作は、ログインや権限の確認を先に入れてください。AI の回答が間違うこともあるため、引き継ぎの道筋を残すことが大切です。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例は、問い合わせ対応だけでなく、「資料が多くて探すのが大変」という問題全般に使える形です。ポイントは、答える範囲を絞り、答えられないときは人に渡すところまで先に決めたことです。</p>
+  <p>自分の職場に置き換えると、社内のヘルプデスクを思い浮かべてください。就業規則、経費精算、IT の手順書など、資料はたくさんあるのに探しにくい場面は多いはずです。最初の1テーマだけ、同じ形で試せないか考えてみてください。</p>
+
+  <footer>
+    <p>出典：Microsoft Learn「Nexi Group revolutionizes customer support with Copilot Studio」（2026年1月23日公開）<br>
+    <a href="https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/nexi-revolutionizes-customer-support">https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/nexi-revolutionizes-customer-support</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年10月31日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

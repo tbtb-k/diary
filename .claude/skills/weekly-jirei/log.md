@@ -40,6 +40,8 @@
 | 2026-10-27 | Copilot Cowork | Williams | pages/jirei_20261027-copilot-cowork.html | https://www.microsoft.com/en/customers/story/27209-williams-microsoft-365-copilot |
 | 2026-10-29 | Copilot Studio | GET AI | pages/jirei_20261029-copilot-studio.html | https://www.microsoft.com/en/customers/story/27280-get-ai-microsoft-365-copilot |
 | 2026-10-29 | Copilot Studio（Agent Builder 枠の代替） | mobilezone（新しい事例） | pages/jirei_20261029-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/27511-mobilezone-microsoft-copilot-studio |
+| 2026-10-31 | Copilot Studio | pladis | pages/jirei_20261031-copilot-studio.html | https://www.microsoft.com/en/customers/story/27237-pladis-global-microsoft-365-copilot |
+| 2026-10-31 | Copilot Studio（Agent Builder 枠の代替） | Nexi Group | pages/jirei_20261031-copilot-studio-2.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/nexi-revolutionizes-customer-support |
 
 ## ネタ帳（候補）
 
@@ -98,3 +100,4 @@
 - 2026-10-26：Cowork の事例を追加で探した。顧客事例は Microsoft 365 Copilot 全体の事例に Cowork が一部出てくる形が多く、具体的な使い方まで書かれていたのは Williams のみ（ネタ帳に追加）。京都府・JBS・GET AI などは見送りに追加。QES（www.qes.co.jp）の「Copilot Cowork を社内業務で使ってみた」検証記事は、環境のネットワーク設定で許可されておらず読めなかった（403）。
 - 2026-10-27：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（Cemex、Morningstar）にした。2本とも Agent Builder の記載なし。Cowork 枠はネタ帳の Williams（本文を再確認。Cowork の細部は出典に乏しい）。Cowork 公式ページには名前入りの動画紹介のみで顧客事例の本文なし。ネタ帳候補（検索で見つけ未読）：Banco Hipotecario（Copilot Studio、https://www.microsoft.com/en/customers/story/26969-banco-hipotecario-github-copilot ）。ブロックされたホストなし。
 - 2026-10-29：Agent Builder 枠は、WebSearch（標準・拡張）でも顧客事例が出ず、Copilot Studio を2本（GET AI、mobilezone の新事例 27511）にした。Cowork 枠は休み（新しい事例なし。Cowork 公式ページはロゴのみ。GET AI は Cowork を道具の一つとして挙げるだけ）。ネタ帳候補（未採用）：Pets at Home・McKinsey（news.microsoft.com、2024-10 公開で古く数字も乏しい）、Banco Hipotecario（Dynamics 移行が中心で Studio は一部）、Brisbane Catholic Education（未読）。ブロックされたホストなし。
+- 2026-10-31：Agent Builder 枠は、WebSearch（標準・拡張）でも顧客事例が出ず、Copilot Studio を2本（pladis、Nexi）にした。Cowork 枠は休み（新しい事例なし）。ネタ帳候補（本文確認済み・未使用）：La Trobe University（Learn、2025-11、Troby、問い合わせ71%解決、https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/latrobe-supercharges ）。見送り：Banco Hipotecario（2026-08、Dynamics 移行が中心）、PG&E（2024-07 ブログ、詳細不足）。ソフトバンクのブログ（softbank.jp）は名前解決できず読めなかった。
