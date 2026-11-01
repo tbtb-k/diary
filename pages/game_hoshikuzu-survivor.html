@@ -204,6 +204,7 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
     <h2 class="big lv-title">LEVEL UP</h2>
     <p class="sub" id="lv-sub">強化を1つえらんでね</p>
     <div class="choices" id="choices"></div>
+    <button class="linkbtn" id="b-reroll" type="button"></button>
     <div class="build" id="lv-build"></div>
   </div>
 </div>
@@ -248,8 +249,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 1, date: '2026-10-28' };
+const GAME = { day: 2, date: '2026-11-02' };
 const PATCH_NOTES = [
+  { day: 2, date: '2026-11-02', title: '強化を引き直せるようになった！',
+    items: ['レベルアップ画面に「引き直す」ボタンを追加（1回のプレイで2回まで）', 'ほしい強化が出なかったときに、もう一度えらべるよ'],
+    ask: 'リロールを使って、ねらった組み合わせを作れたか教えてね！' },
   { day: 1, date: '2026-10-28', title: 'ゲーム誕生！',
     items: ['武器4つと強化6つ', '敵4種類と強敵、5:00に現れるボス', 'ベスト記録・一時停止・効果音', '「感想を送る」ボタン'],
     ask: 'まずは5分生き延びて、ボスを倒せるか試してみて！ むずかしさの感想がいちばんほしいな' },
@@ -353,7 +357,7 @@ function newGame(seed) {
     wt: { pulse: 0.3, nova: 2, chain: 1, orbitAng: 0 },
     enemies: [], bullets: [], ebullets: [], gems: [], items: [],
     spawnAcc: 0, nextRush: 60, elites: [150, 225], boss: null,
-    pendingLevels: 0, ending: 0, done: false, over: false, clear: false, slow: 0,
+    pendingLevels: 0, rerolls: 2, ending: 0, done: false, over: false, clear: false, slow: 0,
     gemRR: 0, gemCombo: 0, gemComboT: 0, spawnR: spawnRadius(), fxOn: true, god: false, trailT: 0,
   };
   calcStats();
@@ -874,6 +878,7 @@ addEventListener('keydown', e => {
   const k = KEYMAP[e.code];
   if (k) { input.keys[k] = 1; if (scene === 'play') { hideHint(); e.preventDefault(); } }
   if ((e.code === 'Escape' || e.code === 'KeyP') && (scene === 'play' || scene === 'pause')) scene === 'play' ? pauseGame() : resumeGame();
+  if (scene === 'levelup' && e.code === 'KeyR') rerollLevel();
   if (scene === 'levelup' && /^Digit[123]$/.test(e.code)) pickLevel(+e.code.slice(5) - 1);
   if (scene === 'title' && (e.code === 'Enter' || e.code === 'Space') && $('title').hidden === false) { e.preventDefault(); $('b-start').click(); }
 });
@@ -1290,6 +1295,8 @@ function openLevelUp() {
     b.addEventListener('click', () => pickLevel(i));
     box.appendChild(b);
   });
+  const rb = $('b-reroll');
+  rb.textContent = `🔄 引き直す（のこり ${G.rerolls} 回）`; rb.disabled = G.rerolls <= 0; rb.style.opacity = G.rerolls > 0 ? 1 : .4;
   $('lv-sub').textContent = `Lv ${G.level - G.pendingLevels + 1} になった！ 強化を1つえらんでね`;
   renderBuild($('lv-build'));
   levelOpenAt = performance.now();
@@ -1297,6 +1304,11 @@ function openLevelUp() {
   show('levelup');
   Snd.play('level'); vib(20);
 }
+function rerollLevel() {
+  if (scene !== 'levelup' || G.rerolls <= 0 || performance.now() - levelOpenAt < 420) return;
+  G.rerolls--; Snd.play('click'); openLevelUp();
+}
+$('b-reroll').addEventListener('click', rerollLevel);
 function pickLevel(i) {
   if (scene !== 'levelup' || performance.now() - levelOpenAt < 420) return;
   const o = levelOpts[i]; if (!o) return;

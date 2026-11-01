@@ -102,6 +102,14 @@ let browser;
     check('ほしくずが貯まるとレベルアップ画面が出る', await visible(page, 'levelup'));
     await wait(500);
     await shot(page, '04_levelup_390');
+    // 引き直し（2回まで）
+    const rr0 = await page.textContent('#b-reroll');
+    await page.click('#b-reroll'); await wait(500);
+    const rr1 = await page.textContent('#b-reroll');
+    await page.click('#b-reroll'); await wait(500);
+    const rr2 = await page.textContent('#b-reroll');
+    check('引き直しができて、2回で打ち止めになる', rr0.includes('2') && rr1.includes('1') && rr2.includes('0') && (await visible(page, 'levelup')) && (await page.$$('#choices .choice')).length === 3, `${rr0} / ${rr1} / ${rr2}`);
+    await shot(page, '04b_reroll_390');
     const w0 = await page.evaluate(() => Object.keys(window.__game.state().weapons).length + Object.keys(window.__game.state().passives).length);
     await page.click('#choices .choice');
     await wait(200);
