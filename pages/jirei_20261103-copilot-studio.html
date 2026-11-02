@@ -1,0 +1,195 @@
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（モントリオール市）。2026年11月3日作成。公開情報（Microsoft Learn）をもとにまとめています。">
+<title>4万ページの市のサイトに、窓口に聞く前の「質問できる案内役」を置きました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月3日／自治体（カナダ・モントリオール市）・住民向け問い合わせ</p>
+
+  <h1>4万ページの市のサイトに、窓口に聞く前の「質問できる案内役」を置きました</h1>
+
+  <div class="lead">
+    <p>モントリオール市のウェブサイトは1日に5万人以上が訪れ、ページ数は4万以上あります。目的の情報を探しにくく、コールセンターには基本的な質問が集中していました。</p><p>そこで市の IT 部門は、Copilot Studio（AI の会話エージェントを作る Microsoft のツール）で住民向けの案内役を作り、サイトに埋め込みました。外部の開発会社には頼まず、市の職員だけで作ったと紹介されています。</p><p>会話の85%以上は、サイトの内容にもとづく生成 AI の回答で対応し、市は効率の高さを90%、利用者の満足度を5点満点で4点超と公表しています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>「ごみの収集日はいつだったかな」「あの手続きに何の書類が要るのかな」。調べようとして、自治体のサイトで迷った経験はないでしょうか。</p><p>モントリオール市でも同じでした。ページは4万以上、サイトの更新に関わる人は約700人。住民の質問は電話にも集まり、緊急の電話に集中したいコールセンターは、季節ごとの混雑にも悩んでいました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio は、文章で指示を書くとエージェント（質問に答えて作業もする AI の担当者）を作れるツールです。モントリオール市は、公開サイトを「知識の元」に指定し、さらに内部の2つのシステムにつなぎました。</p><p>住民は自然な文章で質問します。答えは基本的にサイトの内容から作られ、収集日や市庁舎の営業時間のように変わりやすい情報は、API（システム同士が情報をやり取りする窓口）で最新の値を取ってきます。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="モントリオール市の案内役が答えるまでの流れ">
+      <li><div class="box">住民が<br>質問する</div></li><li><div class="box">意図を<br>読み取る</div></li><li><div class="box">サイトまたは<br>内部システムで調べる</div></li><li><div class="box">回答を返す</div></li>
+    </ol>
+    <figcaption>モントリオール市の案内役が答えるまでの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps"><li>公開サイトを知識の元として設定しました。最初は期待どおりの結果が出ず、検索エンジン Bing（Copilot Studio が公開サイトを調べるときに使う検索）の索引を増やす取り組みを始めました。</li><li>サイトを AI が読みやすい形に整えました。折りたたまれた内容や、後から読み込まれる内容は読まれにくいため、見出しや営業時間の書き方をそろえました。</li><li>収集日と市庁舎の営業時間は API でつなぎました。「郵便番号」「区」は専用の項目（カスタムエンティティ）にして、住民の言い回しも現場の職員が追加しました。</li><li>利用状況は、標準の分析画面に加えて Power BI（グラフで見るツール）の画面でも見ました。</li></ol>
+  <p class="src-note">※ 手順の並びは、出典の「実装のアプローチ」の項目を読みやすく整理したものです。実際の作業順は公表されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>サイトが大きく、探しにくい情報があり、基本的な質問が電話に集まっていました。</p></div>
+    <div class="after"><h3>いま</h3><p>住民が文章で質問でき、会話の85%以上はサイトにもとづく生成 AI の回答で対応しています。</p></div>
+  </div>
+  <p>数字はすべてモントリオール市（Microsoft Learn の事例記事）が公表したものです。Bing に載る文書数は、取り組みから3カ月で約3倍になりました（開始時は1.5万件未満）。電話の件数がどれだけ減ったかは公表されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps"><li>自分の職場の問い合わせ（総務、情シス、人事など）から、よく聞かれる質問を10個書き出します。</li><li>答えが載っているページや資料が、AI に読ませやすい形か見直します（見出しがある、表記がそろっている、など）。</li><li>Copilot Studio の試用環境で、そのページを知識の元にした小さなエージェントを作り、10個の質問を試します。</li></ol>
+  <p>準備物は、答えの元になる公開ページか資料と、試す質問のリストです。Copilot Studio の使える範囲やライセンスは組織の契約や管理者の設定で変わるので、先に確認してください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>サイトの作りが、AI の回答の質を左右しました</strong>
+    <p>出典によると、折りたたまれた内容や後から読み込まれる内容は、エージェントから見えないことがありました。更新が反映されるまでの遅れもあるため、変わりやすい情報は API で取る方がよいと紹介されています。</p>
+  </div>
+  <p>住民向けの案内役は、間違った答えがそのまま届きます。市はやり取りから個人情報を取り除く仕組みを置いています。社内で真似するときも、答えてよい範囲と、人につなぐ条件を最初に決めてください。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例の学びは、AI を入れる前に「答えの元になる文書を整える」ことが効く、という点です。これは問い合わせ対応に限らず、社内の手引きや FAQ 全般に当てはまります。</p>
+  <p>自分の職場に置き換えると、社内の手引きやよくある質問のページは、AI が読める形になっているでしょうか。営業時間や締め切りのように変わりやすい情報は、文書ではなく元のシステムから取る形も考えられます。</p>
+
+  <footer>
+    <p>出典：Microsoft Learn「The City of Montréal enhances citizen engagement with Copilot Studio」（2025年12月9日公開）<br>
+    <a href="https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/city-montreal-citizen-engagement">https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/city-montreal-citizen-engagement</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月3日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

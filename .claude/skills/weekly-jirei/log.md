@@ -44,6 +44,8 @@
 | 2026-10-31 | Copilot Studio（Agent Builder 枠の代替） | Nexi Group | pages/jirei_20261031-copilot-studio-2.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/nexi-revolutionizes-customer-support |
 | 2026-11-01 | Copilot Studio | La Trobe University | pages/jirei_20261101-copilot-studio.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/latrobe-supercharges |
 | 2026-11-01 | Copilot Studio（Agent Builder 枠の代替） | Eneco | pages/jirei_20261101-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/22686-eneco-microsoft-copilot-studio |
+| 2026-11-03 | Copilot Studio | モントリオール市 | pages/jirei_20261103-copilot-studio.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/city-montreal-citizen-engagement |
+| 2026-11-03 | Copilot Studio（Agent Builder 枠の代替） | ABN AMRO | pages/jirei_20261103-copilot-studio-2.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/abn-amro-enhances-ai |
 
 ## ネタ帳（候補）
 
@@ -104,3 +106,4 @@
 - 2026-10-29：Agent Builder 枠は、WebSearch（標準・拡張）でも顧客事例が出ず、Copilot Studio を2本（GET AI、mobilezone の新事例 27511）にした。Cowork 枠は休み（新しい事例なし。Cowork 公式ページはロゴのみ。GET AI は Cowork を道具の一つとして挙げるだけ）。ネタ帳候補（未採用）：Pets at Home・McKinsey（news.microsoft.com、2024-10 公開で古く数字も乏しい）、Banco Hipotecario（Dynamics 移行が中心で Studio は一部）、Brisbane Catholic Education（未読）。ブロックされたホストなし。
 - 2026-10-31：Agent Builder 枠は、WebSearch（標準・拡張）でも顧客事例が出ず、Copilot Studio を2本（pladis、Nexi）にした。Cowork 枠は休み（新しい事例なし）。ネタ帳候補（本文確認済み・未使用）：La Trobe University（Learn、2025-11、Troby、問い合わせ71%解決、https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/latrobe-supercharges ）。見送り：Banco Hipotecario（2026-08、Dynamics 移行が中心）、PG&E（2024-07 ブログ、詳細不足）。ソフトバンクのブログ（softbank.jp）は名前解決できず読めなかった。
 - 2026-11-01：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（La Trobe University、Eneco。ネタ帳の候補を本文確認して採用）にした。Cowork 枠は休み（新しい事例なし。検索結果はパートナー解説と製品ページのみ）。ブロックされたホストなし。
+- 2026-11-03：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（モントリオール市、ABN AMRO。Learn の事例一覧から本文確認して採用）にした。Cowork 枠は休み（Microsoft Copilot for finance ブログ 2026-10-29 は Zurich Insurance NA の「静的な報告書→ダッシュボード、数週間→数時間」が1段落のみで8ブロックが埋まらず見送り。ネタ帳候補）。ネタ帳候補（Learn、未読）：Rabobank、Holland America Line、T-Mobile、COSMO CONSULT、Signetic。ブロックされたホストなし。

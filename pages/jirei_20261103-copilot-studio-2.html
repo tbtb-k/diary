@@ -1,0 +1,195 @@
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（ABN AMRO）。2026年11月3日作成。公開情報（Microsoft Learn）をもとにまとめています。">
+<title>銀行の2つのチャットボットを6カ月で乗り換え、オランダ語の理解度が7%上がりました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月3日／金融（ABN AMRO Bank）・顧客対応と社内ヘルプデスク</p>
+
+  <h1>銀行の2つのチャットボットを6カ月で乗り換え、オランダ語の理解度が7%上がりました</h1>
+
+  <div class="lead">
+    <p>オランダの大手銀行 ABN AMRO は、顧客向けの「Anna」と社員向けの「Abby」という2つのチャットボットを運用していました。維持費がかさみ、途中で離脱したり人に引き継がれたりする割合も高く、オランダ語の理解にも課題がありました。</p><p>そこで Copilot Studio（AI の会話エージェントを作る Microsoft のツール）に乗り換え、Azure の言語理解機能と組み合わせました。</p><p>移行は6カ月で終わり、オランダ語の意図の判定精度は7%上がり、運用と保守のコストも大きく下がったと公表されています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>数年前に作ったチャットボットが、今の期待に追いつかなくなった。直すたびにお金がかかり、新しいことも頼みにくい。そんな状況に心当たりはないでしょうか。</p><p>ABN AMRO では、顧客向けの Anna も社員向けの Abby も、維持と拡張の費用が高く、途中離脱や人への引き継ぎも多く、特にオランダ語の理解に苦労していました。生成 AI の登場で、顧客の期待がさらに上がると見ていたとのことです。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio を会話の進行役にして、Azure AI Language（文章から「何をしたいか」を読み取る機能）を組み合わせました。Anna は文字と電話の両方、Abby は社員ポータルのチャットで使われます。</p><p>Anna は年に200万件以上の文字の会話と150万件の電話の会話に対応し、カードの利用停止の解除や ATM の引き出し限度額の変更などを案内しています。電話では、内容に合う部署へつなぐ役もします。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="ABN AMRO の案内役が質問を処理する流れ">
+      <li><div class="box">顧客や社員が<br>質問する</div></li><li><div class="box">中継の仕組みで<br>個人情報を除く</div></li><li><div class="box">Copilot Studio と<br>言語理解で意図を判定</div></li><li><div class="box">回答、または<br>担当者へ引き継ぎ</div></li>
+    </ol>
+    <figcaption>ABN AMRO の案内役が質問を処理する流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps"><li>既存のチャットボットの基盤を Copilot Studio に移しました。</li><li>意図の判定と、会話の中から必要な情報を取り出す仕組みの仕組みを組み込みました。</li><li>Azure DevOps（開発の管理ツール）で、更新を自動で配るしくみを整えました。</li><li>Power BI で、案内役の成績を表す指標を見られるようにしました。</li></ol>
+  <p class="src-note">※ 手順の並びは、出典の3段階（基盤の移行、意図の判定、継続的な配信）に Power BI の利用を加えて整理したものです。細かい作業内容は公表されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>維持と拡張の費用が高く、離脱や引き継ぎが多く、オランダ語の理解にも課題がありました。</p></div>
+    <div class="after"><h3>いま</h3><p>6カ月で移行し、オランダ語の意図の判定精度は7%向上、運用と保守のコストも大きく下がりました。</p></div>
+  </div>
+  <p>6カ月、7%、年200万件・150万件の会話数は、ABN AMRO（Microsoft Learn の事例記事）が公表した数字です。コストの下がり幅は数字で公表されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps"><li>今あるチャットボットや FAQ について、離脱や人への引き継ぎが多い質問を洗い出します。</li><li>その質問だけを対象に、Copilot Studio で小さな案内役を作って比べます。</li><li>結果を見る指標（解決した割合、引き継ぎの割合など）を決めてから、範囲を広げます。</li></ol>
+  <p>準備物は、現在のやり取りの記録（個人情報を除いたもの）と、見る指標の案です。Copilot Studio の利用可否や料金は、契約や管理者の設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>移行は「作り直し」ではなく、基盤の乗り換えでした</strong>
+    <p>出典によると、ABN AMRO は Microsoft や Capgemini（外部のコンサルティング会社）と組んで進めました。語学の精度を上げるために、Azure の機能を追加で組み合わせています。</p>
+  </div>
+  <p>金融の顧客対応では、間違った案内の影響が大きくなります。中継の仕組みで個人情報を除いている点も含め、機密情報の扱いと、人に引き継ぐ条件を先に決めてください。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例から学べるのは、新しい AI に乗り換えるときは、小さな範囲で成績を測ってから広げる、という進め方です。社内の問い合わせ窓口や、お客様向けの受付にも当てはまります。</p>
+  <p>自分の職場に置き換えると、社内ヘルプデスクやよくある質問への回答は、いまの仕組みの何が不満なのかを先に数字で見ておくと、乗り換えの効果も確かめやすくなります。</p>
+
+  <footer>
+    <p>出典：Microsoft Learn「ABN AMRO Bank enhances AI capabilities with Copilot Studio and Azure services」（2025年5月13日公開）<br>
+    <a href="https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/abn-amro-enhances-ai">https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/abn-amro-enhances-ai</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月3日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
