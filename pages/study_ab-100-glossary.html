@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="ja" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Microsoft 認定試験 AB-100（Agentic AI Business Solutions Architect）の概要（受験料・試験時間・合格点・配点・前提資格）と、出題範囲に出てくる用語 155 語を3分野＋基礎に分けてかみ砕いて解説した用語集。検索・分野の絞り込み・テストモード・覚えたチェックつき。公式ドキュメントの出典と日付を掲載。2026-11-02 時点。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>AB-100 用語集</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<script>
+  /* 一覧ページ（Learning Shelf）で選んだライト／ダークを引き継ぐ */
+  try{ const t = localStorage.getItem("ls-theme"); if(t === "light" || t === "dark") document.documentElement.dataset.theme = t; }catch(_){}
+</script>
+<style>
+:root{
+  /* Layout: 受験票ふうヘッダー → 試験の概要（料金・時間・配点・前提資格） → 使い方と目次 → 検索バー → 分野ごとの用語カード → まぎらわしいペア → 名前が変わった用語 → 注意点・出典。AI-103 用語集と同じ配色 */
+  --bg:#EEF1F5;
+  --surface:#FFFFFF;
+  --sunk:#E4E9F0;
+  --ink:#142030;
+  --sub:#4E5C6E;
+  --faint:#7F8B9B;
+  --line:#D3DAE3;
+  --accent:#2356C2;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#E2EAFA;
+  --hl:#FFDB66;
+  --ok:#1C7A52;
+  --ok-soft:#DFF2E8;
+  --warn:#A44E14;
+  --warn-soft:#FBEBDD;
+  --bar-bg:rgba(238,241,245,.88);
+
+  --f-display:"Bricolage Grotesque","Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  --radius:14px;
+  --shadow:0 1px 2px rgba(20,32,48,.05),0 12px 32px -18px rgba(20,32,48,.28);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D131B;
+    --surface:#151E2A;
+    --sunk:#1C2735;
+    --ink:#E5ECF5;
+    --sub:#A3B0C1;
+    --faint:#728093;
+    --line:#2A3646;
+    --accent:#7FA6FF;
+    --accent-ink:#0D131B;
+    --accent-soft:#1C2A47;
+    --hl:rgba(240,188,60,.42);
+    --ok:#5FC79B;
+    --ok-soft:#173327;
+    --warn:#F0A26E;
+    --warn-soft:#3A2416;
+    --bar-bg:rgba(13,19,27,.86);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 34px -18px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D131B;
+  --surface:#151E2A;
+  --sunk:#1C2735;
+  --ink:#E5ECF5;
+  --sub:#A3B0C1;
+  --faint:#728093;
+  --line:#2A3646;
+  --accent:#7FA6FF;
+  --accent-ink:#0D131B;
+  --accent-soft:#1C2A47;
+  --hl:rgba(240,188,60,.42);
+  --ok:#5FC79B;
+  --ok-soft:#173327;
+  --warn:#F0A26E;
+  --warn-soft:#3A2416;
+  --bar-bg:rgba(13,19,27,.86);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 34px -18px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:1rem;
+  line-height:1.85;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:clamp(20px, 5vw, 48px) 56px;
+}
+.wrap{max-width:64rem; margin:0 auto; display:grid; gap:clamp(36px, 6vw, 56px)}
+.narrow{max-width:48rem}
+a{color:var(--accent); text-underline-offset:3px; text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px}
+h1,h2,h3,h4{margin:0; text-wrap:balance; line-height:1.4; word-break:auto-phrase}
+p{margin:0}
+ul,ol{margin:0; padding:0}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.hl{background:linear-gradient(transparent 60%, var(--hl) 60%); padding-inline:.1em}
+
+/* ── section heads ── */
+.sec{display:grid; gap:20px; min-width:0}
+.sec-head{display:grid; gap:6px}
+.eyebrow{font-family:var(--f-mono); font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:500}
+.sec-head h2{font-size:clamp(1.35rem, 3.6vw, 1.65rem); font-weight:900; letter-spacing:.01em}
+.sec-head p{color:var(--sub); max-width:44rem}
+
+/* ── ticket header ── */
+.ticket{
+  display:grid; grid-template-columns:minmax(0,1fr) auto;
+  background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow);
+  position:relative; overflow:hidden;
+}
+.ticket-main{padding:clamp(22px, 4.5vw, 36px); display:grid; gap:14px; min-width:0}
+.ticket .eyebrow{color:var(--sub)}
+.ticket h1{font-family:var(--f-display); font-weight:800; font-size:clamp(2rem, 6.4vw, 3.1rem); letter-spacing:-.01em; line-height:1.15}
+.ticket h1 .code{color:var(--accent)}
+.lead{font-size:1.05rem; max-width:38rem}
+.lead .en{font-family:var(--f-display); font-weight:600}
+.meta{font-family:var(--f-mono); font-size:.75rem; color:var(--faint); display:flex; flex-wrap:wrap; gap:4px 14px; align-items:center}
+.meta a{font-family:var(--f-body); font-size:.85rem; font-weight:700}
+.ticket-stub{
+  position:relative; padding:clamp(22px, 4.5vw, 32px) clamp(20px, 4vw, 30px);
+  border-left:2px dashed var(--line); background:var(--accent-soft);
+  display:grid; align-content:center; min-width:12.5rem;
+}
+.ticket-stub::before,.ticket-stub::after{content:""; position:absolute; left:-12px; width:22px; height:22px; border-radius:50%; background:var(--bg)}
+.ticket-stub::before{top:-11px}
+.ticket-stub::after{bottom:-11px}
+.stub-list{display:grid; gap:12px; margin:0}
+.stub-list div{display:grid; gap:0}
+.stub-list dt{font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--sub)}
+.stub-list dd{margin:0; font-family:var(--f-display); font-weight:700; font-size:1.3rem; line-height:1.25; font-variant-numeric:tabular-nums}
+.stub-list dd small{font-family:var(--f-body); font-weight:500; font-size:.8rem; color:var(--sub); margin-left:4px}
+@media (max-width:640px){
+  .ticket{grid-template-columns:1fr}
+  .ticket-stub{border-left:0; border-top:2px dashed var(--line); min-width:0}
+  .ticket-stub::before,.ticket-stub::after{top:-12px; bottom:auto}
+  .ticket-stub::before{left:-11px}
+  .ticket-stub::after{left:auto; right:-11px}
+  .stub-list{grid-template-columns:repeat(2, minmax(0,1fr))}
+}
+
+/* ── how to use + toc ── */
+.howto{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; list-style:none}
+.howto li{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px; display:grid; gap:4px; align-content:start}
+.howto b{font-size:1rem; line-height:1.6}
+.howto p{color:var(--sub); font-size:.88rem; line-height:1.75}
+.howto .k{font-family:var(--f-display); font-weight:800; color:var(--accent); font-size:1.15rem; line-height:1.2}
+.toc{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; list-style:none}
+.toc a{
+  display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:2px 12px;
+  padding:12px 14px; border-radius:12px; background:var(--surface); border:1px solid var(--line);
+  color:var(--ink); text-decoration:none; height:100%;
+}
+.toc a:hover{border-color:var(--accent)}
+.toc .no{grid-row:span 2; width:2.1rem; height:2.1rem; border-radius:50%; display:grid; place-items:center; border:2px solid var(--accent); color:var(--accent); font-family:var(--f-display); font-weight:800; font-size:.85rem}
+.toc .base .no{border-color:var(--faint); color:var(--sub)}
+.toc b{font-size:.95rem; line-height:1.45}
+.toc small{grid-column:2; font-family:var(--f-mono); font-size:.7rem; color:var(--faint)}
+.toc .n{grid-row:1 / span 2; grid-column:3; font-family:var(--f-mono); font-size:.8rem; color:var(--sub); font-variant-numeric:tabular-nums; white-space:nowrap}
+@media (max-width:820px){ .howto,.toc{grid-template-columns:repeat(2, minmax(0,1fr))} }
+@media (max-width:520px){ .howto,.toc{grid-template-columns:1fr} }
+
+/* ── toolbar ── */
+.no-js .toolbar{display:none}
+.toolbar{
+  display:grid; gap:10px; padding:14px 16px; border-radius:var(--radius);
+  background:var(--bar-bg); border:1px solid var(--line); box-shadow:var(--shadow);
+  -webkit-backdrop-filter:saturate(1.4) blur(10px); backdrop-filter:saturate(1.4) blur(10px);
+  min-width:0;
+}
+@media (min-width:721px){ .toolbar{position:sticky; top:10px; z-index:5} }
+.search{display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:0 12px; min-width:0}
+.search:focus-within{border-color:var(--accent)}
+.search svg{width:18px; height:18px; color:var(--faint); flex:none}
+.search input{flex:1; min-width:0; font:inherit; font-size:1rem; color:var(--ink); background:transparent; border:0; outline:0; padding:9px 0}
+.search kbd{font-family:var(--f-mono); font-size:.7rem; color:var(--faint); border:1px solid var(--line); border-radius:6px; padding:0 6px}
+@media (hover:none){ .search kbd{display:none} }
+.bar-row{display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; justify-content:space-between; min-width:0}
+.chips,.toggles{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; min-width:0; padding-block:2px}
+.chips::-webkit-scrollbar,.toggles::-webkit-scrollbar{display:none}
+.chip,.tg{
+  font:inherit; font-size:.8rem; line-height:1.4; white-space:nowrap; cursor:pointer;
+  padding:5px 12px; border-radius:99px; border:1px solid var(--line); background:var(--surface); color:var(--sub);
+}
+.chip:hover,.tg:hover{color:var(--ink); border-color:var(--faint)}
+.chip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:700}
+.tg[aria-pressed="true"]{background:var(--accent-soft); border-color:var(--accent); color:var(--accent); font-weight:700}
+.status{font-size:.8rem; color:var(--sub); font-variant-numeric:tabular-nums}
+.status b{font-family:var(--f-mono); color:var(--ink)}
+.empty{background:var(--surface); border:1px dashed var(--line); border-radius:var(--radius); padding:28px 20px; text-align:center; color:var(--sub)}
+.empty b{display:block; color:var(--ink); font-size:1.05rem}
+
+/* ── domains ── */
+.domains{display:grid; gap:clamp(36px, 6vw, 52px)}
+.dom{display:grid; gap:18px; min-width:0; scroll-margin-top:12rem}
+.dom-head{display:grid; grid-template-columns:auto minmax(0,1fr); gap:4px 16px; align-items:start}
+.dom-no{
+  grid-row:span 3; width:3rem; height:3rem; border-radius:50%; display:grid; place-items:center;
+  background:var(--accent); color:var(--accent-ink); font-family:var(--f-display); font-weight:800; font-size:1.1rem;
+}
+.dom[data-dom="base"] .dom-no{background:var(--sub); color:var(--surface)}
+.dom-head h2{font-size:clamp(1.3rem, 3.4vw, 1.6rem); font-weight:900}
+.dom-head p{color:var(--sub); font-size:.93rem; max-width:44rem}
+.dom-head .eyebrow b{font-weight:600}
+.sub{display:grid; gap:12px; min-width:0}
+.sub h3{font-size:.95rem; font-weight:700; color:var(--sub); display:flex; align-items:center; gap:12px}
+.sub h3::after{content:""; flex:1; height:1px; background:var(--line)}
+.terms{display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap:12px}
+
+/* ── term card ── */
+.term{
+  display:flex; flex-direction:column; gap:8px; min-width:0; scroll-margin-top:12rem;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px 12px;
+  transition:border-color .2s;
+}
+.term:target{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft)}
+.t-name{font-size:1.05rem; font-weight:900; line-height:1.5; display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 8px}
+.t-name small{flex-basis:100%; font-family:var(--f-mono); font-weight:400; font-size:.72rem; color:var(--faint); line-height:1.5; overflow-wrap:anywhere}
+.star{font-family:var(--f-mono); font-size:.66rem; font-weight:600; color:var(--accent); background:var(--accent-soft); border-radius:99px; padding:1px 8px; letter-spacing:.04em; white-space:nowrap; transform:translateY(-2px)}
+.def{font-size:.93rem; line-height:1.8}
+.tip{font-size:.85rem; line-height:1.75; color:var(--ink); background:var(--sunk); border-radius:10px; padding:9px 12px}
+.tip b{font-size:.75rem; font-weight:700; color:var(--accent); letter-spacing:.06em; margin-right:6px}
+.t-foot{display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:auto; padding-top:4px}
+.refs{font-family:var(--f-mono); font-size:.7rem; color:var(--faint); margin-right:auto; display:flex; flex-wrap:wrap; gap:0 4px}
+.refs a{color:var(--faint); text-decoration:none}
+.refs a:hover{color:var(--accent)}
+.got,.peek{font:inherit; font-size:.75rem; line-height:1.4; cursor:pointer; padding:3px 10px; border-radius:99px; border:1px solid var(--line); background:transparent; color:var(--sub); white-space:nowrap}
+.got:hover,.peek:hover{color:var(--ink); border-color:var(--faint)}
+.got[aria-pressed="true"]{background:var(--ok); border-color:var(--ok); color:var(--surface); font-weight:700}
+.term.is-got{border-color:color-mix(in srgb, var(--ok) 45%, var(--line))}
+.peek{display:none}
+.quiz .peek{display:inline-block}
+.quiz .term:not(.open) .def,.quiz .term:not(.open) .tip{filter:blur(6px); user-select:none; -webkit-user-select:none}
+.def,.tip{transition:filter .25s}
+
+/* ── pairs ── */
+.pairs{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px}
+.pair{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; display:flex; flex-direction:column; gap:10px; min-width:0}
+.pair h3{font-size:1.02rem; font-weight:900; line-height:1.5}
+.pair h3 i{font-style:normal; font-family:var(--f-mono); font-weight:500; font-size:.75rem; color:var(--faint); margin-inline:6px}
+.pair dl{margin:0; display:grid; gap:6px}
+.pair dl div{display:grid; grid-template-columns:minmax(0, 7.5rem) minmax(0,1fr); gap:10px; font-size:.88rem; line-height:1.7}
+.pair dt{font-weight:700}
+.pair dd{margin:0; color:var(--sub)}
+.rule{font-size:.86rem; background:var(--accent-soft); border-radius:10px; padding:9px 12px; line-height:1.7}
+.rule b{color:var(--accent); font-size:.75rem; letter-spacing:.06em; margin-right:6px}
+.pair .refs{margin:auto 0 0}
+@media (max-width:720px){ .pairs{grid-template-columns:1fr} }
+@media (max-width:420px){ .pair dl div{grid-template-columns:1fr; gap:0} }
+
+/* ── renames table ── */
+.table-wrap{overflow-x:auto; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius)}
+table{width:100%; min-width:40rem; border-collapse:collapse; font-size:.88rem; line-height:1.65}
+th,td{text-align:left; vertical-align:top; padding:12px 16px; border-top:1px solid var(--line)}
+thead th{border-top:0; font-size:.75rem; font-family:var(--f-mono); letter-spacing:.06em; color:var(--sub); font-weight:500; background:var(--sunk)}
+td.old{color:var(--sub)}
+td.new{font-weight:700}
+td.note{color:var(--sub)}
+td.r{font-family:var(--f-mono); font-size:.72rem; white-space:nowrap}
+td.r a{color:var(--faint); text-decoration:none}
+
+/* ── notes, sources ── */
+.notes{list-style:none; display:grid; gap:0; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden}
+.notes li{display:grid; grid-template-columns:auto minmax(0,1fr); gap:14px; padding:16px 20px; border-top:1px solid var(--line)}
+.notes li:first-child{border-top:0}
+.notes .x{font-family:var(--f-mono); font-weight:600; font-size:.72rem; color:var(--warn); background:var(--warn-soft); border-radius:6px; padding:2px 8px; height:max-content; margin-top:3px; white-space:nowrap}
+.notes b{display:block; font-size:.98rem; line-height:1.6}
+.notes p{color:var(--sub); font-size:.88rem}
+.sources{list-style:none; display:grid; gap:0; counter-reset:src}
+.sources li{display:grid; grid-template-columns:2.6rem minmax(0,1fr); gap:2px 12px; padding:12px 0; border-top:1px solid var(--line); scroll-margin-top:12rem}
+.sources li::before{counter-increment:src; content:"[" counter(src) "]"; font-family:var(--f-mono); font-size:.8rem; color:var(--faint); padding-top:2px; grid-row:span 3}
+.sources li:target{background:var(--accent-soft); border-radius:8px}
+.src-title{font-weight:700; font-size:.93rem; line-height:1.55}
+.src-meta{display:flex; flex-wrap:wrap; gap:4px 10px; font-size:.78rem; color:var(--sub); align-items:center}
+.tag{font-family:var(--f-mono); font-size:.68rem; padding:1px 8px; border-radius:99px; background:var(--ok-soft); color:var(--ok); font-weight:600}
+.src-note{font-size:.85rem; color:var(--sub); line-height:1.7}
+.src-cols{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:0 32px}
+@media (max-width:820px){ .src-cols{grid-template-columns:1fr} }
+footer{font-size:.8rem; color:var(--faint); border-top:1px solid var(--line); padding-top:20px; display:grid; gap:4px}
+
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important; scroll-behavior:auto!important}
+}
+
+/* ── overview（試験の概要） ── */
+.facts{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:12px; margin:0}
+.fact{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px; display:grid; gap:2px; align-content:start; min-width:0}
+.fact dt{font-size:.8rem; font-weight:700; color:var(--sub)}
+.fact dd{margin:0; display:grid; gap:4px}
+.fact .v{font-family:var(--f-display); font-weight:800; font-size:1.5rem; line-height:1.25; font-variant-numeric:tabular-nums; color:var(--ink)}
+.fact .v small{font-family:var(--f-body); font-weight:500; font-size:.8rem; color:var(--sub); margin-left:4px}
+.fact .n{font-size:.8rem; color:var(--sub); line-height:1.65}
+@media (max-width:820px){ .facts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+@media (max-width:520px){ .fact{padding:12px 14px} .fact .v{font-size:1.15rem} }
+@media (max-width:360px){ .facts{grid-template-columns:1fr} }
+.ov-grid{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:14px}
+@media (max-width:820px){ .ov-grid{grid-template-columns:1fr} }
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; display:grid; gap:12px; align-content:start; min-width:0}
+.panel h3{font-size:1.02rem; font-weight:900; line-height:1.5}
+.panel > p{font-size:.88rem; color:var(--sub); line-height:1.75}
+.what{font-size:.95rem; line-height:1.85}
+.weights{list-style:none; display:grid; gap:14px}
+.weights li{display:grid; gap:6px}
+.w-top{display:flex; justify-content:space-between; align-items:baseline; gap:12px; font-size:.9rem; line-height:1.5}
+.w-top b{font-weight:700}
+.w-top span{font-family:var(--f-mono); font-size:.85rem; color:var(--ink); white-space:nowrap; font-weight:600; font-variant-numeric:tabular-nums}
+.w-bar{position:relative; height:10px; border-radius:99px; background:var(--accent-soft)}
+.w-bar i{position:absolute; top:0; bottom:0; left:0; border-radius:99px}
+.w-bar .lo{background:var(--accent)}
+.w-bar .hi{background:color-mix(in srgb, var(--accent) 40%, var(--accent-soft))}
+.w-scale{display:flex; justify-content:space-between; font-family:var(--f-mono); font-size:.68rem; color:var(--faint)}
+.w-key{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:.75rem; color:var(--sub)}
+.w-key i{display:inline-block; width:18px; height:8px; border-radius:99px; margin-right:6px; vertical-align:middle}
+.prereq{display:flex; flex-wrap:wrap; gap:6px; list-style:none}
+.prereq li{font-size:.78rem; line-height:1.5; border:1px solid var(--line); border-radius:8px; padding:3px 9px; background:var(--sunk)}
+.prereq b{font-family:var(--f-mono); font-weight:600; margin-right:6px; color:var(--accent)}
+.res{list-style:none; display:grid; gap:10px}
+.res li{display:grid; gap:2px; font-size:.88rem; line-height:1.7}
+.res li span{color:var(--sub); font-size:.82rem}
+.toc{grid-template-columns:repeat(4, minmax(0,1fr))}
+@media (max-width:820px){ .toc{grid-template-columns:repeat(2, minmax(0,1fr))} }
+@media (max-width:520px){ .toc{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 受験票ふうヘッダー -->
+  <header class="ticket">
+    <div class="ticket-main">
+      <p class="eyebrow">Microsoft 認定資格 · エキスパート · Glossary</p>
+      <h1><span class="code">AB-100</span> 用語集</h1>
+      <p class="lead"><span class="en">Agentic AI Business Solutions Architect</span>（エージェント型 AI ビジネスソリューション アーキテクト）の出題範囲に出てくる言葉を、分野ごとにかみ砕いて解説します。試験で「どれを選ぶか」の判断に効くポイントも添えました。</p>
+      <p class="meta"><span>調査日 2026-11-02</span><span>出題範囲 2026-11-16 版（英語）</span><span>公式ドキュメントで確認</span><a href="#overview">→ まず試験の概要を見る</a></p>
+    </div>
+    <div class="ticket-stub">
+      <dl class="stub-list">
+        <div><dt>収録</dt><dd><span data-total>155</span><small>語</small></dd></div>
+        <div><dt>★ 重要</dt><dd><span data-stars>80</span><small>語</small></dd></div>
+        <div><dt>分野</dt><dd>3<small>＋基礎</small></dd></div>
+        <div><dt>出典</dt><dd>74<small>ページ</small></dd></div>
+      </dl>
+    </div>
+  </header>
+
+  <!-- 試験の概要 -->
+  <section class="sec" id="overview" aria-labelledby="h-overview">
+    <div class="sec-head">
+      <p class="eyebrow">Overview</p>
+      <h2 id="h-overview">AB-100 ってどんな試験？</h2>
+      <p>料金・時間・合格点などの基本情報と、何が問われるかをまとめました。数字は 2026-11-02 に公式ページで確認したものです。</p>
+    </div>
+
+    <div class="panel">
+      <h3>ひとことで言うと「AI とエージェントで業務をどう変えるか」を設計する人の試験です</h3>
+      <p class="what">AB-100 は、エキスパート認定「Microsoft Certified: Agentic AI Business Solutions Architect Expert」に必要な試験です。受験者像は、AI を使った業務ソリューションを設計して届ける<b>ソリューションアーキテクト</b>。画面の操作手順よりも、<b>どの製品を選ぶか、どう組み合わせるか、費用に見合うか、安全に運用できるか</b>という判断が問われます。扱う製品は Dynamics 365、Power Platform、Copilot Studio、Microsoft 365 Copilot、Microsoft Foundry と幅広く、MCP や A2A といったオープン標準、責任ある AI、ROI の分析も範囲に入ります。<a href="#src-1">[1]</a><a href="#src-2">[2]</a></p>
+    </div>
+
+    <dl class="facts">
+      <div class="fact"><dt>受験料（日本）</dt><dd><span class="v">¥20,300<small>税別</small></span><span class="n">米国は $165。受ける国で決まります。キャンペーンや割引は含みません。<a href="#src-3">[3]</a></span></dd></div>
+      <div class="fact"><dt>試験時間</dt><dd><span class="v">100<small>分</small></span><span class="n">ロールベース試験の標準（着席は120分）。ラボ問題がある回は120分。正確な時間は予約時に表示されます。<a href="#src-4">[4]</a></span></dd></div>
+      <div class="fact"><dt>合格点</dt><dd><span class="v">700<small>／1000</small></span><span class="n">問題数は非公開。Microsoft の試験は40〜60問が多いとされています。<a href="#src-1">[1]</a><a href="#src-4">[4]</a></span></dd></div>
+      <div class="fact"><dt>レベル</dt><dd><span class="v">エキスパート</span><span class="n">合格＋前提のアソシエイト資格1つで認定。有効期間は1年で、無料のオンライン評価で更新できます。<a href="#src-2">[2]</a><a href="#src-1">[1]</a></span></dd></div>
+      <div class="fact"><dt>言語</dt><dd><span class="v">日本語あり</span><span class="n">英語・日本語など13言語。日本語版の更新は英語版より約8週間遅れます。<a href="#src-3">[3]</a><a href="#src-1">[1]</a></span></dd></div>
+      <div class="fact"><dt>受け方</dt><dd><span class="v">Pearson VUE</span><span class="n">テストセンターか自宅などからのオンライン。登録は個人の Microsoft アカウントが推奨です。<a href="#src-3">[3]</a></span></dd></div>
+      <div class="fact"><dt>試験中の調べもの</dt><dd><span class="v">Learn 参照可</span><span class="n">試験中に Microsoft Learn を開けます。ただし時間は延長されません。<a href="#src-4">[4]</a></span></dd></div>
+      <div class="fact"><dt>廃止日</dt><dd><span class="v">なし</span><span class="n">英語版は 2026-11-16 に出題範囲が更新されます。<a href="#src-3">[3]</a></span></dd></div>
+    </dl>
+
+    <div class="ov-grid">
+      <div class="panel">
+        <h3>出題範囲と配点（2026-11-16 からの英語版）</h3>
+        <ul class="weights">
+          <li><div class="w-top"><b>1 計画（Plan）</b><span>35–40%</span></div><div class="w-bar" role="img" aria-label="1 計画（Plan） 35〜40%" title="1 計画（Plan）：35〜40%"><i class="hi" style="width:80%"></i><i class="lo" style="width:70%"></i></div></li>
+          <li><div class="w-top"><b>2 設計（Design）</b><span>30–35%</span></div><div class="w-bar" role="img" aria-label="2 設計（Design） 30〜35%" title="2 設計（Design）：30〜35%"><i class="hi" style="width:70%"></i><i class="lo" style="width:60%"></i></div></li>
+          <li><div class="w-top"><b>3 展開（Deploy）</b><span>20–25%</span></div><div class="w-bar" role="img" aria-label="3 展開（Deploy） 20〜25%" title="3 展開（Deploy）：20〜25%"><i class="hi" style="width:50%"></i><i class="lo" style="width:40%"></i></div></li>
+        </ul>
+        <div class="w-scale" aria-hidden="true"><span>0%</span><span>25%</span><span>50%</span></div>
+        <p class="w-key"><span><i style="background:var(--accent)"></i>配点の下限</span><span><i style="background:color-mix(in srgb, var(--accent) 40%, var(--accent-soft))"></i>上限までの幅</span></p>
+        <p>更新で「計画」と「設計」の比重が増え、「展開」が減りました。小項目の変更は3か所で、いずれも「軽微」とされています。<a href="#src-1">[1]</a></p>
+        <p><b>日本語で受ける人は要注意：</b>翻訳版は英語版の約8週間後に更新されるため、2027年1月中旬ごろまでは更新前の範囲のままの可能性があります。受ける言語の study guide の「〇月〇日時点で測定されるスキル」を確認してください。参考までに、更新前の配点は 計画 25–30%／設計 25–30%／展開 40–45% と外部の解説サイトで紹介されていました（公式ページでは今は確認できません）。<a href="#src-1">[1]</a><a href="#src-3">[3]</a></p>
+      </div>
+      <div class="panel">
+        <h3>認定に必要なもの</h3>
+        <p>AB-100 の合格に加えて、次のアソシエイト資格のどれか1つが必要です（資格ページの一覧）。<a href="#src-2">[2]</a></p>
+        <ul class="prereq"><li><b>MB-330</b>D365 Supply Chain Management Functional Consultant</li><li><b>PL-400</b>Power Platform Developer</li><li><b>MB-230</b>D365 Customer Service Functional Consultant</li><li><b>MB-310</b>D365 Finance Functional Consultant</li><li><b>MB-500</b>D365 Finance and Operations Apps Developer</li><li><b>MB-800</b>D365 Business Central Functional Consultant</li><li><b>MB-820</b>D365 Business Central Developer</li><li><b>AI-300</b>Machine Learning Operations Engineer</li><li><b>AI-103</b>Azure AI Apps and Agents Developer</li><li><b>AB-620</b>AI Agent Builder</li><li><b>AB-210</b>D365 Sales AI Consultant</li><li><b>AB-410</b>Intelligent Applications Builder</li><li><b>AB-250</b>D365 Contact Center AI Engineer</li></ul>
+        <h3>公式の準備リソース</h3>
+        <ul class="res">
+          <li><b>練習評価（無料）</b><span>AI Skills Navigator の認定ページから受けられます。サインインが必要です。<a href="#src-1">[1]</a><a href="#src-2">[2]</a></span></li>
+          <li><b>ラーニングパス「Architect AI solutions for business productivity」</b><span>11モジュール・約11時間。出題範囲の小項目とほぼ同じ並びです。<a href="#src-5">[5]</a></span></li>
+          <li><b>講師付きコース AB-100T00</b><span>「Architecting agentic AI business solutions」。設計の考え方を深めるコースで、試験対策そのものではないと明記されています。<a href="#src-3">[3]</a></span></li>
+          <li><b>試験サンドボックス</b><span>本番と同じ画面と問題形式を事前に試せます。<a href="#src-1">[1]</a><a href="#src-4">[4]</a></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 使い方と目次 -->
+  <section class="sec" aria-labelledby="h-howto">
+    <div class="sec-head">
+      <p class="eyebrow">How to use</p>
+      <h2 id="h-howto">まずは「★」だけで一周するのがおすすめです</h2>
+      <p>★は、公式の出題範囲（study guide）に名指しで出てくる言葉や、選択肢を選ぶ判断に直結する言葉です。<a href="#src-1">[1]</a></p>
+    </div>
+    <ul class="howto">
+      <li><span class="k">1. さがす</span><b>検索と分野で絞り込む</b><p>「MCP」「フォールバック」のように、知らない言葉をそのまま入れると見つかります。キーボードの / で検索欄に移動します。</p></li>
+      <li><span class="k">2. ためす</span><b>テストモードで暗記チェック</b><p>説明がぼかされます。言葉を見て意味を言えるか試し、「意味を見る」で答え合わせします。</p></li>
+      <li><span class="k">3. つぶす</span><b>「覚えた」で印をつける</b><p>覚えた語は「未習得だけ」で隠せます。印はこのブラウザにだけ保存されます。</p></li>
+    </ul>
+    <nav aria-label="分野の目次">
+      <ol class="toc">
+        <li class="base"><a href="#d-base"><span class="no">0</span><b>基礎（全分野共通）</b><small>製品の全体像</small><span class="n" data-dcount="base">—</span></a></li>
+        <li><a href="#d-plan"><span class="no">1</span><b>AI ソリューションの計画</b><small>配点 35–40%</small><span class="n" data-dcount="plan">—</span></a></li>
+        <li><a href="#d-design"><span class="no">2</span><b>AI ソリューションの設計</b><small>配点 30–35%</small><span class="n" data-dcount="design">—</span></a></li>
+        <li><a href="#d-deploy"><span class="no">3</span><b>AI ソリューションの展開</b><small>配点 20–25%</small><span class="n" data-dcount="deploy">—</span></a></li>
+      </ol>
+    </nav>
+  </section>
+
+  <!-- 用語本体 -->
+  <section class="sec" aria-labelledby="h-terms">
+    <div class="sec-head">
+      <p class="eyebrow">Glossary</p>
+      <h2 id="h-terms">分野別の用語</h2>
+      <p>各カードの [番号] は、下の「根拠にした情報」の番号です。「ツボ」は試験で選択肢を選ぶときの手がかりです。</p>
+    </div>
+
+    <div class="toolbar" id="toolbar">
+      <label class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+        <input type="search" id="q" placeholder="用語をさがす（例：MCP、フォールバック、ROI）" autocomplete="off" aria-label="用語をさがす">
+        <kbd>/</kbd>
+      </label>
+      <div class="bar-row">
+        <div class="chips" role="group" aria-label="分野で絞り込み">
+          <button type="button" class="chip" data-dom="all" aria-pressed="true">すべて</button>
+          <button type="button" class="chip" data-dom="base" aria-pressed="false">基礎</button>
+          <button type="button" class="chip" data-dom="plan" aria-pressed="false">1 計画</button>
+          <button type="button" class="chip" data-dom="design" aria-pressed="false">2 設計</button>
+          <button type="button" class="chip" data-dom="deploy" aria-pressed="false">3 展開</button>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="toggles" role="group" aria-label="表示の切り替え">
+          <button type="button" class="tg" data-toggle="star" aria-pressed="false">★ だけ</button>
+          <button type="button" class="tg" data-toggle="todo" aria-pressed="false">未習得だけ</button>
+          <button type="button" class="tg" data-toggle="quiz" aria-pressed="false">テストモード</button>
+        </div>
+        <p class="status" aria-live="polite"><b id="shown">—</b> 語を表示 ・ 覚えた <b id="gotn">0</b> / <span data-total>155</span></p>
+      </div>
+    </div>
+
+    <p class="empty" id="empty" hidden><b>該当する用語がありません</b>言葉を短くするか、分野や「★ だけ」「未習得だけ」の絞り込みを外してみてください。</p>
+
+    <div class="domains">
+
+    <!-- ───────── 0 基礎（全分野共通） ───────── -->
+    <section class="dom" id="d-base" data-dom="base" aria-labelledby="h-base">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">0</span>
+        <p class="eyebrow">Basics · 全分野共通</p>
+        <h2 id="h-base">基礎（全分野共通）</h2>
+        <p>どの分野にも出てくる、エージェントと製品の土台になる言葉です。AB-100 は扱う製品が多いので、最初に製品の全体像をつかむと後がぐっと楽になります。</p>
+      </div>
+      <div class="sub">
+        <h3>エージェントの基本</h3>
+        <div class="terms">
+          <article class="term" id="t-agent" data-star><h4 class="t-name">エージェント（AI エージェント）<span class="star">★ 重要</span><small>AI agent</small></h4><p class="def">目標を与えると、状況を読み取って判断し、ツールを使って作業まで進める AI です。質問に答えるだけのチャットと違い、レコードの更新やメール送信など「実行」まで担えます。</p><p class="tip"><b>ツボ</b>AB-100 の主役です。人がどこまで関わるかで、タスク型・自律型などに分かれます（分野2）。</p><div class="t-foot"><span class="refs"><a href="#src-70">[70]</a><a href="#src-7">[7]</a></span></div></article>
+          <article class="term" id="t-agentic-first" data-star><h4 class="t-name">エージェントファースト<span class="star">★ 重要</span><small>Agentic-first</small></h4><p class="def">業務プロセスを考えるとき、「まずエージェントに任せられないか」から設計する考え方です。人は判断・承認・例外対応など、価値の高い部分に集中します。</p><p class="tip"><b>ツボ</b>受験者像に「エージェントファーストのソリューションを設計し、そのロードマップを定義する」とあり、試験全体の前提になる考え方です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-multi-agent" data-star><h4 class="t-name">マルチエージェント<span class="star">★ 重要</span><small>Multi-agent solution</small></h4><p class="def">複数のエージェントが役割を分けて、1つの仕事を進める構成です。受付役のエージェントが、専門のエージェントに仕事を振り分けます。</p><p class="tip"><b>ツボ</b>公式も「いつも必要なわけではない」と注意しています。小さな用途なら、1つのエージェント＋子エージェントで足ります。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-25">[25]</a></span></div></article>
+          <article class="term" id="t-orchestration"><h4 class="t-name">オーケストレーション<small>Orchestration</small></h4><p class="def">「どの順番で、どのツール・ナレッジ・エージェントを使うか」を決めて、全体を指揮することです。Copilot Studio では生成型とクラシック型の2方式があります。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-grounding" data-star><h4 class="t-name">グラウンディング<span class="star">★ 重要</span><small>Grounding</small></h4><p class="def">AI の回答を、社内文書や業務データなどの信頼できる情報に根拠づけることです。根拠のない作り話を減らし、自社に合った答えにします。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-22">[22]</a></span></div></article>
+          <article class="term" id="t-knowledge-source" data-star><h4 class="t-name">ナレッジソース<span class="star">★ 重要</span><small>Knowledge source</small></h4><p class="def">エージェントが回答の根拠として参照する情報源です。SharePoint、Dataverse、Web サイト、アップロードしたファイル、外部システムなどがあります。</p><p class="tip"><b>ツボ</b>Copilot Studio では、エージェント全体（ナレッジのページ）にも、トピックの中（生成回答ノード）にも追加できます。</p><div class="t-foot"><span class="refs"><a href="#src-22">[22]</a></span></div></article>
+          <article class="term" id="t-rag"><h4 class="t-name">RAG（検索拡張生成）<small>Retrieval-augmented generation</small></h4><p class="def">質問に関係する情報を先に検索し、その結果を AI に渡して答えさせる方法です。グラウンディングの代表的なやり方です。</p><p class="tip"><b>ツボ</b>「最新の社内情報で答えさせたい」は、ファインチューニングではなく RAG が基本の答えです。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a><a href="#src-22">[22]</a></span></div></article>
+          <article class="term" id="t-hallucination"><h4 class="t-name">ハルシネーション（作り話）<small>Hallucination</small></h4><p class="def">根拠がないのに、もっともらしい内容を AI が作ってしまうことです。</p><p class="tip"><b>ツボ</b>対策はグラウンディング、テストでの正確さのチェック、重要な操作の前の人による確認です。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a><a href="#src-33">[33]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>モデルとプロンプト</h3>
+        <div class="terms">
+          <article class="term" id="t-llm"><h4 class="t-name">LLM（大規模言語モデル）<small>Large language model</small></h4><p class="def">大量の文章で学習した、文章を理解して書く AI モデルです。会話・要約・推論など幅広くこなします。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-slm" data-star><h4 class="t-name">SLM（小規模言語モデル）<span class="star">★ 重要</span><small>Small language model</small></h4><p class="def">規模が小さく、軽くて安く速いモデルです。Microsoft の Phi などがあり、特定の業務に合わせて調整して使うこともあります。</p><p class="tip"><b>ツボ</b>出題範囲に「カスタマイズした SLM のユースケースを考える」があります。単純で大量の処理、低コスト・低遅延が条件なら候補になります。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-42">[42]</a></span></div></article>
+          <article class="term" id="t-prompt"><h4 class="t-name">プロンプト<small>Prompt</small></h4><p class="def">AI への指示文です。何をしてほしいか、どんな情報を使うか、どんな形で答えてほしいかを書きます。</p><div class="t-foot"><span class="refs"><a href="#src-18">[18]</a></span></div></article>
+          <article class="term" id="t-prompt-engineering" data-star><h4 class="t-name">プロンプトエンジニアリング<span class="star">★ 重要</span><small>Prompt engineering</small></h4><p class="def">欲しい答えが返るように、指示文の書き方を工夫する技術です。役割・目的・条件・出力の形をはっきり書くのが基本です。</p><p class="tip"><b>ツボ</b>AB-100 では、自分で書く人ではなく「組織にガイドラインと手法を示す人（アーキテクト）」として問われます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-18">[18]</a></span></div></article>
+          <article class="term" id="t-token"><h4 class="t-name">トークン<small>Token</small></h4><p class="def">モデルが文章を処理するときの細かい単位です。料金・速度・一度に読める量（コンテキストの上限）に関係します。</p><div class="t-foot"><span class="refs"><a href="#src-41">[41]</a></span></div></article>
+          <article class="term" id="t-reasoning-model"><h4 class="t-name">推論モデル<small>Reasoning model</small></h4><p class="def">答える前に段階的に考えるモデルです。複雑な判断に強い代わりに、時間とコストが多くかかります。</p><p class="tip"><b>ツボ</b>Copilot Studio では「ディープリーズニング」として追加できます（分野2）。</p><div class="t-foot"><span class="refs"><a href="#src-29">[29]</a><a href="#src-1">[1]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>製品の全体像</h3>
+        <div class="terms">
+          <article class="term" id="t-m365-copilot" data-star><h4 class="t-name">Microsoft 365 Copilot（Microsoft Copilot）<span class="star">★ 重要</span><small>Microsoft 365 Copilot</small></h4><p class="def">Word・Excel・Outlook・Teams などに組み込まれた、仕事用の AI アシスタントです。社内のメール・ファイル・会議などの情報（Microsoft Graph）を使って答えます。</p><p class="tip"><b>ツボ</b>2026年10月から公式ドキュメントでは「Microsoft Copilot」に名前が変わりました。出題範囲は旧名のままなので、同じものとして読み替えます。</p><div class="t-foot"><span class="refs"><a href="#src-10">[10]</a><a href="#src-17">[17]</a></span></div></article>
+          <article class="term" id="t-copilot-studio" data-star><h4 class="t-name">Copilot Studio<span class="star">★ 重要</span><small>Microsoft Copilot Studio</small></h4><p class="def">ローコードでエージェントを作る Microsoft の製品です。トピック、ナレッジ、ツール、エージェントフローなどを組み合わせて作ります。</p><p class="tip"><b>ツボ</b>CAF では「SaaS（ローコード）の AI 開発基盤」の代表です。まずはここで足りるかを考えます。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-foundry" data-star><h4 class="t-name">Microsoft Foundry<span class="star">★ 重要</span><small>Microsoft Foundry</small></h4><p class="def">Azure 上で、モデル・エージェント・ツールをまとめて扱う、プロの開発者向けの基盤です。コードで作り込み、評価・監視・カスタムモデルまで扱えます。</p><p class="tip"><b>ツボ</b>旧名は Azure AI Foundry／Azure AI Studio。「ローコードなら Copilot Studio、細かく制御したいプロコードなら Foundry」が基本の切り分けです。</p><div class="t-foot"><span class="refs"><a href="#src-43">[43]</a><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-foundry-tools"><h4 class="t-name">Foundry Tools<small>Microsoft Foundry Tools</small></h4><p class="def">音声（Speech）、言語（Language）、翻訳（Translator）、文書の読み取り（Document Intelligence／Content Understanding）、有害な内容の検出（Content Safety）などの部品群です。</p><p class="tip"><b>ツボ</b>旧名は Azure AI Services（Cognitive Services）です。</p><div class="t-foot"><span class="refs"><a href="#src-43">[43]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-power-platform"><h4 class="t-name">Power Platform<small>Microsoft Power Platform</small></h4><p class="def">Power Apps（アプリ）、Power Automate（自動化）、Copilot Studio（エージェント）、Power Pages（Web サイト）などをまとめたローコード製品群です。</p><div class="t-foot"><span class="refs"><a href="#src-52">[52]</a></span></div></article>
+          <article class="term" id="t-dynamics365" data-star><h4 class="t-name">Dynamics 365<span class="star">★ 重要</span><small>Dynamics 365</small></h4><p class="def">営業（Sales）、カスタマーサービス、コンタクトセンター、財務（Finance）、サプライチェーン（Supply Chain Management）などの業務アプリ群です。顧客対応の CRM 系と、お金とモノの ERP 系に分かれます。</p><p class="tip"><b>ツボ</b>出題範囲では CRM 系を「customer experience and service」、ERP 系を「finance and supply chain」と呼び分けています。</p><div class="t-foot"><span class="refs"><a href="#src-56">[56]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-dataverse" data-star><h4 class="t-name">Dataverse<span class="star">★ 重要</span><small>Microsoft Dataverse</small></h4><p class="def">Power Platform と Dynamics 365（CRM 系）のデータを保存する土台です。テーブル・列・セキュリティロールでデータと権限を管理します。</p><p class="tip"><b>ツボ</b>Power Platform で ALM をするには、関わるすべての環境に Dataverse が必要です。</p><div class="t-foot"><span class="refs"><a href="#src-52">[52]</a><a href="#src-22">[22]</a></span></div></article>
+          <article class="term" id="t-connector"><h4 class="t-name">コネクタ<small>Connector</small></h4><p class="def">外部のサービスやシステムにつなぐための部品です。Power Platform には多数の既製コネクタがあり、なければカスタムコネクタを作れます。</p><div class="t-foot"><span class="refs"><a href="#src-60">[60]</a><a href="#src-38">[38]</a></span></div></article>
+          <article class="term" id="t-mcp" data-star><h4 class="t-name">MCP（モデル コンテキスト プロトコル）<span class="star">★ 重要</span><small>Model Context Protocol</small></h4><p class="def">AI エージェントと外部のツール・データをつなぐための共通ルール（オープン標準）です。MCP サーバーが公開したツールを、エージェントが自動で見つけて使えます。</p><p class="tip"><b>ツボ</b>「MCP＝エージェントとツールをつなぐ」「A2A＝エージェント同士をつなぐ」と覚えます。</p><div class="t-foot"><span class="refs"><a href="#src-26">[26]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-a2a" data-star><h4 class="t-name">A2A（Agent2Agent プロトコル）<span class="star">★ 重要</span><small>Agent2Agent protocol</small></h4><p class="def">エージェント同士がやり取りして仕事を頼み合うためのオープン標準です。作った製品が違うエージェント同士でも連携できます。</p><p class="tip"><b>ツボ</b>Copilot Studio では、A2A で公開された外部のエージェントを「接続エージェント」として追加できます。</p><div class="t-foot"><span class="refs"><a href="#src-25">[25]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-ga"><h4 class="t-name">GA とプレビュー<small>General availability / Preview</small></h4><p class="def">GA は正式提供、プレビューはお試し提供です。「運用可能なプレビュー（production ready preview）」は本番でも使えますが、追加の利用条件がつきます。</p><p class="tip"><b>ツボ</b>試験は主に GA の機能から出ますが、よく使われるプレビュー機能が出ることもあります。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-67">[67]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+    <!-- ───────── 1 AI ソリューションの計画 ───────── -->
+    <section class="dom" id="d-plan" data-dom="plan" aria-labelledby="h-plan">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">1</span>
+        <p class="eyebrow">Domain 1 · <b>35–40%</b></p>
+        <h2 id="h-plan">AI ソリューションの計画</h2>
+        <p>要件を分析し、AI 戦略を決め、費用対効果を見積もる分野です。配点がいちばん大きく、2026-11-16 の更新で比重が増えました。</p>
+      </div>
+      <div class="sub">
+        <h3>要件を分析する</h3>
+        <div class="terms">
+          <article class="term" id="t-agent-usecase" data-star><h4 class="t-name">エージェントを使う3つの場面<span class="star">★ 重要</span><small>Task automation / data analytics / decision-making</small></h4><p class="def">出題範囲は、エージェントの使いどころを「タスクの自動化」「データ分析」「意思決定」の3つで評価するよう求めています。定型作業の代行、データから傾向を読む、提案や判断の支援、と整理します。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-5">[5]</a></span></div></article>
+          <article class="term" id="t-data-quality" data-star><h4 class="t-name">グラウンディング用データの5つの観点<span class="star">★ 重要</span><small>Accuracy, relevance, timeliness, cleanliness, availability</small></h4><p class="def">エージェントの根拠にするデータは「正確さ」「関連性」「新しさ（適時性）」「きれいさ（重複や誤りがない）」「使えること（アクセスできる）」で確認します。</p><p class="tip"><b>ツボ</b>「古いマニュアルが混ざって答えが古い」なら新しさ、「重複した文書で答えがぶれる」ならきれいさ、のように症状から観点を選びます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-data-foundation"><h4 class="t-name">AI 向けのデータ基盤<small>AI data foundation</small></h4><p class="def">業務データを、ほかの AI システムからも使える形に整えておくことです。置き場所・形式・権限・説明（メタデータ）をそろえます。</p><p class="tip"><b>ツボ</b>出題範囲の「他の AI システムで使えるようにデータを整理する」に当たります。CAF にもデータ基盤の章があります。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-fabric"><h4 class="t-name">Microsoft Fabric と Fabric データエージェント<small>Microsoft Fabric / Fabric data agents</small></h4><p class="def">Fabric は Microsoft の分析基盤です。Fabric のデータエージェントは、Fabric のデータに自然な言葉で質問できるエージェントで、Copilot Studio から接続することもできます（プレビュー）。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a><a href="#src-25">[25]</a></span></div></article>
+          <article class="term" id="t-copilot-connectors" data-star><h4 class="t-name">Copilot コネクタ<span class="star">★ 重要</span><small>Microsoft 365 Copilot connectors</small></h4><p class="def">Microsoft 365 の外にあるデータを、Copilot と Microsoft Search で使えるようにする仕組みです。データを Microsoft Graph に取り込む「同期型」と、MCP でその都度取りに行き取り込まない「フェデレーション型」があります。</p><p class="tip"><b>ツボ</b>「データを複製したくない」「常に最新が必要」ならフェデレーション型です。旧名は Microsoft Graph コネクタ。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>AI 戦略を設計する</h3>
+        <div class="terms">
+          <article class="term" id="t-caf" data-star><h4 class="t-name">CAF（クラウド導入フレームワーク）の AI 導入<span class="star">★ 重要</span><small>Cloud Adoption Framework for Azure</small></h4><p class="def">Microsoft が公開している、組織でクラウドと AI を導入するための手引きです。AI では「計画（AI planning）→ 準備（AI ready）→ 統制・保護・管理（govern, secure, manage）」の段階を踏みます。</p><p class="tip"><b>ツボ</b>最初にリーダーが目的と優先順位を示し、ガバナンスを中央で決めるのが「土台」です。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-ai-decision"><h4 class="t-name">SaaS・PaaS・IaaS の選び方<small>AI decision tree</small></h4><p class="def">CAF は「必要なカスタマイズができる中で、運用の手間がいちばん少ないもの」を選ぶよう勧めています。SaaS（Copilot Studio などのローコード）→ PaaS（Microsoft Foundry）→ IaaS（GPU やコンテナ）の順に、自由度も運用の負担も増えます。</p><p class="tip"><b>ツボ</b>CAF には「Azure のインフラ（IaaS）を最初の選択肢にしない」と明記されています。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a><a href="#src-7">[7]</a></span></div></article>
+          <article class="term" id="t-ai-coe" data-star><h4 class="t-name">AI センター・オブ・エクセレンス（AI CoE）<span class="star">★ 重要</span><small>AI Center of Excellence</small></h4><p class="def">全社の AI の方針・標準・責任ある AI の要件を中央で決めるチームです。事業部門は、その枠の中で AI の活用を進めます。</p><p class="tip"><b>ツボ</b>出題範囲は「Microsoft AI CoE の要素を取り入れる」です。中央で決めること（方針・標準）と、現場に任せることを分けます。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-ai-charter"><h4 class="t-name">AI 戦略（AI 憲章）<small>AI strategy / charter</small></h4><p class="def">組織の優先順位、誰が何を決めるか（意思決定の権限）、AI 投資の価値の測り方を書いた文書です。経営層が方向を示して後押しします。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-prebuilt-agent" data-star><h4 class="t-name">事前構築済みエージェント<span class="star">★ 重要</span><small>Prebuilt agents</small></h4><p class="def">Microsoft が用意した、すぐ使えるエージェントです。Microsoft 365 Copilot の Researcher や Analyst、Dynamics 365 の営業・サービス・財務の各エージェントなどがあります。</p><p class="tip"><b>ツボ</b>アーキテクトの基本は「作る前に、既製品で足りないか確かめる」です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-16">[16]</a><a href="#src-56">[56]</a></span></div></article>
+          <article class="term" id="t-researcher"><h4 class="t-name">Researcher と Analyst<small>Researcher / Analyst agents</small></h4><p class="def">Microsoft 365 Copilot に用意されたエージェントです。Researcher は Web と社内の情報を使って複数ステップの調査をし、出典つきのレポートを作ります。Analyst は Excel などのデータ分析に向きます。</p><p class="tip"><b>ツボ</b>Researcher の中身（ロジック）は利用者側で変えられません。</p><div class="t-foot"><span class="refs"><a href="#src-16">[16]</a></span></div></article>
+          <article class="term" id="t-build-or-extend" data-star><h4 class="t-name">カスタムエージェントを作るか、Copilot を拡張するか<span class="star">★ 重要</span><small>Build custom agents vs extend Microsoft 365 Copilot</small></h4><p class="def">社員が Microsoft 365 の中で使い、Copilot の頭脳（オーケストレーターとモデル）のままでよいなら「拡張（宣言型エージェント）」。独自のモデルや処理の流れ、社外向けのチャネルが必要なら、カスタムエンジンエージェントや Copilot Studio・Foundry で作ります。</p><div class="t-foot"><span class="refs"><a href="#src-10">[10]</a><a href="#src-1">[1]</a><a href="#src-9">[9]</a></span></div></article>
+          <article class="term" id="t-declarative-agent" data-star><h4 class="t-name">宣言型エージェント<span class="star">★ 重要</span><small>Declarative agent</small></h4><p class="def">Microsoft 365 Copilot のオーケストレーターとモデルをそのまま使い、指示・ナレッジ・アクションを「宣言」して作るエージェントです。Agent Builder や Copilot Studio で作れます。</p><p class="tip"><b>ツボ</b>「Microsoft 365 のセキュリティとコンプライアンスの範囲内で、手早く業務向けに」なら宣言型です。</p><div class="t-foot"><span class="refs"><a href="#src-11">[11]</a><a href="#src-10">[10]</a></span></div></article>
+          <article class="term" id="t-custom-engine-agent" data-star><h4 class="t-name">カスタムエンジンエージェント<span class="star">★ 重要</span><small>Custom engine agent</small></h4><p class="def">処理の流れ（オーケストレーション）と AI モデルを自分で選んで作るエージェントです。Copilot Studio、Microsoft 365 Agents SDK、Teams SDK、Microsoft Foundry で作れます。</p><p class="tip"><b>ツボ</b>「独自モデル」「独自の処理の流れ」「業務システムとの複雑な連携」「先回りして動く自動化」ならカスタムエンジンです。</p><div class="t-foot"><span class="refs"><a href="#src-12">[12]</a><a href="#src-10">[10]</a></span></div></article>
+          <article class="term" id="t-custom-model" data-star><h4 class="t-name">カスタム AI モデルを作るタイミング<span class="star">★ 重要</span><small>When to create custom AI models</small></h4><p class="def">まず既製のモデル＋プロンプト＋グラウンディング（RAG）で試し、それでも品質・書式・専門性・コストの要件を満たせないときに、ファインチューニングやカスタムモデルを考えます。</p><p class="tip"><b>ツボ</b>ファインチューニングは「振る舞い・書式・専門的な言い回し」を覚えさせるもの。最新の知識を入れたいなら RAG です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-42">[42]</a></span></div></article>
+          <article class="term" id="t-fine-tuning"><h4 class="t-name">ファインチューニング（SFT・DPO・RFT）<small>Fine-tuning</small></h4><p class="def">既存のモデルに追加で学習させ、特定の仕事に合わせることです。Foundry では、正解例で教える SFT、良い答えと悪い答えを比べて教える DPO、採点役（グレーダー）の点数で教える RFT などを使えます。</p><div class="t-foot"><span class="refs"><a href="#src-42">[42]</a></span></div></article>
+          <article class="term" id="t-prompt-library" data-star><h4 class="t-name">プロンプトライブラリ<span class="star">★ 重要</span><small>Prompt library</small></h4><p class="def">効果が確かめられたプロンプトを集めて、社内で共有する仕組みです。誰が使っても同じ品質になるよう、名前・用途・入力例・注意点・管理者を決めておきます。</p><p class="tip"><b>ツボ</b>出題範囲は「プロンプトライブラリを作るためのガイドラインを示す」です。品質の確認と更新のルールまで含めて考えます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-18">[18]</a></span></div></article>
+          <article class="term" id="t-prompt-elements"><h4 class="t-name">プロンプトの4要素<small>Goal / context / source / expectations</small></h4><p class="def">Microsoft が勧める、Copilot へのプロンプトの組み立て方です。目的（何をしてほしいか）、背景（なぜ・誰のためか）、情報源（何を使うか）、期待（どんな形で答えてほしいか）の4つです。</p><p class="tip"><b>ツボ</b>出題範囲の「Copilot のプロンプトのベストプラクティスを検証する」でも使える基準です（分野3）。</p><div class="t-foot"><span class="refs"><a href="#src-18">[18]</a></span></div></article>
+          <article class="term" id="t-rules-constraints"><h4 class="t-name">ソリューションのルールと制約<small>Solution rules and constraints</small></h4><p class="def">Copilot Studio や Foundry で AI の部品を作るときに決める「守るべき線」です。扱ってよいデータ、使ってよいツール、答えてはいけない話題、人の承認が必要な操作、使用量の上限などを決めます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-38">[38]</a></span></div></article>
+          <article class="term" id="t-multi-d365"><h4 class="t-name">複数の Dynamics 365 アプリをまたぐ AI<small>AI solutions across multiple Dynamics 365 apps</small></h4><p class="def">営業・サービス・財務など、複数のアプリのデータと処理をつないで AI を使う設計です。例えば、受注（Sales）から請求（Finance）、問い合わせ対応（Customer Service）までを一続きで支援します。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-56">[56]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>コストと効果を評価する</h3>
+        <div class="terms">
+          <article class="term" id="t-roi" data-star><h4 class="t-name">ROI（投資対効果）<span class="star">★ 重要</span><small>Return on investment</small></h4><p class="def">かけた費用に対して、どれだけの効果（時間の削減、売上の増加、品質の向上など）が得られたかを示す割合です。</p><p class="tip"><b>ツボ</b>Microsoft は「作る前に価値を決める」「初日からテレメトリーを取る」「決まったスポンサーと定期的に振り返る」ことを勧めています。</p><div class="t-foot"><span class="refs"><a href="#src-8">[8]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-tco" data-star><h4 class="t-name">TCO（総保有コスト）<span class="star">★ 重要</span><small>Total cost of ownership</small></h4><p class="def">導入時の費用だけでなく、ライセンス、使用量（Copilot クレジットなど）、開発、運用と監視、教育、保守まで含めた全体のコストです。</p><p class="tip"><b>ツボ</b>出題範囲は「TCO を含む ROI の基準を選ぶ」です。ライセンス代だけで比べる選択肢は不正解になりがちです。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-8">[8]</a></span></div></article>
+          <article class="term" id="t-baseline"><h4 class="t-name">ベースライン<small>Baseline</small></h4><p class="def">導入する前の状態（処理時間、件数、エラー率など）を測っておいた値です。これがないと、導入後に効果を示せません。</p><div class="t-foot"><span class="refs"><a href="#src-8">[8]</a></span></div></article>
+          <article class="term" id="t-indicators"><h4 class="t-name">先行指標と遅行指標<small>Leading and lagging indicators</small></h4><p class="def">先行指標は早く見える変化（利用者数、利用回数など）、遅行指標は後から出てくる成果（コスト削減、売上、顧客満足度など）です。両方をそろえて効果を説明します。</p><div class="t-foot"><span class="refs"><a href="#src-8">[8]</a></span></div></article>
+          <article class="term" id="t-agent-hours"><h4 class="t-name">Agent Assisted Hours<small>Agent Assisted Hours</small></h4><p class="def">エージェントが手伝った作業時間を見積もるための、Microsoft が公開している計算式です。ROI を説明するときの材料になります。</p><div class="t-foot"><span class="refs"><a href="#src-8">[8]</a></span></div></article>
+          <article class="term" id="t-build-buy-extend" data-star><h4 class="t-name">作る・買う・拡張する（Build・Buy・Extend）<span class="star">★ 重要</span><small>Build, buy, or extend</small></h4><p class="def">AI の部品を自前で作るか、既製品を使うか、既製品を拡張するかの判断です。導入の速さ、費用、他社との差別化、保守の手間で比べます。</p><p class="tip"><b>ツボ</b>目安は「既製品で足りる → 買う」「少し足りない → 拡張する」「競争力の源で独自性が要る → 作る」です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-5">[5]</a></span></div></article>
+          <article class="term" id="t-model-router" data-star><h4 class="t-name">モデルルーター<span class="star">★ 重要</span><small>Model router</small></h4><p class="def">1つのデプロイとして置くと、プロンプトごとに最も合うモデルへ自動で振り分ける Foundry のモデルです。Balanced（既定）・Quality・Cost の3つのモードがあります。</p><p class="tip"><b>ツボ</b>「品質を保ちながら費用を下げたい」「どのモデルを使うかを毎回決めたくない」ならモデルルーターです。使う範囲（コンテキストの上限）は、中のいちばん小さいモデルに合わせられます。</p><div class="t-foot"><span class="refs"><a href="#src-41">[41]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-copilot-credits"><h4 class="t-name">Copilot クレジット<small>Copilot Credits</small></h4><p class="def">Copilot Studio のエージェントが使う「使用量の単位」です。生成 AI の回答やツールの実行などで消費します。例えばコンピューター使用は1ステップ5クレジット（プレミアムモデルは15）です。</p><p class="tip"><b>ツボ</b>TCO では、ライセンスだけでなく従量の消費も見積もります。管理者は消費の上限も設定できます。</p><div class="t-foot"><span class="refs"><a href="#src-27">[27]</a><a href="#src-38">[38]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+    <!-- ───────── 2 AI ソリューションの設計 ───────── -->
+    <section class="dom" id="d-design" data-dom="design" aria-labelledby="h-design">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">2</span>
+        <p class="eyebrow">Domain 2 · <b>30–35%</b></p>
+        <h2 id="h-design">AI ソリューションの設計</h2>
+        <p>Dynamics 365・Copilot Studio・Microsoft 365 Copilot・Power Platform で、エージェントと AI 機能を設計する分野です。製品ごとの機能名がたくさん出ます。</p>
+      </div>
+      <div class="sub">
+        <h3>Dynamics 365 の Copilot を設計する</h3>
+        <div class="terms">
+          <article class="term" id="t-sales-copilot"><h4 class="t-name">Copilot in Dynamics 365 Sales<small>Copilot in Dynamics 365 Sales</small></h4><p class="def">Dynamics 365 Sales に組み込まれたチャット型の AI です。顧客の最新情報、会議の準備、取引先のニュースなどを自然な言葉で聞けます。</p><p class="tip"><b>ツボ</b>今後は Sales agent が推奨の入口になる方針です。</p><div class="t-foot"><span class="refs"><a href="#src-57">[57]</a></span></div></article>
+          <article class="term" id="t-business-terms" data-star><h4 class="t-name">ビジネス用語（グロッサリー）と同義語<span class="star">★ 重要</span><small>Business terms / glossary and synonyms</small></h4><p class="def">社内独自の言葉（略語、独自の項目名、社内ルール）を、テーブルの列などに対応づけて Copilot に教える設定です。Copilot Studio で設定します。</p><p class="tip"><b>ツボ</b>「『VP』と聞かれたら役職の列を見てほしい」のような要件はグロッサリーで解決します。</p><div class="t-foot"><span class="refs"><a href="#src-58">[58]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-copilot-customize"><h4 class="t-name">Copilot のカスタマイズ<small>Customize Copilot in Dynamics 365 apps</small></h4><p class="def">Copilot in Dynamics 365 Sales などは、Copilot Studio でトピックを追加する、プロンプトガイド（よく使う質問の一覧）を変える、グロッサリーを足す、といった方法で自社向けにできます（プレビュー）。</p><div class="t-foot"><span class="refs"><a href="#src-58">[58]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-sales-agent" data-star><h4 class="t-name">Sales agent（旧 Copilot for Sales）<span class="star">★ 重要</span><small>Sales agent</small></h4><p class="def">営業チーム向けのエージェントです。Dynamics 365 Sales や Salesforce の CRM データを Outlook や Teams の中で使えるようにし、メールの下書き、会議の要点、次にやることの提案をします。</p><p class="tip"><b>ツボ</b>出題範囲には旧名「Microsoft 365 Copilot for Sales」で出ます。</p><div class="t-foot"><span class="refs"><a href="#src-59">[59]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-sales-connector" data-star><h4 class="t-name">Sales のコネクタとアクション<span class="star">★ 重要</span><small>Connectors for Copilot in Dynamics 365 Sales</small></h4><p class="def">Power Platform のコネクタやカスタムコネクタのアクションで、Sales の Copilot 体験に、他のシステムのデータや操作を足せます。管理者が有効にすると使えるようになります。</p><p class="tip"><b>ツボ</b>コネクタを通じて外部にデータが流れることがあるので、組織のポリシーと照らし合わせるよう公式も注意しています。</p><div class="t-foot"><span class="refs"><a href="#src-60">[60]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-service-agent"><h4 class="t-name">Service Agent（旧 Copilot for Service）<small>Service Agent</small></h4><p class="def">カスタマーサービス担当者向けの Microsoft 365 Copilot のエージェントです。Dynamics 365 Customer Service のケースや顧客情報を要約・検索し、メモの追加やステータスの更新もできます。</p><p class="tip"><b>ツボ</b>出題範囲には旧名「Microsoft 365 Copilot for Service」で出ます。</p><div class="t-foot"><span class="refs"><a href="#src-63">[63]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-contact-center" data-star><h4 class="t-name">Dynamics 365 Contact Center<span class="star">★ 重要</span><small>Dynamics 365 Contact Center</small></h4><p class="def">電話・チャットなど複数のチャネルの問い合わせ窓口を、AI と一緒に運用する製品です。Copilot Studio で作ったエージェントを窓口に置き、必要なら人の担当者に引き継ぎます。</p><div class="t-foot"><span class="refs"><a href="#src-64">[64]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-handoff" data-star><h4 class="t-name">エスカレーション（人への引き継ぎ）<span class="star">★ 重要</span><small>Escalation / handoff</small></h4><p class="def">エージェントで解決できないときに、会話の流れをつけたまま人の担当者に渡すことです。</p><p class="tip"><b>ツボ</b>Contact Center では用語が変わり、「ボット → Copilot エージェント」「人のエージェント → カスタマーサービス担当者（representative）」と呼びます。</p><div class="t-foot"><span class="refs"><a href="#src-64">[64]</a><a href="#src-21">[21]</a></span></div></article>
+          <article class="term" id="t-context-variables"><h4 class="t-name">コンテキスト変数<small>Context variables</small></h4><p class="def">窓口とエージェントの間で、顧客名や問い合わせの内容などの情報を受け渡す変数です。人への引き継ぎのときにも使います。</p><div class="t-foot"><span class="refs"><a href="#src-28">[28]</a><a href="#src-64">[64]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>エージェントの種類を設計する</h3>
+        <div class="terms">
+          <article class="term" id="t-task-agent" data-star><h4 class="t-name">タスクエージェント<span class="star">★ 重要</span><small>Task agent</small></h4><p class="def">人の依頼を受けて、決まった作業（申請の起票、レコードの更新、予約など）を実行するエージェントです。</p><p class="tip"><b>ツボ</b>CAF は、Copilot Studio が「検索（retrieval）型とタスク型」のエージェントに対応すると整理しています。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-autonomous-agent" data-star><h4 class="t-name">自律エージェント<span class="star">★ 重要</span><small>Autonomous agent</small></h4><p class="def">人が話しかけなくても、出来事（メールの受信、レコードの作成、決まった時刻など）をきっかけに自分で動くエージェントです。Copilot Studio ではイベントトリガーで作ります。</p><p class="tip"><b>ツボ</b>自律型は「人による監督」と「権限を最小にすること」とセットで問われます。</p><div class="t-foot"><span class="refs"><a href="#src-30">[30]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-prompt-response-agent" data-star><h4 class="t-name">プロンプト・アンド・レスポンス型エージェント<span class="star">★ 重要</span><small>Prompt and response agent</small></h4><p class="def">質問（プロンプト）に対して、ナレッジをもとに答え（レスポンス）を返す、いちばん基本的な会話型のエージェントです。CAF の分類では「検索（retrieval）エージェント」に近い位置づけです。</p><p class="tip"><b>ツボ</b>作業は実行せず、調べて答えるのが役目です。作業まで頼みたいならタスク型です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-7">[7]</a></span></div></article>
+          <article class="term" id="t-event-trigger"><h4 class="t-name">イベントトリガー<small>Event trigger</small></h4><p class="def">「何かが起きたら」エージェントを動かすきっかけです。ユーザーの入力が必要なトピックのトリガーと違い、エージェントが自律的に動けます。</p><p class="tip"><b>ツボ</b>イベントトリガーを使うと、課金の計算に影響します。</p><div class="t-foot"><span class="refs"><a href="#src-30">[30]</a></span></div></article>
+          <article class="term" id="t-agent-feed" data-star><h4 class="t-name">エージェントフィード<span class="star">★ 重要</span><small>Agent feed</small></h4><p class="def">モデル駆動型アプリの中で、自律エージェントがした仕事や、人の確認が必要なタスクを一覧で見て、確認・修正・引き継ぎができるパネルです（プレビュー）。</p><p class="tip"><b>ツボ</b>「人とエージェントの協働」「人が監督する」場面の答えです。2026-05-01 以降は、Power Apps MCP サーバーでタスクを作るエージェントだけが対象です。</p><div class="t-foot"><span class="refs"><a href="#src-47">[47]</a><a href="#src-56">[56]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-generative-pages" data-star><h4 class="t-name">生成ページ（コードファーストの生成ページ）<span class="star">★ 重要</span><small>Generative pages</small></h4><p class="def">モデル駆動型アプリで、作りたいページを自然な言葉で説明すると、AI が React のコードでページを作る機能です。Dataverse のテーブルなどを参照し、会話しながら直せます。</p><div class="t-foot"><span class="refs"><a href="#src-46">[46]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-canvas-ai"><h4 class="t-name">キャンバスアプリへの AI の組み込み<small>AI components in Power Apps canvas apps</small></h4><p class="def">Power Apps のキャンバスアプリに、AI Builder のモデルや、Power Fx の関数として呼べるプロンプトなどを組み込み、業務の流れの中に AI を入れることです。</p><div class="t-foot"><span class="refs"><a href="#src-48">[48]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-foundry-tools-pick" data-star><h4 class="t-name">要件に合う Foundry Tools を選ぶ<span class="star">★ 重要</span><small>Propose Foundry Tools for a requirement</small></h4><p class="def">「通話の文字起こし → Speech」「翻訳 → Translator」「請求書の読み取り → Document Intelligence／Content Understanding」「感情や個人情報の検出 → Language」「有害な内容の検出 → Content Safety」のように、要件から部品を選びます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-43">[43]</a></span></div></article>
+          <article class="term" id="t-data-processing"><h4 class="t-name">AI とグラウンディングのためのデータ処理<small>Data processing for AI models and grounding</small></h4><p class="def">文書を小さく区切る、不要な部分を除く、説明（メタデータ）をつける、意味の数値（埋め込み）に変えて索引を作る、などをして、AI が正しく探せる形にすることです。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-5">[5]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>Copilot Studio を設計する</h3>
+        <div class="terms">
+          <article class="term" id="t-topic" data-star><h4 class="t-name">トピック<span class="star">★ 重要</span><small>Topic</small></h4><p class="def">会話の流れ（何を聞いて、どう答えるか）を決めた部品です。トリガーと、質問・メッセージ・条件分岐などのノードで作ります。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a><a href="#src-21">[21]</a></span></div></article>
+          <article class="term" id="t-system-topic"><h4 class="t-name">システムトピック<small>System topics</small></h4><p class="def">最初から用意されているトピックです。会話の開始（Conversation Start）、人への引き継ぎ（Escalate）、意図が分からないとき（Fallback）、エラー時（On Error）、候補が複数あるとき（Multiple Topics Matched）などがあります。</p><div class="t-foot"><span class="refs"><a href="#src-21">[21]</a><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-fallback" data-star><h4 class="t-name">フォールバックトピック<span class="star">★ 重要</span><small>Fallback topic</small></h4><p class="def">ユーザーの意図が分からないときに動くシステムトピックです。既定では2回まで言い換えを頼み、それでも分からなければ Escalate（人への引き継ぎ）に回します。</p><p class="tip"><b>ツボ</b>トリガーフレーズはありません（「意図が不明」がきっかけ）。分からなかった入力は UnrecognizedTriggerPhrase という変数に入り、Power Automate などに渡せます。</p><div class="t-foot"><span class="refs"><a href="#src-21">[21]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-trigger-phrase"><h4 class="t-name">トリガーフレーズ<small>Trigger phrases</small></h4><p class="def">クラシックオーケストレーションで、トピックを呼び出すきっかけになる例文です。生成オーケストレーションでは、代わりにトピックの「説明」が使われます。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-gen-orch" data-star><h4 class="t-name">生成オーケストレーション<span class="star">★ 重要</span><small>Generative orchestration</small></h4><p class="def">AI が説明文をもとに、トピック・ツール・ナレッジ・他のエージェントを選んで組み合わせ、足りない情報を自分で質問し、答えも自動で作る方式です。新しいエージェントの既定です。</p><p class="tip"><b>ツボ</b>1つの発言に依頼が2つあっても、順番に処理できます。MCP やコンピューター使用は、これがオンのときだけ使えます。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a><a href="#src-20">[20]</a></span></div></article>
+          <article class="term" id="t-classic-orch"><h4 class="t-name">クラシックオーケストレーション<small>Classic orchestration</small></h4><p class="def">ユーザーの発言にいちばん近いトリガーフレーズのトピックを1つ選んで動かす、従来の方式です。答えは作者が書いたメッセージで返し、合うトピックがなければナレッジで補えます。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a><a href="#src-20">[20]</a></span></div></article>
+          <article class="term" id="t-nlu" data-star><h4 class="t-name">標準の NLU・NLU+・CLU<span class="star">★ 重要</span><small>Built-in NLU / NLU+ / Azure CLU</small></h4><p class="def">クラシック方式で意図を読み取る仕組みです。組み込みの NLU、大規模で高い精度が要るときの NLU+、Azure の会話言語理解（CLU）との連携があります。CLU は多言語や業界特有の言葉、複雑な情報の抜き出しに強く、CLU の意図と Copilot Studio のトピックを対応づけて管理します。</p><p class="tip"><b>ツボ</b>出題範囲「標準の自然言語処理・CLU・生成 AI オーケストレーションのどれを使うか」の判断の軸です。既定は生成オーケストレーションで、使えない場面で CLU などを選びます。</p><div class="t-foot"><span class="refs"><a href="#src-20">[20]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-entity"><h4 class="t-name">エンティティ<small>Entity</small></h4><p class="def">発言から抜き出す情報の種類（日付、数量、地名など）です。決まった一覧や正規表現で作る、カスタムエンティティもあります。</p><p class="tip"><b>ツボ</b>生成オーケストレーションでは、トピックやツールの入力にカスタムエンティティをまだ使えません。その場合は質問ノードで集めます。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a><a href="#src-20">[20]</a></span></div></article>
+          <article class="term" id="t-generative-answers"><h4 class="t-name">生成回答<small>Generative answers</small></h4><p class="def">ナレッジソースを検索し、その内容から AI が答えを作る機能です。トピックの中に「生成回答ノード」として置くこともできます。</p><div class="t-foot"><span class="refs"><a href="#src-22">[22]</a></span></div></article>
+          <article class="term" id="t-conversational-boosting"><h4 class="t-name">会話ブースティング<small>Conversational boosting</small></h4><p class="def">クラシック方式で、合うトピックがないときにナレッジを検索して答えるシステムトピックです。生成オーケストレーションでは使われません。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-agent-flow" data-star><h4 class="t-name">エージェントフロー<span class="star">★ 重要</span><small>Agent flows</small></h4><p class="def">Copilot Studio の中で作る自動化の流れです。ルールどおりに動き、同じ入力なら必ず同じ結果になる（決定的）のが特徴で、手動・イベント・スケジュールで起動できます。</p><p class="tip"><b>ツボ</b>「必ず同じ手順で処理したい」「承認を挟みたい」ならエージェントフロー。「状況に合わせて柔軟に」なら生成オーケストレーションです。</p><div class="t-foot"><span class="refs"><a href="#src-23">[23]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-prompt-action" data-star><h4 class="t-name">プロンプトアクション（プロンプトツール）<span class="star">★ 重要</span><small>Prompt actions</small></h4><p class="def">指示文と入力を決めておき、AI モデルに特定の作業（分類、要約、抜き出しなど）をさせる部品です。エージェントのツール、トピックのノード、エージェントフローのノードとして使えます。</p><div class="t-foot"><span class="refs"><a href="#src-24">[24]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-tool"><h4 class="t-name">ツール（旧アクション）<small>Tools</small></h4><p class="def">エージェントが呼び出して作業するための部品です。コネクタ、エージェントフロー、プロンプト、REST API、MCP、コンピューター使用などがあります。生成オーケストレーションでは、名前と説明で選ばれます。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a><a href="#src-27">[27]</a></span></div></article>
+          <article class="term" id="t-description" data-star><h4 class="t-name">説明文（description）の書き方<span class="star">★ 重要</span><small>Authoring descriptions</small></h4><p class="def">生成オーケストレーションでは、トピック・ツール・エージェントの「説明」が、選ばれるかどうかを決める最大の要素です。短く具体的に、できることとできないことまで書きます。</p><p class="tip"><b>ツボ</b>似た説明が複数あると選ばれ方が不安定になります。テストして説明を書き分けます。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-harness"><h4 class="t-name">ハーネス（参考：新しい考え方）<small>Harness</small></h4><p class="def">Copilot Studio で作ったものを裏で動かす実行のしくみです。ルールどおりに動く「標準」、推論が多い長い仕事向けの「GitHub Copilot」、顧客との音声・チャット向けの「Customer Conversation」の3つがあり、選ぶと機能や課金が変わります。</p><p class="tip"><b>ツボ</b>2026年10月に出てきた新しい考え方で、出題範囲にはまだ名前が出てきません。このページの Copilot Studio の説明は、主に標準ハーネスのものです。</p><div class="t-foot"><span class="refs"><a href="#src-31">[31]</a></span></div></article>
+          <article class="term" id="t-well-architected" data-star><h4 class="t-name">Power Platform Well-Architected<span class="star">★ 重要</span><small>Power Platform Well-Architected</small></h4><p class="def">Power Platform で、長く使えるアプリを設計するための指針です。信頼性・セキュリティ・オペレーショナルエクセレンス・パフォーマンス効率・エクスペリエンス最適化の5つの柱があり、エージェント（インテリジェントアプリ）向けのガイダンスもあります。</p><p class="tip"><b>ツボ</b>Azure の Well-Architected の5本目は「コスト最適化」で、柱が違います。</p><div class="t-foot"><span class="refs"><a href="#src-50">[50]</a><a href="#src-51">[51]</a><a href="#src-1">[1]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>拡張性を設計する</h3>
+        <div class="terms">
+          <article class="term" id="t-extensibility"><h4 class="t-name">拡張性（エクステンシビリティ）<small>Extensibility</small></h4><p class="def">既製の AI に、ナレッジ・ツール・他のエージェントなどを足して、できることを広げることです。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-agent-builder" data-star><h4 class="t-name">Agent Builder<span class="star">★ 重要</span><small>Agent Builder</small></h4><p class="def">Microsoft 365 Copilot の画面（Copilot Chat や Teams）から、宣言型エージェントを手軽に作る機能です。SharePoint や Copilot コネクタのナレッジ、スキルを足せます。</p><p class="tip"><b>ツボ</b>「簡単・すぐ・個人やチーム向け」なら Agent Builder、「複雑な処理・社外向けチャネル・ALM が必要」なら Copilot Studio です。</p><div class="t-foot"><span class="refs"><a href="#src-13">[13]</a></span></div></article>
+          <article class="term" id="t-plugin"><h4 class="t-name">プラグイン（MCP／API プラグイン）<small>MCP and API plugins</small></h4><p class="def">宣言型エージェントに、MCP サーバーや REST API（OpenAPI の説明つき）の操作を足す部品です。単体では使えず、宣言型エージェントの中のアクションとして動きます。</p><div class="t-foot"><span class="refs"><a href="#src-14">[14]</a></span></div></article>
+          <article class="term" id="t-child-connected" data-star><h4 class="t-name">子エージェントと接続エージェント<span class="star">★ 重要</span><small>Child agents / connected agents</small></h4><p class="def">子エージェントは、1つのエージェントの中に作る軽い部品です。接続エージェントは、別に管理・公開される他のエージェント（同じ環境の Copilot Studio エージェント、A2A のエージェント、Foundry や Fabric のエージェントなど）につなぐ方法です。</p><p class="tip"><b>ツボ</b>「小さなチームで1つの用途、別々に公開しない」なら子エージェント。「別チームが管理する」「何度も使い回す」「認証やデプロイを別にしたい」なら接続エージェントです。</p><div class="t-foot"><span class="refs"><a href="#src-25">[25]</a></span></div></article>
+          <article class="term" id="t-cs-mcp"><h4 class="t-name">Copilot Studio での MCP<small>MCP in Copilot Studio</small></h4><p class="def">MCP オンボーディングウィザードで MCP サーバーにつなぐと、サーバーのツールとリソースが自動で使えるようになり、サーバー側の変更も自動で反映されます。</p><p class="tip"><b>ツボ</b>Copilot Studio が対応するのはツールとリソースです（プロンプトは未対応）。</p><div class="t-foot"><span class="refs"><a href="#src-26">[26]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-computer-use" data-star><h4 class="t-name">コンピューター使用<span class="star">★ 重要</span><small>Computer use</small></h4><p class="def">エージェントが Windows の画面を見て、マウスとキーボードで Web サイトやデスクトップアプリを操作するツールです。API がないシステムでも自動化でき、画面が少し変わっても AI が合わせます。</p><p class="tip"><b>ツボ</b>「API がない古いシステムへのデータ入力」ならコンピューター使用。資格情報は Power Platform の内部か Azure Key Vault に保管し、操作できるサイトやアプリを許可リストで絞れます。</p><div class="t-foot"><span class="refs"><a href="#src-27">[27]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-cua"><h4 class="t-name">CUA（Computer-Using Agent）<small>Computer-Using Agent</small></h4><p class="def">画面を「見る」力と推論を組み合わせて、画面操作（GUI）をする AI モデルです。Copilot Studio のコンピューター使用で選べるモデルの1つです。</p><div class="t-foot"><span class="refs"><a href="#src-27">[27]</a></span></div></article>
+          <article class="term" id="t-human-supervision"><h4 class="t-name">人による監督<small>Human supervision</small></h4><p class="def">コンピューター使用が、危険な指示かもしれない内容を見つけたときに、指定した人にメールで確認を求める仕組みです。時間内に返事がなければ、実行は止まります。</p><div class="t-foot"><span class="refs"><a href="#src-27">[27]</a></span></div></article>
+          <article class="term" id="t-voice-agent"><h4 class="t-name">音声エージェント（ベーシック／リアルタイム）<small>Voice agents</small></h4><p class="def">電話の自動応答（IVR）を担うエージェントです。クラシック方式のベーシック音声エージェントと、音声から音声へ直接答える低遅延のリアルタイム音声エージェントがあり、プッシュ音（DTMF）や通話の転送にも対応します。</p><p class="tip"><b>ツボ</b>出題範囲「推論と音声モードを含むエージェントの動作を設計する」の音声側です。</p><div class="t-foot"><span class="refs"><a href="#src-28">[28]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-deep-reasoning"><h4 class="t-name">ディープリーズニング<small>Deep reasoning</small></h4><p class="def">生成オーケストレーションのエージェントに推論モデルを足して、複雑な判断を伴う作業の精度を上げる Copilot Studio の機能です（プレビュー）。</p><div class="t-foot"><span class="refs"><a href="#src-29">[29]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-teams-sharepoint"><h4 class="t-name">Teams と SharePoint のエージェント<small>Agents in Teams and SharePoint</small></h4><p class="def">社員がふだん使っている Teams のチャットや会議、SharePoint のサイトや文書のそばにエージェントを置く設計です。新しい画面を覚えさせずに使ってもらえます。</p><p class="tip"><b>ツボ</b>出題範囲は「Teams や SharePoint を含む Microsoft 365 のエージェントでソリューション設計を最適化する」です。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-13">[13]</a></span></div></article>
+          <article class="term" id="t-foundry-custom"><h4 class="t-name">Foundry のカスタムモデルを使う設計<small>Custom models in Microsoft Foundry</small></h4><p class="def">Foundry でファインチューニングしたモデルなどをデプロイし、Copilot Studio のプロンプトやエージェントから呼び出す構成です。</p><div class="t-foot"><span class="refs"><a href="#src-42">[42]</a><a href="#src-24">[24]</a><a href="#src-1">[1]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>既製のエージェントとアプリを構成する</h3>
+        <div class="terms">
+          <article class="term" id="t-svc-agents" data-star><h4 class="t-name">サービス系の自律エージェント<span class="star">★ 重要</span><small>Autonomous service agents</small></h4><p class="def">カスタマーサービスとコンタクトセンター向けのエージェントです。Customer Intent Agent（問い合わせの意図を見つける）、Case Management Agent（ケースの作成・更新・解決を自動化）、Customer Knowledge Management Agent（ケースからナレッジ記事を作る）などがあります。</p><div class="t-foot"><span class="refs"><a href="#src-65">[65]</a><a href="#src-56">[56]</a></span></div></article>
+          <article class="term" id="t-sales-agents"><h4 class="t-name">Dynamics 365 Sales のエージェント<small>AI agents in Dynamics 365 Sales</small></h4><p class="def">Sales Qualification Agent（リードを調べて見込みを判定し、メールで接触）、Sales Opportunity Agent（商談を調べてリスクを知らせる）、Sales Research Agent（営業データに自然な言葉で質問）などがあります。</p><p class="tip"><b>ツボ</b>Sales Close Agent（プレビュー）は 2026-10-30 に削除され、後継は Sales Development agent です。</p><div class="t-foot"><span class="refs"><a href="#src-61">[61]</a><a href="#src-62">[62]</a></span></div></article>
+          <article class="term" id="t-fo-copilot" data-star><h4 class="t-name">finance and operations アプリの Copilot<span class="star">★ 重要</span><small>Copilot in finance and operations apps</small></h4><p class="def">Dynamics 365 Finance や Supply Chain Management に共通の Copilot 機能です。権限の範囲のデータに質問できるチャット、エージェントと一緒に働く Immersive Home（プレビュー）、アプリ固有のエージェントなどがあります。</p><div class="t-foot"><span class="refs"><a href="#src-56">[56]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-fo-agents"><h4 class="t-name">財務・サプライチェーンのエージェント<small>Agents for finance and supply chain</small></h4><p class="def">Account Reconciliation Agent（勘定照合の例外を調べて、仕訳などの対応を提案）、Supplier Communications Agent（仕入先とのやり取りや発注書の更新を自動化）などです。多くは「運用可能なプレビュー」です。</p><div class="t-foot"><span class="refs"><a href="#src-67">[67]</a><a href="#src-56">[56]</a></span></div></article>
+          <article class="term" id="t-fo-knowledge" data-star><h4 class="t-name">財務・運用のエージェントチャットにナレッジを足す<span class="star">★ 重要</span><small>Additional knowledge sources for finance and operations agent chats</small></h4><p class="def">finance and operations アプリの Copilot のチャットは、Copilot Studio でナレッジを足して、社内のマニュアルや SharePoint の情報でも答えられるようにできます。</p><div class="t-foot"><span class="refs"><a href="#src-66">[66]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-in-app-help" data-star><h4 class="t-name">アプリ内ヘルプとガイダンス<span class="star">★ 重要</span><small>Generative help and guidance</small></h4><p class="def">finance and operations アプリの Copilot が、公開ドキュメントをもとに使い方を案内する機能です。管理者は Copilot Studio で PDF・Word・SharePoint などのナレッジを足せます。</p><p class="tip"><b>ツボ</b>足したナレッジが先に使われ、それで足りないときに一般的な知識や Web の情報が使われます。</p><div class="t-foot"><span class="refs"><a href="#src-66">[66]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-ai-hub" data-star><h4 class="t-name">AI ハブ<span class="star">★ 重要</span><small>AI hub</small></h4><p class="def">Power Apps や Power Automate の中で、AI のモデル（AI Builder）とプロンプトをまとめて作成・管理・共有できる場所です。</p><p class="tip"><b>ツボ</b>出題範囲は「AI ハブを含む Power Platform の AI 機能を提案する」です。</p><div class="t-foot"><span class="refs"><a href="#src-49">[49]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-ai-builder"><h4 class="t-name">AI Builder<small>AI Builder</small></h4><p class="def">Power Platform で AI モデルを使う機能です。請求書や領収書の読み取り、感情分析などの既製モデルと、自社のデータで学習させるカスタムモデルがあります。</p><div class="t-foot"><span class="refs"><a href="#src-48">[48]</a></span></div></article>
+          <article class="term" id="t-copilot-hub"><h4 class="t-name">Copilot Hub（Power Platform 管理センター）<small>Copilot Hub</small></h4><p class="def">管理者が、Copilot とエージェントの利用状況を把握し、Copilot クレジットの上限を決めるための管理画面です。Dynamics 365 の財務・サプライチェーンのエージェントの追加もここから行います。</p><div class="t-foot"><span class="refs"><a href="#src-38">[38]</a><a href="#src-67">[67]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+    <!-- ───────── 3 AI ソリューションの展開 ───────── -->
+    <section class="dom" id="d-deploy" data-dom="deploy" aria-labelledby="h-deploy">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">3</span>
+        <p class="eyebrow">Domain 3 · <b>20–25%</b></p>
+        <h2 id="h-deploy">AI ソリューションの展開</h2>
+        <p>監視・テスト・ALM・責任ある AI とセキュリティの分野です。更新前はいちばん大きな分野でしたが、2026-11-16 の更新で比重が下がりました。</p>
+      </div>
+      <div class="sub">
+        <h3>監視・分析・チューニング</h3>
+        <div class="terms">
+          <article class="term" id="t-monitor" data-star><h4 class="t-name">Copilot Studio の監視（Monitor ページ）<span class="star">★ 重要</span><small>Monitor agent performance</small></h4><p class="def">エージェントの主な指標と、部品ごとの使われ方をまとめたページです。会話型と自律型それぞれに合わせた表示があります。データは最大360日分、セッションの詳細と会話の記録は直近28日分です。</p><p class="tip"><b>ツボ</b>テストパネルで試した会話は、分析の数字に入りません。</p><div class="t-foot"><span class="refs"><a href="#src-32">[32]</a></span></div></article>
+          <article class="term" id="t-session-outcome" data-star><h4 class="t-name">解決・エスカレーション・放棄<span class="star">★ 重要</span><small>Resolved / Escalated / Abandoned</small></h4><p class="def">会話がどう終わったかの分類です。人への引き継ぎ（エスカレーション）や途中での離脱（放棄）が多いトピックは、直す必要があります。</p><div class="t-foot"><span class="refs"><a href="#src-32">[32]</a></span></div></article>
+          <article class="term" id="t-csat"><h4 class="t-name">満足度（CSAT）<small>Customer satisfaction score</small></h4><p class="def">会話のあとのアンケートで集める満足度の点数です。トピックごとの傾向も見られます。</p><div class="t-foot"><span class="refs"><a href="#src-32">[32]</a></span></div></article>
+          <article class="term" id="t-telemetry" data-star><h4 class="t-name">テレメトリー<span class="star">★ 重要</span><small>Telemetry</small></h4><p class="def">システムが自動で記録する、利用・性能・エラーのデータです。応答時間、ツール呼び出しの成否、会話の結果などを読み取り、改善（チューニング）につなげます。</p><p class="tip"><b>ツボ</b>出題範囲は「性能とモデルのチューニングのためにテレメトリーを解釈する」です。</p><div class="t-foot"><span class="refs"><a href="#src-35">[35]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-app-insights" data-star><h4 class="t-name">Application Insights<span class="star">★ 重要</span><small>Azure Application Insights</small></h4><p class="def">Azure Monitor の機能です。Copilot Studio のエージェントをつなぐと、メッセージやイベントの詳しい記録を、自分で分析できます。</p><p class="tip"><b>ツボ</b>標準の分析画面より細かく見たい、ほかのシステムの記録とまとめて見たいとき。会話の中身や機微な情報を記録するかどうかは、個別に設定します。</p><div class="t-foot"><span class="refs"><a href="#src-35">[35]</a></span></div></article>
+          <article class="term" id="t-opentelemetry"><h4 class="t-name">OpenTelemetry とトレース<small>OpenTelemetry / tracing</small></h4><p class="def">処理の流れを1つずつ記録する共通の仕組みです。どのツールがどんな入力で呼ばれ、どれくらい時間がかかったかを追えます。Foundry の監視でも使われます。</p><div class="t-foot"><span class="refs"><a href="#src-35">[35]</a><a href="#src-45">[45]</a></span></div></article>
+          <article class="term" id="t-feedback"><h4 class="t-name">利用者のフィードバックとバックログ<small>User feedback and backlog</small></h4><p class="def">高評価・低評価の反応、コメント、満足度、答えられなかった質問をためて、直す順番（バックログ）を決めることです。Copilot Studio は利用者のコメントの要約も出せます（プレビュー）。</p><div class="t-foot"><span class="refs"><a href="#src-32">[32]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-ai-analysis"><h4 class="t-name">AI を使った問題の分析<small>AI-based tools for analysis and tuning</small></h4><p class="def">分析画面の要約（よくあるテーマや前の期間からの変化）や評価機能を使い、AI に問題点を見つけさせて改善に生かすことです。</p><div class="t-foot"><span class="refs"><a href="#src-32">[32]</a><a href="#src-33">[33]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-foundry-obs"><h4 class="t-name">Foundry の可観測性<small>Observability in Microsoft Foundry</small></h4><p class="def">評価・監視・トレースを組み合わせて、AI の品質と安全性を開発から本番まで見続ける考え方です。CI/CD の品質ゲートに評価を組み込むこともできます。</p><div class="t-foot"><span class="refs"><a href="#src-45">[45]</a></span></div></article>
+          <article class="term" id="t-agent365" data-star><h4 class="t-name">Microsoft Agent 365<span class="star">★ 重要</span><small>Microsoft Agent 365</small></h4><p class="def">組織の中のエージェントを、1か所で「観察する・統制する・守る」ための管理基盤です。すべてのエージェントの一覧（レジストリ）、使われ方や健全性、リスクの兆しを確認できます。</p><p class="tip"><b>ツボ</b>Agent 365 を使うと、Copilot Studio のエージェントを Microsoft Entra の ID として管理できます。</p><div class="t-foot"><span class="refs"><a href="#src-71">[71]</a><a href="#src-38">[38]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>テストを管理する</h3>
+        <div class="terms">
+          <article class="term" id="t-agent-eval" data-star><h4 class="t-name">エージェント評価<span class="star">★ 重要</span><small>Agent evaluation</small></h4><p class="def">テストケースの集まり（テストセット）を作り、エージェントの答えの正確さ・関連性・品質を自動で測る Copilot Studio の機能です。テストセットは自動生成・取り込み・手入力で作れます。</p><p class="tip"><b>ツボ</b>変更の前後で同じテストセットを使えば、良くなったか悪くなったかを客観的に比べられます。</p><div class="t-foot"><span class="refs"><a href="#src-33">[33]</a></span></div></article>
+          <article class="term" id="t-test-set"><h4 class="t-name">テストセットとテストケース<small>Test set / test case</small></h4><p class="def">テストケースは、ユーザーとの1回分のやり取り（1つの質問、または会話全体）です。テストセットは、その集まりです。</p><div class="t-foot"><span class="refs"><a href="#src-33">[33]</a></span></div></article>
+          <article class="term" id="t-test-methods" data-star><h4 class="t-name">評価の方法（7種類）<span class="star">★ 重要</span><small>Test methods</small></h4><p class="def">一般的な品質、意味の比較、ツールの使用、キーワード一致、テキストの類似度、完全一致、カスタムの7つです。一般的な品質以外は、期待する答えやキーワードを用意します。</p><p class="tip"><b>ツボ</b>「言い回しは違ってよいが内容は合っているか」なら意味の比較、「必ず特定の言葉を含むか」ならキーワード一致です。</p><div class="t-foot"><span class="refs"><a href="#src-34">[34]</a></span></div></article>
+          <article class="term" id="t-test-pane"><h4 class="t-name">テストパネルとアクティビティマップ<small>Test panel / activity map</small></h4><p class="def">作りながら会話を試す画面です。生成オーケストレーションでは、どのトピックやツールが選ばれたかを、アクティビティマップでたどれます。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-agent-kit"><h4 class="t-name">Copilot Agent Kit<small>Copilot Agent Kit</small></h4><p class="def">Power CAT（Microsoft の顧客支援チーム）が作ったツールキットです。テストセットでまとめてテストし、応答時間や合否を記録できるほか、ガバナンスや最適化の機能もあります。</p><div class="t-foot"><span class="refs"><a href="#src-36">[36]</a></span></div></article>
+          <article class="term" id="t-validation-criteria" data-star><h4 class="t-name">カスタム AI モデルの検証基準<span class="star">★ 重要</span><small>Validation criteria for custom AI models</small></h4><p class="def">カスタムモデルを本番に出す前の合格ラインです。正確さ、根拠があるか、安全性、応答時間、費用などを、もとのモデルや前の版と比べて決めます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-45">[45]</a></span></div></article>
+          <article class="term" id="t-prompt-validation"><h4 class="t-name">Copilot のプロンプトのベストプラクティスを検証する<small>Validate Copilot prompt best practices</small></h4><p class="def">社内に配るプロンプトが、4要素（目的・背景・情報源・期待）を満たし、狙いどおりの答えを安定して返すかを確かめることです。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-18">[18]</a></span></div></article>
+          <article class="term" id="t-e2e-test"><h4 class="t-name">複数アプリにまたがるエンドツーエンドテスト<small>End-to-end test scenarios</small></h4><p class="def">例えば「問い合わせ → ケースの作成 → 返品 → 返金の仕訳」のように、複数の Dynamics 365 アプリとエージェントを通した業務の流れ全体で確かめるテストです。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-copilot-tests"><h4 class="t-name">Copilot でテストケースを作る<small>Create test cases by using Copilot</small></h4><p class="def">要件や業務の手順から、AI にテストケースや想定される質問を作らせる進め方です。エージェント評価にも、テストセットを自動で作る機能があります。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-33">[33]</a></span></div></article>
+          <article class="term" id="t-rsat"><h4 class="t-name">RSAT（回帰テスト自動化ツール）<small>Regression suite automation tool</small></h4><p class="def">finance and operations アプリの受け入れテスト（UAT）を、タスクの記録から自動化するツールです。2027-05-15 でサポートが終わる予定です。</p><div class="t-foot"><span class="refs"><a href="#src-68">[68]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>ALM を設計する</h3>
+        <div class="terms">
+          <article class="term" id="t-alm" data-star><h4 class="t-name">ALM（アプリケーションライフサイクル管理）<span class="star">★ 重要</span><small>Application lifecycle management</small></h4><p class="def">作る・試す・本番に出す・直す・やめる、までの流れ全体を管理することです。Power Platform ではソリューションと環境を使い、ソース管理と CI/CD で自動化します。</p><div class="t-foot"><span class="refs"><a href="#src-52">[52]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-solution" data-star><h4 class="t-name">ソリューション<span class="star">★ 重要</span><small>Solution</small></h4><p class="def">アプリ・フロー・エージェント・テーブルなどの部品をまとめて、環境から環境へ運ぶための箱です。Copilot Studio のエージェントも、ソリューションの中に作られます。</p><div class="t-foot"><span class="refs"><a href="#src-52">[52]</a><a href="#src-37">[37]</a></span></div></article>
+          <article class="term" id="t-managed-unmanaged" data-star><h4 class="t-name">マネージドとアンマネージド<span class="star">★ 重要</span><small>Managed / unmanaged solutions</small></h4><p class="def">アンマネージドは開発環境で編集する「作業中」の形、マネージドはテストや本番に配る「完成品」の形です。</p><p class="tip"><b>ツボ</b>本番にはマネージドで入れ、アンマネージドの書き出しをソース管理に入れます。</p><div class="t-foot"><span class="refs"><a href="#src-53">[53]</a></span></div></article>
+          <article class="term" id="t-environment" data-star><h4 class="t-name">環境と環境戦略<span class="star">★ 重要</span><small>Environments / environment strategy</small></h4><p class="def">環境は、データとアプリを分けて置く入れ物です。開発・テスト・本番を分けるのが基本で、他社の AI ソリューションも含めて、どこに何を置くかを決めるのが環境戦略です。</p><p class="tip"><b>ツボ</b>受験者像に「サードパーティの AI も考慮した、まとまりのある環境戦略を作る」とあります。</p><div class="t-foot"><span class="refs"><a href="#src-37">[37]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-pipelines" data-star><h4 class="t-name">Power Platform のパイプライン<span class="star">★ 重要</span><small>Pipelines in Power Platform</small></h4><p class="def">管理者が用意した経路で、作成者がソリューションを開発 → テスト → 本番へ手軽にデプロイできる仕組み（CI/CD）です。管理者が中央で統制できます。</p><div class="t-foot"><span class="refs"><a href="#src-54">[54]</a></span></div></article>
+          <article class="term" id="t-git"><h4 class="t-name">Git 連携とソース管理<small>Source control / Git integration</small></h4><p class="def">ソリューションを GitHub などのソース管理につなぎ、変更の履歴を残して、Git からデプロイすることです。誰がいつ展開したかを監査できます。</p><div class="t-foot"><span class="refs"><a href="#src-38">[38]</a><a href="#src-52">[52]</a></span></div></article>
+          <article class="term" id="t-foundry-alm"><h4 class="t-name">Foundry Agent Service の ALM<small>ALM for Microsoft Foundry Agent Service</small></h4><p class="def">Foundry のエージェントは、コードと設定を版で管理し、評価を CI/CD の品質ゲートに入れて、開発 → テスト → 本番と進めます。</p><div class="t-foot"><span class="refs"><a href="#src-44">[44]</a><a href="#src-45">[45]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-model-alm"><h4 class="t-name">カスタムモデルの ALM<small>ALM for custom AI models</small></h4><p class="def">学習データとモデルの版を管理し、評価に合格した版だけを本番に出し、性能の低下（ドリフト）を見張って作り直す流れです。</p><div class="t-foot"><span class="refs"><a href="#src-45">[45]</a><a href="#src-42">[42]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-data-alm"><h4 class="t-name">AI が使うデータの ALM<small>ALM for data used in AI models and agents</small></h4><p class="def">AI が参照するデータやナレッジにも、版と承認の流れを持たせることです。どの版のデータで答えたかを、あとから追えるようにします。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-d365-alm"><h4 class="t-name">Dynamics 365 の AI の ALM<small>ALM for AI in Dynamics 365 apps</small></h4><p class="def">CRM 系（Sales・Customer Service）は Dataverse の上で動くので、Copilot の設定・トピック・エージェントをソリューションに入れて運べます。ERP 系（Finance・SCM）は、アプリ側の配布の流れと、Copilot Studio 側のエージェントの流れの両方をそろえます。</p><p class="tip"><b>ツボ</b>出題範囲は CRM 系と ERP 系で ALM の項目を分けています。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-52">[52]</a><a href="#src-56">[56]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>責任ある AI・セキュリティ・ガバナンス</h3>
+        <div class="terms">
+          <article class="term" id="t-rai" data-star><h4 class="t-name">責任ある AI の6原則<span class="star">★ 重要</span><small>Microsoft Responsible AI Standard</small></h4><p class="def">公平性、信頼性と安全性、プライバシーとセキュリティ、包括性、透明性、説明責任の6つです。Microsoft の Responsible AI Standard の土台です。</p><div class="t-foot"><span class="refs"><a href="#src-74">[74]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-prompt-injection" data-star><h4 class="t-name">プロンプトインジェクション（プロンプト操作）<span class="star">★ 重要</span><small>Prompt injection / prompt manipulation</small></h4><p class="def">悪い指示を紛れ込ませて、AI に本来の指示を破らせる攻撃です。ユーザーが直接仕込む UPIA と、文書・メール・Web など外から読み込む内容に仕込まれる XPIA（クロスドメイン）があります。</p><p class="tip"><b>ツボ</b>Copilot Studio のエージェントは、両方を実行時にブロックする保護を標準で持っています。さらに外部の脅威検出サービスとつなぐこともできます（プレビュー）。</p><div class="t-foot"><span class="refs"><a href="#src-40">[40]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-agent-security" data-star><h4 class="t-name">エージェントのセキュリティ設計<span class="star">★ 重要</span><small>Design security for agents</small></h4><p class="def">認証（Microsoft Entra ID）、誰の権限で動かすか、最小権限、データポリシー、秘密度ラベル、ネットワークの制御、監査ログ、実行時の保護を組み合わせて設計します。</p><div class="t-foot"><span class="refs"><a href="#src-38">[38]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-credentials" data-star><h4 class="t-name">作成者の資格情報とユーザーの資格情報<span class="star">★ 重要</span><small>Maker-provided vs end-user credentials</small></h4><p class="def">作成者の資格情報は自律エージェントに向きますが、共有すると使う人みんなが作成者の権限で動いてしまいます。ユーザーの資格情報なら、使う人の権限の範囲で動きます。</p><div class="t-foot"><span class="refs"><a href="#src-27">[27]</a><a href="#src-38">[38]</a></span></div></article>
+          <article class="term" id="t-entra-agent-id" data-star><h4 class="t-name">Microsoft Entra Agent ID（エージェント ID）<span class="star">★ 重要</span><small>Microsoft Entra Agent ID</small></h4><p class="def">AI エージェント専用の ID です。人やアプリ向けの ID では足りない部分を補い、エージェントを見分け、認証し、アクセスを管理できます。</p><div class="t-foot"><span class="refs"><a href="#src-70">[70]</a><a href="#src-38">[38]</a></span></div></article>
+          <article class="term" id="t-data-policy" data-star><h4 class="t-name">データポリシー（旧 DLP ポリシー）<span class="star">★ 重要</span><small>Data policies</small></h4><p class="def">Power Platform 管理センターで、どのコネクタや機能を使ってよいかを決めるルールです。Copilot Studio の認証方式、ナレッジ、ツール、自律エージェントのトリガーなども制御できます。</p><div class="t-foot"><span class="refs"><a href="#src-38">[38]</a><a href="#src-55">[55]</a></span></div></article>
+          <article class="term" id="t-managed-env"><h4 class="t-name">マネージド環境<small>Managed Environments</small></h4><p class="def">Power Platform を大規模に統制するための機能のまとまりです。環境グループ、共有の制限、週ごとの利用状況、データポリシー、パイプライン、作成者向けの案内、ソリューションチェッカー、IP ファイアウォールなどがあります。</p><div class="t-foot"><span class="refs"><a href="#src-55">[55]</a></span></div></article>
+          <article class="term" id="t-env-routing"><h4 class="t-name">環境ルーティング<small>Environment routing</small></h4><p class="def">作成者を、自分専用の開発環境など安全な場所へ自動で振り分ける設定です。既定の環境に何でも作られてしまうのを防ぎます。</p><div class="t-foot"><span class="refs"><a href="#src-38">[38]</a></span></div></article>
+          <article class="term" id="t-purview" data-star><h4 class="t-name">Microsoft Purview（AI 向けのデータ保護）<span class="star">★ 重要</span><small>Microsoft Purview</small></h4><p class="def">秘密度ラベル、データ損失防止、監査、AI 向けのデータセキュリティ態勢管理（DSPM for AI）などで、Copilot やエージェントが扱うデータを守る製品群です。</p><div class="t-foot"><span class="refs"><a href="#src-72">[72]</a><a href="#src-38">[38]</a></span></div></article>
+          <article class="term" id="t-sensitivity-label"><h4 class="t-name">秘密度ラベル<small>Sensitivity labels</small></h4><p class="def">文書の機密の度合いを示すラベルです。Copilot Studio は、SharePoint をナレッジにした回答で、使った情報のいちばん高いラベルを表示できます。</p><div class="t-foot"><span class="refs"><a href="#src-38">[38]</a></span></div></article>
+          <article class="term" id="t-audit-trail" data-star><h4 class="t-name">監査証跡<span class="star">★ 重要</span><small>Audit trails</small></h4><p class="def">誰が・いつ・何を変えたかの記録です。作成者の操作は Microsoft Purview の監査ログ、エージェントの動きは Microsoft Sentinel でも見張れます。モデルとデータの変更履歴も残します。</p><div class="t-foot"><span class="refs"><a href="#src-38">[38]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-data-residency" data-star><h4 class="t-name">データの所在地とデータ移動<span class="star">★ 重要</span><small>Data residency and movement</small></h4><p class="def">データをどの地域に保存・処理するかの決まりです。米国以外の環境で Copilot Studio の生成 AI 機能を使うと、地域をまたいでデータが移動することがあり、管理者が許可・停止を決めます。</p><p class="tip"><b>ツボ</b>許可していた間に移動したデータは、あとで同意を取り消しても元に戻りません。「データを国外に出せない」要件では、地域とデータ移動の設定を確認します。</p><div class="t-foot"><span class="refs"><a href="#src-39">[39]</a><a href="#src-38">[38]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-grounding-access" data-star><h4 class="t-name">グラウンディングデータのアクセス制御<span class="star">★ 重要</span><small>Access controls on grounding data</small></h4><p class="def">使う人が見てはいけない情報で、エージェントが答えないようにすることです。SharePoint などの権限の整理、ユーザーの資格情報での検索、秘密度ラベルを組み合わせます。</p><p class="tip"><b>ツボ</b>Copilot は「その人が見られるデータ」で答えます。元の権限が甘いと、そのまま答えに出てしまいます。</p><div class="t-foot"><span class="refs"><a href="#src-73">[73]</a><a href="#src-38">[38]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-oversharing"><h4 class="t-name">過剰共有（オーバーシェアリング）<small>Oversharing</small></h4><p class="def">本来見せるべきでない人まで、文書にアクセスできてしまっている状態です。Copilot を広げる前に解消しておくのが定石です。</p><div class="t-foot"><span class="refs"><a href="#src-73">[73]</a></span></div></article>
+          <article class="term" id="t-model-security"><h4 class="t-name">モデルのセキュリティ<small>Model security</small></h4><p class="def">モデルとその調整（ファインチューニング）を守ることです。学習データへのアクセスを絞る、調整できる人を限る、版を管理する、出力の安全性を確かめる、などを行います。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-42">[42]</a></span></div></article>
+          <article class="term" id="t-cmk"><h4 class="t-name">カスタマーマネージドキー（CMK）<small>Customer-managed keys</small></h4><p class="def">データを暗号化する鍵を、自社で管理する仕組みです。Copilot Studio の環境でも使えます。</p><div class="t-foot"><span class="refs"><a href="#src-38">[38]</a></span></div></article>
+          <article class="term" id="t-agent-governance" data-star><h4 class="t-name">エージェントのガバナンス<span class="star">★ 重要</span><small>Design governance for agents</small></h4><p class="def">誰が作れるか、どこに公開できるか、どのデータとツールを使えるか、費用の上限、エージェントの棚卸し（一覧と持ち主）、やめるときの手順まで決めて運用することです。</p><div class="t-foot"><span class="refs"><a href="#src-38">[38]</a><a href="#src-71">[71]</a><a href="#src-55">[55]</a><a href="#src-1">[1]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+
+    </div>
+  </section>
+
+  <!-- まぎらわしいペア -->
+  <section class="sec" aria-labelledby="h-pairs">
+    <div class="sec-head">
+      <p class="eyebrow">Look-alikes</p>
+      <h2 id="h-pairs">試験で迷いやすい、まぎらわしい組み合わせ</h2>
+      <p>選択肢に並んで出てきやすい組み合わせです。「見分け方」の1行を覚えておくと、消去法が速くなります。</p>
+    </div>
+    <div class="pairs">
+      <article class="pair">
+        <h3>宣言型エージェント<i>vs</i>カスタムエンジンエージェント</h3>
+        <dl><div><dt>宣言型</dt><dd>Copilot のオーケストレーターとモデルを使う。指示・ナレッジ・アクションを決めるだけ。</dd></div><div><dt>カスタムエンジン</dt><dd>処理の流れとモデルを自分で用意。複雑な連携や先回りの自動化に。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>「Microsoft 365 の中で手早く」→ 宣言型。「独自モデル・独自の処理の流れ」→ カスタムエンジン。</p>
+        <p class="refs"><a href="#src-10">[10]</a><a href="#src-12">[12]</a></p>
+      </article>
+      <article class="pair">
+        <h3>Agent Builder<i>vs</i>Copilot Studio<i>vs</i>Microsoft Foundry</h3>
+        <dl><div><dt>Agent Builder</dt><dd>Copilot の画面から手軽に宣言型エージェント。個人やチーム向け。</dd></div><div><dt>Copilot Studio</dt><dd>ローコードで本格的に。トピック・フロー・社外チャネル・ALM。</dd></div><div><dt>Foundry</dt><dd>プロコードで細かく制御。カスタムモデル、評価、ホステッドエージェント。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>必要な自由度と、運用できる体制で選ぶ。CAF の原則は「足りる中で運用がいちばん軽いもの」。</p>
+        <p class="refs"><a href="#src-13">[13]</a><a href="#src-6">[6]</a><a href="#src-43">[43]</a></p>
+      </article>
+      <article class="pair">
+        <h3>生成オーケストレーション<i>vs</i>クラシック（NLU・NLU+・CLU）</h3>
+        <dl><div><dt>生成</dt><dd>説明文で部品を選び、複数の依頼も順に処理。答えも自動で作る。既定。</dd></div><div><dt>クラシック</dt><dd>トリガーフレーズで1つのトピックを選ぶ。答えは作者が書く。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>既定は生成。カスタムエンティティが必須、業界特有の言葉や多言語で高い精度が要る、などのときに NLU+ や CLU。</p>
+        <p class="refs"><a href="#src-19">[19]</a><a href="#src-20">[20]</a></p>
+      </article>
+      <article class="pair">
+        <h3>コネクタ<i>vs</i>エージェントフロー<i>vs</i>コンピューター使用</h3>
+        <dl><div><dt>コネクタ</dt><dd>API があるシステムを直接呼ぶ。速く安定。</dd></div><div><dt>エージェントフロー</dt><dd>決まった手順を必ず同じように実行。承認を挟める。</dd></div><div><dt>コンピューター使用</dt><dd>API がない画面を、人のように操作する。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>まず API（コネクタ）。手順を固定したいならフロー。API がないときの最後の手段がコンピューター使用。</p>
+        <p class="refs"><a href="#src-23">[23]</a><a href="#src-27">[27]</a></p>
+      </article>
+      <article class="pair">
+        <h3>MCP<i>vs</i>A2A</h3>
+        <dl><div><dt>MCP</dt><dd>エージェントとツール・データをつなぐ共通ルール。</dd></div><div><dt>A2A</dt><dd>エージェント同士が仕事を頼み合う共通ルール。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>相手が「道具やデータ」なら MCP、相手が「別のエージェント」なら A2A。</p>
+        <p class="refs"><a href="#src-26">[26]</a><a href="#src-25">[25]</a></p>
+      </article>
+      <article class="pair">
+        <h3>子エージェント<i>vs</i>接続エージェント</h3>
+        <dl><div><dt>子エージェント</dt><dd>1つのエージェントの中の軽い部品。同じチームで管理。</dd></div><div><dt>接続エージェント</dt><dd>別に管理・公開されるエージェントにつなぐ。再利用できる。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>別チームが持つ、使い回す、認証やデプロイを分けたい → 接続エージェント。</p>
+        <p class="refs"><a href="#src-25">[25]</a></p>
+      </article>
+      <article class="pair">
+        <h3>タスク型<i>vs</i>自律型<i>vs</i>プロンプト・アンド・レスポンス型</h3>
+        <dl><div><dt>タスク型</dt><dd>人の依頼で、決まった作業を実行する。</dd></div><div><dt>自律型</dt><dd>出来事をきっかけに、人が話しかけなくても動く。</dd></div><div><dt>プロンプト・アンド・レスポンス型</dt><dd>質問にナレッジで答える。作業はしない。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>「誰が動かし始めるか」と「作業までするか」で見分ける。</p>
+        <p class="refs"><a href="#src-7">[7]</a><a href="#src-30">[30]</a><a href="#src-1">[1]</a></p>
+      </article>
+      <article class="pair">
+        <h3>RAG<i>vs</i>ファインチューニング</h3>
+        <dl><div><dt>RAG</dt><dd>答える前に検索して、最新の情報を渡す。</dd></div><div><dt>ファインチューニング</dt><dd>追加で学習させて、振る舞いや書式を覚えさせる。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>「最新の社内情報」→ RAG。「決まった書式・専門的な言い回し・小さいモデルで高品質」→ ファインチューニング。</p>
+        <p class="refs"><a href="#src-42">[42]</a><a href="#src-22">[22]</a></p>
+      </article>
+      <article class="pair">
+        <h3>同期型 Copilot コネクタ<i>vs</i>フェデレーション型</h3>
+        <dl><div><dt>同期型</dt><dd>データを Microsoft Graph に取り込んで（インデックスして）使う。</dd></div><div><dt>フェデレーション型</dt><dd>MCP でその都度取りに行く。取り込まない。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>データを複製したくない、常に最新が必要 → フェデレーション型。</p>
+        <p class="refs"><a href="#src-15">[15]</a></p>
+      </article>
+      <article class="pair">
+        <h3>作成者の資格情報<i>vs</i>ユーザーの資格情報</h3>
+        <dl><div><dt>作成者</dt><dd>作った人の権限で動く。自律エージェント向き。共有に注意。</dd></div><div><dt>ユーザー</dt><dd>使う人の権限で動く。見せてよい範囲が人ごとに守られる。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>「人によって見えるデータが違うべき」→ ユーザーの資格情報。</p>
+        <p class="refs"><a href="#src-27">[27]</a><a href="#src-38">[38]</a></p>
+      </article>
+      <article class="pair">
+        <h3>ROI<i>vs</i>TCO</h3>
+        <dl><div><dt>ROI</dt><dd>かけた費用に対する効果の割合。</dd></div><div><dt>TCO</dt><dd>ライセンス・使用量・開発・運用・教育まで含めた全体の費用。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>ROI の「費用」側を正しく出すのが TCO。ライセンス代だけの比較は不十分。</p>
+        <p class="refs"><a href="#src-8">[8]</a><a href="#src-1">[1]</a></p>
+      </article>
+      <article class="pair">
+        <h3>Sales agent<i>vs</i>Copilot in Dynamics 365 Sales</h3>
+        <dl><div><dt>Sales agent</dt><dd>Outlook や Teams など Microsoft 365 の中で CRM データを使う。Salesforce にも対応。</dd></div><div><dt>Copilot in D365 Sales</dt><dd>Dynamics 365 Sales のアプリの中のチャット。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>「Outlook・Teams で営業を支援」→ Sales agent（旧 Copilot for Sales）。今後は Sales agent が推奨の入口。</p>
+        <p class="refs"><a href="#src-59">[59]</a><a href="#src-57">[57]</a></p>
+      </article>
+      <article class="pair">
+        <h3>マネージド<i>vs</i>アンマネージド</h3>
+        <dl><div><dt>マネージド</dt><dd>テスト・本番に配る完成品。</dd></div><div><dt>アンマネージド</dt><dd>開発環境で編集する作業中の形。ソース管理に入れる。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>本番環境に入れるのはマネージド。</p>
+        <p class="refs"><a href="#src-53">[53]</a></p>
+      </article>
+      <article class="pair">
+        <h3>Power Platform Well-Architected<i>vs</i>Azure Well-Architected</h3>
+        <dl><div><dt>Power Platform</dt><dd>信頼性・セキュリティ・運用・性能・エクスペリエンス最適化。</dd></div><div><dt>Azure</dt><dd>信頼性・セキュリティ・運用・性能・コスト最適化。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>AB-100 の出題範囲が名指しするのは Power Platform 版（インテリジェントアプリ向け）。</p>
+        <p class="refs"><a href="#src-50">[50]</a><a href="#src-1">[1]</a></p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 名前が変わった用語 -->
+  <section class="sec" aria-labelledby="h-renames">
+    <div class="sec-head">
+      <p class="eyebrow">Renamed</p>
+      <h2 id="h-renames">名前が変わった用語・終わる機能</h2>
+      <p>この分野は名前の変更がとても多く、出題範囲の言葉と今の画面の言葉がずれていることがあります。同じものだと分かれば迷いません。</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">以前の名前・機能</th><th scope="col">いまの名前・移行先</th><th scope="col">メモ</th><th scope="col">出典</th></tr></thead>
+        <tbody>
+          <tr><td class="old">Microsoft 365 Copilot／Microsoft 365 Copilot Chat</td><td class="new">Microsoft Copilot／Microsoft Copilot Chat</td><td class="note">2026年10月のドキュメントから。出題範囲は旧名のまま。</td><td class="r"><a href="#src-17">[17]</a></td></tr>
+          <tr><td class="old">Microsoft 365 Copilot for Sales（Copilot for Sales）</td><td class="new">Sales agent</td><td class="note">出題範囲には旧名で出ます。</td><td class="r"><a href="#src-59">[59]</a></td></tr>
+          <tr><td class="old">Microsoft 365 Copilot for Service</td><td class="new">Service Agent</td><td class="note">出題範囲には旧名で出ます。</td><td class="r"><a href="#src-63">[63]</a></td></tr>
+          <tr><td class="old">Azure AI Studio／Azure AI Foundry</td><td class="new">Microsoft Foundry</td><td class="note"></td><td class="r"><a href="#src-43">[43]</a></td></tr>
+          <tr><td class="old">Azure AI Services（Cognitive Services）</td><td class="new">Foundry Tools</td><td class="note">Speech、Language などの部品群の呼び名。</td><td class="r"><a href="#src-43">[43]</a></td></tr>
+          <tr><td class="old">Copilot Studio のボット／人のエージェント（Contact Center）</td><td class="new">Copilot エージェント／カスタマーサービス担当者（representative）</td><td class="note">画面や資料で新旧の呼び方が混ざっています。</td><td class="r"><a href="#src-64">[64]</a></td></tr>
+          <tr><td class="old">アクション（actions）</td><td class="new">ツール（tools）</td><td class="note">Copilot Studio の画面の呼び方。出題範囲には「アクション」の表現が残っています。</td><td class="r"><a href="#src-19">[19]</a><a href="#src-24">[24]</a></td></tr>
+          <tr><td class="old">DLP ポリシー</td><td class="new">データポリシー（data policies）</td><td class="note">Power Platform 管理センターでの呼び方。</td><td class="r"><a href="#src-38">[38]</a></td></tr>
+          <tr><td class="old">Microsoft Graph コネクタ</td><td class="new">Copilot コネクタ</td><td class="note">同期型とフェデレーション型の2種類に。</td><td class="r"><a href="#src-15">[15]</a></td></tr>
+          <tr><td class="old">Copilot Studio Kit</td><td class="new">Copilot Agent Kit</td><td class="note">Power CAT のツールキット。</td><td class="r"><a href="#src-36">[36]</a></td></tr>
+          <tr><td class="old">Sales Close Agent（プレビュー）</td><td class="new">Sales Development agent</td><td class="note">2026-09-30 で新規作成停止、2026-10-30 で削除。</td><td class="r"><a href="#src-62">[62]</a></td></tr>
+          <tr><td class="old">Copilot Studio の活動ベースのエージェントフィード</td><td class="new">Power Apps MCP サーバーを使うエージェントフィード</td><td class="note">2026-05-01 以降は MCP サーバー経由のエージェントだけが表示されます。</td><td class="r"><a href="#src-47">[47]</a></td></tr>
+          <tr><td class="old">Power Apps Test Engine</td><td class="new">（非推奨）Playwright を直接使う</td><td class="note">2026年4月に非推奨。</td><td class="r"><a href="#src-69">[69]</a></td></tr>
+          <tr><td class="old">RSAT（回帰テスト自動化ツール）</td><td class="new">（サポート終了予定）</td><td class="note">2027-05-15 以降はサポートされません。</td><td class="r"><a href="#src-68">[68]</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 注意点 -->
+  <section class="sec narrow" aria-labelledby="h-notes">
+    <div class="sec-head">
+      <p class="eyebrow">Caveats</p>
+      <h2 id="h-notes">使うときの注意点</h2>
+    </div>
+    <ul class="notes">
+      <li><span class="x">範囲</span><div><b>出題範囲は 2026年11月16日版（英語）です</b><p>日本語などの翻訳版は、英語版の約8週間後に更新されます。日本語で受ける場合は、しばらく更新前の範囲のことがあります。受験前に study guide の日付を確認してください。<a href="#src-1">[1]</a><a href="#src-3">[3]</a></p></div></li>
+      <li><span class="x">前提</span><div><b>前提資格の一覧は、ページによって違います</b><p>資格ページは13個ですが、試験ページは MB-280 と PL-200 を含む15個を載せています（2026-11-02 時点）。このページは資格ページの一覧に合わせました。予約の前に確認してください。<a href="#src-2">[2]</a><a href="#src-3">[3]</a></p></div></li>
+      <li><span class="x">料金</span><div><b>受験料は 2026-11-02 時点・税別です</b><p>公式ページで国を「日本」にしたときの表示です。為替や改定で変わることがあり、キャンペーンや割引は含みません。正確な金額は予約画面で確認してください。<a href="#src-3">[3]</a></p></div></li>
+      <li><span class="x">名前</span><div><b>製品名と機能名は変わり続けています</b><p>2026年10月には Microsoft 365 Copilot が Microsoft Copilot に名前を変えました。問題文や教材が旧名で書かれていても、上の表で読み替えてください。<a href="#src-17">[17]</a></p></div></li>
+      <li><span class="x">GA</span><div><b>試験は主に GA の機能から出ます</b><p>よく使われているプレビュー機能が出ることもあります。このページでは、プレビューの機能にそう書いています。<a href="#src-1">[1]</a></p></div></li>
+      <li><span class="x">要約</span><div><b>説明は試験対策のためにかみ砕いた要約です</b><p>LLM や ROI のような一般的な用語は、一般的な意味を説明しています。この場合の出典 [1] は「出題範囲に出てくる言葉である」ことの根拠です。正確な仕様や上限値は、各出典のページで確認してください。</p></div></li>
+    </ul>
+  </section>
+
+  <!-- 出典 -->
+  <section class="sec" aria-labelledby="h-src">
+    <div class="sec-head">
+      <p class="eyebrow">Sources</p>
+      <h2 id="h-src">根拠にした情報</h2>
+      <p>Microsoft の公式ドキュメントです。日付は英語版ページのメタ情報（ms.date）にある日付で、2026-11-02 に確認しました（[18] は Microsoft サポートの記事の更新日）。リンク先は日本語版です（日本語版は翻訳の反映が遅れることがあります）。</p>
+    </div>
+    <div class="src-cols">
+      <ol class="sources">
+        <li id="src-1"><a class="src-title" href="https://learn.microsoft.com/ja-jp/credentials/certifications/resources/study-guides/ab-100" target="_blank" rel="noopener">Study guide for Exam AB-100: Agentic AI Business Solutions Architect</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-09</span></span><span class="src-note">3分野と配点、出題項目の全文（2026-11-16 版）、受験者像、合格点 700、翻訳版は約8週間後に更新、GA とプレビューの扱い、変更履歴。</span></li>
+        <li id="src-2"><a class="src-title" href="https://learn.microsoft.com/ja-jp/credentials/certifications/agentic-ai-business-solutions-architect/" target="_blank" rel="noopener">Microsoft Certified: Agentic AI Business Solutions Architect Expert</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-20</span></span><span class="src-note">エキスパート認定であること、前提となるアソシエイト資格（13個）、練習評価（AI Skills Navigator）、毎年の無料更新。</span></li>
+        <li id="src-3"><a class="src-title" href="https://learn.microsoft.com/ja-jp/credentials/certifications/exams/ab-100/" target="_blank" rel="noopener">Exam AB-100: Agentic AI Business Solutions Architect</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-21</span></span><span class="src-note">受験料（日本 ¥20,300・米国 $165、税別。2026-11-02 にページで国を選んで確認）、言語、Pearson VUE、廃止日なし、講師付きコース AB-100T00。</span></li>
+        <li id="src-4"><a class="src-title" href="https://learn.microsoft.com/ja-jp/credentials/support/exam-duration-exam-experience" target="_blank" rel="noopener">Exam duration and exam experience</a><span class="src-meta"><span class="tag">公式</span><span>2026-06-04</span></span><span class="src-note">ロールベース試験の試験時間（ラボなし100分／ありの場合120分）と着席時間、問題数の目安、休憩、試験中の Microsoft Learn 参照。</span></li>
+        <li id="src-5"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/paths/architect-agentic-ai-business-solutions/" target="_blank" rel="noopener">Architect AI solutions for business productivity（ラーニングパス）</a><span class="src-meta"><span class="tag">公式</span><span>2026-02-20</span></span><span class="src-note">公式の学習パス。11モジュール・約11時間（684分）。出題範囲の小項目とほぼ同じ構成です。</span></li>
+        <li id="src-6"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/cloud-adoption-framework/ai/strategy" target="_blank" rel="noopener">AI adoption - Cloud Adoption Framework</a><span class="src-meta"><span class="tag">公式</span><span>2026-06-26</span></span><span class="src-note">AI の選び方（SaaS／PaaS／IaaS）、導入の土台（リーダーシップ・AI CoE）、データ基盤、導入の段階。</span></li>
+        <li id="src-7"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/cloud-adoption-framework/ai-agents/technology-solutions-plan-strategy" target="_blank" rel="noopener">Technology plan for AI agents across your organization</a><span class="src-meta"><span class="tag">公式</span><span>2025-12-01</span></span><span class="src-note">エージェントを使うかの判断ツリー、検索・タスク・自律の各エージェント、Microsoft 365 Copilot／Copilot Studio／Foundry の位置づけ。</span></li>
+        <li id="src-8"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/guidance/agent-business-value-overview" target="_blank" rel="noopener">Measure the return on investment (ROI) and business value of AI agents</a><span class="src-meta"><span class="tag">公式</span><span>2026-06-04</span></span><span class="src-note">作る前に価値を決める、ベースライン、4つの柱の価値フレームワーク、先行・遅行指標、Agent Assisted Hours。</span></li>
+        <li id="src-9"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/guidance/technical-readiness" target="_blank" rel="noopener">Choose the right platform</a><span class="src-meta"><span class="tag">公式</span><span>2026-01-16</span></span><span class="src-note">プラットフォーム選びの観点（利用者・連携・規模・セキュリティ）、宣言型とカスタムエンジンエージェント。</span></li>
+        <li id="src-10"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-365/copilot/extensibility/agents-overview" target="_blank" rel="noopener">Compare declarative and custom engine agents</a><span class="src-meta"><span class="tag">公式</span><span>2026-09-30</span></span><span class="src-note">Copilot のオーケストレーターとモデルを使う宣言型と、自前で用意するカスタムエンジンの2つの作り方。</span></li>
+        <li id="src-11"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-365/copilot/extensibility/overview-declarative-agent" target="_blank" rel="noopener">Declarative agents for Microsoft 365 Copilot</a><span class="src-meta"><span class="tag">公式</span><span>2026-09-30</span></span><span class="src-note">宣言型エージェントが向く場面、指示・ナレッジ・アクション・会話のきっかけ。</span></li>
+        <li id="src-12"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-365/copilot/extensibility/overview-custom-engine-agent" target="_blank" rel="noopener">Custom engine agents for Microsoft 365 overview</a><span class="src-meta"><span class="tag">公式</span><span>2026-09-30</span></span><span class="src-note">カスタムエンジンエージェントの特徴と作る手段（Copilot Studio・Agents SDK・Teams SDK・Foundry）。</span></li>
+        <li id="src-13"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-365/copilot/extensibility/agent-builder" target="_blank" rel="noopener">Agent Builder overview</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-26</span></span><span class="src-note">Agent Builder で宣言型エージェントを作れる場所と用途、ナレッジとスキルの追加。</span></li>
+        <li id="src-14"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-365/copilot/extensibility/overview-plugins" target="_blank" rel="noopener">MCP and API plugins for declarative agents</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-28</span></span><span class="src-note">宣言型エージェントのアクションとして動く MCP／API プラグイン。単体では使えないこと。</span></li>
+        <li id="src-15"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-365/copilot/connectors/overview" target="_blank" rel="noopener">Copilot connectors overview</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-06</span></span><span class="src-note">同期型（Microsoft Graph にインデックス）とフェデレーション型（MCP でリアルタイムに取得）のコネクタ。</span></li>
+        <li id="src-16"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-365/copilot/researcher-agent" target="_blank" rel="noopener">Get started with Researcher agent in Microsoft Copilot</a><span class="src-meta"><span class="tag">公式</span><span>2026-02-19</span></span><span class="src-note">Researcher の役割（Web と社内の情報を使った複数ステップの調査、出典つきレポート）。</span></li>
+        <li id="src-17"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-365/copilot/microsoft-copilot-requirements" target="_blank" rel="noopener">Microsoft Copilot requirements</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-28</span></span><span class="src-note">Microsoft 365 Copilot が Microsoft Copilot に、Copilot Chat が Microsoft Copilot Chat に名称変更されたこと。</span></li>
+        <li id="src-18"><a class="src-title" href="https://support.microsoft.com/ja-jp/microsoft-365-copilot/get-started-writing-prompts-in-microsoft-365-copilot" target="_blank" rel="noopener">Get started writing prompts in Microsoft Copilot</a><span class="src-meta"><span class="tag">公式</span><span>2026-09-28</span></span><span class="src-note">Microsoft サポートの記事。プロンプトの4要素（目的・背景・情報源・期待）。</span></li>
+        <li id="src-19"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/advanced-generative-actions" target="_blank" rel="noopener">Orchestrate agent behavior with generative AI</a><span class="src-meta"><span class="tag">公式</span><span>2026-08-26</span></span><span class="src-note">生成オーケストレーションとクラシックの比較、説明文の書き方、既知の制限（会話ブースティング・カスタムエンティティ・あいまいさの解消）。</span></li>
+        <li id="src-20"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/guidance/language-understanding" target="_blank" rel="noopener">Design effective language understanding</a><span class="src-meta"><span class="tag">公式</span><span>2026-01-16</span></span><span class="src-note">生成オーケストレーション、組み込みの NLU、NLU+、Azure CLU 連携の使い分け。</span></li>
+        <li id="src-21"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/authoring-system-fallback-topic" target="_blank" rel="noopener">Configure the system fallback topic</a><span class="src-meta"><span class="tag">公式</span><span>2024-10-11</span></span><span class="src-note">フォールバックトピックの動き（2回まで言い換えを頼む → Escalate）、UnrecognizedTriggerPhrase。</span></li>
+        <li id="src-22"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/knowledge-copilot-studio" target="_blank" rel="noopener">Knowledge sources summary</a><span class="src-meta"><span class="tag">公式</span><span>2026-07-21</span></span><span class="src-note">使えるナレッジソースの種類と上限、エージェント単位とトピック単位のナレッジ。</span></li>
+        <li id="src-23"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/flows-overview" target="_blank" rel="noopener">Agent flows overview</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-26</span></span><span class="src-note">エージェントフローの特徴（決定的・ルールどおり）、起動のしかた、容量の消費。</span></li>
+        <li id="src-24"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/nlu-prompt-node" target="_blank" rel="noopener">Use prompts to make your agent or agent flow perform specific tasks</a><span class="src-meta"><span class="tag">公式</span><span>2026-09-11</span></span><span class="src-note">プロンプトをツール・トピックのノード・エージェントフローのノードとして使う方法。</span></li>
+        <li id="src-25"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/authoring-add-other-agents" target="_blank" rel="noopener">Add other agents overview</a><span class="src-meta"><span class="tag">公式</span><span>2026-05-15</span></span><span class="src-note">子エージェントと接続エージェント、A2A・Foundry・Fabric・Agents SDK のエージェント、マルチエージェントの注意点。</span></li>
+        <li id="src-26"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/agent-extend-action-mcp" target="_blank" rel="noopener">Extend your agent with Model Context Protocol</a><span class="src-meta"><span class="tag">公式</span><span>2026-08-26</span></span><span class="src-note">MCP のツールとリソース、オンボーディングウィザード、生成オーケストレーションが必要なこと。</span></li>
+        <li id="src-27"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/computer-use" target="_blank" rel="noopener">Automate web and desktop apps with computer use</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-20</span></span><span class="src-note">コンピューター使用の仕組み（CUA）、資格情報、人の監督、アクセス制御、課金（1ステップ5クレジット）。</span></li>
+        <li id="src-28"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/voice-overview" target="_blank" rel="noopener">Use interactive voice response in your agents</a><span class="src-meta"><span class="tag">公式</span><span>2026-04-23</span></span><span class="src-note">ベーシック音声エージェントとリアルタイム音声エージェント、DTMF、コンテキスト変数、通話転送。</span></li>
+        <li id="src-29"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/authoring-reasoning-models" target="_blank" rel="noopener">Use deep reasoning models for complex tasks (preview)</a><span class="src-meta"><span class="tag">公式</span><span>2026-08-28</span><span>プレビュー</span></span><span class="src-note">ディープリーズニングモデルの追加（生成オーケストレーションが前提）。</span></li>
+        <li id="src-30"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/authoring-triggers-about" target="_blank" rel="noopener">Event triggers overview</a><span class="src-meta"><span class="tag">公式</span><span>2026-09-09</span></span><span class="src-note">イベントトリガーで自律的に動くこと、課金への影響。</span></li>
+        <li id="src-31"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/harnesses-overview" target="_blank" rel="noopener">Harnesses in Copilot Studio</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-19</span></span><span class="src-note">標準・GitHub Copilot・Customer Conversation の3つのハーネス。</span></li>
+        <li id="src-32"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/analytics-overview" target="_blank" rel="noopener">Monitor agent performance in Copilot Studio</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-21</span></span><span class="src-note">Monitor ページ、データの保持期間（360日／28日）、解決・エスカレーション・放棄、満足度、要約。</span></li>
+        <li id="src-33"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/analytics-agent-evaluation-intro" target="_blank" rel="noopener">About agent evaluation</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-05</span></span><span class="src-note">エージェント評価、テストセットとテストケース、自動テストの意義。</span></li>
+        <li id="src-34"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/analytics-agent-evaluation-create" target="_blank" rel="noopener">Create a single response test set</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-05</span></span><span class="src-note">7つの評価方法と、期待する答えが必要かどうか。</span></li>
+        <li id="src-35"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/advanced-bot-framework-composer-capture-telemetry" target="_blank" rel="noopener">Agent-level telemetry with Application Insights</a><span class="src-meta"><span class="tag">公式</span><span>2026-07-28</span></span><span class="src-note">Application Insights への接続、記録する内容の設定、OpenTelemetry のトレース。</span></li>
+        <li id="src-36"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/guidance/kit-overview" target="_blank" rel="noopener">Copilot Agent Kit overview</a><span class="src-meta"><span class="tag">公式</span><span>2026-07-03</span></span><span class="src-note">Power CAT のツールキット、テストセットでのまとめてのテスト、ガバナンス。</span></li>
+        <li id="src-37"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/authoring-solutions-overview" target="_blank" rel="noopener">Create and manage solutions in Copilot Studio</a><span class="src-meta"><span class="tag">公式</span><span>2026-04-29</span></span><span class="src-note">エージェントはソリューションの中に作られること、環境とパイプライン。</span></li>
+      </ol>
+      <ol class="sources" start="38" style="counter-reset:src 37">
+        <li id="src-38"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/security-and-governance" target="_blank" rel="noopener">Key concepts - Copilot Studio security and governance</a><span class="src-meta"><span class="tag">公式</span><span>2026-09-24</span></span><span class="src-note">データポリシー、Copilot Hub、Git 連携、Purview と Sentinel の監査、秘密度ラベル、環境ルーティング、CMK、Agent 365。</span></li>
+        <li id="src-39"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/manage-data-movement-outside-us" target="_blank" rel="noopener">Configure data movement across geographic locations for generative AI</a><span class="src-meta"><span class="tag">公式</span><span>2024-10-16</span></span><span class="src-note">米国以外の環境で生成 AI 機能を使うときの地域をまたぐデータ移動と、その許可・停止。</span></li>
+        <li id="src-40"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/external-security-provider" target="_blank" rel="noopener">Enable external threat detection and protection for Copilot Studio custom agents (preview)</a><span class="src-meta"><span class="tag">公式</span><span>2026-06-01</span><span>プレビュー</span></span><span class="src-note">UPIA と XPIA への標準の保護、外部の脅威検出サービスとの連携。</span></li>
+        <li id="src-41"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/openai/concepts/model-router" target="_blank" rel="noopener">Model router for Microsoft Foundry concepts</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-30</span></span><span class="src-note">3つのルーティングモード、使うモデルの絞り込み（サブセット）、コンテキストの上限。</span></li>
+        <li id="src-42"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/fine-tuning/overview" target="_blank" rel="noopener">Fine-tuning in Microsoft Foundry</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-06</span></span><span class="src-note">SFT・DPO・RFT の違いと必要なデータ、蒸留。</span></li>
+        <li id="src-43"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/what-is-foundry" target="_blank" rel="noopener">What is Microsoft Foundry?</a><span class="src-meta"><span class="tag">公式</span><span>2026-08-13</span></span><span class="src-note">Foundry の全体像、旧名と新名の対応（Azure AI Foundry → Microsoft Foundry、Azure AI Services → Foundry Tools）。</span></li>
+        <li id="src-44"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/agents/overview" target="_blank" rel="noopener">What is Microsoft Foundry Agent Service?</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-26</span></span><span class="src-note">Foundry のエージェントの作成・デプロイ・運用。</span></li>
+        <li id="src-45"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/foundry/concepts/observability" target="_blank" rel="noopener">Observability in generative AI</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-15</span></span><span class="src-note">評価・監視・トレース、CI/CD の品質ゲート、ドリフトの検知。</span></li>
+        <li id="src-46"><a class="src-title" href="https://learn.microsoft.com/ja-jp/power-apps/maker/model-driven-apps/generative-pages" target="_blank" rel="noopener">Generate a page using natural language (generative pages)</a><span class="src-meta"><span class="tag">公式</span><span>2026-09-25</span></span><span class="src-note">自然な言葉から React のコードでページを作る生成ページと、参照できるデータ。</span></li>
+        <li id="src-47"><a class="src-title" href="https://learn.microsoft.com/ja-jp/power-apps/user/supervise-agents-with-agent-feed" target="_blank" rel="noopener">Supervise agents in model-driven apps with agent feed (preview)</a><span class="src-meta"><span class="tag">公式</span><span>2026-04-07</span><span>プレビュー</span></span><span class="src-note">エージェントフィードの役割、2026-05-01 以降は Power Apps MCP サーバーを使うエージェントだけが対象。</span></li>
+        <li id="src-48"><a class="src-title" href="https://learn.microsoft.com/ja-jp/ai-builder/overview" target="_blank" rel="noopener">Overview of AI Builder</a><span class="src-meta"><span class="tag">公式</span><span>2026-01-14</span></span><span class="src-note">AI Builder の既製モデルとカスタムモデル、Power Apps と Power Automate での利用。</span></li>
+        <li id="src-49"><a class="src-title" href="https://learn.microsoft.com/ja-jp/ai-builder/security" target="_blank" rel="noopener">Roles and security in AI Builder</a><span class="src-meta"><span class="tag">公式</span><span>2026-01-14</span></span><span class="src-note">AI ハブ（AI プロンプトと AI モデル）の場所、共有と権限。</span></li>
+        <li id="src-50"><a class="src-title" href="https://learn.microsoft.com/ja-jp/power-platform/well-architected/" target="_blank" rel="noopener">Power Platform Well-Architected</a><span class="src-meta"><span class="tag">公式</span><span>2025-08-22</span></span><span class="src-note">5つの柱（信頼性・セキュリティ・オペレーショナルエクセレンス・パフォーマンス効率・エクスペリエンス最適化）。</span></li>
+        <li id="src-51"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/guidance/" target="_blank" rel="noopener">Microsoft Copilot Studio guidance documentation</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-19</span></span><span class="src-note">インテリジェントアプリ（エージェント）の計画・実装・運用のガイダンス集。</span></li>
+        <li id="src-52"><a class="src-title" href="https://learn.microsoft.com/ja-jp/power-platform/alm/overview-alm" target="_blank" rel="noopener">Overview of application lifecycle management with Microsoft Power Platform</a><span class="src-meta"><span class="tag">公式</span><span>2025-01-29</span></span><span class="src-note">ALM の考え方、ソリューション、ソース管理と CI/CD、Dataverse が必要なこと。</span></li>
+        <li id="src-53"><a class="src-title" href="https://learn.microsoft.com/ja-jp/power-platform/alm/solution-concepts-alm" target="_blank" rel="noopener">Solution concepts with Power Platform</a><span class="src-meta"><span class="tag">公式</span><span>2025-01-29</span></span><span class="src-note">マネージドとアンマネージドのソリューションの使い分け。</span></li>
+        <li id="src-54"><a class="src-title" href="https://learn.microsoft.com/ja-jp/power-platform/alm/pipelines" target="_blank" rel="noopener">Overview of pipelines in Power Platform</a><span class="src-meta"><span class="tag">公式</span><span>2026-09-29</span></span><span class="src-note">パイプラインによる CI/CD、管理者による中央での統制。</span></li>
+        <li id="src-55"><a class="src-title" href="https://learn.microsoft.com/ja-jp/power-platform/admin/managed-environment-overview" target="_blank" rel="noopener">Managed environments overview</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-08</span></span><span class="src-note">マネージド環境の機能（環境グループ、共有の制限、データポリシー、パイプラインなど）。</span></li>
+        <li id="src-56"><a class="src-title" href="https://learn.microsoft.com/ja-jp/dynamics365/copilot/ai-get-started" target="_blank" rel="noopener">Agents, Copilot, and AI capabilities in Dynamics 365 apps</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-02</span></span><span class="src-note">Dynamics 365 全体のエージェントと Copilot 機能の一覧（エージェントフィード、finance and operations アプリのチャットなど）。</span></li>
+        <li id="src-57"><a class="src-title" href="https://learn.microsoft.com/ja-jp/dynamics365/sales/copilot-overview" target="_blank" rel="noopener">Copilot in Dynamics 365 Sales overview</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-13</span></span><span class="src-note">Copilot in Dynamics 365 Sales の機能と、今後は Sales agent が推奨の入口になること。</span></li>
+        <li id="src-58"><a class="src-title" href="https://learn.microsoft.com/ja-jp/dynamics365/sales/extend-copilot-chat" target="_blank" rel="noopener">Customize Copilot in Dynamics 365 Sales</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-08</span><span>プレビュー</span></span><span class="src-note">トピックの追加、プロンプトガイドの変更、グロッサリー（ビジネス用語）の追加。</span></li>
+        <li id="src-59"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-sales-copilot/introduction" target="_blank" rel="noopener">Welcome to Sales agent</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-13</span></span><span class="src-note">Sales agent の役割と、CRM（Dynamics 365 Sales・Salesforce）との接続。</span></li>
+        <li id="src-60"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-sales-copilot/custom-connector-action" target="_blank" rel="noopener">Create a custom connector and connector action (preview)</a><span class="src-meta"><span class="tag">公式</span><span>2026-03-09</span><span>プレビュー</span></span><span class="src-note">Sales 向けのカスタムコネクタとアクション、管理者による有効化、認定。</span></li>
+        <li id="src-61"><a class="src-title" href="https://learn.microsoft.com/ja-jp/dynamics365/sales/ai-agent-overview" target="_blank" rel="noopener">AI agents in Dynamics 365 Sales</a><span class="src-meta"><span class="tag">公式</span><span>2026-09-25</span></span><span class="src-note">Sales Qualification／Opportunity／Research などの営業エージェント。</span></li>
+        <li id="src-62"><a class="src-title" href="https://learn.microsoft.com/ja-jp/dynamics365/sales/sales-close-agent" target="_blank" rel="noopener">Sales Close Agent overview (preview)</a><span class="src-meta"><span class="tag">公式</span><span>2026-08-18</span><span>プレビュー</span></span><span class="src-note">2026-09-30 で新規作成停止、2026-10-30 で削除。後継は Sales Development agent。</span></li>
+        <li id="src-63"><a class="src-title" href="https://learn.microsoft.com/ja-jp/dynamics365/customer-service/use/use-service-agent" target="_blank" rel="noopener">Use Service Agent in Customer Service</a><span class="src-meta"><span class="tag">公式</span><span>2026-09-26</span></span><span class="src-note">Service Agent の役割と、ケースへの操作。</span></li>
+        <li id="src-64"><a class="src-title" href="https://learn.microsoft.com/ja-jp/dynamics365/customer-service/administer/configure-bot-virtual-agent" target="_blank" rel="noopener">Integrate a Copilot agent in Dynamics 365 Contact Center</a><span class="src-meta"><span class="tag">公式</span><span>2026-04-30</span></span><span class="src-note">Copilot Studio のエージェントを窓口に置く方法、用語の変更（ボット → エージェント、人のエージェント → 担当者）、音声。</span></li>
+        <li id="src-65"><a class="src-title" href="https://learn.microsoft.com/ja-jp/dynamics365/contact-center/administer/autonomous-agents-overview" target="_blank" rel="noopener">Autonomous service agents in Dynamics 365</a><span class="src-meta"><span class="tag">公式</span><span>2026-05-08</span></span><span class="src-note">Customer Intent／Case Management／Customer Knowledge Management の各エージェント。</span></li>
+        <li id="src-66"><a class="src-title" href="https://learn.microsoft.com/ja-jp/dynamics365/fin-ops-core/fin-ops/copilot/copilot-generative-help" target="_blank" rel="noopener">Generative help and guidance with Copilot</a><span class="src-meta"><span class="tag">公式</span><span>2026-05-08</span></span><span class="src-note">finance and operations アプリのアプリ内ヘルプと、Copilot Studio でのナレッジ追加。</span></li>
+        <li id="src-67"><a class="src-title" href="https://learn.microsoft.com/ja-jp/dynamics365/finance/general-ledger/acct-rec-agent" target="_blank" rel="noopener">Account Reconciliation Agent (production ready preview)</a><span class="src-meta"><span class="tag">公式</span><span>2026-09-08</span><span>プレビュー</span></span><span class="src-note">勘定照合の例外を評価して対応を提案するエージェント。</span></li>
+        <li id="src-68"><a class="src-title" href="https://learn.microsoft.com/ja-jp/dynamics365/fin-ops-core/dev-itpro/perf-test/rsat/rsat-overview" target="_blank" rel="noopener">Regression suite automation tool (RSAT)</a><span class="src-meta"><span class="tag">公式</span><span>2026-05-27</span></span><span class="src-note">UAT の自動化と、2027-05-15 でのサポート終了予定。</span></li>
+        <li id="src-69"><a class="src-title" href="https://learn.microsoft.com/ja-jp/power-platform/important-changes-coming" target="_blank" rel="noopener">Important changes (deprecations) coming in Power Platform</a><span class="src-meta"><span class="tag">公式</span><span>2026-10-28</span></span><span class="src-note">Test Engine の非推奨（2026年4月）など、Power Platform の廃止予定。</span></li>
+        <li id="src-70"><a class="src-title" href="https://learn.microsoft.com/ja-jp/entra/agent-id/what-are-agent-identities" target="_blank" rel="noopener">What are agent identities? (Microsoft Entra Agent ID)</a><span class="src-meta"><span class="tag">公式</span><span>2025-11-06</span></span><span class="src-note">AI エージェント専用の ID と、エージェントの定義（モデル・ツールなど）。</span></li>
+        <li id="src-71"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-agent-365/overview" target="_blank" rel="noopener">Overview of Microsoft Agent 365</a><span class="src-meta"><span class="tag">公式</span><span>2026-08-19</span></span><span class="src-note">エージェントの観察・統制・保護と、一元的な一覧（レジストリ）。</span></li>
+        <li id="src-72"><a class="src-title" href="https://learn.microsoft.com/ja-jp/purview/ai-microsoft-purview" target="_blank" rel="noopener">Microsoft Purview data security and compliance protections for generative AI apps</a><span class="src-meta"><span class="tag">公式</span><span>2026-05-27</span></span><span class="src-note">AI 向けデータセキュリティ態勢管理（DSPM for AI）と Purview の各種保護。</span></li>
+        <li id="src-73"><a class="src-title" href="https://learn.microsoft.com/ja-jp/microsoft-365/copilot/secure-govern-copilot-foundational-deployment-guidance" target="_blank" rel="noopener">Secure and govern Microsoft Copilot: Foundational deployment guidance</a><span class="src-meta"><span class="tag">公式</span><span>2026-05-06</span></span><span class="src-note">過剰共有の解消、ガードレール、規制対応という3つの柱。</span></li>
+        <li id="src-74"><a class="src-title" href="https://learn.microsoft.com/ja-jp/azure/machine-learning/concept-responsible-ai" target="_blank" rel="noopener">What is Responsible AI</a><span class="src-meta"><span class="tag">公式</span><span>2026-09-07</span></span><span class="src-note">Microsoft Responsible AI Standard の6つの原則。</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span>調査日 2026-11-02。出題範囲は 2026-11-16 版（英語）をもとにしています。製品名や機能は更新が続いているため、受験前に出典のページで最新の状態を確認してください。</span>
+    <span>あわせて読む：<a href="study_ai-103-glossary.html">AI-103 用語集</a>（AB-100 の前提資格の1つ）</span>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const KEY = "ab100-glossary:v1";
+  const root = document.documentElement;
+  root.classList.remove("no-js");
+
+  const $ = id => document.getElementById(id);
+  const terms = [...document.querySelectorAll(".term")];
+  const doms = [...document.querySelectorAll(".dom")];
+  const subs = [...document.querySelectorAll(".sub")];
+  const norm = s => s.normalize("NFKC").toLowerCase().replace(/\s+/g, " ");
+  terms.forEach(t => { t.dataset.text = norm(t.querySelector(".t-name").textContent + " " + t.querySelector(".def").textContent + " " + (t.querySelector(".tip")?.textContent || "")); });
+
+  // 語数を数えて表示（ヘッダー・目次・状態表示）
+  const total = terms.length;
+  document.querySelectorAll("[data-total]").forEach(n => { n.textContent = total; });
+  document.querySelectorAll("[data-stars]").forEach(n => { n.textContent = terms.filter(t => t.hasAttribute("data-star")).length; });
+  doms.forEach(d => {
+    const n = d.querySelectorAll(".term").length;
+    document.querySelectorAll(`[data-dcount="${d.dataset.dom}"]`).forEach(x => { x.textContent = n + "語"; });
+  });
+
+  // 「覚えた」はこのブラウザにだけ保存
+  let got = {};
+  try{
+    const saved = JSON.parse(localStorage.getItem(KEY) || "null");
+    if(saved && saved.got && typeof saved.got === "object") got = saved.got;
+  }catch(_){}
+  const save = () => { try{ localStorage.setItem(KEY, JSON.stringify({ got })); }catch(_){} };
+
+  const state = { q:"", dom:"all", star:false, todo:false, quiz:false };
+
+  terms.forEach(t => {
+    const foot = t.querySelector(".t-foot");
+    const peek = document.createElement("button");
+    peek.type = "button"; peek.className = "peek"; peek.textContent = "意味を見る";
+    peek.addEventListener("click", () => {
+      const open = t.classList.toggle("open");
+      peek.textContent = open ? "かくす" : "意味を見る";
+    });
+    const btn = document.createElement("button");
+    btn.type = "button"; btn.className = "got";
+    const paint = on => {
+      btn.setAttribute("aria-pressed", String(on));
+      btn.textContent = on ? "覚えた ✓" : "覚えた";
+      t.classList.toggle("is-got", on);
+    };
+    paint(!!got[t.id]);
+    btn.addEventListener("click", () => {
+      const on = btn.getAttribute("aria-pressed") !== "true";
+      if(on) got[t.id] = 1; else delete got[t.id];
+      save(); paint(on); apply();
+    });
+    foot.append(peek, btn);
+  });
+
+  function apply(){
+    const words = norm(state.q).trim().split(" ").filter(Boolean);
+    let shown = 0;
+    terms.forEach(t => {
+      const ok = (state.dom === "all" || t.closest(".dom").dataset.dom === state.dom)
+        && (!state.star || t.hasAttribute("data-star"))
+        && (!state.todo || !got[t.id])
+        && words.every(w => t.dataset.text.includes(w));
+      t.hidden = !ok;
+      if(ok) shown++;
+    });
+    subs.forEach(s => { s.hidden = !s.querySelector(".term:not([hidden])"); });
+    doms.forEach(d => { d.hidden = !d.querySelector(".term:not([hidden])"); });
+    $("shown").textContent = shown;
+    $("gotn").textContent = terms.filter(t => got[t.id]).length;
+    $("empty").hidden = shown > 0;
+  }
+
+  const q = $("q");
+  q.addEventListener("input", () => { state.q = q.value; apply(); });
+  q.addEventListener("keydown", e => { if(e.key === "Escape"){ q.value = ""; state.q = ""; apply(); } });
+  addEventListener("keydown", e => {
+    if(e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+    const tag = (document.activeElement && document.activeElement.tagName) || "";
+    if(tag === "INPUT" || tag === "TEXTAREA") return;
+    e.preventDefault(); q.focus();
+  });
+
+  const chips = [...document.querySelectorAll(".chip")];
+  chips.forEach(c => c.addEventListener("click", () => {
+    state.dom = c.dataset.dom;
+    chips.forEach(x => x.setAttribute("aria-pressed", String(x === c)));
+    apply();
+  }));
+
+  document.querySelectorAll(".tg").forEach(b => b.addEventListener("click", () => {
+    const k = b.dataset.toggle;
+    state[k] = !state[k];
+    b.setAttribute("aria-pressed", String(state[k]));
+    if(k === "quiz"){
+      root.classList.toggle("quiz", state.quiz);
+      terms.forEach(t => {
+        t.classList.remove("open");
+        const p = t.querySelector(".peek"); if(p) p.textContent = "意味を見る";
+      });
+    }
+    apply();
+  }));
+
+  apply();
+})();
+</script>
+</body>
+</html>
