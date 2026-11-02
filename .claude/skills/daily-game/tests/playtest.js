@@ -116,6 +116,10 @@ let browser;
     const st = await page.evaluate(() => window.__game.state());
     check('強化をえらぶとゲームに戻る', st.scene === 'play');
     check('えらんだ強化が反映される', Object.keys(st.weapons).length + Object.keys(st.passives).length > w0 || Object.values(st.weapons).reduce((a, b) => a + b, 0) > 1);
+    // 強敵を倒すと一瞬だけ止まる（ヒットストップ）
+    const hs = await page.evaluate(() => { const d = window.__game.debug; d.god(true); d.spawn('elite', 1); const ok = d.killOne('elite'); return { ok, fr: window.__game.world().freeze }; });
+    check('強敵を倒すと一瞬だけ時間が止まる（ヒットストップ）', hs.ok && hs.fr > 0 && hs.fr <= 0.1, `freeze=${hs.fr}`);
+    await page.evaluate(() => window.__game.debug.god(false));
     // 一時停止
     await page.click('#b-pause');
     check('一時停止できる', await visible(page, 'pause'));

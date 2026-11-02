@@ -249,8 +249,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 2, date: '2026-11-02' };
+const GAME = { day: 3, date: '2026-11-03' };
 const PATCH_NOTES = [
+  { day: 3, date: '2026-11-03', title: '強敵を倒すと、一瞬ピタッ！',
+    items: ['オレンジの強敵を倒した瞬間、ほんの一瞬だけ時間が止まって光の輪が広がるよ', '倒した手ごたえがぐっと強くなったよ'],
+    ask: '強敵を倒したときの「ピタッ」が気持ちいいか、じゃまじゃないか教えてね！' },
   { day: 2, date: '2026-11-02', title: '強化を引き直せるようになった！',
     items: ['レベルアップ画面に「引き直す」ボタンを追加（1回のプレイで2回まで）', 'ほしい強化が出なかったときに、もう一度えらべるよ'],
     ask: 'リロールを使って、ねらった組み合わせを作れたか教えてね！' },
@@ -357,7 +360,7 @@ function newGame(seed) {
     wt: { pulse: 0.3, nova: 2, chain: 1, orbitAng: 0 },
     enemies: [], bullets: [], ebullets: [], gems: [], items: [],
     spawnAcc: 0, nextRush: 60, elites: [150, 225], boss: null,
-    pendingLevels: 0, rerolls: 2, ending: 0, done: false, over: false, clear: false, slow: 0,
+    pendingLevels: 0, rerolls: 2, ending: 0, done: false, over: false, clear: false, slow: 0, freeze: 0,
     gemRR: 0, gemCombo: 0, gemComboT: 0, spawnR: spawnRadius(), fxOn: true, god: false, trailT: 0,
   };
   calcStats();
@@ -678,6 +681,7 @@ function kill(e) {
     burst(e.x, e.y, d.color, 46, 280, 4.5);
     dropGem(e.x, e.y, 30); dropItem(e.x + 18, e.y, 'heal'); dropItem(e.x - 18, e.y, 'magnet');
     shake(7); Snd.play('big'); vib(40);
+    if (G.fxOn) { G.freeze = 0.07; FX.rings.push({ x: e.x, y: e.y, r: 14, max: 200, t: 0, dur: 0.45, color: d.color }); }
     return;
   }
   burst(e.x, e.y, d.color, e.type === 'brute' ? 16 : 9, 160, 3);
@@ -1427,7 +1431,9 @@ function frame(ts) {
   let dt = now - lastT; lastT = now;
   if (!(dt > 0)) dt = 0; if (dt > 0.1) dt = 0.1;
   trackFps(dt);
-  if (scene === 'play' && G && !hold) {
+  if (scene === 'play' && G && !hold && G.freeze > 0) {
+    G.freeze -= dt; stepFx(dt * 0.15);
+  } else if (scene === 'play' && G && !hold) {
     let sdt = dt;
     if (G.slow > 0) { G.slow -= dt; sdt = dt * 0.3; }
     acc += sdt;
@@ -1483,6 +1489,7 @@ window.__game = {
     addXp(n) { collectXp(n); },
     hurt(n) { G.player.inv = 0; hurt(n); },
     setTime(t) { G.t = t; G.nextRush = Math.ceil((t + 0.01) / 60) * 60; G.elites = G.elites.filter(x => x > t); },
+    killOne(type) { const e = G.enemies.find(o => o.type === type && !o.dead); if (e) kill(e); return !!e; },
     spawn(type, n = 1) { for (let i = 0; i < n; i++) spawnEnemy(type); },
     give(id, lv = 1) { if (UPG[id].kind === 'w') G.weapons[id] = lv; else G.passives[id] = lv; calcStats(); },
     god(on = true) { G.god = on; },
