@@ -249,8 +249,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 4, date: '2026-11-04' };
+const GAME = { day: 5, date: '2026-11-05' };
 const PATCH_NOTES = [
+  { day: 5, date: '2026-11-05', title: '強敵とボスの来る方向がわかる！',
+    items: ['オレンジの強敵と赤いボスが画面の外にいるとき、画面のふちに矢印が出るよ', '近づくと矢印は消えるよ'],
+    ask: '矢印のおかげで、強敵から逃げやすくなったか教えてね！' },
   { day: 4, date: '2026-11-04', title: '最初の強化が、早くもらえる！',
     items: ['はじめの2レベルは、レベルアップに必要なほしくずを少なくしたよ', '序盤の「まだ弱い…」時間が短くなったよ'],
     ask: 'はじめの30秒が、退屈じゃなくなったか教えてね！' },
@@ -1240,6 +1243,31 @@ function drawWorld() {
     ctx.fillStyle = n.color; ctx.fillText(n.text, n.x, n.y);
   }
   ctx.globalAlpha = 1;
+  drawArrows();
+}
+// 強敵・ボスが画面の外にいるとき、来る方向を縁の矢印で知らせる
+let arrowCount = 0;
+function drawArrows() {
+  arrowCount = 0;
+  if (G.over) return;
+  const now = performance.now() / 1000;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  for (const e of G.enemies) {
+    if (e.dead || (e.type !== 'elite' && e.type !== 'boss')) continue;
+    const dx = (e.x - cam.x) * scale, dy = (e.y - cam.y) * scale;
+    if (Math.abs(dx) < W / 2 - 6 && Math.abs(dy) < H / 2 - 6) continue;
+    arrowCount++;
+    const mx = W / 2 - 24, my = H / 2 - 24, top = H / 2 - 84;
+    const k = Math.min(mx / Math.abs(dx || 1e-6), (dy < 0 ? top : my) / Math.abs(dy || 1e-6));
+    const ax = W / 2 + dx * k, ay = H / 2 + dy * k, a = Math.atan2(dy, dx);
+    const boss = e.type === 'boss', col = boss ? '#ff3b5c' : '#ff7a3d', sz = boss ? 15 : 12;
+    ctx.save(); ctx.translate(ax, ay); ctx.rotate(a);
+    ctx.globalAlpha = 0.65 + Math.sin(now * 8) * 0.25;
+    ctx.fillStyle = col; ctx.shadowColor = col; ctx.shadowBlur = 10;
+    ctx.beginPath(); ctx.moveTo(sz, 0); ctx.lineTo(-sz * 0.7, sz * 0.75); ctx.lineTo(-sz * 0.3, 0); ctx.lineTo(-sz * 0.7, -sz * 0.75); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1; ctx.shadowBlur = 0;
 }
 function drawStick() {
   if (!input.active || scene !== 'play') return;
@@ -1468,7 +1496,7 @@ window.__game = {
     if (!G) return { scene };
     const p = G.player;
     return { scene, t: +G.t.toFixed(2), hp: Math.round(p.hp), maxHp: p.maxHp, x: Math.round(p.x), y: Math.round(p.y), level: G.level, kills: G.kills,
-      enemies: G.enemies.length, gems: G.gems.length, weapons: Object.assign({}, G.weapons), passives: Object.assign({}, G.passives),
+      arrows: arrowCount, enemies: G.enemies.length, gems: G.gems.length, weapons: Object.assign({}, G.weapons), passives: Object.assign({}, G.passives),
       boss: G.boss ? Math.max(0, Math.round(G.boss.hp)) : null, clear: G.clear, over: G.over, done: !!G.done, score: calcScore(), fps: Math.round(fpsAvg), quality };
   },
   // 画面を描かずに高速で進める。ctrl(G) は [x, y] の移動入力を返す関数、chooser(ids, G) は選ぶ番号を返す関数

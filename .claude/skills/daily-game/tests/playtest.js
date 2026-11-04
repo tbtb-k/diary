@@ -120,6 +120,16 @@ let browser;
     const hs = await page.evaluate(() => { const d = window.__game.debug; d.god(true); d.spawn('elite', 1); const ok = d.killOne('elite'); return { ok, fr: window.__game.world().freeze }; });
     check('強敵を倒すと一瞬だけ時間が止まる（ヒットストップ）', hs.ok && hs.fr > 0 && hs.fr <= 0.1, `freeze=${hs.fr}`);
     await page.evaluate(() => window.__game.debug.god(false));
+    // 強敵・ボスが画面の外にいると、ふちに矢印が出る
+    await page.evaluate(() => { const d = window.__game.debug; d.god(true); d.spawn('elite', 1); });
+    await wait(250);
+    const ar = await page.evaluate(() => window.__game.state().arrows);
+    check('画面の外の強敵に、方向の矢印が出る', ar >= 1, `arrows=${ar}`);
+    await page.evaluate(() => { const g = window.__game.world(); g.enemies.filter(e => e.type === 'elite').forEach(e => { e.x = g.player.x + 10; e.y = g.player.y + 10; }); });
+    await wait(250);
+    const ar2 = await page.evaluate(() => window.__game.state().arrows);
+    check('近くに来た強敵の矢印は消える', ar2 === 0, `arrows=${ar2}`);
+    await page.evaluate(() => { const g = window.__game.world(); g.enemies.filter(e => e.type === 'elite').forEach(e => { e.dead = true; }); window.__game.debug.god(false); });
     // 一時停止
     await page.click('#b-pause');
     check('一時停止できる', await visible(page, 'pause'));
