@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Rabobank）。2026年11月5日作成。公開情報（Microsoft Learn）をもとにまとめています。">
+<title>銀行のチャットが、問い合わせの6割以上を人に回さず解決できるようになりました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月5日／金融（Rabobank）・カスタマーサポート</p>
+
+  <h1>銀行のチャットが、問い合わせの6割以上を人に回さず解決できるようになりました</h1>
+
+  <div class="lead">
+    <p>オランダの銀行 Rabobank は、電話とチャットの問い合わせが増える中で、外部ベンダー頼みの古いチャットボットの更新に時間がかかっていました。</p>
+    <p>そこで Copilot Studio（会話で答える AI エージェントを、専用の画面で作れる Microsoft のツール） に移行し、顧客向けのエージェントを3つ（電話1つ、チャット2つ）作りました。</p>
+    <p>いまは1日あたり電話2万件・チャット7,000件を扱い、チャットの62%を担当者に回さず解決できています（Rabobank が公表した数字です）。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>お客様から「カードを止めたい」「口座の件で聞きたい」といった問い合わせが毎日たくさん届きます。チャットの答えを直したくても、更新のたびに専門の開発者を待つことになった経験はありませんか。</p>
+  <p>Rabobank の旧システムでは、チャット用と電話用で同じ内容を別々に更新する必要があり、外部のシステムとつなぐのも大変でした。担当者は「ひとつの会話基盤で全部を管理し、自分たちで改善したい」と考えていました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio（会話で答える AI エージェントを、専用の画面で作れる Microsoft のツール）で、質問の意図を読み取って、手続きごとの会話の流れ（トピック）に案内する仕組みを作りました。</p>
+  <p>電話では、まず用件を聞いて適切な担当者の列につなぎます。チャットでは、カードの停止のような手続きを最後まで案内します。人に引き継ぐ部分には Genesys Cloud（コールセンター用のシステム）を使い、Copilot Studio との間をつなぐ中継プログラムを自作しました。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Rabobank の問い合わせ対応の流れ">
+      <li><div class="box">お客様が<br>電話・チャット</div></li><li><div class="box">意図を<br>読み取る</div></li><li><div class="box">手続きの流れ<br>で案内</div></li><li><div class="box">解決 または<br>担当者へ引き継ぎ</div></li>
+    </ol>
+    <figcaption>Rabobank の問い合わせ対応の流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>旧システムの会話の内容（トピック）を Copilot Studio に移しました。チャット用のエージェントは3か月で作って公開しました。</li><li>質問の意図を見分けるために、「こう聞かれたらこの流れ」という言い回しの例（トリガーフレーズ）を整え、外部の意図の一覧とも組み合わせました。</li><li>Power Automate（作業を自動でつなぐ Microsoft のツール）で、銀行内の仕組みと連携しました。</li><li>答えられない質問には、生成 AI を使う予備の流れ（フォールバック）を用意しました。Rabobank は規制に合わせて、この部分を Copilot Studio の外の自社の Azure 環境に置いています。</li><li>会話の記録を Power BI（数字をグラフにする Microsoft のツール）で分析し、個人が分からないようにした実際の質問でテストしてから本番に反映しました。</li>
+  </ol>
+  <p class="src-note">※ 手順の並びは、出典の説明を読みやすく整理したものです。画面の操作や設定値までは公表されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>チャットと電話を別々に更新する必要があり、変更には専門の開発者と外部ベンダーが必要でした。外部システムとのつなぎ込みも難しい状態でした。</p></div>
+    <div class="after"><h3>いま</h3><p>1つのプラットフォームで電話・チャットのエージェントを管理でき、外部の助けなしに自分たちで更新できます。チャットの62%は担当者に回さずに解決しています。</p></div>
+  </div>
+  <p>1日2万件の電話と7,000件のチャット、チャットの自己解決率62%は、いずれも Rabobank が公表した数字です。それ以外の効果（時間やコストの削減など）は公表されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>自分の部署に来る問い合わせを1か月分ふり返り、同じ質問が多い順に3つ書き出します。</li><li>その3つについて、正しい答えと「こう聞かれたらこう案内する」という言い回しの例を集めます。</li><li>Copilot Studio で小さなエージェントを1つ作り、実際の質問で試して、答えられなかったものを記録します。</li>
+  </ol>
+  <p>準備物は、問い合わせの履歴と、正しい答えがまとまった資料です。Copilot Studio の利用にはライセンスや管理者の設定が必要で、組織の契約によって使える機能が変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>生成 AI の機能は、規制と品質の確認に時間がかかりました</strong>
+    <p>Rabobank は、規制への対応や品質の確認が難しいことを理由に、Copilot Studio に組み込まれた生成 AI の機能をまだ使っていません。サイトの8,000件以上のページを知識源にする難しさもあり、自社の Azure 環境で別の仕組みを作りました。また、意図の読み取りがうまくいかないと、電話が違う担当者につながってしまうと説明しています。</p>
+  </div>
+  <p>お客様の会話を使ってテストするときは、個人が特定されないように加工することが前提です。AI が間違った案内をする可能性もあるので、お金や契約に関わる内容は、必ず担当者に引き継げる出口を用意しておきましょう。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例の要点は、AI の賢さよりも「意図を読み取り、テストし、改善し続ける仕組み」を先に整えたことです。出典も、意図の読み取りを改善する流れと、実際の質問を使ったテストを大事な学びとして挙げています。</p>
+  <p>自分の職場に置き換えると、社内のヘルプデスクや総務への問い合わせにも使えます。「よくある質問の上位10件」を集めて、答えの案内と「人につなぐ条件」を決めるところから始めると、小さく試せます。</p>
+
+  <footer>
+    <p>出典：Microsoft Learn「Rabobank embraces conversational banking with Copilot Studio」（2025年8月11日公開）<br>
+    <a href="https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/rabobank-conversational-banking">https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/rabobank-conversational-banking</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月5日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

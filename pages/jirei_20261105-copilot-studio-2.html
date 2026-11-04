@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Holland America Line）。2026年11月5日作成。公開情報（Microsoft Learn）をもとにまとめています。">
+<title>クルーズ予約の「どれを選べば？」に答える AI コンシェルジュを3か月で公開しました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月5日／旅行・クルーズ（Holland America Line）・オンライン接客</p>
+
+  <h1>クルーズ予約の「どれを選べば？」に答える AI コンシェルジュを3か月で公開しました</h1>
+
+  <div class="lead">
+    <p>クルーズ会社の Holland America Line では、客室や料金プランが多く、予約や準備の方法が分かりにくいことが課題でした。</p>
+    <p>そこで Copilot Studio（会話で答える AI エージェントを、専用の画面で作れる Microsoft のツール） を使い、サイト上の案内役「Anna」を約3か月で作って公開しました。</p>
+    <p>公開後は、Anna を使ったお客様のほうが自分に合うクルーズを見つけやすいという手応えが得られています（同社の担当者の発言です）。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>旅行を予約しようとして、プランが多すぎて何を選べばいいか迷ったことはありませんか。予約したあとも、持ち物や追加サービスの申し込み方が分かりにくいことがあります。</p>
+  <p>同社も、ただリンクを案内するだけの従来のチャットボットでは足りないと考えていました。電話を増やさずに、24時間、お客様一人ひとりに合った案内をしたいというのが願いでした。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio（会話で答える AI エージェントを、専用の画面で作れる Microsoft のツール）で、会話で相談に乗る「デジタルコンシェルジュ」の Anna を作りました。</p>
+  <p>Anna は、新しい予約、既存の予約への追加、一般的な質問の3つの場面を担当します。予約システムや顧客管理システム（CRM）と、サイトの内容につないで答えます。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Anna が質問を受けてから答えるまでの流れ">
+      <li><div class="box">お客様が<br>サイトで質問</div></li><li><div class="box">AI が<br>意図を判定</div></li><li><div class="box">担当の流れに<br>案内</div></li><li><div class="box">答える／<br>人につなぐ</div></li>
+    </ol>
+    <figcaption>Anna が質問を受けてから答えるまでの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>まず3つの場面（新規予約・追加購入・一般質問）に絞って、最小限の版（MVP）を作りました。</li><li>質問の意図を見分けるため、AI への指示文（プロンプト）を使って、飲み物・スパ・食事などの担当の流れに振り分ける方法をとりました。</li><li>「来年の夏」のようなあいまいな日付を、予約システムが読める日付に直す仕組みも用意しました。</li><li>答えられないときは、サイトの内容をもとにした回答や、人の担当者への引き継ぎに切り替わるようにしました。</li><li>社内の電話担当者が使う段階から始め、全社員でのテストを経て、サイトで5%、50%、全員のお客様へと少しずつ公開しました。</li>
+  </ol>
+  <p class="src-note">※ 手順の並びは、出典の説明を読みやすく整理したものです。実際の画面の設定や、指示文の全文は載せていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>プランが多く、予約や準備の方法が分かりにくい状態でした。質問があると電話やチャットの担当者に頼ることになりました。</p></div>
+    <div class="after"><h3>いま</h3><p>Anna が24時間、自然な言葉で相談を受けます。毎週数千件の会話を扱い、基本的な問い合わせは電話担当者に回る数が減りつつあります。</p></div>
+  </div>
+  <p>「毎週数千件の会話」や、問い合わせ減少の兆しは、Microsoft Learn の記事に書かれた内容です。削減率などの数字は公表されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>お客様や社内から多い「選び方・申し込み方」の質問を5つ書き出します。</li><li>まず1つの場面だけに絞って、Copilot Studio でエージェントを作り、まず社内のメンバーに使ってもらいます。</li><li>答えられなかった質問を毎週ふり返り、内容を直す習慣をつけます。</li>
+  </ol>
+  <p>準備物は、よくある質問と、正しい答えの載った資料です。Copilot Studio のライセンスや管理者の設定が必要で、組織によって使える機能は変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>公開は少しずつ、そして答えられなかった質問を見直し続けました</strong>
+    <p>Holland America Line は、電話担当者、全社員、サイトの一部のお客様、全員の順に広げました。「答えられた質問と答えられなかった質問」を分析して、直す場所を決めています。</p>
+  </div>
+  <p>お客様の予約情報につなぐときは、見せてよい情報の範囲を決める必要があります。AI が間違った日付や料金を答えることもあるので、最終確認は予約画面や担当者で行う案内を添えましょう。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例は、いきなり完璧を目指さず、3つの場面に絞って公開し、利用者の反応を見ながら広げた点が参考になります。</p>
+  <p>自分の職場に置き換えると、社内の申請や手続きの案内にも応用できます。「出張の申し込み」「備品の注文」など、迷いやすい手続きを1つ選んで、自然な言葉で相談できる案内役を試してみるのはどうでしょうか。</p>
+
+  <footer>
+    <p>出典：Microsoft Learn「Holland America Line transforms customer experience with Copilot Studio」（2025年5月13日公開）<br>
+    <a href="https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/holland-america-customer-experience">https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/holland-america-customer-experience</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月5日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
