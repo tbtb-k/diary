@@ -130,6 +130,10 @@ let browser;
     const ar2 = await page.evaluate(() => window.__game.state().arrows);
     check('近くに来た強敵の矢印は消える', ar2 === 0, `arrows=${ar2}`);
     await page.evaluate(() => { const g = window.__game.world(); g.enemies.filter(e => e.type === 'elite').forEach(e => { e.dead = true; }); window.__game.debug.god(false); });
+    // 分裂する敵：倒すと小さな2体に分かれる
+    const sp = await page.evaluate(() => { const d = window.__game.debug, g = window.__game.world(); d.god(true); d.spawn('splitter', 1); const ok = d.killOne('splitter'); return { ok, minis: g.enemies.filter(e => e.type === 'mini' && !e.dead).length }; });
+    check('分裂する敵を倒すと小さな敵が2体出る', sp.ok && sp.minis === 2, `minis=${sp.minis}`);
+    await page.evaluate(() => { const g = window.__game.world(); g.enemies.forEach(e => { if (e.type === 'mini') e.dead = true; }); window.__game.debug.god(false); });
     // 一時停止
     await page.click('#b-pause');
     check('一時停止できる', await visible(page, 'pause'));

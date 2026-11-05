@@ -249,8 +249,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 5, date: '2026-11-05' };
+const GAME = { day: 6, date: '2026-11-06' };
 const PATCH_NOTES = [
+  { day: 6, date: '2026-11-06', title: '新しい敵「ぷるぷる」が登場！',
+    items: ['明るいピンクの丸い敵は、倒すと小さな2体に分かれるよ', '小さい子はすばしっこいから、なぎ払ってね'],
+    ask: '分かれる敵を、武器でまとめて倒せて気持ちよかったか教えてね！' },
   { day: 5, date: '2026-11-05', title: '強敵とボスの来る方向がわかる！',
     items: ['オレンジの強敵と赤いボスが画面の外にいるとき、画面のふちに矢印が出るよ', '近づくと矢印は消えるよ'],
     ask: '矢印のおかげで、強敵から逃げやすくなったか教えてね！' },
@@ -341,6 +344,8 @@ const ET = {
   darter: { shape: 'dia', color: '#ffd84a', r: 8, hp: 5, spd: 104, dmg: 6, xp: 1, kb: 1.2, face: 1 },
   brute: { shape: 'sq', color: '#b48cff', r: 17, hp: 46, spd: 38, dmg: 14, xp: 4, kb: 0.45, spin: 0.8 },
   shooter: { shape: 'hex', color: '#5dff9b', r: 12, hp: 18, spd: 52, dmg: 8, xp: 2, kb: 0.8, spin: 1.2 },
+  splitter: { shape: 'circ', color: '#ff8ad8', r: 14, hp: 24, spd: 46, dmg: 9, xp: 2, kb: 0.7, spin: 0 },
+  mini: { shape: 'circ', color: '#ff8ad8', r: 7, hp: 6, spd: 92, dmg: 5, xp: 1, kb: 1.3, spin: 0 },
   elite: { shape: 'star', color: '#ff7a3d', r: 26, hp: 420, spd: 47, dmg: 18, xp: 30, kb: 0.15, spin: 1.5 },
   boss: { shape: 'boss', color: '#ff3b5c', r: 46, hp: 4200, spd: 44, dmg: 24, xp: 0, kb: 0.03, spin: 0.6 },
 };
@@ -466,10 +471,10 @@ function director(dt) {
   if (t >= BOSS_AT) spawnBoss();
 }
 function pickType(t) {
-  const names = ['drifter', 'darter', 'brute', 'shooter'];
-  const w = [1, clamp((t - 35) / 90, 0, 0.7), clamp((t - 90) / 160, 0, 0.4), clamp((t - 150) / 250, 0, 0.3)];
-  let r = rng() * (w[0] + w[1] + w[2] + w[3]);
-  for (let i = 0; i < 4; i++) { r -= w[i]; if (r <= 0) return names[i]; }
+  const names = ['drifter', 'darter', 'brute', 'shooter', 'splitter'];
+  const w = [1, clamp((t - 35) / 90, 0, 0.7), clamp((t - 90) / 160, 0, 0.4), clamp((t - 150) / 250, 0, 0.3), clamp((t - 60) / 120, 0, 0.35)];
+  let r = rng() * (w[0] + w[1] + w[2] + w[3] + w[4]);
+  for (let i = 0; i < 5; i++) { r -= w[i]; if (r <= 0) return names[i]; }
   return 'drifter';
 }
 function spawnEnemy(type, ang, rad) {
@@ -692,6 +697,14 @@ function kill(e) {
   }
   burst(e.x, e.y, d.color, e.type === 'brute' ? 16 : 9, 160, 3);
   Snd.play('kill');
+  if (e.type === 'splitter') {
+    const a0 = rng() * TAU;
+    for (let i = 0; i < 2; i++) {
+      if (G.enemies.length >= MAX_EN) break;
+      const m = spawnEnemy('mini'), a = a0 + i * Math.PI;
+      m.x = e.x + Math.cos(a) * 10; m.y = e.y + Math.sin(a) * 10; m.kx = Math.cos(a) * 160; m.ky = Math.sin(a) * 160;
+    }
+  }
   dropGem(e.x, e.y, d.xp);
   const r = rng();
   if (G.t > 40 && r < 0.011) dropItem(e.x, e.y, 'heal');
