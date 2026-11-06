@@ -152,6 +152,8 @@ let browser;
     await page.waitForFunction(() => window.__game.scene === 'result', null, { timeout: 8000 }).catch(() => {});
     check('HPが0になると結果画面が出る', await visible(page, 'result'));
     await wait(400);
+    const bname = await page.evaluate(() => document.getElementById('res-bname').textContent);
+    check('結果画面にビルド名が出る', /型$/.test(bname), bname);
     await shot(page, '07_result_390');
     await page.click('#b-retry');
     await wait(300);

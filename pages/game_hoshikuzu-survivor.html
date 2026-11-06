@@ -122,6 +122,8 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 .choice .nm{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-weight:800;font-size:16px}
 .choice .nm em{font:900 10.5px/1 var(--display);font-style:normal;padding:4px 7px;border-radius:99px;background:var(--c);color:#0a0720;letter-spacing:.04em}
 .choice .ds{display:block;margin-top:4px;font-size:13px;color:var(--dim);line-height:1.5}
+.build-name{margin-top:14px;text-align:center;color:var(--yellow,#ffd84a);font:700 15px/1.3 var(--display);text-shadow:0 0 12px rgba(255,216,74,.5)}
+.build-name:empty{display:none}
 .build{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:16px;min-height:30px}
 .build span{display:inline-flex;align-items:center;gap:3px;padding:4px 7px 4px 5px;border-radius:9px;background:rgba(255,255,255,.06);border:1px solid var(--faint);color:var(--c);font:700 11px/1 var(--display)}
 .build .ic{width:15px;height:15px}
@@ -236,6 +238,7 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
       <div class="stat"><b id="r-kills">0</b><span>倒した敵</span></div>
       <div class="stat"><b id="r-best">-</b><span>ベストスコア</span></div>
     </div>
+    <div class="build-name" id="res-bname"></div>
     <div class="build" id="res-build"></div>
     <div class="stack">
       <button class="btn primary" id="b-retry">もう1回</button>
@@ -249,8 +252,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 6, date: '2026-11-06' };
+const GAME = { day: 7, date: '2026-11-07' };
 const PATCH_NOTES = [
+  { day: 7, date: '2026-11-07', title: '結果画面に「ビルド名」が出るよ！',
+    items: ['その回の強化の組み合わせから、「雷鳴スパーク型」みたいな名前が付くよ', '武器をたくさん育てると「オールラウンド型」になるよ'],
+    ask: '自分のビルド名を見て、次はちがう名前を狙ってみてね！' },
   { day: 6, date: '2026-11-06', title: '新しい敵「ぷるぷる」が登場！',
     items: ['明るいピンクの丸い敵は、倒すと小さな2体に分かれるよ', '小さい子はすばしっこいから、なぎ払ってね'],
     ask: '分かれる敵を、武器でまとめて倒せて気持ちよかったか教えてね！' },
@@ -856,6 +862,15 @@ function buildList() {
   for (const id in G.passives) out.push([id, G.passives[id]]);
   return out;
 }
+const BUILD_W = { pulse: '連射パルス', orbit: '回転オービット', nova: '閃光ノヴァ', chain: '雷鳴スパーク' };
+const BUILD_P = { power: '豪腕', cool: '高速', thrust: '疾風', armor: '鉄壁', magnet: '磁力', regen: '不死身' };
+function buildName() {
+  const ws = Object.keys(G.weapons).sort((a, b) => G.weapons[b] - G.weapons[a]);
+  if (!ws.length) return '';
+  if (ws.filter(id => G.weapons[id] >= 3).length >= 3) return 'オールラウンド型';
+  const ps = Object.keys(G.passives).filter(id => G.passives[id] >= 2).sort((a, b) => G.passives[b] - G.passives[a]);
+  return (ps.length ? BUILD_P[ps[0]] : '') + BUILD_W[ws[0]] + '型';
+}
 const buildText = () => buildList().map(([id, l]) => `${UPG[id].name}Lv${l}`).join('・');
 function renderBuild(el) {
   el.innerHTML = buildList().map(([id, l]) => `<span style="--c:${UPG[id].color}">${svg(id)}${l}</span>`).join('');
@@ -1384,7 +1399,7 @@ function finish() {
   if (isNew) store.set('hs-best', rec);
   store.set('hs-runs', (store.get('hs-runs', 0) || 0) + 1);
   if (g.clear) store.set('hs-clears', (store.get('hs-clears', 0) || 0) + 1);
-  lastResult = Object.assign({ build: buildText() }, rec);
+  lastResult = Object.assign({ build: buildText(), bname: buildName() }, rec);
   const t = $('res-title');
   t.textContent = g.clear ? 'CLEAR!' : 'GAME OVER';
   t.className = 'big res-title ' + (g.clear ? 'clear' : 'over');
@@ -1401,6 +1416,7 @@ function finish() {
   const b2 = isNew ? rec : best;
   $('r-best').textContent = b2 ? fmtNum(b2.score) : '-';
   renderBuild($('res-build'));
+  $('res-bname').textContent = buildName();
   scene = 'result'; el.hud.hidden = true; el.bossbar.hidden = true; hideHint();
   show('result');
 }
