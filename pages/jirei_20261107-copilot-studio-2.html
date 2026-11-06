@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（シンガポール民間防衛隊）。2026年11月7日作成。公開情報（Microsoft Learn）をもとにまとめています。">
+<title>社内向け AI アシスタント「NEXA」を、6,000人の消防隊員に届けました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月7日／公共・防災（シンガポール民間防衛隊 SCDF）・社内ナレッジ検索</p>
+
+  <h1>社内向け AI アシスタント「NEXA」を、6,000人の消防隊員に届けました</h1>
+
+  <div class="lead">
+    <p>シンガポール民間防衛隊（SCDF）では、勤務表づくりなどが手作業で、システム開発に何年もかかることが課題でした。</p>
+    <p>そこで、民間防衛隊と技術機関 HTX が「デジタル工場」と呼ぶチームを作り、Power Platform（業務アプリを少ないコードで作れる Microsoft のツール群）と Copilot Studio（会話で動く AI エージェントを作れるツール）で、アプリと AI アシスタント「NEXA」を作りました。</p>
+    <p>NEXA は全隊員6,000人に展開され、アプリの開発期間は2〜3年から1〜3か月になったと公表されています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>決まりごとや手順書が、いくつもの Web サイトやフォルダに散らばっていて、必要な答えを探すだけで時間がかかったことはありませんか。</p>
+  <p>SCDF は、勤務表づくりや車両の整備といった仕事を手作業で行っていました。システムを頼むと、完成まで何年もかかるのが普通でした。現場の隊員にとっては、あまりに遅い速度でした。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>2023年に、技術機関 HTX と「デジタル工場」のチームを作りました。まず Power Apps（業務アプリを作るツール）で4つのアプリを作り、社内で経験を積みました。2024年に Copilot Studio を試し、2025年には社内の公式文書も取り込んで NEXA を育てました。</p>
+  <p>NEXA は、政府の公開サイトや社内の文書をもとに、決まりや手順を会話で答えます。クイズ形式で学べる機能もあり、新しい隊員の学びにも使われています。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="NEXA の流れ">
+      <li><div class="box">隊員が<br>NEXAに質問</div></li><li><div class="box">公開サイトと<br>社内文書を検索</div></li><li><div class="box">答えを返す／<br>クイズを出す</div></li><li><div class="box">学びや業務に<br>活用</div></li>
+    </ol>
+    <figcaption>NEXA が質問に答える流れ（出典の説明をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>2023年：デジタル工場を作り、勤務表・食事・整備のアプリを作って経験を積みました。</li>
+    <li>2024年：Copilot Studio を試し、政府サイトから情報を探す NEXA の最初の版を作りました。</li>
+    <li>2025年：SCDF の公式文書を知識として加え、装備の検出やクイズの作成も使えるようにしました。</li>
+    <li>共有ファイル置き場（SharePoint）の内容を Power Automate（作業の自動化ツール）でデータの置き場（Dataverse）に入れ、NEXA が使えるようにしました。</li>
+  </ol>
+
+  <p class="src-note">※ 手順は、出典の説明を読みやすく整理したものです。実際の設定画面や指示文は載せていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>手作業の業務が多く、従来の方法ではアプリ1本を作るのに2〜3年かかっていました。決まりごとの検索も手間でした。</p></div>
+    <div class="after"><h3>いま</h3><p>アプリは1〜3か月で作れるようになりました。NEXA は全隊員6,000人に展開されています。</p></div>
+  </div>
+  <ul>
+    <li>作ったアプリの価値は約2,000万ドルで、開発費は5万ドル未満です（SCDF が公表した数字です）。</li>
+    <li>2つのアプリは、23の署の隊員2,100人が使っています。別の1つは、現場以外の職員約700人が使っています（SCDF が公表した数字です）。</li>
+    <li>食事管理のアプリは、1人で3か月で作られました（SCDF が公表した数字です）。</li>
+    <li>NEXA だけの利用回数や、問い合わせが何%減ったかは公表されていません。</li>
+  </ul>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>職場で「どこに書いてあるか分からない」と聞かれやすい決まり・手順書を、1つの置き場所に集めます。</li>
+    <li>その文書だけを知識にした、小さな質問応答エージェントを作ってみます（Copilot Studio、または社内で許可された AI ツール）。</li>
+    <li>数人に使ってもらい、答えられなかった質問を見て、足りない文書を足していきます。</li>
+  </ol>
+
+  <p>準備物は、最新の文書と、閲覧してよい人の範囲の整理です。Copilot Studio のライセンスや管理者の設定が必要で、組織によって使える機能は変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>人を育てる体制づくりが前提でした</strong>
+    <p>SCDF は、デジタル工場という専門チームを作り、隊員を巻き込んで技術を身につけてもらう取り組みを、AI の前から続けていました。AI だけを入れても同じ結果になるとは限りません。</p>
+  </div>
+  <p>NEXA は公開サイトと社内文書をもとにしますが、AI は文書にない答えをもっともらしく返すことがあります。安全に関わる手順は、元の文書で確かめる習慣を残しましょう。機密文書を知識にするときは、見られる人の範囲も決めてください。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例は、AI を単独で導入せず、小さなアプリづくりで経験を積んでから会話型エージェントへ進んだ順番が参考になります。</p>
+  <p>自分の職場に置き換えると、まず勤務表や申請など1つの手作業を小さなアプリや自動化に変え、次に「決まりごとの質問に答える窓口」を足す、という進め方ができます。小さな成功を重ねるほど、次の相談がしやすくなります。</p>
+
+  <footer>
+    <p>出典：Microsoft Learn「Singapore Civil Defence Force implements digital solutions using Power Platform and Copilot Studio」（Learn 上の日付表示：2026年3月18日）<br>
+    <a href="https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/scdf-implements-digital-solutions">https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/scdf-implements-digital-solutions</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月7日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

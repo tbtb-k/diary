@@ -48,6 +48,8 @@
 | 2026-11-03 | Copilot Studio（Agent Builder 枠の代替） | ABN AMRO | pages/jirei_20261103-copilot-studio-2.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/abn-amro-enhances-ai |
 | 2026-11-05 | Copilot Studio | Rabobank | pages/jirei_20261105-copilot-studio.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/rabobank-conversational-banking |
 | 2026-11-05 | Copilot Studio（Agent Builder 枠の代替） | Holland America Line | pages/jirei_20261105-copilot-studio-2.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/holland-america-customer-experience |
+| 2026-11-07 | Copilot Studio | COSMO CONSULT | pages/jirei_20261107-copilot-studio.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/cosmo-consult-improves-sales-operations |
+| 2026-11-07 | Copilot Studio（Agent Builder 枠の代替） | シンガポール民間防衛隊（SCDF） | pages/jirei_20261107-copilot-studio-2.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/scdf-implements-digital-solutions |
 
 ## ネタ帳（候補）
 
@@ -110,3 +112,4 @@
 - 2026-11-01：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（La Trobe University、Eneco。ネタ帳の候補を本文確認して採用）にした。Cowork 枠は休み（新しい事例なし。検索結果はパートナー解説と製品ページのみ）。ブロックされたホストなし。
 - 2026-11-03：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（モントリオール市、ABN AMRO。Learn の事例一覧から本文確認して採用）にした。Cowork 枠は休み（Microsoft Copilot for finance ブログ 2026-10-29 は Zurich Insurance NA の「静的な報告書→ダッシュボード、数週間→数時間」が1段落のみで8ブロックが埋まらず見送り。ネタ帳候補）。ネタ帳候補（Learn、未読）：Rabobank、Holland America Line、T-Mobile、COSMO CONSULT、Signetic。ブロックされたホストなし。
 - 2026-11-05：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（Rabobank、Holland America Line。Learn の事例一覧から本文確認して採用）にした。Cowork 枠は休み（名前の出た顧客事例なし。見つかったのはパートナー記事と製品ページのみ）。ネタ帳候補（Learn 事例一覧・未使用）：COSMO CONSULT、Signetic、SCDF、A1、T-Mobile、Rabobank 以外の未読分。ブロックされたホストなし。
+- 2026-11-07：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（COSMO CONSULT、SCDF。Learn の事例一覧から本文確認して採用）にした。Cowork 枠は休み（techcommunity「Measuring the value of Cowork」2026-09 は方法論の解説で顧客事例なし。ほかはパートナー記事のみ）。ネタ帳候補（Learn 事例一覧・未読）：Signetic、A1、T-Mobile。ブロックされたホストなし。

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（COSMO CONSULT）。2026年11月7日作成。公開情報（Microsoft Learn）をもとにまとめています。">
+<title>営業のデータ確認と展示会のリード登録を、4つの AI エージェントで楽にしました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月7日／IT・コンサルティング（COSMO CONSULT）・営業支援</p>
+
+  <h1>営業のデータ確認と展示会のリード登録を、4つの AI エージェントで楽にしました</h1>
+
+  <div class="lead">
+    <p>ITコンサルティング会社の COSMO CONSULT は、約1,600人に成長する中で、営業データの質や展示会で得た見込み客の扱いにばらつきが出ていました。</p>
+    <p>そこで Copilot Studio（会話で動く AI エージェントを、専用の画面で作れる Microsoft のツール）を使い、営業の業務の流れに組み込む4つのエージェントを作りました。</p>
+    <p>データ品質の問い合わせは80%減り、展示会などのリード登録では1件あたり5〜7分の手間が減ると見積もられています（同社が公表した数字です）。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>展示会で名刺とメモをたくさん受け取ったのに、帰ってから入力が追いつかず、見込み客の情報があとまわしになったことはありませんか。</p>
+  <p>COSMO CONSULT でも、展示会のリードが漏れたり遅れたりしていました。顧客情報の不備は、決まりを書いた文書を見ながら手作業で確認し、直せないときは本部のチームに頼っていました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Copilot Studio（会話で動く AI エージェントを、専用の画面で作れる Microsoft のツール）で、営業支援システム（Dynamics 365）や Teams（職場のチャットツール）につながる4つのエージェントを作りました。単独の AI 画面は作らず、いつもの業務の流れの中に置いたのが特徴です。</p>
+  <p>たとえば「Text2Lead」は、Teams に自然な文章でメモを送ると、見込み客（リード）の記録を作ります。「Data Health Assistant」は、顧客情報が決まりを満たしているかを調べ、足りない項目と直し方を示します。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Text2Lead の流れ">
+      <li><div class="box">営業担当が<br>メモを送る</div></li><li><div class="box">エージェントが<br>既存の記録を探す</div></li><li><div class="box">リードを<br>自動で作成</div></li><li><div class="box">担当者が<br>内容を確認</div></li>
+    </ol>
+    <figcaption>Text2Lead が展示会のメモをリードにするまでの流れ（出典の説明をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>営業担当が、連絡先・会社名・話した内容・展示会名を、Teams か専用のスマホアプリから送ります。</li>
+    <li>エージェントが、データの置き場（Dataverse）から関係する連絡先・会社・キャンペーンの記録を探します。</li>
+    <li>新しいリードを作り、見つかった記録とひもづけます。</li>
+    <li>スマホアプリでは、取り込んだ内容を画面で見せ、利用者が確かめてからエージェントに渡します。</li>
+  </ol>
+
+  <p class="src-note">※ 手順は、出典の説明を読みやすく整理したものです。実際の設定画面や指示文の全文は載せていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>展示会のリードの扱いが人によってばらつき、遅れや漏れが起きていました。データ品質は手作業で確認し、問い合わせは週に5〜10件ありました。</p></div>
+    <div class="after"><h3>いま</h3><p>メモを送るだけでリードができます。データ品質の問い合わせは2週間に1〜2件ほどに減り、ほとんどの利用者が自分で直せています。</p></div>
+  </div>
+  <ul>
+    <li>データ品質のサポート依頼が80%減りました（同社が公表した数字です）。</li>
+    <li>対象市場の顧客のうち平均96%が、同社の最高水準の品質基準（約14の主要項目）を満たしています（同社が公表した数字です）。</li>
+    <li>ドイツ・オーストリア・スイスの年2,000件超のイベントのリードで、1件あたり5〜7分の節約と見積もられています（同社の見積もりです）。</li>
+    <li>資金援助の対象かを調べる「Fund Eligibility Checker」は、約1分で結果を返し、調べる時間を約80%減らせると見積もられています（同社の見積もりです）。</li>
+  </ul>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>手作業が多い、または入力ミスが多い仕事を1つ選びます（例：打ち合わせメモの記録、申請内容の確認）。</li>
+    <li>その仕事で使っている場所（Teams や業務システム）を決め、そこから呼び出せる形で小さなエージェントを試します。</li>
+    <li>最初は、人が最終確認をする前提にします。慣れてから、自動で動く範囲を広げます。</li>
+  </ol>
+
+  <p>準備物は、判断の決まりを書いた文書と、記録の置き場です。Copilot Studio のライセンスや、管理者による接続の許可が必要になります。組織の設定で使える機能は変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>「エージェントの性能」より「使う流れへの組み込み」が大事でした</strong>
+    <p>同社の担当者は、エージェントの能力だけでなく、利用者がどう使うかの流れの中に置くことが大切だと話しています（意訳です）。</p>
+  </div>
+  <p>Data Health Assistant では、修正の確認と実施は利用者の責任として残しています。また、権限が必要な案件は人が対応する前提にしています。AI は間違うことがあるので、顧客情報を書き換える作業ほど、人の確認を残しましょう。</p>
+  <p>同社は、最初に ChatGPT を使った作りだった部分を、のちに Copilot Studio 中心の作りに直しています。使うツールは、途中で見直してよいという一例です。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例は、「新しい AI の画面を増やす」のではなく、いつもの業務の流れに小さなエージェントを置いた点が参考になります。単純な自動化なら、2日ほどで作れたという話もあります（同社の担当者の発言です）。</p>
+  <p>自分の職場に置き換えると、会議のメモから議事録の下書きや宿題リストを作ったり、申請書の抜けを事前に確かめたりする場面に応用できます。まず、毎週くり返している「確認」や「転記」を1つ選んでみてはどうでしょうか。</p>
+
+  <footer>
+    <p>出典：Microsoft Learn「COSMO CONSULT improves sales operations and data quality using Copilot Studio agents」（Learn 上の日付表示：2026年9月4日）<br>
+    <a href="https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/cosmo-consult-improves-sales-operations">https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/cosmo-consult-improves-sales-operations</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月7日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
