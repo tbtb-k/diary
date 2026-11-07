@@ -252,8 +252,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 7, date: '2026-11-07' };
+const GAME = { day: 8, date: '2026-11-08' };
 const PATCH_NOTES = [
+  { day: 8, date: '2026-11-08', title: 'ナノリペアが強くなったよ！',
+    items: ['HPの回復が、毎秒+0.4から+0.6に増えたよ', 'ピンチのとき、頼れる回復になったかも'],
+    ask: 'ナノリペアを育てて、HPが戻るのを感じられたか教えてね！' },
   { day: 7, date: '2026-11-07', title: '結果画面に「ビルド名」が出るよ！',
     items: ['その回の強化の組み合わせから、「雷鳴スパーク型」みたいな名前が付くよ', '武器をたくさん育てると「オールラウンド型」になるよ'],
     ask: '自分のビルド名を見て、次はちがう名前を狙ってみてね！' },
@@ -338,7 +341,7 @@ const UPG = {
   thrust: { kind: 'p', name: '推進エンジン', color: '#9cf3ff', max: 5, d: '移動の速さ+10%' },
   armor: { kind: 'p', name: '装甲', color: '#ff9ad6', max: 5, d: '最大HP+20、HPも20回復' },
   magnet: { kind: 'p', name: '引力フィールド', color: '#7fffd0', max: 5, d: 'ほしくずを引き寄せる範囲+35%' },
-  regen: { kind: 'p', name: 'ナノリペア', color: '#5dff9b', max: 5, d: 'HPが少しずつ回復する（毎秒+0.4）' },
+  regen: { kind: 'p', name: 'ナノリペア', color: '#5dff9b', max: 5, d: 'HPが少しずつ回復する（毎秒+0.6）' },
 };
 const EXTRA = { heal: { name: 'エネルギー補給', color: '#5dff9b', d: 'HPを40回復' }, bonus: { name: 'ほしくずボーナス', color: '#ffd84a', d: 'スコア+300' } };
 
@@ -389,7 +392,7 @@ function calcStats() {
     cd: 1 - 0.08 * (p.cool || 0),
     speed: 1 + 0.1 * (p.thrust || 0),
     magnetR: 72 * (1 + 0.35 * (p.magnet || 0)),
-    regen: 0.4 * (p.regen || 0),
+    regen: 0.6 * (p.regen || 0),
   };
   G.player.maxHp = 100 + 20 * (p.armor || 0);
   G.player.hp = Math.min(G.player.hp, G.player.maxHp);
