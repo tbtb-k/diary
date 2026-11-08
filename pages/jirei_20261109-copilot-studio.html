@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Signetic）。2026年11月9日作成。公開情報（Microsoft Learn）をもとにまとめています。">
+<title>薬局の請求担当者が「なぜ却下？」とAIに聞けるようになりました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月9日／ヘルスケアIT（Signetic）・薬局・クリニックの請求業務</p>
+  <h1>薬局の請求担当者が「なぜ却下？」とAIに聞けるようになりました</h1>
+  <div class="lead">
+    <p>米国の医療IT企業 Signetic は、薬局やクリニックの予約・記録・保険請求を紙中心のやり方から切り替える仕組みを提供しています。</p>
+  <p>その画面の中に、Copilot Studio（ノーコードでAIエージェントを作るMicrosoftのツール）で作ったエージェントを2つ組み込みました。</p>
+  <p>請求担当者は自然な言葉で請求の状況を聞け、事前承認（保険会社への事前の許可申請）のメール作成も自動化されました。数値の成果は公表されていません。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>薬局や診療所では、患者もスタッフも何枚もの紙の書類に記入し、予約のミスや記録の抜けが起きがちです。</p>
+  <p>保険の請求でも、「この請求はなぜ処理されていないのか」「なぜ却下されたのか」を調べるたびに、担当者が画面や資料を行き来する必要があります。</p>
+  <p>Signetic はこうした紙と手作業の多い現場を、順番に仕組みで置きかえてきました。</p>
+  
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>エージェントは2つあります。1つ目は請求担当者の画面に埋め込まれた相談役、2つ目はメールをきっかけに動く事前承認の担当です。Copilot Studio は、AIエージェントを画面操作中心で作れるツールです。</p>
+  <p>どちらも、データの保管場所である Dataverse（Microsoft の業務データ置き場）から情報を取ります。Dataverse との接続には MCP（AIがデータや道具につながるための共通の取り決め）を使っています。</p>
+  
+  <figure class="figure">
+    <ol class="flow" aria-label="2つのエージェントの流れ">
+      <li><div class="box">依頼が届く<br>（質問・患者のメール）</div></li>
+      <li><div class="box">Dataverse から<br>情報を取る</div></li>
+      <li><div class="box">手順書とあわせて<br>回答・書類を作る</div></li>
+      <li><div class="box">担当者が<br>確認して使う</div></li>
+      </ol>
+    <figcaption>2つのエージェントの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>請求担当者は画面右下のチャットを開き、「この請求はなぜ却下された？」のように聞きます。</li>
+    <li>「請求ポータル」の使い方資料などをエージェントの知識として登録し、請求データは Dataverse から取らせます。</li>
+    <li>「Send Prior Auth Agent」は、患者のメールに氏名と生年月日があるか確認し、足りなければ聞き返します。</li>
+    <li>そろったら予約情報を取り出し、保険会社に送るメールと書類を作ります。</li>
+    </ol>
+  <p class="src-note">※ 最後の手順の「担当者が確認して使う」は、一般的な運用として補った表現です。Signetic が実際にどう確認しているかは公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>請求の状態や却下理由を、担当者が画面や資料で一つずつ調べる。事前承認は、書類の記入とやり取りを手作業で行い、間違いが起きやすい。</p></div>
+    <div class="after"><h3>いま</h3><p>担当者が請求画面で質問すると、請求データと資料から理由と次の対応手順が返る。事前承認は、メールを起点にエージェントが書類づくりまで進める。</p></div>
+  </div>
+  <p>成果は「請求を速く処理できる」「エラーに効率よく対応できる」と文章で述べられています。削減時間や割合などの数字は公表されていません。引用された経営者の発言は Signetic の CEO（最高経営責任者）によるものです。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>自分の仕事で、「同じ質問に毎回、資料を引いて答えている」場面を1つ書き出します。</li>
+    <li>その答えの元になる資料（手順書やFAQ）を、1つの場所にまとめます。</li>
+    <li>Copilot Studio で小さなエージェントを作り、その資料だけを知識にして、5〜10個の質問で試します。</li>
+    </ol>
+  <p>準備物は、資料と試す質問のリストです。使えるかどうかは、Copilot Studio のライセンスや社内の管理設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>エージェントの指示は具体的に書く</strong>
+    <p>Signetic のエージェントには、目的・口調・参照する資料・データの探し方が細かく指示されています。「請求IDの形式を見分ける」「利用者にデータベースを直接見るよう案内しない」といった決まりも含まれます。指示があいまいだと答えがぶれやすくなります。</p>
+  </div>
+  <p>医療や請求のように個人情報が多い業務では、エージェントが見られるデータの範囲を最小限にします。AI の答えは間違うことがあるため、保険会社に送る書類は人が確認してから使います。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>AI を「画面の中の相談役」として業務アプリに組み込むと、担当者は調べものの時間を本来の確認作業に回せます。同じ型は、請求以外の定型業務にも広げられます。</p>
+  <p>自分の職場に置き換えると、問い合わせ対応・経費精算・購買の確認など、「状況を調べて理由を説明する」仕事に使えそうです。まず、よく聞かれる質問が多い業務を1つ選ぶところから始められます。</p>
+
+  <footer>
+    <p>出典：Microsoft Learn「Signetic transforms healthcare operations with intelligent apps and agents powered by Power Platform and Copilot Studio」（2026年1月5日公開）<br>
+    <a href="https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/signetic-transforms-healthcare">https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/signetic-transforms-healthcare</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月9日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
