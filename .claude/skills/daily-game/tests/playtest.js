@@ -141,6 +141,15 @@ let browser;
     const tP = (await page.evaluate(() => window.__game.state())).t; await wait(500);
     check('一時停止中は時間が止まる', (await page.evaluate(() => window.__game.state())).t === tP);
     await page.click('#b-resume');
+    // 進化：パルスLv6＋冷却ユニットで「パルスストーム」
+    const ev0 = await page.evaluate(() => { const d = window.__game.debug; d.god(true); d.give('pulse', 6); return window.__game.state().evolved; });
+    const ev1 = await page.evaluate(() => { const d = window.__game.debug; d.give('cool', 1); return window.__game.state().evolved; });
+    check('パルスLv6＋冷却ユニットで進化する（冷却なしでは進化しない）', ev0 === false && ev1 === true);
+    await page.evaluate(() => { const d = window.__game.debug; d.spawn('drifter', 3); });
+    let eb = 0;
+    for (let i = 0; i < 12 && eb < 4; i++) { await wait(150); eb = await page.evaluate(() => window.__game.world().bullets.filter(b => b.evo).length); }
+    check('進化後は金色の弾が出る', eb >= 4);
+    await page.evaluate(() => { const g = window.__game.world(); g.enemies.forEach(e => { e.dead = true; }); });
     // ボス
     await page.evaluate(() => { window.__game.debug.god(true); window.__game.debug.give('nova', 3); window.__game.debug.setTime(299); });
     await page.waitForFunction(() => window.__game.state().boss !== null, null, { timeout: 5000 }).catch(() => {});

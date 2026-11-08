@@ -252,8 +252,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 8, date: '2026-11-08' };
+const GAME = { day: 9, date: '2026-11-09' };
 const PATCH_NOTES = [
+  { day: 9, date: '2026-11-09', title: 'パルスショットが「進化」するよ！',
+    items: ['パルスショットをLv6にして、冷却ユニットも持っていると「パルスストーム」に進化！', '金色の弾が5〜6発に増えて、敵を2体つらぬくよ'],
+    ask: '進化した瞬間と、金色の弾の気持ちよさを教えてね！' },
   { day: 8, date: '2026-11-08', title: 'ナノリペアが強くなったよ！',
     items: ['HPの回復が、毎秒+0.4から+0.6に増えたよ', 'ピンチのとき、頼れる回復になったかも'],
     ask: 'ナノリペアを育てて、HPが戻るのを感じられたか教えてね！' },
@@ -332,7 +335,7 @@ const svg = id => `<svg viewBox="0 0 24 24" class="ic" fill="none" stroke="curre
    強化（武器と補助）
    ================================================================ */
 const UPG = {
-  pulse: { kind: 'w', name: 'パルスショット', color: '#3ef2ff', max: 6, lv: ['いちばん近い敵に光の弾を撃つ', '弾が1発ふえる', '弾のダメージ+30%', '弾が敵を1体つらぬく', '弾が1発ふえる', '連射が速くなる'] },
+  pulse: { kind: 'w', name: 'パルスショット', color: '#3ef2ff', max: 6, lv: ['いちばん近い敵に光の弾を撃つ', '弾が1発ふえる', '弾のダメージ+30%', '弾が敵を1体つらぬく', '弾が1発ふえる', '連射が速くなる（冷却ユニットがあると「パルスストーム」に進化！）'] },
   orbit: { kind: 'w', name: 'オービット', color: '#b48cff', max: 6, lv: ['まわりを回る光の玉が敵をはじく', '玉が1個ふえる', '玉のダメージ+35%', '回る輪が大きくなる', '玉が1個ふえる', '回転が速くなる'] },
   nova: { kind: 'w', name: 'ノヴァ', color: '#ff4fb0', max: 6, lv: ['数秒ごとに光の輪で周りをふき飛ばす', '輪が大きくなる', '輪のダメージ+40%', '間隔が短くなる', '輪が大きくなる', '輪のダメージ+40%'] },
   chain: { kind: 'w', name: 'スパーク', color: '#ffd84a', max: 6, lv: ['近くの敵に雷が落ち、となりへ跳ねる', '跳ねる回数+2', '雷のダメージ+30%', '間隔が短くなる', '雷が2本になる', '跳ねる回数+2'] },
@@ -593,6 +596,8 @@ function contact() {
 }
 
 /* ---- 武器 ---- */
+// 進化：パルスショットLv6＋冷却ユニット（1以上）→ パルスストーム
+const pulseEvolved = () => !!(G.weapons.pulse >= 6 && G.passives.cool >= 1);
 function weapons(dt) {
   const g = G, p = g.player, st = g.st, W = g.weapons;
   if (W.pulse) {
@@ -601,11 +606,12 @@ function weapons(dt) {
       const L = W.pulse, tgt = bossInRange(380) || nearest(p.x, p.y, 380);
       if (tgt) {
         g.wt.pulse = 0.55 * (L >= 6 ? 0.7 : 1) * st.cd;
-        const n = 1 + (L >= 2) + (L >= 5), base = Math.atan2(tgt.y - p.y, tgt.x - p.x);
-        const dmg = 7 * (L >= 3 ? 1.3 : 1) * st.dmg;
+        const evo = pulseEvolved(), n = 1 + (L >= 2) + (L >= 5) + (evo ? 2 : 0), base = Math.atan2(tgt.y - p.y, tgt.x - p.x);
+        const dmg = 7 * (L >= 3 ? 1.3 : 1) * (evo ? 1.25 : 1) * st.dmg;
+        if (evo && !g.evoShown) { g.evoShown = true; banner('パルスストーム！', 'パルスが進化したよ', '#ffd84a', true); }
         for (let i = 0; i < n; i++) {
-          const a = base + (i - (n - 1) / 2) * 0.17;
-          g.bullets.push({ x: p.x, y: p.y, vx: Math.cos(a) * 430, vy: Math.sin(a) * 430, life: 0.95, dmg, pierce: L >= 4 ? 1 : 0, r: 5, hit: null, dead: false });
+          const a = base + (i - (n - 1) / 2) * (evo ? 0.2 : 0.17);
+          g.bullets.push({ x: p.x, y: p.y, vx: Math.cos(a) * 430, vy: Math.sin(a) * 430, life: 0.95, dmg, pierce: (L >= 4 ? 1 : 0) + (evo ? 1 : 0), r: 5, hit: null, dead: false, evo });
         }
         Snd.play('shoot');
       } else g.wt.pulse = 0.05;
@@ -1121,7 +1127,7 @@ function buildSprites() {
   const k = scale * dpr;
   for (const id in ET) { const d = ET[id]; SPR[id] = mkShape(d.shape, d.r, d.color, k, false); SPR[id + '_w'] = mkShape(d.shape, d.r, d.color, k, true); }
   SPR.gem1 = mkShape('gem', 4.2, '#3ef2ff', k); SPR.gem5 = mkShape('gem', 5.6, '#5dff9b', k); SPR.gem25 = mkShape('gem', 7.5, '#ff4fb0', k);
-  SPR.bullet = mkGlow(4.5, '#3ef2ff', k); SPR.orb = mkGlow(8, '#b48cff', k);
+  SPR.bullet = mkGlow(4.5, '#3ef2ff', k); SPR.bullet_e = mkGlow(5.5, '#ffd84a', k); SPR.orb = mkGlow(8, '#b48cff', k);
   SPR.eb_g = mkGlow(5, '#5dff9b', k); SPR.eb_r = mkGlow(5.5, '#ff3b5c', k);
   SPR.player = mkGlow(12, '#3ef2ff', k);
   SPR.heal = mkShape('heal', 8, '#5dff9b', k); SPR.magnet = mkShape('magnet', 8, '#3ef2ff', k);
@@ -1226,7 +1232,7 @@ function drawWorld() {
   // 弾
   ctx.globalCompositeOperation = 'lighter';
   for (const b of g.ebullets) if (inView(b.x, b.y)) drawSpr(b.kind === 'r' ? SPR.eb_r : SPR.eb_g, b.x, b.y, 0);
-  for (const b of g.bullets) if (inView(b.x, b.y)) drawSpr(SPR.bullet, b.x, b.y, 0);
+  for (const b of g.bullets) if (inView(b.x, b.y)) drawSpr(b.evo ? SPR.bullet_e : SPR.bullet, b.x, b.y, 0);
   // オービット
   if (g.weapons.orbit && !g.over) {
     const L = g.weapons.orbit, n = 2 + (L >= 2) + (L >= 5), R = 54 * (L >= 4 ? 1.3 : 1);
@@ -1529,7 +1535,7 @@ window.__game = {
     const p = G.player;
     return { scene, t: +G.t.toFixed(2), hp: Math.round(p.hp), maxHp: p.maxHp, x: Math.round(p.x), y: Math.round(p.y), level: G.level, kills: G.kills,
       arrows: arrowCount, enemies: G.enemies.length, gems: G.gems.length, weapons: Object.assign({}, G.weapons), passives: Object.assign({}, G.passives),
-      boss: G.boss ? Math.max(0, Math.round(G.boss.hp)) : null, clear: G.clear, over: G.over, done: !!G.done, score: calcScore(), fps: Math.round(fpsAvg), quality };
+      evolved: pulseEvolved(), boss: G.boss ? Math.max(0, Math.round(G.boss.hp)) : null, clear: G.clear, over: G.over, done: !!G.done, score: calcScore(), fps: Math.round(fpsAvg), quality };
   },
   // 画面を描かずに高速で進める。ctrl(G) は [x, y] の移動入力を返す関数、chooser(ids, G) は選ぶ番号を返す関数
   sim(seconds, ctrl, chooser) {
