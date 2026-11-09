@@ -140,6 +140,16 @@ let browser;
     await shot(page, '05_pause_390');
     const tP = (await page.evaluate(() => window.__game.state())).t; await wait(500);
     check('一時停止中は時間が止まる', (await page.evaluate(() => window.__game.state())).t === tP);
+    // 振動のON/OFF（OFFなら navigator.vibrate が呼ばれない。設定は保存される）
+    const vb = await page.evaluate(() => {
+      let n = 0; try { Object.defineProperty(navigator, 'vibrate', { value: () => { n++; return true; }, configurable: true }); } catch (_) { }
+      const b = document.getElementById('b-vib2'); const t0 = b.textContent;
+      b.click(); const t1 = b.textContent; const saved = localStorage.getItem('hs-vib');
+      return { t0, t1, saved };
+    });
+    check('振動をOFFにできて、設定が保存される', /ON/.test(vb.t0) && /OFF/.test(vb.t1) && vb.saved === 'false', `${vb.t0} → ${vb.t1} / 保存=${vb.saved}`);
+    await page.click('#b-vib2'); // ONにもどす
+    check('振動ボタンでONにもどせる', /ON/.test(await page.textContent('#b-vib2')));
     await page.click('#b-resume');
     // 進化：パルスLv6＋冷却ユニットで「パルスストーム」
     const ev0 = await page.evaluate(() => { const d = window.__game.debug; d.god(true); d.give('pulse', 6); return window.__game.state().evolved; });

@@ -84,7 +84,8 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 .btn:active{transform:scale(.97)}
 .btn.primary{border:none;color:#0a0720;background:linear-gradient(135deg,var(--cyan),#9cf3ff 45%,var(--violet));font-size:20px;min-height:62px;box-shadow:0 0 26px rgba(62,242,255,.55)}
 .btn.ghost{border-color:var(--faint);box-shadow:none;background:rgba(255,255,255,.05);font-size:14px;min-height:46px}
-.row{display:flex;gap:10px;margin-top:10px}
+.row{display:flex;gap:8px;margin-top:10px}
+.row .btn{padding-left:6px;padding-right:6px;white-space:nowrap;font-size:15px}
 .best{margin-top:14px;font-size:13px;color:var(--dim);line-height:1.6}
 .best b{color:var(--yellow);font-family:var(--display)}
 .panel{margin-top:16px;text-align:left;padding:14px 16px;border-radius:16px;background:var(--panel);border:1px solid rgba(180,140,255,.32)}
@@ -168,7 +169,7 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
     <div class="logo"><span class="l1">ほしくず</span><span class="l2">SURVIVOR</span></div>
     <p class="tagline">光の武器で、敵の群れをなぎ払え。<br>5分を生き延びて、ボスを倒そう。</p>
     <button class="btn primary" id="b-start">あそぶ</button>
-    <div class="row"><button class="btn ghost" id="b-how">あそびかた</button><button class="btn ghost" id="b-snd">音：ON</button></div>
+    <div class="row"><button class="btn ghost" id="b-how">あそびかた</button><button class="btn ghost" id="b-snd">音：ON</button><button class="btn ghost" id="b-vib">振動：ON</button></div>
     <div class="best" id="best"></div>
     <section class="panel" id="patch"></section>
     <button class="linkbtn" id="b-fb1">感想を送る（GitHub）</button>
@@ -220,6 +221,7 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
     <div class="stack">
       <button class="btn primary" id="b-resume">つづける</button>
       <button class="btn ghost" id="b-snd2">音：ON</button>
+      <button class="btn ghost" id="b-vib2">振動：ON</button>
       <button class="btn ghost" id="b-quit">タイトルにもどる</button>
     </div>
   </div>
@@ -252,8 +254,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 9, date: '2026-11-09' };
+const GAME = { day: 10, date: '2026-11-10' };
 const PATCH_NOTES = [
+  { day: 10, date: '2026-11-10', title: '「振動：ON/OFF」を付けたよ！',
+    items: ['タイトルと一時停止の画面に「振動」ボタンを付けたよ', 'ブルッとするのが苦手なら、OFFにしてね'],
+    ask: '振動をOFFにして、ちゃんと止まるか試してみてね！' },
   { day: 9, date: '2026-11-09', title: 'パルスショットが「進化」するよ！',
     items: ['パルスショットをLv6にして、冷却ユニットも持っていると「パルスストーム」に進化！', '金色の弾が5〜6発に増えて、敵を2体つらぬくよ'],
     ask: '進化した瞬間と、金色の弾の気持ちよさを教えてね！' },
@@ -308,7 +313,8 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) { } },
 };
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-function vib(ms) { try { if (navigator.vibrate && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) navigator.vibrate(ms); } catch (_) { } }
+let vibOn = store.get('hs-vib', true) !== false;
+function vib(ms) { try { if (!vibOn) return; if (navigator.vibrate && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) navigator.vibrate(ms); } catch (_) { } }
 
 /* ================================================================
    アイコン（SVG）
@@ -1470,6 +1476,13 @@ $('b-how').onclick = () => { $('b-how-ok').textContent = 'とじる'; $('b-how-o
 $('b-how-ok').onclick = () => { store.set('hs-seen-how', true); if ($('b-how-ok').dataset.start) startGame(); else show('title'); };
 $('b-hist-close').onclick = () => show('title');
 $('b-snd').onclick = $('b-snd2').onclick = () => setSound(!Snd.on, true);
+function setVib(on, save) {
+  vibOn = on;
+  $('b-vib').textContent = $('b-vib2').textContent = '振動：' + (on ? 'ON' : 'OFF');
+  if (save) { store.set('hs-vib', on); if (on) vib(30); }
+}
+$('b-vib').onclick = $('b-vib2').onclick = () => setVib(!vibOn, true);
+setVib(vibOn);
 $('b-pause').onclick = pauseGame;
 $('b-resume').onclick = resumeGame;
 $('b-quit').onclick = toTitle;
