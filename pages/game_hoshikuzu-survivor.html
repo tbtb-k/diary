@@ -254,8 +254,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 10, date: '2026-11-10' };
+const GAME = { day: 11, date: '2026-11-11' };
 const PATCH_NOTES = [
+  { day: 11, date: '2026-11-11', title: 'ほしくずを拾いやすくしたよ！',
+    items: ['ほしくずを吸い寄せる範囲を、はじめから少し広くしたよ（約1割）', '敵をよけながらでも、レベルアップしやすくなったはず', 'そのぶん、ボスはちょっとだけ硬くなったよ'],
+    ask: '敵から逃げながら、ほしくずがスッと集まるか感じてみてね！' },
   { day: 10, date: '2026-11-10', title: '「振動：ON/OFF」を付けたよ！',
     items: ['タイトルと一時停止の画面に「振動」ボタンを付けたよ', 'ブルッとするのが苦手なら、OFFにしてね'],
     ask: '振動をOFFにして、ちゃんと止まるか試してみてね！' },
@@ -365,7 +368,7 @@ const ET = {
   splitter: { shape: 'circ', color: '#ff8ad8', r: 14, hp: 24, spd: 46, dmg: 9, xp: 2, kb: 0.7, spin: 0 },
   mini: { shape: 'circ', color: '#ff8ad8', r: 7, hp: 6, spd: 92, dmg: 5, xp: 1, kb: 1.3, spin: 0 },
   elite: { shape: 'star', color: '#ff7a3d', r: 26, hp: 420, spd: 47, dmg: 18, xp: 30, kb: 0.15, spin: 1.5 },
-  boss: { shape: 'boss', color: '#ff3b5c', r: 46, hp: 4200, spd: 44, dmg: 24, xp: 0, kb: 0.03, spin: 0.6 },
+  boss: { shape: 'boss', color: '#ff3b5c', r: 46, hp: 5400, spd: 44, dmg: 24, xp: 0, kb: 0.03, spin: 0.6 },
 };
 const hpScale = t => 1 + t / 180 + (t / 330) * (t / 330);
 const xpNeed = L => Math.floor((5 + L * 2.5 + L * L * 0.1) * (L <= 2 ? 0.8 : 1)); // 序盤(Lv1〜2)は早めに最初の強化がもらえる
@@ -400,7 +403,7 @@ function calcStats() {
     dmg: 1 + 0.12 * (p.power || 0),
     cd: 1 - 0.08 * (p.cool || 0),
     speed: 1 + 0.1 * (p.thrust || 0),
-    magnetR: 72 * (1 + 0.35 * (p.magnet || 0)),
+    magnetR: 80 * (1 + 0.35 * (p.magnet || 0)),
     regen: 0.6 * (p.regen || 0),
   };
   G.player.maxHp = 100 + 20 * (p.armor || 0);

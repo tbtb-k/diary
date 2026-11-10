@@ -155,11 +155,15 @@ let browser;
     const ev0 = await page.evaluate(() => { const d = window.__game.debug; d.god(true); d.give('pulse', 6); return window.__game.state().evolved; });
     const ev1 = await page.evaluate(() => { const d = window.__game.debug; d.give('cool', 1); return window.__game.state().evolved; });
     check('パルスLv6＋冷却ユニットで進化する（冷却なしでは進化しない）', ev0 === false && ev1 === true);
-    await page.evaluate(() => { const d = window.__game.debug; d.spawn('drifter', 3); });
+    // 出したての敵は射程（380）の外にいるので、自機の近くに置いてから数える（Day 11：待ち時間しだいでNGになることがあった）
+    await page.evaluate(() => { const d = window.__game.debug, g = window.__game.world(); d.spawn('drifter', 3); g.enemies.filter(e => !e.dead).slice(-3).forEach((e, i) => { e.x = g.player.x + 160 + i * 20; e.y = g.player.y - 60; }); });
     let eb = 0;
     for (let i = 0; i < 12 && eb < 4; i++) { await wait(150); eb = await page.evaluate(() => window.__game.world().bullets.filter(b => b.evo).length); }
     check('進化後は金色の弾が出る', eb >= 4);
     await page.evaluate(() => { const g = window.__game.world(); g.enemies.forEach(e => { e.dead = true; }); });
+    // ほしくずをひろう範囲（Day 11：72→80）
+    const mr = await page.evaluate(() => window.__game.world().st.magnetR);
+    check('ほしくずをひろう範囲が 80 ある（引力フィールドなし）', Math.abs(mr - 80) < 0.01, `magnetR=${mr}`);
     // ボス
     await page.evaluate(() => { window.__game.debug.god(true); window.__game.debug.give('nova', 3); window.__game.debug.setTime(299); });
     await page.waitForFunction(() => window.__game.state().boss !== null, null, { timeout: 5000 }).catch(() => {});
@@ -233,6 +237,9 @@ let browser;
     report.balance = { idleAvg: Math.round(avg(idle)), smartAvg: Math.round(avg(smart)), smartClears: smart.filter(s => s.clear).length };
     console.log(`   平均：何もしない ${report.balance.idleAvg}s ／ 自動操作 ${report.balance.smartAvg}s（クリア ${report.balance.smartClears}/${smart.length}）`);
     check('何もしないと3分以内に倒される（立っているだけで勝てない）', idle.every(s => !s.clear && s.time < 180), `平均 ${report.balance.idleAvg}s`);
+    // ボス戦の長さ（ボスは 5:00 に出る）。design.md の目安 40〜90 秒（Day 11 で追加）
+    const bossLen = smart.filter(s => s.clear).map(s => Math.round(s.time - 300));
+    check('ボス戦の長さが 40〜90 秒（自動操作でクリアした回）', bossLen.every(x => x >= 40 && x <= 90), bossLen.map(x => x + 's').join(' / '));
     check('自動操作なら平均2分半以上もつ（理不尽に難しくない）', report.balance.smartAvg >= 150, `平均 ${report.balance.smartAvg}s`);
 
     // ---- 4. 重さ（敵が上限まで出た場面で描画） ----
