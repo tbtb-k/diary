@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（T-Mobile）。2026年11月11日作成。公開情報（Microsoft Learn）をもとにまとめています。">
+<title>店頭スタッフが、紙の資料を見ずに端末の比較表で答えられるようになりました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月11日／通信（T-Mobile）・店頭とコールセンターの接客</p>
+  <h1>店頭スタッフが、紙の資料を見ずに端末の比較表で答えられるようになりました</h1>
+  <div class="lead">
+    <p>米国の通信会社 T-Mobile の店頭スタッフは、キャンペーン情報や端末の仕様を、印刷した資料と複数のアプリで探していました。</p>
+    <p>社内の開発者が、Power Apps（業務アプリを作るツール）のアプリに Copilot Studio（AIエージェントを作るツール）のエージェントを組みこみました。</p>
+    <p>アプリ「PromoGenius」は全店舗とコールセンターで使われ、利用者は8万3,000人を超えています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>お客さまに「この2機種、どこが違いますか」と聞かれ、メーカーのサイトをいくつも開いて調べる。そんな経験はないでしょうか。</p>
+  <p>T-Mobile では、最新の端末やキャンペーンの情報を、毎日 PDF の報告書で配っていました。報告書はだんだん複雑になり、検索しにくくなっていました。</p>
+  <p>スタッフは資料を印刷して手元に置き、iPad で複数のアプリを行き来して仕様を調べていました。時間がかかり、紙も多く使う働き方でした。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>T-Mobile は、キャンペーン情報と端末の仕様を1か所で調べられるアプリ「PromoGenius」を作りました。プルダウン（選択式のメニュー）で絞り込み、くわしいことは組みこんだエージェントに普通の言葉で質問します。</p>
+  <p>エージェントは20以上のメーカーのサイトから情報を集め、2機種の違いを比較表の形にまとめて答えます。そのままお客さまに見せられる形です。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="スタッフが答えを得るまでの流れ">
+      <li><div class="box">お客さまに<br>質問される</div></li>
+      <li><div class="box">アプリで<br>条件を絞る</div></li>
+      <li><div class="box">エージェントに<br>言葉で聞く</div></li>
+      <li><div class="box">比較表を<br>見せて説明</div></li>
+    </ol>
+    <figcaption>スタッフが答えを得るまでの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>社内のキャンペーン情報は、毎晩 Microsoft Fabric（データをまとめる仕組み）で Dataverse（Power Platform のデータの置き場）に入れます。</li>
+    <li>エージェントは Dataverse と、メーカーのサイトを知識（答えのもとにする情報）として使います。</li>
+    <li>Bing Custom Search（調べるサイトを指定できる検索）で、優先するサイトと除外するページを決めました。たとえば、終了したキャンペーンのページは答えに使わないようにしています。</li>
+    <li>「比較するときは、表の形で横に並べる」という指示をエージェントに書き、答えの見せ方をそろえました。</li>
+  </ol>
+  <p class="src-note">※ 流れ図は、記事の説明を短くまとめたものです。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>毎日の PDF 資料を印刷し、iPad で複数のアプリやメーカーのサイトを行き来して調べていた。</p></div>
+    <div class="after"><h3>いま</h3><p>1つのアプリで絞り込みと質問ができ、答えがすぐ出る。お客さまとの会話を中断せずに説明できる。</p></div>
+  </div>
+  <p>PromoGenius は T-Mobile で2番目によく使われるアプリになり、利用者は8万3,000人超、起動は月50万回です。開発は当初9〜12か月と見積もられていましたが、最初の版は数週間で公開できました。いずれも T-Mobile の事例として Microsoft が公表した数字です。</p>
+  <p>お客さまの満足度が上がったとも書かれていますが、満足度や時間短縮の数字は公表されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>接客や問い合わせで「毎回調べている情報」を書き出し、どこに置いてあるかを確かめます。</li>
+    <li>参照してよいサイトや社内資料を決め、古い情報や使ってはいけない情報を外します。</li>
+    <li>Copilot Studio でエージェントを作り、「比較は表で」など答え方の指示を書いて、少人数で試します。</li>
+  </ol>
+  <p>準備物は、よくある質問の例と参照する資料の一覧です。Copilot Studio や Power Apps のライセンスと社内の設定で、使える機能は変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>サイトを知識に入れるだけでは、答えがぶれることがある</strong>
+    <p>T-Mobile は、サイトをそのまま知識に登録する方法では、ねらった答えが得にくかったため、別の方法を試しました。調べる先を指定できる検索を使い、優先順位と除外するページを決めています。</p>
+  </div>
+  <p>AI のモデル（答えを作る AI の種類）を変えると、よくなる用途とそうでない用途があったとも書かれています。開発者は、使う人と一緒に画面を見ながら直していくことが大事だったと振り返っています（意訳）。</p>
+  <p>お客さまに伝える価格や条件は、AI が間違えることもあるため、最終的には公式の情報で確かめる運用にします。社内のデータを使う場合は、誰が見てよい情報かも決めておきます。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、AI に「調べてもらう」だけでなく、「お客さまにそのまま見せられる形」で答えさせた点です。答えの形を決めておくと、使う人の手間がもう一段減ります。</p>
+  <p>自分の職場に置き換えると、製品やサービスの違いを毎回説明している窓口の仕事に当てはまります。参照先をしぼったエージェントに比較表を作らせれば、説明の質もそろえやすくなります。</p>
+
+  <footer>
+    <p>出典：Microsoft Learn「T-Mobile empowers customer service representatives using Power Apps and Copilot Studio」（2025年8月8日更新）<br>
+    <a href="https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/tmobile-empowers-customer-service">https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/tmobile-empowers-customer-service</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月11日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

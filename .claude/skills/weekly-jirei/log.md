@@ -52,6 +52,8 @@
 | 2026-11-07 | Copilot Studio（Agent Builder 枠の代替） | シンガポール民間防衛隊（SCDF） | pages/jirei_20261107-copilot-studio-2.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/scdf-implements-digital-solutions |
 | 2026-11-09 | Copilot Studio | Signetic | pages/jirei_20261109-copilot-studio.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/signetic-transforms-healthcare |
 | 2026-11-09 | Copilot Studio（Agent Builder 枠の代替） | A1 Inteligência em Viagens | pages/jirei_20261109-copilot-studio-2.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/boost-efficiency-experience-case-study |
+| 2026-11-11 | Copilot Studio | T-Mobile | pages/jirei_20261111-copilot-studio.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/tmobile-empowers-customer-service |
+| 2026-11-11 | Copilot Studio（Agent Builder 枠の代替） | Verdantas | pages/jirei_20261111-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/26233-verdantas-microsoft-copilot-studio |
 
 ## ネタ帳（候補）
 
@@ -116,3 +118,4 @@
 - 2026-11-05：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（Rabobank、Holland America Line。Learn の事例一覧から本文確認して採用）にした。Cowork 枠は休み（名前の出た顧客事例なし。見つかったのはパートナー記事と製品ページのみ）。ネタ帳候補（Learn 事例一覧・未使用）：COSMO CONSULT、Signetic、SCDF、A1、T-Mobile、Rabobank 以外の未読分。ブロックされたホストなし。
 - 2026-11-07：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（COSMO CONSULT、SCDF。Learn の事例一覧から本文確認して採用）にした。Cowork 枠は休み（techcommunity「Measuring the value of Cowork」2026-09 は方法論の解説で顧客事例なし。ほかはパートナー記事のみ）。ネタ帳候補（Learn 事例一覧・未読）：Signetic、A1、T-Mobile。ブロックされたホストなし。
 - 2026-11-09：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（Signetic、A1。Learn の事例一覧から本文確認して採用）にした。Cowork 枠は休み（名前の出た顧客事例なし。検索結果はパートナー記事と製品ページのみ）。ネタ帳候補（Learn 事例一覧・未読）：T-Mobile。ブロックされたホストなし。
+- 2026-11-11：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（T-Mobile＝Learn の事例一覧の最後の未読分、Verdantas＝顧客事例 2026-03-19）にした。2本とも Agent Builder の記載なし。Verdantas の顧客事例ページは curl では本文が取れず WebFetch で読んだ。Cowork 枠は休み（名前の出た顧客事例なし。検索結果は製品ページ・パートナー記事のみ）。Learn の Copilot Studio 事例一覧は Copilot Agent Kit の例集以外ほぼ使い切った。ブロックされたホストなし。

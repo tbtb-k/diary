@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Verdantas）。2026年11月11日作成。公開情報（Microsoft の顧客事例）をもとにまとめています。">
+<title>契約書のリスク確認が、数時間から数分になりました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月11日／環境コンサルティング（Verdantas）・提案書づくりと契約管理</p>
+  <h1>契約書のリスク確認が、数時間から数分になりました</h1>
+  <div class="lead">
+    <p>米国の環境・エンジニアリング会社 Verdantas は、買収で会社が増えるにつれ、システムやデータがばらばらになり、情報を探すのに苦労していました。</p>
+    <p>そこで Copilot Studio（AIエージェントを作るツール）で、社内の情報を探すエージェントと、契約書を確認するエージェントを作りました。</p>
+    <p>契約書のリスク確認は数時間から数分になり、ほかの部署から150件を超えるエージェントづくりの依頼が届いています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>過去の提案書はどのフォルダか、この資格を持っている社員は誰か。情報があちこちのシステムに分かれていて、探すだけで時間が過ぎていく。そんな経験はないでしょうか。</p>
+  <p>Verdantas は3社の統合から始まり、買収で36社以上を抱えるまでに成長した会社です。社員は約2,500人、米国に100近い拠点があります。成長の過程で、システムやデータが複雑で分断された状態になっていました。</p>
+  <p>契約書の確認でも、法務の方針と照らし合わせて危ない条項を探す作業に、何時間もかかっていました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>Verdantas は、社員が Teams（社内チャット）から使えるエージェントを作りました。SharePoint（社内の共有ファイル置き場）、Workday（人事システム）、Deltek（会計システム）などの情報をまとめて探せます。</p>
+  <p>あわせて、契約書を確認するエージェントも作りました。社員が契約書をアップロードすると、法務の方針と照らして、エスカレーション条項（一定の条件で金額などを見直す取り決め）や、交渉が必要そうな部分を示します。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="契約書の確認の流れ">
+      <li><div class="box">契約書を<br>アップロード</div></li>
+      <li><div class="box">法務の方針と<br>照らし合わせる</div></li>
+      <li><div class="box">気になる条項を<br>示す</div></li>
+      <li><div class="box">担当者が確認し<br>交渉に生かす</div></li>
+    </ol>
+    <figcaption>契約書の確認の流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>まずデータを整理しました。担当者は「AI を生かすには、先にデータをきれいにする必要があった」と話しています（意訳）。</li>
+    <li>Microsoft Fabric（データをまとめる仕組み）で、人事・会計・資格のデータを1つのデータベースに集めました。</li>
+    <li>データの置き場ごとに担当の「小さなエージェント」を作り、まとめ役のエージェントが質問に合わせて呼び分ける形にしました。</li>
+    <li>試す環境と本番の環境を分け、品質を確かめてから公開する仕組みを整えました。</li>
+  </ol>
+  <p class="src-note">※ 流れ図の最後の箱（担当者が確認する）は、一般的な使い方で補ったものです。記事には、エージェントが条項を示すところまでが書かれています。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>分かれたシステムを行き来して情報を探していた。契約書のリスク確認に数時間かかっていた。</p></div>
+    <div class="after"><h3>いま</h3><p>Teams から質問すると、複数のシステムをまたいで答えが返る。契約書のリスク確認は数分で済む。</p></div>
+  </div>
+  <p>Verdantas の事例として Microsoft が公表した数字では、契約書のリスク確認は「数時間かかっていたものが数分に」なりました。呼び分けの仕組みにしたことで、答えの速さは最大2倍になりました。ほかの部署からは150件を超えるエージェントの追加依頼が届いています。</p>
+  <p>社員1人あたりの時間削減などの数字は公表されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>「探すのに時間がかかる情報」を1つ選び、それがどのシステムやフォルダにあるかを書き出します。</li>
+    <li>古い資料や重複した資料を片づけ、エージェントに読ませる場所を決めます。</li>
+    <li>Copilot Studio で、まず1つの置き場だけを知識にしたエージェントを作り、チームで試します。</li>
+  </ol>
+  <p>準備物は、よくある質問の例と、整理した資料の置き場です。Copilot Studio のライセンスや、社内の設定・接続できるシステムによって、できることは変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>たくさんの情報を1つにまとめると、かえって答えが悪くなることがある</strong>
+    <p>記事によると、多くの置き場の情報を集めると、動きが遅くなったり、文脈がずれたりする課題がありました。Verdantas は、置き場ごとにエージェントを分けて呼び分けることで、正確さと速さを上げました。</p>
+  </div>
+  <p>Verdantas は Microsoft Purview（情報の取り扱いを管理する仕組み）で、データの保護やルールの順守も整えています。人事や契約の情報は、見てよい人を決めておくことが欠かせません。</p>
+  <p>AI は、もっともらしい間違い（ハルシネーション）を答えることがあります。契約の判断は、最後は法務の担当者が確かめる運用にします。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>CDIO（最高デジタル・情報責任者）は「先進的な会社になるには、意図して土台をつくる必要がある」と話しています（意訳）。AI の前に、データの整理と管理の仕組みに手をかけた点が、この事例の土台です。</p>
+  <p>自分の職場に置き換えると、決まった基準と書類を照らし合わせる仕事に応用できます。社内規程と申請書、品質基準と検査記録などです。「どこを見ればよいか」を AI に示してもらうだけでも、確認の時間を減らせます。</p>
+
+  <footer>
+    <p>出典：Microsoft 顧客事例「Verdantas builds agents for proposal development, contract management, and collaboration using Microsoft Copilot Studio」（2026年3月19日公開）<br>
+    <a href="https://www.microsoft.com/en/customers/story/26233-verdantas-microsoft-copilot-studio">https://www.microsoft.com/en/customers/story/26233-verdantas-microsoft-copilot-studio</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月11日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
