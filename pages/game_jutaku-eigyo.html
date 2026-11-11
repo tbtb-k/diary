@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<!-- 外部への通信は行わない（読み込むのは同じフォルダのファイルだけ） -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' blob: data:; media-src 'self' blob: data:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>はじめての一棟 ― 住宅営業3Dシミュレーター</title>
+<meta name="description" content="新人の住宅営業になって、3Dのモデルハウスでお客様を接客。ヒアリング・ご案内・プラン提案・資金計画・クロージングを体験しながら学べる研修ゲーム（Claude Codeで制作）。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f5d50'/%3E%3Cpath d='M7 15.5 16 8l9 7.5M9.5 14v10h13V14' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+  /* ───────────── 色と文字 ───────────── */
+  :root{
+    --paper:#f8f4ed; --paper2:#efe9df; --ink:#25211c; --sub:#6c655b; --faint:#a39b8f;
+    --line:rgba(37,33,28,.12); --line2:rgba(37,33,28,.2);
+    --accent:#2f5d50; --accent-d:#234a40; --accent-soft:rgba(47,93,80,.12);
+    --terra:#c8643b; --gold:#b8935a;
+    --good:#2f8a57; --warn:#c0841a; --bad:#c44a38; --ng:#8f1f2b;
+    --glass:rgba(250,247,241,.9); --dark:rgba(24,21,18,.82);
+    --shadow:0 2px 6px rgba(0,0,0,.08), 0 18px 46px -18px rgba(0,0,0,.45);
+    --font:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic","Noto Sans JP","Meiryo",system-ui,sans-serif;
+    --serif:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
+    --safe-b:env(safe-area-inset-bottom,0px);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  [hidden]{display:none !important}
+  html,body{height:100%;margin:0}
+  body{background:#15130f;color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.65;overflow:hidden;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+  button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+  button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+  #stage{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;display:block;background:#15130f}
+  #ui{position:fixed;inset:0;pointer-events:none}
+  #ui > *{pointer-events:auto}
+  .glass{background:var(--glass);backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);border:1px solid rgba(255,255,255,.6);box-shadow:var(--shadow)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 22px;border-radius:999px;background:var(--accent);color:#fff;font-weight:700;letter-spacing:.04em;transition:transform .12s,background .15s,box-shadow .15s;box-shadow:0 6px 18px -8px rgba(47,93,80,.8)}
+  .btn:hover{background:var(--accent-d);transform:translateY(-1px)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:rgba(255,255,255,.78);color:var(--ink);box-shadow:none;border:1px solid var(--line2)}
+  .btn.ghost:hover{background:#fff}
+  .btn.small{min-height:36px;padding:0 14px;font-size:13px}
+  .btn[disabled]{opacity:.45;pointer-events:none}
+
+  /* ───────────── 暗転・見出し ───────────── */
+  #fade{background:#0d0b09;opacity:0;pointer-events:none !important;transition:opacity .6s ease}
+  #fade,#caption{position:absolute;inset:0}
+  #caption{display:grid;place-items:center;text-align:center;color:#fff;pointer-events:none !important;opacity:0;transition:opacity .7s ease;padding:24px}
+  #caption.on{opacity:1}
+  #caption .big{font-family:var(--serif);font-size:clamp(24px,4.2vw,44px);letter-spacing:.14em;text-shadow:0 2px 24px rgba(0,0,0,.7);white-space:pre-line;line-height:1.7}
+  #caption .small{margin-top:14px;font-size:clamp(13px,1.5vw,16px);letter-spacing:.2em;opacity:.85;text-shadow:0 1px 12px rgba(0,0,0,.8)}
+
+  /* ───────────── 読み込み ───────────── */
+  #loading{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(120% 90% at 50% 30%,#2b2620,#12100d);color:#f4efe6;z-index:60;transition:opacity .6s}
+  #loading.out{opacity:0;pointer-events:none}
+  #loading .box{width:min(420px,84vw);text-align:center}
+  #loading .logo{font-family:var(--serif);font-size:30px;letter-spacing:.18em}
+  #loading .sub{font-size:12px;letter-spacing:.3em;opacity:.6;margin:6px 0 30px}
+  #loading .bar{height:3px;background:rgba(255,255,255,.14);border-radius:3px;overflow:hidden}
+  #loading .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),#e8cfa0);transition:width .35s ease}
+  #loading .msg{margin-top:14px;font-size:13px;opacity:.75;min-height:1.6em}
+  #loading .err{margin-top:18px;font-size:13px;color:#ffb4a6;line-height:1.8}
+
+  /* ───────────── タイトル ───────────── */
+  #title{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(18px,4vw,48px);background:linear-gradient(90deg,rgba(14,12,10,.74) 0%,rgba(14,12,10,.42) 38%,rgba(14,12,10,0) 66%)}
+  #title .brand{color:#fff}
+  #title .co{font-size:12px;letter-spacing:.34em;opacity:.8}
+  #title h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,6.6vw,84px);letter-spacing:.14em;margin:.18em 0 .08em;line-height:1.2;text-shadow:0 4px 30px rgba(0,0,0,.5)}
+  #title .tag{font-size:clamp(13px,1.5vw,17px);letter-spacing:.26em;opacity:.92}
+  #title .lead{margin-top:20px;max-width:30em;font-size:clamp(13px,1.3vw,15px);opacity:.88;line-height:1.9}
+  #title .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:860px}
+  .scard{position:relative;text-align:left;padding:16px 16px 14px;border-radius:16px;transition:transform .15s,box-shadow .15s}
+  .scard:hover{transform:translateY(-3px)}
+  .scard .lv{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.12em;padding:2px 9px;border-radius:99px;background:var(--accent);color:#fff}
+  .scard .lv.l2{background:var(--terra)} .scard .lv.l3{background:#3d3a36}
+  .scard h3{margin:8px 0 2px;font-size:16px;letter-spacing:.03em}
+  .scard p{margin:0;font-size:12px;color:var(--sub);line-height:1.6}
+  .scard .best{margin-top:8px;font-size:12px;color:var(--accent);font-weight:700}
+  .scard .best.none{color:var(--faint);font-weight:400}
+  #title .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center}
+  #title .foot{color:rgba(255,255,255,.62);font-size:11px;letter-spacing:.06em;margin-top:12px}
+
+  /* ───────────── 画面上部（場面の進みぐあい・お客様） ───────────── */
+  #hud{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:12px 14px;pointer-events:none}
+  #hud > *{pointer-events:auto}
+  #hud .left{display:flex;flex-direction:column;gap:8px;min-width:0}
+  #steps{display:flex;align-items:center;gap:2px;padding:6px 12px;border-radius:999px;font-size:12px}
+  #steps .st{display:flex;align-items:center;gap:6px;padding:2px 8px;border-radius:99px;color:var(--faint);white-space:nowrap}
+  #steps .st b{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--paper2);font-size:11px;color:var(--sub)}
+  #steps .st.done{color:var(--sub)} #steps .st.done b{background:var(--accent-soft);color:var(--accent)}
+  #steps .st.on{color:var(--ink);font-weight:700;background:#fff} #steps .st.on b{background:var(--accent);color:#fff}
+  #guest{display:flex;align-items:center;gap:12px;padding:8px 14px 8px 10px;border-radius:16px;width:max-content;max-width:100%}
+  #guest .ring{position:relative;width:46px;height:46px;flex:none}
+  #guest .ring svg{width:46px;height:46px;transform:rotate(-90deg)}
+  #guest .ring .bg{stroke:var(--paper2)} #guest .ring .fg{stroke:var(--accent);transition:stroke-dashoffset .8s ease,stroke .5s}
+  #guest .ring span{position:absolute;inset:0;display:grid;place-items:center;font-size:10px;color:var(--sub);font-weight:700;letter-spacing:.04em}
+  #guest .who{font-size:13px;font-weight:700;line-height:1.35}
+  #guest .who small{display:block;font-weight:400;color:var(--sub);font-size:11px}
+  #guest .delta{font-size:12px;font-weight:700;min-width:2.6em;opacity:0;transition:opacity .3s}
+  #guest .delta.up{color:var(--good);opacity:1} #guest .delta.down{color:var(--bad);opacity:1}
+  #hud .right{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .chipbtn{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 14px;border-radius:999px;font-size:13px;font-weight:700}
+  .chipbtn:hover{background:#fff}
+  .chipbtn i{font-style:normal;display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:10px;background:var(--accent);color:#fff;font-size:11px;padding:0 5px}
+
+  /* ───────────── 会話 ───────────── */
+  #dialog{position:absolute;left:50%;bottom:calc(18px + var(--safe-b));transform:translateX(-50%);width:min(880px,calc(100vw - 24px));background:var(--dark);color:#fff;border-radius:18px;padding:18px 22px 20px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 50px -20px rgba(0,0,0,.8);cursor:pointer}
+  #dialog .name{display:inline-block;margin:-34px 0 8px -4px;padding:3px 14px;border-radius:999px;background:var(--accent);font-size:13px;font-weight:700;letter-spacing:.06em;box-shadow:0 4px 12px -4px rgba(0,0,0,.6)}
+  #dialog .name.you{background:var(--gold);color:#221c12} #dialog .name.senpai{background:#55606b} #dialog .name.narr{display:none}
+  #dialog .text{font-size:clamp(15px,1.5vw,18px);line-height:1.85;min-height:3.7em;letter-spacing:.02em;white-space:pre-line}
+  #dialog.narr .text{color:#e9e2d4;font-family:var(--serif);text-align:center;min-height:2em}
+  #dialog .next{position:absolute;right:18px;bottom:10px;font-size:11px;opacity:0;letter-spacing:.1em;transition:opacity .2s}
+  #dialog.ready .next{opacity:.7;animation:bob 1.1s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(3px)}}
+
+  /* ───────────── 選択肢 ───────────── */
+  #choices{position:absolute;left:50%;bottom:calc(18px + var(--safe-b));transform:translateX(-50%);width:min(820px,calc(100vw - 24px));display:flex;flex-direction:column;gap:9px}
+  #choices .prompt{align-self:center;padding:5px 18px;border-radius:999px;background:var(--dark);color:#fff;font-size:13px;font-weight:700;letter-spacing:.08em}
+  .choice{display:flex;gap:12px;align-items:flex-start;text-align:left;padding:13px 16px;border-radius:14px;font-size:clamp(14px,1.35vw,16px);line-height:1.6;transition:transform .12s,background .15s,border-color .15s;animation:rise .35s both}
+  .choice:nth-child(3){animation-delay:.05s}.choice:nth-child(4){animation-delay:.1s}.choice:nth-child(5){animation-delay:.15s}
+  .choice:hover{transform:translateX(4px);background:#fff;border-color:var(--accent)}
+  .choice b{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;margin-top:2px}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}}
+
+  /* ───────────── 先輩の解説 ───────────── */
+  #tip{position:absolute;left:50%;bottom:calc(18px + var(--safe-b));transform:translateX(-50%);width:min(760px,calc(100vw - 24px));border-radius:18px;padding:16px 20px 16px 22px;border-left:6px solid var(--accent);cursor:pointer;animation:rise .3s both}
+  #tip .head{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--sub)}
+  #tip .badge{padding:2px 12px;border-radius:99px;color:#fff;background:var(--accent);font-size:12px}
+  #tip p{margin:8px 0 0;font-size:clamp(14px,1.4vw,16px);line-height:1.8}
+  #tip .law{margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(143,31,43,.08);font-size:13px;color:#5a1820;line-height:1.75}
+  #tip .law b{display:block;margin-bottom:2px}
+  #tip .go{margin-top:8px;text-align:right;font-size:11px;color:var(--faint);letter-spacing:.1em}
+  #tip.great{border-color:var(--good)} #tip.great .badge{background:var(--good)}
+  #tip.good{border-color:var(--good)} #tip.good .badge{background:#5c9a74}
+  #tip.neutral{border-color:var(--warn)} #tip.neutral .badge{background:var(--warn)}
+  #tip.bad{border-color:var(--bad)} #tip.bad .badge{background:var(--bad)}
+  #tip.terrible{border-color:var(--ng)} #tip.terrible .badge{background:var(--ng)}
+
+  /* ───────────── 右側のパネル（質問・案内先） ───────────── */
+  .side{position:absolute;right:14px;top:74px;bottom:calc(16px + var(--safe-b));width:min(400px,calc(100vw - 28px));border-radius:20px;display:flex;flex-direction:column;overflow:hidden;animation:slide .4s both}
+  @keyframes slide{from{opacity:0;transform:translateX(24px)}}
+  .side header{padding:16px 18px 10px;border-bottom:1px solid var(--line)}
+  .side header h2{margin:0;font-size:16px;letter-spacing:.06em;display:flex;justify-content:space-between;align-items:center}
+  .side header h2 span{font-size:12px;font-weight:700;color:#fff;background:var(--terra);border-radius:99px;padding:2px 12px}
+  .side header p{margin:4px 0 0;font-size:12px;color:var(--sub);line-height:1.6}
+  .side .body{flex:1;overflow:auto;padding:10px 12px 14px;-webkit-overflow-scrolling:touch}
+  .side .cat{margin:10px 6px 5px;font-size:11px;font-weight:700;color:var(--sub);letter-spacing:.14em}
+  .q{display:block;width:100%;text-align:left;padding:10px 12px;margin-bottom:6px;border-radius:12px;background:#fff;border:1px solid var(--line);font-size:13.5px;line-height:1.6;transition:border-color .15s,transform .12s}
+  .q:hover{border-color:var(--accent);transform:translateX(-2px)}
+  .q.done{opacity:.42;pointer-events:none;background:transparent}
+  .q small{display:inline-block;margin-left:6px;font-size:10px;font-weight:700;color:var(--terra);border:1px solid currentColor;border-radius:99px;padding:0 7px;vertical-align:1px}
+  .spot{display:flex;gap:12px;align-items:center}
+  .spot em{flex:none;font-style:normal;display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--accent-soft);color:var(--accent);font-weight:700}
+  .spot strong{display:block;font-size:14px}
+
+  /* ───────────── カルテ（聞けたことのメモ） ───────────── */
+  #karte{position:absolute;right:14px;top:74px;bottom:calc(16px + var(--safe-b));width:min(380px,calc(100vw - 28px));border-radius:20px;display:flex;flex-direction:column;overflow:hidden;z-index:30;animation:slide .3s both}
+  #karte header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+  #karte header h2{margin:0;font-size:16px;letter-spacing:.06em}
+  #karte .body{flex:1;overflow:auto;padding:8px 16px 16px}
+  .kcat{margin:12px 0 4px;font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--sub);display:flex;justify-content:space-between}
+  .kitem{padding:7px 10px;margin-bottom:5px;border-radius:10px;background:#fff;border:1px solid var(--line);font-size:13px;line-height:1.55}
+  .kitem.unk{background:transparent;border-style:dashed;color:var(--faint)}
+  .kitem.new{animation:flash 1.6s ease}
+  .kitem .ok{color:var(--good);font-weight:700;margin-right:4px}
+  @keyframes flash{0%{background:#fff3cf;border-color:var(--gold)}}
+  .x{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:18px;color:var(--sub)}
+  .x:hover{background:rgba(0,0,0,.06)}
+
+  /* ───────────── プランづくり ───────────── */
+  #studio .col{position:absolute;top:74px;bottom:calc(16px + var(--safe-b));width:min(350px,calc(50vw - 20px));border-radius:20px;display:flex;flex-direction:column;overflow:hidden}
+  #studio .col.l{left:14px} #studio .col.r{right:14px}
+  #studio .col header{padding:14px 16px 8px;border-bottom:1px solid var(--line)}
+  #studio .col header h2{margin:0;font-size:15px;letter-spacing:.08em}
+  #studio .col header p{margin:2px 0 0;font-size:11.5px;color:var(--sub);line-height:1.55}
+  #studio .col .body{flex:1;overflow:auto;padding:10px 14px 14px;-webkit-overflow-scrolling:touch}
+  .lab{margin:10px 0 5px;font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--sub)}
+  .seg{display:flex;flex-wrap:wrap;gap:6px}
+  .seg button{flex:1 1 auto;min-height:36px;padding:0 10px;border-radius:10px;background:#fff;border:1px solid var(--line2);font-size:13px;font-weight:700}
+  .seg button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;padding:8px 10px;margin-bottom:5px;border-radius:12px;background:#fff;border:1px solid var(--line);transition:border-color .15s,background .15s}
+  .opt:hover{border-color:var(--accent)}
+  .opt .ck{flex:none;width:20px;height:20px;border-radius:6px;border:2px solid var(--line2);margin-top:2px;display:grid;place-items:center;color:#fff;font-size:13px;font-weight:700}
+  .opt.on{background:var(--accent-soft);border-color:var(--accent)} .opt.on .ck{background:var(--accent);border-color:var(--accent)}
+  .opt .nm{font-size:13px;font-weight:700;line-height:1.45;display:flex;justify-content:space-between;gap:8px}
+  .opt .nm span{font-weight:400;color:var(--sub);white-space:nowrap}
+  .opt .bn{font-size:11.5px;color:var(--sub);line-height:1.5}
+  .opt > div{flex:1;min-width:0}
+  .money{width:100%;border-collapse:collapse;font-size:13px}
+  .money td{padding:4px 0;border-bottom:1px dashed var(--line)}
+  .money td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+  .money tr.total td{border-bottom:0;font-weight:700;font-size:15px;padding-top:8px}
+  .slider{width:100%;accent-color:var(--accent);margin:2px 0}
+  .srow{display:flex;justify-content:space-between;font-size:12px;color:var(--sub)}
+  .pay{margin-top:10px;padding:12px;border-radius:14px;background:#fff;border:1px solid var(--line)}
+  .pay .big{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.02em;line-height:1.2}
+  .pay .big small{font-size:13px;font-weight:400;color:var(--sub);margin-left:4px}
+  .pay .cmp{font-size:12px;color:var(--sub);margin-top:4px;line-height:1.6}
+  .gauge{position:relative;height:8px;border-radius:8px;background:var(--paper2);margin:8px 0 2px;overflow:visible}
+  .gauge i{position:absolute;left:0;top:0;bottom:0;border-radius:8px;background:var(--good);transition:width .3s,background .3s}
+  .gauge u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+  .gauge u::after{content:attr(data-l);position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-size:10px;white-space:nowrap;color:var(--sub);text-decoration:none}
+  .hintbox{margin-top:10px;padding:9px 11px;border-radius:10px;background:rgba(184,147,90,.14);font-size:12px;line-height:1.65;color:#5b4520}
+  .needs li{font-size:12.5px;line-height:1.6;margin-bottom:3px;list-style:none;padding-left:1.5em;text-indent:-1.5em}
+  .needs{margin:4px 0 0;padding:0}
+  .needs .y{color:var(--good);font-weight:700} .needs .n{color:var(--faint)}
+  #studio .go{position:absolute;left:50%;bottom:calc(20px + var(--safe-b));transform:translateX(-50%)}
+  #studio .tabs{display:none}
+  #labels{position:absolute;inset:0;pointer-events:none !important;overflow:hidden}
+  .lbl{position:absolute;transform:translate(-50%,-130%);padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.94);border:1px solid var(--accent);color:var(--accent-d);font-size:11.5px;font-weight:700;white-space:nowrap;box-shadow:0 4px 12px -6px rgba(0,0,0,.5);animation:pop .35s both}
+  .lbl::after{content:"";position:absolute;left:50%;top:100%;width:1px;height:14px;background:var(--accent)}
+  @keyframes pop{from{opacity:0;transform:translate(-50%,-90%) scale(.8)}}
+
+  /* ───────────── 大きな窓（説明・結果・設定） ───────────── */
+  #modal{position:absolute;inset:0;display:grid;place-items:center;padding:16px;background:rgba(14,12,10,.5);z-index:40;overflow:auto;animation:fadein .3s both}
+  @keyframes fadein{from{opacity:0}}
+  .sheet{width:min(720px,100%);max-height:calc(100dvh - 32px);overflow:auto;border-radius:22px;background:var(--paper);box-shadow:0 30px 80px -30px rgba(0,0,0,.8);padding:26px 28px 24px;animation:rise .35s both}
+  .sheet.wide{width:min(1020px,100%)}
+  .sheet h2{margin:0 0 4px;font-size:20px;letter-spacing:.06em}
+  .sheet h3{margin:20px 0 8px;font-size:14px;letter-spacing:.1em;color:var(--accent-d)}
+  .sheet .eyebrow{font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--terra)}
+  .sheet p{margin:6px 0}
+  .sheet .actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;margin-top:22px}
+  .sheet ul.plain{margin:6px 0;padding-left:1.2em;line-height:1.85}
+  .survey{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{padding:14px 16px;border-radius:14px;background:#fff;border:1px solid var(--line)}
+  .card h4{margin:0 0 6px;font-size:12px;letter-spacing:.14em;color:var(--sub)}
+  .card ul{margin:0;padding-left:1.1em;font-size:13.5px;line-height:1.8}
+  .people{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .people span{font-size:12.5px;padding:3px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent-d)}
+  .set{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .set b{display:block;font-size:14px} .set small{color:var(--sub);font-size:12px}
+  .field{width:100%;height:44px;border-radius:12px;border:1px solid var(--line2);background:#fff;padding:0 14px;font:inherit;user-select:text;-webkit-user-select:text}
+
+  /* 結果 */
+  .result-top{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center}
+  .rank{width:118px;height:118px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--gold) var(--deg,0deg),var(--paper2) 0);position:relative}
+  .rank::before{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--paper)}
+  .rank b{position:relative;font-family:var(--serif);font-size:54px;line-height:1}
+  .rank small{position:absolute;bottom:22px;font-size:11px;color:var(--sub);letter-spacing:.1em}
+  .outcome{font-family:var(--serif);font-size:clamp(22px,3vw,32px);letter-spacing:.1em;line-height:1.4}
+  .outcome.contract{color:var(--accent-d)} .outcome.next{color:var(--warn)} .outcome.lost{color:var(--bad)}
+  .cols{display:grid;grid-template-columns:320px 1fr;gap:24px;margin-top:8px}
+  .axis{margin-bottom:9px}
+  .axis .t{display:flex;justify-content:space-between;font-size:13px;font-weight:700}
+  .axis .t span{font-variant-numeric:tabular-nums}
+  .axis .b{height:7px;border-radius:7px;background:var(--paper2);overflow:hidden;margin-top:3px}
+  .axis .b i{display:block;height:100%;border-radius:7px;background:var(--accent);width:0;transition:width 1s .2s ease}
+  .axis small{font-size:11px;color:var(--sub)}
+  .fb{padding:9px 12px;border-radius:12px;background:#fff;border:1px solid var(--line);margin-bottom:6px;font-size:13.5px;line-height:1.7}
+  .fb.g{border-left:4px solid var(--good)} .fb.b{border-left:4px solid var(--warn)} .fb.ng{border-left:4px solid var(--ng);background:rgba(143,31,43,.05)}
+  .fb small{display:block;color:var(--sub);font-size:11.5px}
+  .senpai-says{margin-top:14px;padding:14px 16px;border-radius:14px;background:var(--accent-soft);font-size:14px;line-height:1.85}
+  .senpai-says b{display:block;font-size:12px;letter-spacing:.14em;color:var(--accent-d);margin-bottom:2px}
+  .making{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+  .making div{padding:14px 10px;border-radius:14px;background:#fff;border:1px solid var(--line);text-align:center}
+  .making b{display:block;font-family:var(--serif);font-size:26px;line-height:1.3;color:var(--accent-d)}
+  .making small{font-size:11.5px;color:var(--sub)}
+  .quote{padding:14px 16px;border-radius:14px;background:#201c17;color:#f2ebdd;font-size:13.5px;line-height:1.9;white-space:pre-line;user-select:text;-webkit-user-select:text}
+  .steps-ai{counter-reset:s;padding:0;margin:8px 0;list-style:none}
+  .steps-ai li{counter-increment:s;position:relative;padding:8px 0 8px 40px;border-bottom:1px dashed var(--line);font-size:13.5px;line-height:1.75}
+  .steps-ai li::before{content:counter(s);position:absolute;left:0;top:9px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff;font-size:12px;font-weight:700}
+  #toast{position:absolute;left:50%;top:76px;transform:translateX(-50%);max-width:min(640px,calc(100vw - 28px));padding:11px 18px;border-radius:14px;font-size:13.5px;line-height:1.7;z-index:50;animation:rise .3s both}
+  #toast b{color:var(--accent-d);margin-right:6px}
+
+  /* ───────────── 印刷用の研修レポート ───────────── */
+  #report{display:none}
+  @media print{
+    body{background:#fff;overflow:visible;user-select:text}
+    #stage,#ui{display:none !important}
+    #report{display:block;color:#111;font-size:11pt;line-height:1.7;padding:0 6mm}
+    #report h1{font-size:18pt;margin:0 0 2mm;letter-spacing:.06em} #report h2{font-size:12.5pt;margin:7mm 0 2mm;border-bottom:1px solid #999;padding-bottom:1mm}
+    #report table{width:100%;border-collapse:collapse;margin:2mm 0} #report th,#report td{border:1px solid #999;padding:1.5mm 2.5mm;text-align:left;font-size:10pt;vertical-align:top}
+    #report th{background:#eee} #report .meta{display:flex;justify-content:space-between;font-size:10pt;color:#333}
+    #report .sign{display:flex;gap:12mm;margin-top:12mm} #report .sign div{flex:1;border-top:1px solid #333;padding-top:1mm;font-size:9.5pt}
+    #report .scn{page-break-inside:avoid} #report small{color:#555}
+  }
+
+  /* ───────────── 画面が小さいとき ───────────── */
+  @media (max-width:820px){
+    body{font-size:14px}
+    #hud{padding:8px}
+    #steps{padding:4px 6px} #steps .st span{display:none} #steps .st.on span{display:inline}
+    .chipbtn{height:34px;padding:0 11px;font-size:12px}
+    #title{background:linear-gradient(180deg,rgba(14,12,10,.72) 0%,rgba(14,12,10,.2) 45%,rgba(14,12,10,.82) 100%);overflow:auto}
+    #title .cards{grid-template-columns:1fr}
+    .side,#karte{left:8px;right:8px;top:auto;width:auto;height:min(54dvh,460px);bottom:calc(8px + var(--safe-b))}
+    #studio .col{left:8px !important;right:8px !important;width:auto;top:auto;height:min(46dvh,400px);bottom:calc(70px + var(--safe-b))}
+    #studio .col.hide{display:none}
+    #studio .tabs{display:flex;position:absolute;left:8px;right:8px;bottom:calc(12px + var(--safe-b));gap:6px}
+    #studio .tabs button{flex:1;height:46px;border-radius:14px;background:rgba(255,255,255,.92);font-weight:700;font-size:13px;border:1px solid var(--line2)}
+    #studio .tabs button.on{background:var(--ink);color:#fff}
+    #studio .tabs button.send{background:var(--accent);color:#fff;flex:1.3}
+    #studio .go{display:none}
+    .survey,.cols,.result-top{grid-template-columns:1fr}
+    .making{grid-template-columns:1fr 1fr}
+    .sheet{padding:20px 18px}
+    #dialog{padding:16px 16px 18px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.01s !important;transition-duration:.01s !important}}
+</style>
+</head>
+<body>
+<canvas id="stage" aria-label="3D の画面"></canvas>
+
+<div id="ui">
+  <div id="labels"></div>
+  <div id="title" hidden></div>
+  <div id="hud" hidden>
+    <div class="left">
+      <div id="steps" class="glass"></div>
+      <div id="guest" class="glass" hidden></div>
+    </div>
+    <div class="right">
+      <button id="btn-hint" class="chipbtn glass" type="button">ヒント</button>
+      <button id="btn-karte" class="chipbtn glass" type="button">カルテ <i id="karte-n">0</i></button>
+      <button id="btn-menu" class="chipbtn glass" type="button" aria-label="メニュー">メニュー</button>
+    </div>
+  </div>
+  <div id="panel" class="side glass" hidden></div>
+  <div id="studio" hidden></div>
+  <div id="karte" class="glass" hidden></div>
+  <div id="choices" hidden></div>
+  <div id="dialog" hidden><span class="name"></span><div class="text"></div><span class="next">クリックで次へ ▼</span></div>
+  <div id="tip" class="glass" hidden></div>
+  <div id="toast" class="glass" hidden></div>
+  <div id="caption"><div><div class="big"></div><div class="small"></div></div></div>
+  <div id="fade"></div>
+  <div id="modal" hidden></div>
+  <div id="loading">
+    <div class="box">
+      <div class="logo">はじめての一棟</div>
+      <div class="sub">HOUSING SALES 3D SIMULATOR</div>
+      <div class="bar"><i id="load-bar"></i></div>
+      <div class="msg" id="load-msg">準備しています…</div>
+      <div class="err" id="load-err" hidden></div>
+    </div>
+  </div>
+</div>
+<div id="report"></div>
+
+<!-- 3D エンジン（three.js r187・MIT ライセンス）と、このゲームのプログラム -->
+<script src="jutaku-eigyo/vendor/three-bundle.min.js"></script>
+<script src="jutaku-eigyo/js/data-config.js"></script>
+<script src="jutaku-eigyo/js/data-scenarios.js"></script>
+<script src="jutaku-eigyo/js/core.js"></script>
+<script src="jutaku-eigyo/js/materials.js"></script>
+<script src="jutaku-eigyo/js/world.js"></script>
+<script src="jutaku-eigyo/js/house.js"></script>
+<script src="jutaku-eigyo/js/lot.js"></script>
+<script src="jutaku-eigyo/js/people.js"></script>
+<script src="jutaku-eigyo/js/audio.js"></script>
+<script src="jutaku-eigyo/js/ui.js"></script>
+<script src="jutaku-eigyo/js/game.js"></script>
+</body>
+</html>

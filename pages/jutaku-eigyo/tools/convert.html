@@ -1,0 +1,151 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>人物データ変換ページ（build-assets.mjs から自動で開かれる）</title>
+<script type="importmap">{"imports":{"three":"/three/build/three.module.js","three/addons/":"/three/examples/jsm/"}}</script></head><body>
+<script type="module">
+// Microsoft Rocketbox の FBX を、ゲームで使う軽い形（GLB と独自のモーション形式）に変える。
+// ブラウザの中で three.js の FBXLoader に読ませるのがいちばん確実なので、変換の前半はここで行う。
+import * as THREE from 'three';
+import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+
+const fbx = new FBXLoader();
+const load = (url) => new Promise((res, rej) => fbx.load(url, res, undefined, rej));
+const b64 = (buf) => { const u = new Uint8Array(buf); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); };
+
+// 顔の骨（頭の子）。モーションでは動かさず、表情はモーフ（形の差分）で付ける。
+const FACE_BONE = /^Bip01_(REye|LEye|MJaw|MBottomLip|MTongue|LMouthBottom|RMouthBottom|RMasseter|LMasseter|MUpperLip|RCaninus|LCaninus|REyeBlinkBottom|LEyeBlinkBottom|RUpperlip|LUpperlip|RMouthCorner|LMouthCorner|RCheek|LCheek|REyeBlinkTop|LEyeBlinkTop|RInnerEyebrow|LInnerEyebrow|MMiddleEyebrow|ROuterEyebrow|LOuterEyebrow|MNose)$/;
+
+// 175 個ある表情の中から、ゲームで使うものだけを作る。左右に分かれているものは 1 つにまとめる。
+const MORPHS = {
+  smile:      { AK_44_MouthSmileLeft:1, AK_45_MouthSmileRight:1, AK_07_CheekSquintLeft:0.5, AK_08_CheekSquintRight:0.5, AK_19_EyeSquintLeft:0.25, AK_20_EyeSquintRight:0.25 },
+  frown:      { AK_30_MouthFrownLeft:1, AK_31_MouthFrownRight:1 },
+  browDown:   { AK_01_BrowDownLeft:1, AK_02_BrowDownRight:1 },
+  browInnerUp:{ AK_03_BrowInnerUp:1 },
+  browOuterUp:{ AK_04_BrowOuterUpLeft:1, AK_05_BrowOuterUpRight:1 },
+  blink:      { AK_09_EyeBlinkLeft:1, AK_10_EyeBlinkRight:1 },
+  squint:     { AK_19_EyeSquintLeft:1, AK_20_EyeSquintRight:1 },
+  eyeWide:    { AK_21_EyeWideLeft:1, AK_22_EyeWideRight:1 },
+  jawOpen:    { AK_25_JawOpen:1 },
+  mouthPress: { AK_36_MouthPressLeft:1, AK_37_MouthPressRight:1 },
+  pucker:     { AK_38_MouthPucker:1 },
+  v_aa: { AA_VI_10_aa:1 }, v_ih: { AA_VI_12_I:1 }, v_ou: { AA_VI_14_U:1 }, v_ee: { AA_VI_11_E:1 }, v_oh: { AA_VI_13_O:1 },
+};
+
+// ───────── 人物：FBX → GLB（テクスチャは後で Node 側で貼る） ─────────
+window.convertAvatar = async (url) => {
+  const obj = await load(url);
+  obj.updateMatrixWorld(true);
+  const srcMeshes = [];
+  obj.traverse(o => { if (o.isSkinnedMesh && /hipoly/i.test(o.name)) srcMeshes.push(o); });
+  if (!srcMeshes.length) throw new Error('hipoly mesh not found');
+  const log = { meshes: [], parts: [] };
+  const root = new THREE.Group(); root.name = 'avatar';
+  const bip = obj.children.find(c => c.isBone); root.add(bip);
+  const out = [];
+  for (const sm of srcMeshes) {
+    const g = sm.geometry, mats = [].concat(sm.material);
+    log.meshes.push(sm.name + ' v=' + g.attributes.position.count + ' morphs=' + (g.morphAttributes.position ? g.morphAttributes.position.length : 0));
+    const M = sm.matrixWorld.clone(), N = new THREE.Matrix3().getNormalMatrix(M), R = new THREE.Matrix4().extractRotation(M);
+    const dict = sm.morphTargetDictionary || {};
+    const findMorph = (key) => { for (const k in dict) if (k === key || k.endsWith('.' + key)) return g.morphAttributes.position[dict[k]]; return null; };
+    // 使う表情を先に合成しておく（頂点ごとの差分）
+    const combined = {};
+    if (g.morphAttributes.position) for (const [name, src] of Object.entries(MORPHS)) {
+      const arr = new Float32Array(g.attributes.position.count * 3); let any = false;
+      for (const [k, w] of Object.entries(src)) { const a = findMorph(k); if (!a) continue; any = true; for (let i = 0; i < arr.length; i++) arr[i] += a.array[i] * w; }
+      if (any) combined[name] = arr;
+    }
+    const byMat = new Map();
+    const groups = g.groups.length ? g.groups : [{ start: 0, count: g.attributes.position.count, materialIndex: 0 }];
+    for (const gr of groups) { if (!byMat.has(gr.materialIndex)) byMat.set(gr.materialIndex, []); byMat.get(gr.materialIndex).push(gr); }
+    for (const [mi, grs] of byMat) {
+      const n = grs.reduce((s, x) => s + x.count, 0);
+      const pos = new Float32Array(n * 3), nor = new Float32Array(n * 3), uv = new Float32Array(n * 2), si = new Uint16Array(n * 4), sw = new Float32Array(n * 4);
+      const mor = {}; for (const k in combined) mor[k] = new Float32Array(n * 3);
+      const v = new THREE.Vector3(); let o = 0;
+      for (const gr of grs) for (let i = gr.start; i < gr.start + gr.count; i++, o++) {
+        v.fromBufferAttribute(g.attributes.position, i).applyMatrix4(M); pos.set([v.x, v.y, v.z], o * 3);
+        v.fromBufferAttribute(g.attributes.normal, i).applyMatrix3(N).normalize(); nor.set([v.x, v.y, v.z], o * 3);
+        uv.set([g.attributes.uv.getX(i), g.attributes.uv.getY(i)], o * 2);
+        for (let k = 0; k < 4; k++) { si[o * 4 + k] = g.attributes.skinIndex.getComponent(i, k); sw[o * 4 + k] = g.attributes.skinWeight.getComponent(i, k); }
+        for (const k in combined) { v.set(combined[k][i * 3], combined[k][i * 3 + 1], combined[k][i * 3 + 2]).applyMatrix4(R); mor[k].set([v.x, v.y, v.z], o * 3); }
+      }
+      const ng = new THREE.BufferGeometry();
+      ng.setAttribute('position', new THREE.BufferAttribute(pos, 3)); ng.setAttribute('normal', new THREE.BufferAttribute(nor, 3)); ng.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+      ng.setAttribute('skinIndex', new THREE.BufferAttribute(si, 4)); ng.setAttribute('skinWeight', new THREE.BufferAttribute(sw, 4));
+      // このパーツで実際に動く表情だけを持たせる（体の服などは表情で動かないので省く）
+      const used = Object.keys(mor).filter(k => mor[k].some(x => Math.abs(x) > 1e-4));
+      const part = mats[mi].name.replace(/^[a-z]+\d+_/i, '');
+      const nm = new THREE.SkinnedMesh(ng, new THREE.MeshStandardMaterial({ name: mats[mi].name, roughness: 0.7, metalness: 0 }));
+      nm.name = part;
+      if (used.length) {
+        ng.morphTargetsRelative = true; ng.morphAttributes.position = Object.keys(mor).map(k => { const a = new THREE.BufferAttribute(mor[k], 3); a.name = k; return a; });
+        nm.morphTargetDictionary = {}; Object.keys(mor).forEach((k, i) => nm.morphTargetDictionary[k] = i); nm.morphTargetInfluences = Object.keys(mor).map(() => 0);
+        nm.userData.targetNames = Object.keys(mor);
+      }
+      nm.bind(new THREE.Skeleton(sm.skeleton.bones, sm.skeleton.boneInverses), new THREE.Matrix4());
+      root.add(nm); out.push(nm);
+      log.parts.push(mats[mi].name + ' v=' + n + ' morphs=' + used.length);
+    }
+  }
+  root.updateMatrixWorld(true);
+  const box = new THREE.Box3(); out.forEach(m => { m.geometry.computeBoundingBox(); box.union(m.geometry.boundingBox); });
+  log.height = box.max.y - box.min.y; log.minY = box.min.y; log.bones = out[0].skeleton.bones.length;
+  const glb = await new GLTFExporter().parseAsync(root, { binary: true, onlyVisible: false });
+  return { glb: b64(glb), log };
+};
+
+// ───────── モーション：FBX → 固定間隔でサンプリングした回転データ ─────────
+const BODY_BONES = ['Bip01','Bip01_Pelvis','Bip01_Spine','Bip01_Spine1','Bip01_Spine2','Bip01_Neck','Bip01_Head',
+  ...['L','R'].flatMap(s => ['Clavicle','UpperArm','Forearm','Hand','Finger0','Finger01','Finger02','Finger1','Finger11','Finger12','Finger2','Finger21','Finger22','Finger3','Finger31','Finger32','Finger4','Finger41','Finger42','Thigh','Calf','Foot','Toe0'].map(b => `Bip01_${s}_${b}`))];
+const animCache = new Map();
+async function getClip(url) { if (!animCache.has(url)) { const a = await load(url); animCache.set(url, a.animations[0]); } return animCache.get(url); }
+function sampler(clip, name) { const t = clip.tracks.find(t => t.name === name); if (!t) return null; const it = t.createInterpolant(); return (time) => it.evaluate(time); }
+
+window.animInfo = async (url) => {
+  const clip = await getClip(url); const p = clip.tracks.find(t => t.name === 'Bip01.position');
+  let min = [1e9,1e9,1e9], max = [-1e9,-1e9,-1e9];
+  if (p) for (let i = 0; i < p.values.length; i += 3) for (let k = 0; k < 3; k++) { min[k] = Math.min(min[k], p.values[i+k]); max[k] = Math.max(max[k], p.values[i+k]); }
+  return { dur: clip.duration, tracks: clip.tracks.length, rootMin: min.map(v => +v.toFixed(1)), rootMax: max.map(v => +v.toFixed(1)), first: p ? Array.from(p.values.slice(0,3)).map(v => +v.toFixed(1)) : null, last: p ? Array.from(p.values.slice(-3)).map(v => +v.toFixed(1)) : null };
+};
+
+// opts: { start, len, fps, loop(ループ用に終わりを始まりへなじませる秒数), cycle(歩きの1周期を自動で探す), detrend(前進ぶんを取り除く) }
+window.convertAnim = async (url, opts) => {
+  const clip = await getClip(url); const fps = opts.fps || 12;
+  let start = opts.start || 0, len = Math.min(opts.len || clip.duration, clip.duration - start);
+  const q = new THREE.Quaternion(), q2 = new THREE.Quaternion();
+  const samplers = BODY_BONES.map(b => sampler(clip, b + '.quaternion'));
+  const poseAt = (t) => samplers.map(s => s ? Array.from(s(t)) : null);
+  const dist = (a, b) => { let d = 0; for (let i = 0; i < a.length; i++) if (a[i]) { const dot = Math.abs(a[i][0]*b[i][0] + a[i][1]*b[i][1] + a[i][2]*b[i][2] + a[i][3]*b[i][3]); d += 1 - Math.min(1, dot); } return d; };
+  if (opts.cycle) { // 歩き：始まりの姿勢にいちばん近く戻る時刻を探して、ちょうど1〜2歩ぶんを切り出す
+    const p0 = poseAt(start); let best = 1e9, bt = start + 1;
+    for (let t = start + opts.cycle[0]; t <= Math.min(clip.duration, start + opts.cycle[1]); t += 1 / 120) { const d = dist(p0, poseAt(t)); if (d < best) { best = d; bt = t; } }
+    len = bt - start;
+  }
+  const frames = Math.max(2, Math.round(len * fps) + 1); const dt = len / (frames - 1);
+  const rot = [], bones = [];
+  BODY_BONES.forEach((b, bi) => {
+    const s = samplers[bi]; if (!s) return;
+    const arr = new Float32Array(frames * 4); let prev = null;
+    for (let f = 0; f < frames; f++) { const v = s(start + f * dt); q.set(v[0], v[1], v[2], v[3]).normalize(); if (prev && q.dot(prev) < 0) q.set(-q.x, -q.y, -q.z, -q.w); arr.set([q.x, q.y, q.z, q.w], f * 4); prev = q.clone(); }
+    if (opts.loop) { const k = Math.min(frames - 1, Math.round(opts.loop * fps)); q2.fromArray(arr, 0);
+      for (let i = 0; i <= k; i++) { const f = frames - 1 - k + i, w = i / k, e = w * w * (3 - 2 * w); q.fromArray(arr, f * 4); if (q.dot(q2) < 0) q.set(-q.x,-q.y,-q.z,-q.w); q.slerp(q2, e); arr.set([q.x, q.y, q.z, q.w], f * 4); } }
+    let varc = 0; for (let i = 4; i < arr.length; i++) varc = Math.max(varc, Math.abs(arr[i] - arr[i % 4]));
+    const isConst = varc < 0.002; const use = isConst ? arr.subarray(0, 4) : arr;
+    const i16 = new Int16Array(use.length); for (let i = 0; i < use.length; i++) i16[i] = Math.round(Math.max(-1, Math.min(1, use[i])) * 32767);
+    bones.push({ name: b, n: isConst ? 1 : frames }); rot.push(i16);
+  });
+  // 腰（ルート）の位置。単位は cm。
+  const ps = sampler(clip, 'Bip01.position'); const pos = new Float32Array(frames * 3); let travel = 0;
+  if (ps) {
+    for (let f = 0; f < frames; f++) { const v = ps(start + f * dt); pos.set([v[0], v[1], v[2]], f * 3); }
+    if (opts.detrend) { const dx = pos[(frames-1)*3] - pos[0], dz = pos[(frames-1)*3+2] - pos[2]; travel = Math.hypot(dx, dz);
+      for (let f = 0; f < frames; f++) { const w = f / (frames - 1); pos[f*3] -= pos[0] * 0 + dx * w; pos[f*3+2] -= dz * w; } }
+    const x0 = pos[0], z0 = pos[2]; for (let f = 0; f < frames; f++) { pos[f*3] -= x0; pos[f*3+2] -= z0; }
+    if (opts.loop) { const k = Math.min(frames - 1, Math.round(opts.loop * fps)); for (let i = 0; i <= k; i++) { const f = frames - 1 - k + i, w = i / k, e = w * w * (3 - 2 * w); for (let c = 0; c < 3; c++) pos[f*3+c] += (pos[c] - pos[f*3+c]) * e; } }
+  }
+  const total = rot.reduce((s, a) => s + a.length, 0); const all = new Int16Array(total); let o = 0; for (const a of rot) { all.set(a, o); o += a.length; }
+  return { dur: len, frames, fps: (frames - 1) / len, bones, rot: b64(all.buffer), pos: b64(pos.buffer), travel, srcDur: clip.duration };
+};
+window.__ready = true;
+</script></body></html>
