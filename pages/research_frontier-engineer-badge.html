@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Microsoft のパートナー向け「Frontier Transformation Engineer バッジ（FTB）」の取得条件と進め方、会社向け Frontier Partner 認定との関係を公式情報で整理。2026-10-29 調査。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Frontier Engineer バッジ（FTB）の取り方</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  /* Layout: 1本の読み物カラム（最大800px）。冒頭に「3つの関門」を左から右へ並べ、その下に要件表・やることリスト・会社の認定・根拠を積む */
+  --bg:#F3F4F8;
+  --surface:#FFFFFF;
+  --sunk:#E8EAF2;
+  --ink:#161A2B;
+  --muted:#565C72;
+  --line:#D5D8E4;
+  --accent:#3346A8;
+  --accent-soft:#E2E6F7;
+  --ok:#276F43;
+  --ok-soft:#E1F1E6;
+  --warn:#8A5700;
+  --warn-soft:#FAEED6;
+  --ng:#A3291F;
+  --ng-soft:#F8E2DF;
+  --info:#4A5063;
+  --info-soft:#E6E8EF;
+  --hl:#FFF5D3;
+  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1120;
+    --surface:#161A2C;
+    --sunk:#1D2236;
+    --ink:#E7E9F2;
+    --muted:#A0A6BC;
+    --line:#2B3148;
+    --accent:#8F9EF2;
+    --accent-soft:#222A52;
+    --ok:#74C795;
+    --ok-soft:#14301F;
+    --warn:#E5AE52;
+    --warn-soft:#382811;
+    --ng:#F19087;
+    --ng-soft:#3B1916;
+    --info:#B5BBCE;
+    --info-soft:#252B40;
+    --hl:#2C2914;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1120;
+  --surface:#161A2C;
+  --sunk:#1D2236;
+  --ink:#E7E9F2;
+  --muted:#A0A6BC;
+  --line:#2B3148;
+  --accent:#8F9EF2;
+  --accent-soft:#222A52;
+  --ok:#74C795;
+  --ok-soft:#14301F;
+  --warn:#E5AE52;
+  --warn-soft:#382811;
+  --ng:#F19087;
+  --ng-soft:#3B1916;
+  --info:#B5BBCE;
+  --info-soft:#252B40;
+  --hl:#2C2914;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:16px;
+  line-height:1.8;
+  -webkit-text-size-adjust:100%;
+}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+b,strong{font-weight:700}
+
+.page{
+  max-width:800px;
+  margin:0 auto;
+  padding-block:40px 64px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid;
+  gap:56px;
+}
+.page > *{min-width:0}
+
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.4;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.55rem, 4.6vw, 2.2rem);letter-spacing:.01em}
+h2{font-size:1.45rem}
+h3{font-size:1.06rem}
+p{margin:0}
+
+section{display:grid;gap:18px}
+.sec-lead{color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.code{font-family:var(--f-mono);font-weight:500;letter-spacing:.02em;white-space:nowrap}
+
+/* ---------- ヘッダー ---------- */
+.hero{display:grid;gap:16px}
+.eyebrow{
+  display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;
+  font-size:.82rem;letter-spacing:.08em;color:var(--muted);font-weight:700;
+}
+.eyebrow span{font-family:var(--f-mono);font-weight:500;letter-spacing:0}
+.lead{font-size:1.02rem}
+.meta{
+  display:grid;gap:6px;margin:0;
+  font-size:.88rem;color:var(--muted);
+  border-top:1px solid var(--line);padding-top:12px;
+}
+.meta div{display:grid;grid-template-columns:4.5em 1fr;gap:8px}
+.meta dt{font-weight:700}
+.meta dd{margin:0;min-width:0}
+
+/* ---------- 引用番号 ---------- */
+.c{white-space:nowrap}
+.c a{
+  font-family:var(--f-mono);font-size:.74rem;font-weight:500;
+  text-decoration:none;color:var(--accent);
+  padding:0 1px;vertical-align:.18em;
+}
+.c a:hover{text-decoration:underline}
+
+/* ---------- 結論 ---------- */
+.verdict{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:24px;
+  gap:16px;
+}
+.label{font-size:.78rem;font-weight:700;letter-spacing:.12em;color:var(--accent)}
+.verdict-main{
+  font-family:var(--f-display);font-size:clamp(1.12rem, 3.3vw, 1.38rem);line-height:1.65;font-weight:700;
+}
+.verdict-main em{font-style:normal;background:linear-gradient(transparent 62%, var(--accent-soft) 62%)}
+
+/* 3つの関門 */
+.gates{
+  list-style:none;margin:8px 0 0;padding:0;
+  display:grid;grid-template-columns:repeat(3, 1fr);gap:22px;
+}
+.gate{
+  position:relative;
+  background:var(--sunk);
+  border-radius:12px;
+  padding:16px 16px 18px;
+  display:grid;gap:8px;align-content:start;
+  min-width:0;
+}
+.gate + .gate::before{
+  content:"";
+  position:absolute;left:-16px;top:50%;
+  width:10px;height:10px;
+  border-top:2px solid var(--accent);border-right:2px solid var(--accent);
+  transform:translateY(-50%) rotate(45deg);
+}
+.gate-step{font-family:var(--f-mono);font-size:.76rem;font-weight:500;color:var(--muted);letter-spacing:.06em}
+.gate h3{font-size:1rem}
+.gate-num{
+  font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:500;
+  font-size:1.5rem;line-height:1.25;color:var(--accent);
+}
+.gate-num small{font-family:var(--f-body);font-size:.82rem;font-weight:700;color:var(--ink);margin-left:2px}
+.gate p{font-size:.88rem}
+.gate .codes{display:flex;flex-wrap:wrap;gap:6px}
+.chip{
+  font-family:var(--f-mono);font-size:.78rem;font-weight:500;
+  padding:1px 8px;border-radius:6px;background:var(--surface);border:1px solid var(--line);
+}
+.after{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.after div{
+  border:2px solid var(--accent);background:var(--accent-soft);
+  border-radius:12px;padding:12px 14px;font-size:.9rem;min-width:0;
+  display:grid;gap:2px;
+}
+.after b{font-family:var(--f-display);font-size:.98rem}
+@media (max-width:660px){
+  .verdict{padding:20px 16px}
+  .gates{grid-template-columns:1fr;gap:20px}
+  .gate + .gate::before{left:50%;top:-15px;transform:translateX(-50%) rotate(135deg)}
+  .after{grid-template-columns:1fr}
+}
+
+/* ---------- 用語 ---------- */
+.terms{
+  margin:0;display:grid;grid-template-columns:repeat(auto-fit, minmax(230px, 1fr));gap:10px;
+}
+.terms div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:4px;min-width:0}
+.terms dt{font-weight:700}
+.terms dd{margin:0;font-size:.9rem;color:var(--muted)}
+
+/* ---------- ピル ---------- */
+.pill{
+  display:inline-block;justify-self:start;
+  padding:2px 11px;border-radius:999px;
+  font-size:.82rem;font-weight:700;line-height:1.7;white-space:nowrap;
+}
+.p-ok{background:var(--ok-soft);color:var(--ok)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-ng{background:var(--ng-soft);color:var(--ng)}
+.p-info{background:var(--info-soft);color:var(--info)}
+
+/* ---------- 表 ---------- */
+.table-wrap{
+  overflow-x:auto;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+}
+table{width:100%;min-width:640px;border-collapse:collapse;font-size:.92rem}
+th,td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{font-size:.78rem;letter-spacing:.06em;color:var(--muted);background:var(--sunk);font-weight:700;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+tr.grp td{background:var(--sunk);font-size:.8rem;font-weight:700;letter-spacing:.06em;color:var(--muted);padding-block:8px}
+td.q{font-weight:700;min-width:13em}
+tr.hl td{background:var(--hl)}
+td.ref{white-space:nowrap}
+.hl-note{font-size:.84rem;color:var(--muted)}
+.hl-note span{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--hl);border:1px solid var(--line);vertical-align:-1px;margin-right:6px}
+
+/* 試験の早見 */
+.exams{display:grid;grid-template-columns:repeat(3, 1fr);gap:10px}
+.exam{
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+  display:grid;gap:6px;align-content:start;min-width:0;
+}
+.exam-code{font-family:var(--f-mono);font-weight:500;font-size:1.3rem;line-height:1.2;color:var(--accent)}
+.exam-name{font-weight:700;font-size:.92rem;line-height:1.5}
+.exam dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:.84rem}
+.exam dt{color:var(--muted);font-weight:700;white-space:nowrap}
+.exam dd{margin:0;min-width:0}
+@media (max-width:700px){ .exams{grid-template-columns:1fr} }
+
+/* ---------- やることリスト ---------- */
+.todo-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px}
+.todo-meter{display:flex;align-items:center;gap:12px;font-size:.88rem;color:var(--muted)}
+.todo-meter output{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:1rem;color:var(--ink);font-weight:500}
+.btn{
+  font:inherit;font-size:.84rem;font-weight:700;
+  padding:4px 12px;border-radius:999px;border:1px solid var(--line);
+  background:var(--surface);color:var(--muted);cursor:pointer;
+}
+.btn:hover{color:var(--ink);border-color:var(--muted)}
+.todo{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:td}
+.todo li{counter-increment:td}
+.todo label{
+  display:grid;grid-template-columns:24px 30px 1fr;gap:10px;align-items:start;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+  cursor:pointer;
+}
+.todo input{
+  width:20px;height:20px;margin:4px 0 0;accent-color:var(--accent);cursor:pointer;
+}
+.todo .n{
+  width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--surface);
+  display:grid;place-items:center;font-family:var(--f-mono);font-size:.85rem;font-weight:500;
+}
+.todo .n::before{content:counter(td)}
+.todo .body{min-width:0;display:grid;gap:2px}
+.todo .t{font-weight:700}
+.todo .d{font-size:.9rem;color:var(--muted)}
+.todo .who{font-size:.76rem;font-weight:700;color:var(--accent);letter-spacing:.06em}
+.todo input:checked ~ .body .t{text-decoration:line-through;text-decoration-color:var(--muted);color:var(--muted)}
+.todo input:checked ~ .n{background:var(--ok);}
+.todo-note{font-size:.84rem;color:var(--muted)}
+
+/* ---------- 会社の認定 ---------- */
+.org{display:grid;grid-template-columns:repeat(3, 1fr);gap:12px}
+.org-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;
+  display:grid;gap:8px;align-content:start;min-width:0;
+}
+.org-k{font-size:.78rem;font-weight:700;letter-spacing:.1em;color:var(--muted)}
+.org-big{font-family:var(--f-mono);font-weight:500;font-size:1.5rem;line-height:1.25;color:var(--accent);font-variant-numeric:tabular-nums}
+.org-big small{font-family:var(--f-body);font-size:.84rem;font-weight:700;color:var(--ink);margin-left:2px}
+.org-card ul{margin:0;padding-left:1.15em;display:grid;gap:2px;font-size:.88rem}
+.org-card p{font-size:.88rem}
+.same{
+  border:1px dashed var(--line);border-radius:12px;padding:12px 16px;font-size:.92rem;background:var(--surface);
+}
+.perks{margin:0;padding-left:1.2em;display:grid;gap:2px;font-size:.94rem}
+@media (max-width:700px){ .org{grid-template-columns:1fr} }
+
+/* ---------- 流れ（日付） ---------- */
+.tl{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.tl li{
+  display:grid;grid-template-columns:9.5em 1fr;gap:14px;align-items:baseline;
+  padding:10px 0;border-bottom:1px solid var(--line);
+}
+.tl li:last-child{border-bottom:0}
+.tl time{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:.86rem;font-weight:500;color:var(--muted)}
+.tl li.now time{color:var(--accent)}
+.tl li.now .now-tag{font-size:.74rem;font-weight:700;padding:0 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-left:6px;white-space:nowrap}
+.tl p{font-size:.94rem;min-width:0}
+@media (max-width:480px){ .tl li{grid-template-columns:1fr;gap:0} }
+
+/* ---------- 近道 ---------- */
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:8px;align-content:start;min-width:0}
+.plan p{font-size:.9rem}
+.plan dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.86rem}
+.plan dt{color:var(--muted);font-weight:700;white-space:nowrap}
+.plan dd{margin:0;min-width:0}
+@media (max-width:620px){ .plans{grid-template-columns:1fr} }
+
+/* ---------- 注意点 ---------- */
+.cautions{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.cautions li{
+  display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;
+  padding:12px 0;border-bottom:1px solid var(--line);
+}
+.cautions li:last-child{border-bottom:0}
+.cautions li > div{min-width:0;display:grid;gap:2px}
+.cautions h3{font-size:.98rem;font-family:var(--f-body)}
+.cautions p{font-size:.93rem}
+
+/* ---------- 根拠 ---------- */
+.sources{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.sources li{
+  display:grid;grid-template-columns:2.6em 1fr;gap:10px;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+  scroll-margin-top:16px;
+}
+.sources li:target{outline:2px solid var(--accent);outline-offset:2px}
+.src-n{font-family:var(--f-mono);font-weight:500;color:var(--accent)}
+.sources li > div{min-width:0;display:grid;gap:6px}
+.src-t{font-weight:700;line-height:1.5}
+.src-meta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:.82rem;color:var(--muted)}
+.tag{font-size:.74rem;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--ok-soft);color:var(--ok)}
+.tag.link{background:var(--warn-soft);color:var(--warn)}
+.tag.third{background:var(--info-soft);color:var(--info)}
+.src-sum{font-size:.9rem}
+.src-url{font-family:var(--f-mono);font-size:.74rem;color:var(--muted);overflow-wrap:anywhere;word-break:break-all}
+
+/* ---------- フッター ---------- */
+.foot{
+  border-top:1px solid var(--line);padding-top:20px;display:grid;gap:10px;font-size:.86rem;color:var(--muted);
+}
+.foot ul{margin:0;padding-left:1.2em;display:grid;gap:2px}
+
+@media (prefers-reduced-motion: reduce){ *{transition:none!important;animation:none!important} }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <p class="eyebrow">調査メモ <span>2026-10-29 時点</span></p>
+  <h1>Frontier Transformation Engineer バッジ（FTB）の取り方</h1>
+  <p class="lead">Microsoft のパートナー企業向けバッジ「Frontier Transformation Engineer」を取るために、何を・どこで・どんな順番で済ませればよいかを、公式情報をもとに整理しました。会社単位で目指す「Frontier Partner」認定との関係もあわせて載せています。</p>
+  <dl class="meta">
+    <div><dt>調査日</dt><dd class="mono">2026-10-29</dd></div>
+    <div><dt>対象</dt><dd>Frontier Transformation Engineer バッジ（個人向け）と、Frontier Partner スペシャライゼーション（会社向けの認定）</dd></div>
+    <div><dt>呼び方</dt><dd>「FTB」は公式の略称ではありません。正式名は <b>Frontier Transformation Engineer badge</b> で、Microsoft のブログでは「Frontier Engineer Badge」とも書かれています<span class="c"><a href="#src-1">[1]</a></span>。</dd></div>
+  </dl>
+</header>
+
+<section class="verdict" aria-labelledby="h-verdict">
+  <h2 id="h-verdict" class="label">結論</h2>
+  <p class="verdict-main">資格試験に<em>3つ</em>合格し、オンラインのテスト<em>6本</em>（Project Ready 5本と HVE 1本）をそれぞれ<em>80%以上</em>で通過すると、バッジが発行されます。</p>
+  <p>対象は、Microsoft パートナー企業で AI エージェントを設計・構築する技術者（ソリューションエンジニアやアーキテクトなど）です<span class="c"><a href="#src-1">[1]</a><a href="#src-2">[2]</a></span>。進み具合の管理と申請は、パートナー向けの学習サイト「Partner Skilling Hub（LevelUp）」で行います<span class="c"><a href="#src-8">[8]</a></span>。資格試験は受験料がかかり、全パートナー向けの無料バウチャーはありません<span class="c"><a href="#src-5">[5]</a></span>。</p>
+
+  <ol class="gates" aria-label="バッジ取得の3つの関門">
+    <li class="gate">
+      <span class="gate-step">STEP 1 ／ 資格</span>
+      <h3>資格試験に合格する</h3>
+      <p class="gate-num">3<small>つ合格</small></p>
+      <div class="codes"><span class="chip">GH-300</span><span class="chip">AI-103</span><span class="chip">AB-100</span></div>
+      <p>GitHub Copilot、Azure の AI アプリ開発、エージェント業務設計の3分野です<span class="c"><a href="#src-9">[9]</a></span>。</p>
+    </li>
+    <li class="gate">
+      <span class="gate-step">STEP 2 ／ Project Ready</span>
+      <h3>実践コースのテストを通る</h3>
+      <p class="gate-num">5本<small>×80%以上</small></p>
+      <p>コースの受講は任意で、テストの合格が必須です<span class="c"><a href="#src-8">[8]</a></span>。</p>
+    </li>
+    <li class="gate">
+      <span class="gate-step">STEP 3 ／ CoE・HVE</span>
+      <h3>開発の型のテストを通る</h3>
+      <p class="gate-num">1本<small>×80%以上</small></p>
+      <p>HVE コース（約1.5時間）が必須で、ほかの2コースは任意です<span class="c"><a href="#src-8">[8]</a></span>。</p>
+    </li>
+  </ol>
+
+  <div class="after">
+    <div><b>そのあと：発行を待つ</b><p>すべての確認が済むと発行されます。試験合格の反映には最大2〜3週間かかることがあります<span class="c"><a href="#src-8">[8]</a></span>。</p></div>
+    <div><b>会社として使うなら</b><p>会社の「Frontier Partner」認定には、このバッジを持つ人が5人必要です<span class="c"><a href="#src-4">[4]</a><a href="#src-6">[6]</a></span>。</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-terms">
+  <h2 id="h-terms">用語をひとことで</h2>
+  <dl class="terms">
+    <div><dt>Frontier Transformation</dt><dd>AI エージェントを前提に仕事のやり方を作り変える、という Microsoft の取り組みの名前です。</dd></div>
+    <div><dt>Partner Skilling Hub（LevelUp）</dt><dd>パートナー企業の社員向けの学習サイトです。バッジの進み具合もここで見ます。</dd></div>
+    <div><dt>Partner Center</dt><dd>パートナー企業が Microsoft との契約や認定を管理する管理画面です。</dd></div>
+    <div><dt>Project Ready</dt><dd>「すぐ案件に入れる」実力かどうかを確かめる実践コースのまとまりです。</dd></div>
+    <div><dt>HVE（Hypervelocity Engineering）</dt><dd>AI エージェントをとても速いペースで作って届けるための、開発の進め方の枠組みです。</dd></div>
+    <div><dt>CoE（Center of Excellence）</dt><dd>社内で AI 活用を広めたりルールを決めたりする推進チームのことです。</dd></div>
+    <div><dt>スペシャライゼーション</dt><dd>「この分野に強い会社」と Microsoft が会社単位で認める認定です。</dd></div>
+  </dl>
+</section>
+
+<section aria-labelledby="h-req">
+  <h2 id="h-req">要件チェック表</h2>
+  <p class="sec-lead">バッジに必要なものを、必須・任意・条件付きに分けました。</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>要件</th><th>区分</th><th>中身</th><th>根拠</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="4">STEP 1　資格試験</td></tr>
+        <tr class="hl"><td class="q"><span class="code">GH-300</span> GitHub Copilot に合格</td><td><span class="pill p-ok">必須</span></td><td>GitHub Copilot の使い方、プロンプトの工夫、安全な設定を問う試験です。</td><td class="ref c"><a href="#src-9">[9]</a><a href="#src-12">[12]</a></td></tr>
+        <tr class="hl"><td class="q"><span class="code">AI-103</span> Azure AI Apps and Agents Developer に合格</td><td><span class="pill p-ok">必須</span></td><td>Microsoft Foundry と Python で AI アプリやエージェントを作る試験です。案内ページの版によっては「AI-102/AI-103」と並べて書かれています。</td><td class="ref c"><a href="#src-9">[9]</a><a href="#src-11">[11]</a></td></tr>
+        <tr class="hl"><td class="q"><span class="code">AB-100</span> Agentic AI Business Solutions Architect に合格</td><td><span class="pill p-ok">必須</span></td><td>エージェントを前提にした業務の仕組みを設計する、上級（Expert）の試験です。</td><td class="ref c"><a href="#src-9">[9]</a><a href="#src-10">[10]</a></td></tr>
+        <tr class="grp"><td colspan="4">STEP 2　Project Ready</td></tr>
+        <tr><td class="q">Project Ready のコースを受講</td><td><span class="pill p-info">任意</span></td><td>全5コースです。受講そのものは任意の扱いで、内容が分かる人はテストから受けられます。</td><td class="ref c"><a href="#src-8">[8]</a></td></tr>
+        <tr class="hl"><td class="q">Project Ready のテスト 5本</td><td><span class="pill p-ok">必須</span></td><td>各コースのテストで80%以上が必要です。</td><td class="ref c"><a href="#src-8">[8]</a></td></tr>
+        <tr class="grp"><td colspan="4">STEP 3　Frontier CoE と HVE</td></tr>
+        <tr><td class="q">Hypervelocity Engineering Framework コース</td><td><span class="pill p-ok">必須</span></td><td>約1.5時間です。</td><td class="ref c"><a href="#src-8">[8]</a></td></tr>
+        <tr><td class="q">Create AI Center of Excellence ／ Industry Expertise for building AI agents</td><td><span class="pill p-info">任意</span></td><td>それぞれ約2時間、約1時間です。</td><td class="ref c"><a href="#src-8">[8]</a></td></tr>
+        <tr class="hl"><td class="q">HVE Framework のテスト</td><td><span class="pill p-ok">必須</span></td><td>80%以上が必要です。</td><td class="ref c"><a href="#src-8">[8]</a></td></tr>
+        <tr class="grp"><td colspan="4">アカウントとその他</td></tr>
+        <tr><td class="q">Partner Skilling Hub に会社のメールで登録</td><td><span class="pill p-ok">必須</span></td><td>個人のメールアドレスでは登録できません。</td><td class="ref c"><a href="#src-8">[8]</a></td></tr>
+        <tr><td class="q">Partner Center との紐付け</td><td><span class="pill p-warn">条件付き</span></td><td>バッジを会社のスペシャライゼーションに数えるときに必要です。Microsoft Learn と Skilling Hub の両方を紐付けます。</td><td class="ref c"><a href="#src-8">[8]</a></td></tr>
+        <tr><td class="q">受験料</td><td><span class="pill p-warn">条件付き</span></td><td>試験は国・地域ごとの価格で有料です。ESI（Microsoft との研修契約）の対象企業は50%割引のバウチャーを使えます。</td><td class="ref c"><a href="#src-5">[5]</a><a href="#src-10">[10]</a></td></tr>
+        <tr><td class="q">バッジの有効期限</td><td><span class="pill p-ng">記載なし</span></td><td>公式ページでは見つかりませんでした（下の「注意点」を参照）。</td><td class="ref">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="hl-note"><span></span>黄色の行は、バッジ発行の判定に直接使われる条件です。</p>
+
+  <h3>3つの試験の早見</h3>
+  <div class="exams">
+    <div class="exam">
+      <span class="exam-code">GH-300</span>
+      <span class="exam-name">GitHub Copilot</span>
+      <dl><dt>時間</dt><dd>100分</dd><dt>日本語</dt><dd>あり</dd><dt>有効</dt><dd>2年</dd></dl>
+      <p class="c"><a href="#src-12">[12]</a></p>
+    </div>
+    <div class="exam">
+      <span class="exam-code">AI-103</span>
+      <span class="exam-name">Azure AI Apps and Agents Developer Associate</span>
+      <dl><dt>時間</dt><dd>120分</dd><dt>日本語</dt><dd>あり</dd><dt>位置</dt><dd>AB-100 の前提資格にもなる</dd></dl>
+      <p class="c"><a href="#src-10">[10]</a><a href="#src-11">[11]</a></p>
+    </div>
+    <div class="exam">
+      <span class="exam-code">AB-100</span>
+      <span class="exam-name">Agentic AI Business Solutions Architect Expert</span>
+      <dl><dt>合格点</dt><dd>700 / 1000</dd><dt>日本語</dt><dd>あり</dd><dt>改訂</dt><dd>2026-11-16（英語版）</dd></dl>
+      <p class="c"><a href="#src-10">[10]</a></p>
+    </div>
+  </div>
+  <p class="sec-lead">AB-100 の Expert 資格は、試験の合格に加えて Associate 資格を1つ以上持っていることが条件です。その候補のひとつが AI-103 なので、AI-103 を先に取ると条件をまとめて満たせます<span class="c"><a href="#src-10">[10]</a></span>。</p>
+</section>
+
+<section aria-labelledby="h-todo">
+  <div class="todo-head">
+    <h2 id="h-todo">やることリスト</h2>
+    <div class="todo-meter"><span>完了</span><output id="todo-count" aria-live="polite">0 / 9</output><button type="button" class="btn" id="todo-reset">チェックを外す</button></div>
+  </div>
+  <p class="sec-lead">公式が決めた順番ではなく、手戻りが少ない順に並べた一例です。STEP 2・3 のテストは、試験の勉強と並行して進められます。チェックはこのブラウザにだけ保存されます。</p>
+  <ol class="todo">
+    <li><label><input type="checkbox" id="td-1"><span class="n" aria-hidden="true"></span><span class="body"><span class="who">準備</span><span class="t">Partner Skilling Hub に会社のメールで登録する</span><span class="d">Frontier Transformation Engineer の学習ジャーニーに参加し、進み具合が見える状態にします<span class="c"><a href="#src-8">[8]</a></span>。</span></span></label></li>
+    <li><label><input type="checkbox" id="td-2"><span class="n" aria-hidden="true"></span><span class="body"><span class="who">準備</span><span class="t">Microsoft Learn のプロファイルを整える</span><span class="d">案内では、個人メールの Learn プロファイルに会社メールのプロファイルを紐付けます<span class="c"><a href="#src-8">[8]</a></span>。試験の申し込みも個人の Microsoft アカウントが公式の推奨です（会社のアカウントだと退職時に記録が消えるため）<span class="c"><a href="#src-10">[10]</a></span>。</span></span></label></li>
+    <li><label><input type="checkbox" id="td-3"><span class="n" aria-hidden="true"></span><span class="body"><span class="who">STEP 1</span><span class="t">AI-103 に合格する</span><span class="d">AB-100 の前提資格も兼ねるので、最初に取ると手戻りがありません<span class="c"><a href="#src-10">[10]</a><a href="#src-11">[11]</a></span>。</span></span></label></li>
+    <li><label><input type="checkbox" id="td-4"><span class="n" aria-hidden="true"></span><span class="body"><span class="who">STEP 1</span><span class="t">GH-300 に合格する</span><span class="d">GitHub Copilot を普段使っている人なら取りかかりやすい試験です<span class="c"><a href="#src-12">[12]</a></span>。</span></span></label></li>
+    <li><label><input type="checkbox" id="td-5"><span class="n" aria-hidden="true"></span><span class="body"><span class="who">STEP 1</span><span class="t">AB-100 に合格する</span><span class="d">英語版の出題範囲が 2026-11-16 に改訂されます。日本語版の更新はその約8週間後の予定なので、教材がどちらの版か確かめてから勉強します<span class="c"><a href="#src-10">[10]</a></span>。</span></span></label></li>
+    <li><label><input type="checkbox" id="td-6"><span class="n" aria-hidden="true"></span><span class="body"><span class="who">STEP 2</span><span class="t">Project Ready のテスト5本を80%以上で通る</span><span class="d">コースは必要に応じて受講します<span class="c"><a href="#src-8">[8]</a></span>。</span></span></label></li>
+    <li><label><input type="checkbox" id="td-7"><span class="n" aria-hidden="true"></span><span class="body"><span class="who">STEP 3</span><span class="t">HVE コースを受けて、テストを80%以上で通る</span><span class="d">CoE と業界別のコースは任意です<span class="c"><a href="#src-8">[8]</a></span>。</span></span></label></li>
+    <li><label><input type="checkbox" id="td-8"><span class="n" aria-hidden="true"></span><span class="body"><span class="who">連携</span><span class="t">Partner Center で Learn と Skilling Hub を紐付ける</span><span class="d">Learn の紐付けは、試験・資格・Applied Skills のどれかを1つ以上持っていることが条件です（Project Ready は数えません）。Skilling Hub の紐付けは別の操作として必要です<span class="c"><a href="#src-8">[8]</a></span>。</span></span></label></li>
+    <li><label><input type="checkbox" id="td-9"><span class="n" aria-hidden="true"></span><span class="body"><span class="who">発行</span><span class="t">バッジの発行を確認する</span><span class="d">試験合格の反映には最大2〜3週間かかることがあります<span class="c"><a href="#src-8">[8]</a></span>。</span></span></label></li>
+  </ol>
+</section>
+
+<section aria-labelledby="h-org">
+  <h2 id="h-org">会社の「Frontier Partner」認定との関係</h2>
+  <p>個人のバッジとは別に、会社単位の認定「Frontier Partner スペシャライゼーション」の受付が 2026-09-30 に始まりました<span class="c"><a href="#src-6">[6]</a><a href="#src-7">[7]</a></span>。以前の会社向け「Frontier Partner バッジ」が、この認定に発展した形です<span class="c"><a href="#src-1">[1]</a></span>。次の3つを、同じ Partner Global Account（会社のパートナー登録の単位）で同時に満たす必要があります<span class="c"><a href="#src-4">[4]</a><a href="#src-6">[6]</a></span>。</p>
+  <div class="org">
+    <div class="org-card">
+      <span class="org-k">会社の認定</span>
+      <p class="org-big">4<small>つ保有</small></p>
+      <ul>
+        <li>Microsoft 365 Copilot</li>
+        <li>AI Apps on Microsoft Azure または AI Platform on Microsoft Azure</li>
+        <li>Data Security</li>
+        <li>Identity and Access Management</li>
+      </ul>
+    </div>
+    <div class="org-card">
+      <span class="org-k">人の育成</span>
+      <p class="org-big">5<small>人</small> ＋ 3<small>人</small></p>
+      <p>このバッジを持つ人が5人と、<span class="code">DP-600</span>（Fabric Analytics Engineer Associate）に合格した人が3人必要です<span class="c"><a href="#src-4">[4]</a><a href="#src-13">[13]</a></span>。</p>
+    </div>
+    <div class="org-card">
+      <span class="org-k">第三者の監査</span>
+      <p class="org-big">2<small>年ごと</small></p>
+      <p>設計・構築・展開・統制・セキュリティ・運用まで提供できるかを、外部の監査で確かめます<span class="c"><a href="#src-4">[4]</a></span>。</p>
+    </div>
+  </div>
+  <p class="same">バッジの5人と DP-600 の3人は、同じ人でも別の人でもかまいません<span class="c"><a href="#src-4">[4]</a></span>。つまり最小で5人のチームでも、うち3人が DP-600 も持っていれば人数の条件を満たせます。</p>
+  <h3>認定を取ると得られるもの</h3>
+  <ul class="perks">
+    <li>お客様向けに表示できる Frontier Partner の認定バッジ</li>
+    <li>Frontier 関連の共同販売（Microsoft の営業と一緒に売る仕組み）の対象になる</li>
+    <li>Microsoft Agent の事前購入プラン（P3）のクレジットと Microsoft 365 E7 のライセンス</li>
+    <li>マーケティング素材や事例掲載の機会、申請から監査までのサポート窓口</li>
+  </ul>
+  <p class="c"><a href="#src-7">[7]</a></p>
+</section>
+
+<section aria-labelledby="h-tl">
+  <h2 id="h-tl">これまでの流れ</h2>
+  <ol class="tl">
+    <li><time datetime="2026-04-21">2026-04-21</time><p>Microsoft がバッジを発表し、会社向けの Frontier バッジを認定に発展させると予告<span class="c"><a href="#src-1">[1]</a></span></p></li>
+    <li><time datetime="2026-05-25">2026-05-25</time><p>バッジ取得の呼びかけと、技術者向けイベント（Summit）の告知<span class="c"><a href="#src-2">[2]</a></span></p></li>
+    <li><time datetime="2026-06-09">2026-06-09</time><p>Frontier Transformation Engineer Summit を開催。セッションは後日オンデマンドで公開<span class="c"><a href="#src-2">[2]</a><a href="#src-3">[3]</a></span></p></li>
+    <li><time datetime="2026-07-22">2026-07-22</time><p>パートナー向けイベント MCAPS Start for Partners で Frontier Partner 認定を発表<span class="c"><a href="#src-4">[4]</a><a href="#src-6">[6]</a></span></p></li>
+    <li><time datetime="2026-09-30">2026-09-30</time><p>Frontier Partner 認定の受付が Partner Center で始まる<span class="c"><a href="#src-6">[6]</a><a href="#src-7">[7]</a></span></p></li>
+    <li class="now"><time datetime="2026-10-26">2026-10-26〜11-10</time><p>STEP 2・3 のテスト対策のライブ講座<span class="now-tag">調査日時点で開催中</span><span class="c"><a href="#src-9">[9]</a></span></p></li>
+    <li><time datetime="2026-11-16">2026-11-16</time><p>AB-100 英語版の出題範囲が改訂<span class="c"><a href="#src-10">[10]</a></span></p></li>
+  </ol>
+</section>
+
+<section aria-labelledby="h-help">
+  <h2 id="h-help">近道と支援策</h2>
+  <div class="plans">
+    <div class="plan">
+      <h3>テスト対策のライブ講座</h3>
+      <p>Project Ready・CoE・HVE のテストを、講師と一緒に進める講座です<span class="c"><a href="#src-9">[9]</a></span>。</p>
+      <dl><dt>期間</dt><dd>2026-10-26〜11-10</dd><dt>費用</dt><dd>記載なし</dd></dl>
+    </div>
+    <div class="plan">
+      <h3>Summit のオンデマンド動画</h3>
+      <p>6月の Summit のセッションを後から視聴できます。バッジ取得の後押しになる内容です<span class="c"><a href="#src-3">[3]</a></span>。</p>
+      <dl><dt>場所</dt><dd class="mono">aka.ms/FrontierOnDemand</dd><dt>費用</dt><dd>記載なし</dd></dl>
+    </div>
+    <div class="plan">
+      <h3>公式の練習問題</h3>
+      <p>3つの試験とも、AI Skills Navigator で練習問題（Practice Assessment）を受けられます。サインインが必要です<span class="c"><a href="#src-10">[10]</a><a href="#src-11">[11]</a><a href="#src-12">[12]</a></span>。</p>
+      <dl><dt>費用</dt><dd>無料</dd></dl>
+    </div>
+    <div class="plan">
+      <h3>ESI の割引バウチャー</h3>
+      <p>ESI プログラムの対象企業は受験料が50%割引になります。オンライン申し込みはできないので、会社の Microsoft 担当者に対象かどうか確認します<span class="c"><a href="#src-5">[5]</a></span>。</p>
+      <dl><dt>割引</dt><dd>50%</dd><dt>対象</dt><dd>既存の契約がある企業</dd></dl>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="h-caution">
+  <h2 id="h-caution">注意点</h2>
+  <ul class="cautions">
+    <li><span class="pill p-warn">名前</span><div><h3>呼び名が揺れています</h3><p>FTB のほか、FTE、Frontier Engineer Badge、Titan（学習ジャーニーの名前）などと呼ばれます<span class="c"><a href="#src-1">[1]</a><a href="#src-8">[8]</a></span>。社内で話すときは正式名で確かめると話がずれません。</p></div></li>
+    <li><span class="pill p-warn">確認</span><div><h3>細かい条件は LevelUp のページが出どころです</h3><p>80% の合格ラインやコースの時間数は、Microsoft の公式記事がリンクしている LevelUp のページ<span class="c"><a href="#src-8">[8]</a><a href="#src-9">[9]</a></span>によるものです。今回の調査環境からはこのページの本文を直接開けず、検索結果の抜粋で確認しました。始める前にページを一度開いて、最新の条件を確かめてください。</p></div></li>
+    <li><span class="pill p-warn">メール</span><div><h3>Learn プロファイルの紐付け方の案内が揺れています</h3><p>「個人メールのプロファイルに会社メールのものを紐付ける」と書いた版と、「LevelUp と同じ会社メールの Learn プロファイルを使う」と書いた版が見つかりました<span class="c"><a href="#src-8">[8]</a></span>。登録前に最新の案内を確認してください。</p></div></li>
+    <li><span class="pill p-ng">期限</span><div><h3>バッジの有効期限は公式に書かれていません</h3><p>第三者のブログ<span class="c"><a href="#src-14">[14]</a></span>は「12か月」と書いていますが、公式の裏付けは見つかりませんでした。資格そのものには更新があり、DP-600 は12か月ごと<span class="c"><a href="#src-13">[13]</a></span>、GitHub の資格は2年<span class="c"><a href="#src-12">[12]</a></span>です。</p></div></li>
+    <li><span class="pill p-info">所属</span><div><h3>パートナー企業の社員であることが前提です</h3><p>Skilling Hub は会社のメールでしか登録できず、Microsoft も「パートナー企業の技術者向け」と説明しています<span class="c"><a href="#src-1">[1]</a><a href="#src-8">[8]</a></span>。パートナー企業に所属せずに取る方法は、公式には書かれていません。</p></div></li>
+    <li><span class="pill p-info">変更</span><div><h3>制度は動いている最中です</h3><p>2026年4月の発表から、認定の開始やイベントが続いています<span class="c"><a href="#src-1">[1]</a><a href="#src-7">[7]</a></span>。要件が変わることもあるので、日付を見ながら使ってください。</p></div></li>
+  </ul>
+</section>
+
+<section aria-labelledby="h-src">
+  <h2 id="h-src">根拠</h2>
+  <ol class="sources">
+    <li id="src-1"><span class="src-n">[1]</span><div>
+      <a class="src-t" href="https://blogs.microsoft.com/blog/2026/04/21/accelerating-frontier-transformation-with-microsoft-partners/" target="_blank" rel="noopener">Accelerating Frontier Transformation with Microsoft partners（The Official Microsoft Blog）</a>
+      <div class="src-meta"><span class="tag">公式</span><span>公開 <span class="mono">2026-04-21</span></span></div>
+      <p class="src-sum">Frontier バッジを Frontier Partner スペシャライゼーションに発展させると発表。Frontier Engineer Badge は Titan Academy で提供され、パートナー企業のソリューションエンジニア・アーキテクト向けで、資格・Project Ready・大規模運用への備えの3段構成と説明。</p>
+      <span class="src-url">https://blogs.microsoft.com/blog/2026/04/21/accelerating-frontier-transformation-with-microsoft-partners/</span>
+    </div></li>
+    <li id="src-2"><span class="src-n">[2]</span><div>
+      <a class="src-t" href="https://techcommunity.microsoft.com/blog/partnernews/make-this-your-year-for-frontier-transformation-earn-your-badge-and-join-us-at-t/4522398" target="_blank" rel="noopener">Make this your year for Frontier Transformation: Earn your badge and join us at the summit（Microsoft Tech Community）</a>
+      <div class="src-meta"><span class="tag">公式</span><span>公開 <span class="mono">2026-05-25</span></span></div>
+      <p class="src-sum">Foundry、Copilot Studio、Microsoft 365 Copilot、GitHub Copilot、Fabric、Agent 365 でエージェントを作るソリューションエンジニア・アーキテクト向けのバッジと説明。資格・Project Ready の実践・上級トレーニングで構成。6月9日の Summit を告知。</p>
+      <span class="src-url">https://techcommunity.microsoft.com/blog/partnernews/make-this-your-year-for-frontier-transformation-earn-your-badge-and-join-us-at-t/4522398</span>
+    </div></li>
+    <li id="src-3"><span class="src-n">[3]</span><div>
+      <a class="src-t" href="https://techcommunity.microsoft.com/blog/partnernews/differentiate-yourself-for-the-ai-era%E2%80%94earn-your-frontier-transformation-engineer/4528635" target="_blank" rel="noopener">Differentiate yourself for the AI era—earn your Frontier Transformation Engineer badge（Microsoft Tech Community）</a>
+      <div class="src-meta"><span class="tag">公式</span><span>公開 <span class="mono">2026-06-16</span></span></div>
+      <p class="src-sum">Summit のセッションをオンデマンド公開（aka.ms/FrontierOnDemand）。バッジは「顧客が求める超高速さで AI エージェントを届ける力」を示すものと説明。</p>
+      <span class="src-url">https://techcommunity.microsoft.com/blog/partnernews/differentiate-yourself-for-the-ai-era—earn-your-frontier-transformation-engineer/4528635</span>
+    </div></li>
+    <li id="src-4"><span class="src-n">[4]</span><div>
+      <a class="src-t" href="https://techcommunity.microsoft.com/blog/specialization-blog/coming-soon-the-frontier-partner-specialization/4540152" target="_blank" rel="noopener">Coming soon: the Frontier Partner specialization（Microsoft Tech Community）</a>
+      <div class="src-meta"><span class="tag">公式</span><span>公開・更新 <span class="mono">2026-07-23</span></span></div>
+      <p class="src-sum">会社の認定4つ、バッジ保持者5人と DP-600 合格者3人（同じ人でも別の人でも可）、第三者監査（2年ごと）を、同じ Partner Global Account で同時に満たすことが要件。</p>
+      <span class="src-url">https://techcommunity.microsoft.com/blog/specialization-blog/coming-soon-the-frontier-partner-specialization/4540152</span>
+    </div></li>
+    <li id="src-5"><span class="src-n">[5]</span><div>
+      <a class="src-t" href="https://techcommunity.microsoft.com/discussions/partner-skilling/earn-the-badge-built-for-frontier-ai-leaders/4552791" target="_blank" rel="noopener">Earn the badge built for Frontier AI leaders（Microsoft Tech Community のディスカッション）</a>
+      <div class="src-meta"><span class="tag">公式</span><span>投稿 <span class="mono">2026-09-02</span>、運営の回答 <span class="mono">2026-09-30</span></span></div>
+      <p class="src-sum">バッジは資格・ハンズオン・Project Ready を組み合わせた道のりで、Frontier Partner 認定につながると説明。運営の回答として、全パートナー向けの無料バウチャーはなく、ESI プログラムでは50%割引バウチャーがあり、オンライン申し込みは不可。</p>
+      <span class="src-url">https://techcommunity.microsoft.com/discussions/partner-skilling/earn-the-badge-built-for-frontier-ai-leaders/4552791</span>
+    </div></li>
+    <li id="src-6"><span class="src-n">[6]</span><div>
+      <a class="src-t" href="https://techcommunity.microsoft.com/blog/specialization-blog/now-live-earn-the-frontier-partner-specialization/4560493" target="_blank" rel="noopener">Now live: Earn the Frontier Partner specialization（Microsoft Tech Community）</a>
+      <div class="src-meta"><span class="tag">公式</span><span>公開 <span class="mono">2026-09-30</span></span></div>
+      <p class="src-sum">7月の MCAPS Start for Partners で発表した認定の受付を Partner Center で開始。3つの要件（会社の認定・人の育成・監査）を同じ Partner Global Account で同時に満たす必要がある。</p>
+      <span class="src-url">https://techcommunity.microsoft.com/blog/specialization-blog/now-live-earn-the-frontier-partner-specialization/4560493</span>
+    </div></li>
+    <li id="src-7"><span class="src-n">[7]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/partner-center/announcements/2026-september" target="_blank" rel="noopener">September 2026 announcements - Partner Center announcements（Microsoft Learn）</a>
+      <div class="src-meta"><span class="tag">公式</span><span>公開 <span class="mono">2026-09-30</span>、最終更新 <span class="mono">2026-10-01</span></span></div>
+      <p class="src-sum">2026-09-30 から Frontier Partner 認定を取得可能。特典は認定バッジ、Frontier 関連の共同販売の対象、Microsoft Agent 事前購入プラン（P3）のクレジットと Microsoft 365 E7 ライセンス、マーケティング素材、申請・監査中の Concierge サポート。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/partner-center/announcements/2026-september</span>
+    </div></li>
+    <li id="src-8"><span class="src-n">[8]</span><div>
+      <a class="src-t" href="https://skillupwithlevelup.com/frontier" target="_blank" rel="noopener">Frontier Transformation Engineer（Microsoft LevelUp）</a>
+      <div class="src-meta"><span class="tag link">公式記事のリンク先</span><span>日付不明</span><span>本文は検索結果の抜粋で確認</span></div>
+      <p class="src-sum">3つのマイルストーン（資格、Project Ready 5本、Frontier CoE と HVE）を掲載。テストはどれも80%以上、HVE コースは必須で約1.5時間、CoE（約2時間）と業界別（約1時間）は任意。登録は会社メール必須、Learn と Skilling Hub の Partner Center 連携手順、資格の反映に最大2〜3週間。[2][5] の公式記事からリンクされています。</p>
+      <span class="src-url">https://skillupwithlevelup.com/frontier</span>
+    </div></li>
+    <li id="src-9"><span class="src-n">[9]</span><div>
+      <a class="src-t" href="https://skillupwithlevelup.com/" target="_blank" rel="noopener">Microsoft LevelUp（トップページ）</a>
+      <div class="src-meta"><span class="tag link">公式記事のリンク先</span><span>日付不明</span><span>本文は検索結果の抜粋で確認</span></div>
+      <p class="src-sum">必要な資格は GH-300、AI-103、AB-100 の3つ（試験対策のライブ講座つき）。2026-10-26〜11-10 にテスト対策のライブ講座を開催。</p>
+      <span class="src-url">https://skillupwithlevelup.com/</span>
+    </div></li>
+    <li id="src-10"><span class="src-n">[10]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/credentials/certifications/exams/ab-100/" target="_blank" rel="noopener">Exam AB-100: Agentic AI Business Solutions Architect（Microsoft Learn）</a>
+      <div class="src-meta"><span class="tag">公式</span><span>最終更新 <span class="mono">2026-10-21</span></span></div>
+      <p class="src-sum">Expert 資格は AB-100 の合格に加え、AI-103 などの Associate 資格を1つ以上持つことが条件。合格点700、日本語で受験可。英語版は 2026-11-16 に改訂し、各言語版は約8週間後に更新予定。受験は個人の Microsoft アカウントを推奨。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/credentials/certifications/exams/ab-100/</span>
+    </div></li>
+    <li id="src-11"><span class="src-n">[11]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-apps-and-agents-developer-associate/" target="_blank" rel="noopener">Microsoft Certified: Azure AI Apps and Agents Developer Associate（Microsoft Learn）</a>
+      <div class="src-meta"><span class="tag">公式</span><span>最終更新 <span class="mono">2026-10-27</span></span></div>
+      <p class="src-sum">AI-103 で取れる資格。Microsoft Foundry と Python で AI アプリやエージェントを作る技術者向け。試験時間120分、日本語で受験可。AI Skills Navigator に練習問題あり。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-apps-and-agents-developer-associate/</span>
+    </div></li>
+    <li id="src-12"><span class="src-n">[12]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/credentials/certifications/github-copilot/" target="_blank" rel="noopener">GitHub Copilot - Certifications（Microsoft Learn）</a>
+      <div class="src-meta"><span class="tag">公式</span><span>ページ表示の更新 <span class="mono">2026-08-07</span>、メタ情報の更新 <span class="mono">2026-10-27</span></span></div>
+      <p class="src-sum">GH-300 で取れる資格。試験時間100分、日本語で受験可。GitHub の資格の有効期間は2年。AI Skills Navigator に練習問題あり。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/credentials/certifications/github-copilot/</span>
+    </div></li>
+    <li id="src-13"><span class="src-n">[13]</span><div>
+      <a class="src-t" href="https://learn.microsoft.com/en-us/credentials/certifications/fabric-analytics-engineer-associate/" target="_blank" rel="noopener">Microsoft Certified: Fabric Analytics Engineer Associate（Microsoft Learn）</a>
+      <div class="src-meta"><span class="tag">公式</span><span>ページ表示の更新 <span class="mono">2026-10-19</span>、メタ情報の更新 <span class="mono">2026-10-27</span></span></div>
+      <p class="src-sum">DP-600 で取れる資格（会社の認定で3人必要）。試験時間100分、日本語で受験可、12か月ごとに更新。</p>
+      <span class="src-url">https://learn.microsoft.com/en-us/credentials/certifications/fabric-analytics-engineer-associate/</span>
+    </div></li>
+    <li id="src-14"><span class="src-n">[14]</span><div>
+      <a class="src-t" href="https://blog.cloudfactorygroup.com/posts/microsoft-ai-skills-fest-june-8-12-2026-earn-the-frontier-transformation-engineer-badge-and-level-up-your-practice" target="_blank" rel="noopener">Microsoft AI Skills Fest (June 8–12, 2026): Earn the Frontier Transformation Engineer Badge（Cloud Factory）</a>
+      <div class="src-meta"><span class="tag third">第三者</span><span>日付不明（2026年6月のイベント紹介記事）</span></div>
+      <p class="src-sum">バッジの有効期間を12か月とし、要件を「4つの学習パス、ハンズオンラボ、シナリオ型の評価」と説明。公式の情報とは一致しない点があるため、注意点の補足にだけ使っています。</p>
+      <span class="src-url">https://blog.cloudfactorygroup.com/posts/microsoft-ai-skills-fest-june-8-12-2026-earn-the-frontier-transformation-engineer-badge-and-level-up-your-practice</span>
+    </div></li>
+  </ol>
+</section>
+
+<footer class="foot">
+  <p>調査日 <span class="mono">2026-10-29</span>。提供状況や要件は時期によって変わります。最新の情報は各出典で確認してください。</p>
+  <ul>
+    <li>[1] <span class="mono">2026-04-21</span>　[2] <span class="mono">2026-05-25</span>　[3] <span class="mono">2026-06-16</span>　[4] <span class="mono">2026-07-23</span></li>
+    <li>[5] <span class="mono">2026-09-02</span>（回答 <span class="mono">09-30</span>）　[6] <span class="mono">2026-09-30</span>　[7] <span class="mono">2026-10-01</span></li>
+    <li>[8][9] 日付不明　[10] <span class="mono">2026-10-21</span>　[11][12][13] <span class="mono">2026-10-27</span>　[14] 日付不明</li>
+  </ul>
+</footer>
+
+</div>
+<script>
+(function(){
+  var KEY = 'fte-badge-checklist-v1';
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.todo input[type="checkbox"]'));
+  var out = document.getElementById('todo-count');
+  function update(){
+    var n = boxes.filter(function(b){ return b.checked; }).length;
+    out.textContent = n + ' / ' + boxes.length;
+  }
+  function store(){
+    try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+  }
+  boxes.forEach(function(b){
+    b.checked = !!saved[b.id];
+    b.addEventListener('change', function(){ saved[b.id] = b.checked; store(); update(); });
+  });
+  document.getElementById('todo-reset').addEventListener('click', function(){
+    boxes.forEach(function(b){ b.checked = false; });
+    saved = {};
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    update();
+  });
+  update();
+})();
+</script>
+</body>
+</html>
