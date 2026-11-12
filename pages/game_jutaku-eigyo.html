@@ -105,7 +105,7 @@
   #guest .delta{font-size:12px;font-weight:700;min-width:2.6em;opacity:0;transition:opacity .3s}
   #guest .delta.up{color:var(--good);opacity:1} #guest .delta.down{color:var(--bad);opacity:1}
   #hud .right{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-  .chipbtn{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 14px;border-radius:999px;font-size:13px;font-weight:700}
+  .chipbtn{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 14px;border-radius:999px;font-size:13px;font-weight:700;white-space:nowrap;flex:none}
   .chipbtn:hover{background:#fff}
   .chipbtn i{font-style:normal;display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:10px;background:var(--accent);color:#fff;font-size:11px;padding:0 5px}
 
@@ -286,7 +286,13 @@
   /* ───────────── 画面が小さいとき ───────────── */
   @media (max-width:820px){
     body{font-size:14px}
-    #hud{padding:8px;gap:6px}
+    /* スマホ：1 行目に「場面」とボタン、2 行目にお客様の名札 */
+    #hud{padding:8px;gap:6px;display:grid;grid-template-columns:1fr auto;align-items:start}
+    #hud .left{display:contents}
+    #steps{grid-column:1;grid-row:1;width:max-content;max-width:100%}
+    #hud .right{grid-column:2;grid-row:1}
+    #guest{grid-column:1 / -1;grid-row:2}
+    #toast{top:108px}
     /* スマホ：場面の進みぐあいは「いまの場面＋ 2 / 5」だけにして、ボタンと 1 行に収める */
     #steps{padding:4px 8px 4px 4px} #steps .st{display:none} #steps .st.on{display:flex} #steps .cnt{display:inline;font-size:11px;color:var(--sub);margin-left:4px;white-space:nowrap}
     #guest{padding:6px 12px 6px 8px;gap:8px} #guest .ring,#guest .ring svg{width:34px;height:34px} #guest .who,#guest .who small{white-space:nowrap}
