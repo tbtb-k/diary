@@ -135,10 +135,14 @@
     night:     { dir: [-0.5, 0.5, 0.35], sun: 0x8aa2d8, sunI: 0.5, sky: [0x0a1226, 0x16254a, 0x2c3a5c], hemiI: 0.1, hemiSky: 0x6f84b5, hemiGround: 0x3a3440, exposure: 1.1, lamps: 2.0, cloud: [0x6a7896, 0.35], env: 0.35 },
   };
   // 場面（Scene）に、太陽・空の明るさ・室内の灯りをまとめて持たせる
+  W.lightings = [];
+  JE.onQuality = (q) => { for (const L of W.lightings) L.setShadowQuality(q); };
   W.makeLighting = (scene, { shadowBox = 14, shadowSize = 4096, target = [0, 0, 0] } = {}) => {
     const L = { tod: null };
     L.sun = new T.DirectionalLight(0xffffff, 3); L.sun.castShadow = true;
-    const q = JE.gfx.quality; L.sun.shadow.mapSize.setScalar(q === 'high' ? shadowSize : q === 'mid' ? shadowSize / 2 : Math.min(2048, shadowSize / 2));
+    // 影のきめ細かさは画質に合わせる（画質が途中で変わったら作り直す）
+    L.setShadowQuality = (q) => { const size = q === 'high' ? shadowSize : q === 'mid' ? shadowSize / 2 : Math.min(1024, shadowSize / 4); if (L.sun.shadow.mapSize.x === size) return; L.sun.shadow.mapSize.setScalar(size); if (L.sun.shadow.map) { L.sun.shadow.map.dispose(); L.sun.shadow.map = null; } };
+    L.setShadowQuality(JE.gfx.quality); W.lightings.push(L);
     Object.assign(L.sun.shadow.camera, { left: -shadowBox, right: shadowBox, top: shadowBox, bottom: -shadowBox, near: 1, far: 90 });
     L.sun.shadow.bias = -0.0004; L.sun.shadow.normalBias = 0.035; L.sun.shadow.radius = 2.2;
     L.sun.target.position.set(target[0], target[1], target[2]); scene.add(L.sun, L.sun.target);

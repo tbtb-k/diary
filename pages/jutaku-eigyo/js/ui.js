@@ -39,9 +39,9 @@
 
   // ───────── 暗転・見出し ─────────
   U.fade = (on, dur) => { N.fade.style.transitionDuration = (JE.fast ? 0 : (dur == null ? 0.6 : dur)) + 's'; N.fade.style.opacity = on ? 1 : 0; return JE.wait(dur == null ? 0.65 : dur + 0.05).then(() => { if (on) { U.hideDialog(); N.tip.hidden = true; N.choices.hidden = true; } }); };   // 暗転したら、前の場面のセリフ枠は片づける
-  U.caption = async (big, small, hold) => { N.caption.querySelector('.big').textContent = big || ''; N.caption.querySelector('.small').textContent = small || ''; if (JE.fast) return; N.caption.classList.add('on'); try { await JE.wait(hold == null ? 2.4 : hold); } finally { N.caption.classList.remove('on'); } await JE.wait(0.7); };
-  U.captionOn = (big, small) => { N.caption.querySelector('.big').textContent = big || ''; N.caption.querySelector('.small').textContent = small || ''; N.caption.classList.add('on'); };
-  U.captionOff = () => N.caption.classList.remove('on');
+  U.caption = async (big, small, hold) => { N.caption.querySelector('.big').textContent = big || ''; N.caption.querySelector('.small').textContent = small || ''; if (JE.fast) return; N.caption.classList.remove('band'); N.caption.classList.add('on'); try { await JE.wait(hold == null ? 2.4 : hold); } finally { N.caption.classList.remove('on'); } await JE.wait(0.7); };
+  U.captionOn = (big, small) => { N.caption.querySelector('.big').textContent = big || ''; N.caption.querySelector('.small').textContent = small || ''; N.caption.classList.add('on', 'band'); };
+  U.captionOff = () => { N.caption.classList.remove('on'); setTimeout(() => { if (!N.caption.classList.contains('on')) N.caption.classList.remove('band'); }, 750); };
 
   // ───────── 会話 ─────────
   let typing = null;
@@ -90,7 +90,7 @@
 
   // ───────── 画面上部 ─────────
   const PHASES = ['お出迎え', 'ヒアリング', 'ご案内', 'ご提案', 'クロージング'];
-  U.setPhase = (i) => { N.steps.innerHTML = PHASES.map((p, k) => '<div class="st ' + (k < i ? 'done' : k === i ? 'on' : '') + '"><b>' + (k < i ? '✓' : k + 1) + '</b><span>' + p + '</span></div>').join(''); };
+  U.setPhase = (i) => { N.steps.innerHTML = PHASES.map((p, k) => '<div class="st ' + (k < i ? 'done' : k === i ? 'on' : '') + '"><b>' + (k < i ? '✓' : k + 1) + '</b><span>' + p + '</span></div>').join('') + '<span class="cnt">' + (i + 1) + ' / ' + PHASES.length + '</span>'; };
   U.setGuest = (sc, showTrust) => {
     N.guest.hidden = false;
     N.guest.innerHTML = '<div class="ring">' + (showTrust ? '<svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="19" fill="none" stroke-width="5"/><circle class="fg" cx="23" cy="23" r="19" fill="none" stroke-width="5" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="119.4"/></svg><span>信頼</span>' : '<svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="19" fill="none" stroke-width="5" stroke-dasharray="3 5"/></svg><span>？</span>') + '</div><div class="who">' + esc(sc.sub) + '<small>' + (showTrust ? esc(sc.level) + '　' + esc(sc.title) : '信頼は表情としぐさで読み取ろう') + '</small></div><div class="delta"></div>';
@@ -158,6 +158,7 @@
       '<button type="button" class="btn go" id="st-go">この内容で提案する</button>' +
       '<div class="tabs"><button type="button" data-t="l" class="on">① プラン</button><button type="button" data-t="r">② お金</button><button type="button" class="send" data-t="go">提案する</button></div>';
     U.hideDialog(); N.tip.hidden = true; N.studio.hidden = false;
+    if (innerWidth <= 820) JE.cam.setShift(true);   // スマホでは下からパネルが出るので、家が隠れないよう映像を上へずらす
     const L = N.studio.querySelector('#st-plan'), R = N.studio.querySelector('#st-money'), cols = N.studio.querySelectorAll('.col');
     N.studio.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => { if (b.dataset.t === 'go') return submit(); cols[0].classList.toggle('hide', b.dataset.t !== 'l'); cols[1].classList.toggle('hide', b.dataset.t !== 'r'); N.studio.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b)); }));
     const rebuild = (animate) => { JE.lot.setPlan(plan, { animate }); labels(); };
@@ -197,7 +198,7 @@
       R.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => { const k = b.parentNode.dataset.k; plan[k] = k === 'term' ? +b.dataset.v : b.dataset.v; JE.audio && JE.audio.sfx('tick'); drawMoney(); }));
       const sl = R.querySelector('#st-down'); sl.addEventListener('input', () => { plan.down = +sl.value; drawMoney(); R.querySelector('#st-down').focus(); });
     };
-    const submit = () => { N.studio.hidden = true; N.studio.innerHTML = ''; U.labels.clear(); JE.audio && JE.audio.sfx('select'); done(plan); };
+    const submit = () => { N.studio.hidden = true; N.studio.innerHTML = ''; U.labels.clear(); JE.cam.setShift(false); JE.audio && JE.audio.sfx('select'); done(plan); };
     N.studio.querySelector('#st-go').addEventListener('click', submit);
     drawPlan(); drawMoney(); rebuild(false);
     if (JE.auto) { JE.auto.plan(sc, st, plan); submit(); }

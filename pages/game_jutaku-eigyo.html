@@ -47,6 +47,12 @@
   #caption{display:grid;place-items:center;text-align:center;color:#fff;pointer-events:none !important;opacity:0;transition:opacity .7s ease;padding:24px}
   #caption.on{opacity:1}
   #caption .big{font-family:var(--serif);font-size:clamp(24px,4.2vw,44px);letter-spacing:.14em;text-shadow:0 2px 24px rgba(0,0,0,.7);white-space:pre-line;line-height:1.7}
+  /* 3D の映像に重ねて出す見出し（建築の進みぐあいなど）は、上のほうに帯をつけて読みやすくする */
+  #caption.band{place-items:start center;padding-top:13vh}
+  #caption.band > div{background:rgba(20,17,14,.6);padding:12px 34px 14px;border-radius:18px}
+  #caption.band .big{font-size:clamp(20px,3.2vw,34px);line-height:1.4}
+  #caption.band .small{margin-top:4px}
+  #caption .small:empty{display:none}
   #caption .small{margin-top:14px;font-size:clamp(13px,1.5vw,16px);letter-spacing:.2em;opacity:.85;text-shadow:0 1px 12px rgba(0,0,0,.8)}
 
   /* ───────────── 読み込み ───────────── */
@@ -88,6 +94,7 @@
   #steps .st b{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--paper2);font-size:11px;color:var(--sub)}
   #steps .st.done{color:var(--sub)} #steps .st.done b{background:var(--accent-soft);color:var(--accent)}
   #steps .st.on{color:var(--ink);font-weight:700;background:#fff} #steps .st.on b{background:var(--accent);color:#fff}
+  #steps .cnt{display:none}
   #guest{display:flex;align-items:center;gap:12px;padding:8px 14px 8px 10px;border-radius:16px;width:max-content;max-width:100%}
   #guest .ring{position:relative;width:46px;height:46px;flex:none}
   #guest .ring svg{width:46px;height:46px;transform:rotate(-90deg)}
@@ -103,7 +110,7 @@
   .chipbtn i{font-style:normal;display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:10px;background:var(--accent);color:#fff;font-size:11px;padding:0 5px}
 
   /* ───────────── 会話 ───────────── */
-  #dialog{position:absolute;left:50%;bottom:calc(18px + var(--safe-b));transform:translateX(-50%);width:min(880px,calc(100vw - 24px));background:var(--dark);color:#fff;border-radius:18px;padding:18px 22px 20px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 50px -20px rgba(0,0,0,.8);cursor:pointer}
+  #dialog{position:absolute;left:50%;bottom:calc(18px + var(--safe-b));transform:translateX(-50%);width:min(880px,calc(100vw - 24px));background:var(--dark);color:#fff;border-radius:18px;padding:18px 22px 30px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 50px -20px rgba(0,0,0,.8);cursor:pointer}
   #dialog .name{display:inline-block;margin:-34px 0 8px -4px;padding:3px 14px;border-radius:999px;background:var(--accent);font-size:13px;font-weight:700;letter-spacing:.06em;box-shadow:0 4px 12px -4px rgba(0,0,0,.6)}
   #dialog .name.you{background:var(--gold);color:#221c12} #dialog .name.senpai{background:#55606b} #dialog .name.narr{display:none}
   #dialog .text{font-size:clamp(15px,1.5vw,18px);line-height:1.85;min-height:3.7em;letter-spacing:.02em;white-space:pre-line}
@@ -279,9 +286,13 @@
   /* ───────────── 画面が小さいとき ───────────── */
   @media (max-width:820px){
     body{font-size:14px}
-    #hud{padding:8px}
-    #steps{padding:4px 6px} #steps .st span{display:none} #steps .st.on span{display:inline}
+    #hud{padding:8px;gap:6px}
+    /* スマホ：場面の進みぐあいは「いまの場面＋ 2 / 5」だけにして、ボタンと 1 行に収める */
+    #steps{padding:4px 8px 4px 4px} #steps .st{display:none} #steps .st.on{display:flex} #steps .cnt{display:inline;font-size:11px;color:var(--sub);margin-left:4px;white-space:nowrap}
+    #guest{padding:6px 12px 6px 8px;gap:8px} #guest .ring,#guest .ring svg{width:34px;height:34px} #guest .who,#guest .who small{white-space:nowrap}
+    #hud .right{flex-wrap:nowrap;gap:6px}
     .chipbtn{height:34px;padding:0 11px;font-size:12px}
+    #btn-menu span{display:none} #btn-menu::before{content:"≡";font-size:18px;line-height:1}
     #title{background:linear-gradient(180deg,rgba(14,12,10,.72) 0%,rgba(14,12,10,.2) 45%,rgba(14,12,10,.82) 100%);overflow:auto}
     #title .cards{grid-template-columns:1fr}
     .side,#karte{left:8px;right:8px;top:auto;width:auto;height:min(54dvh,460px);bottom:calc(8px + var(--safe-b))}
@@ -295,7 +306,7 @@
     .survey,.cols,.result-top{grid-template-columns:1fr}
     .making{grid-template-columns:1fr 1fr}
     .sheet{padding:20px 18px}
-    #dialog{padding:16px 16px 18px}
+    #dialog{padding:16px 16px 30px}
   }
   @media (prefers-reduced-motion:reduce){*{animation-duration:.01s !important;transition-duration:.01s !important}}
 </style>
@@ -314,7 +325,7 @@
     <div class="right">
       <button id="btn-hint" class="chipbtn glass" type="button">ヒント</button>
       <button id="btn-karte" class="chipbtn glass" type="button">カルテ <i id="karte-n">0</i></button>
-      <button id="btn-menu" class="chipbtn glass" type="button" aria-label="メニュー">メニュー</button>
+      <button id="btn-menu" class="chipbtn glass" type="button" aria-label="メニュー"><span>メニュー</span></button>
     </div>
   </div>
   <div id="panel" class="side glass" hidden></div>

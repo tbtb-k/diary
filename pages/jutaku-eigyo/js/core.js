@@ -157,7 +157,7 @@
     cam.lookAt(tmp);
     const f = fovFix(C.fov); if (Math.abs(cam.fov - f) > 0.01) { cam.fov = f; cam.updateProjectionMatrix(); }
     C.shift += (C.shiftT - C.shift) * Math.min(1, (dt || 0.016) * 4);
-    if (C.shift > 0.003) { const w = innerWidth, h = innerHeight; if (w > 820) cam.setViewOffset(w, h, C.shift * 0.13 * w, 0, w, h); else cam.setViewOffset(w, h, 0, C.shift * 0.2 * h, w, h); }
+    if (C.shift > 0.003) { const w = innerWidth, h = innerHeight; if (w > 820) cam.setViewOffset(w, h, C.shift * 0.13 * w, 0, w, h); else cam.setViewOffset(w, h, 0, C.shift * 0.23 * h, w, h); }
     else if (cam.view && cam.view.enabled) cam.clearViewOffset();
   };
 

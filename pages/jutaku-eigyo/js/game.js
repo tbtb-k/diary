@@ -292,10 +292,12 @@
     return { axes, total, rank, outcome, S: Math.round(S) };
   }
   const OUT = { contract: 'ご成約', next: '継続検討（次回のお約束なし）', lost: '失注' };
+  // 振り返りに出す項目を選ぶ。同じ場面ばかりにならないよう、場面ごとに 1 つずつ順番に拾っていく。
   function feedback(st) {
     const seen = new Set(), uniq = (l) => l.filter(x => x.tip && !seen.has(x.tip) && seen.add(x.tip));
-    const goods = uniq(st.log.filter(x => x.r === 'great')).slice(0, 4);
-    const bads = uniq(st.log.filter(x => !x.ng && RANK[x.r] <= 2).sort((a, b) => RANK[a.r] - RANK[b.r])).slice(0, 4);
+    const spread = (list, max) => { const by = new Map(); for (const x of list) { if (!by.has(x.phase)) by.set(x.phase, []); by.get(x.phase).push(x); } const out = []; for (let i = 0; out.length < max && i < 6; i++) for (const q of by.values()) if (q[i] && out.length < max) out.push(q[i]); return out; };
+    const goods = spread(uniq(st.log.filter(x => x.r === 'great')), 5);
+    const bads = spread(uniq(st.log.filter(x => !x.ng && RANK[x.r] <= 2).sort((a, b) => RANK[a.r] - RANK[b.r])), 5);
     return { goods, bads };
   }
   function senpaiSays(sc, res, st) {
@@ -349,7 +351,7 @@
     JE.cam.orbit = null; setBase({ pos: [d.x + 0.9, 1.55, d.z + 8.2], look: [d.x - 0.3, 1.5, d.z + 2.4], fov: 40 }, 0);
     await U.fade(false, 0.8); JE.audio.sfx('success');
     G.guests.forEach((a, i) => JE.wait(0.3 + i * 0.4).then(() => a.gesture(i === n - 1 && n === 3 ? 'cheer' : 'wave', { max: 4 })).catch(() => {}));
-    await U.caption('お引き渡し', sc.family + '様、おめでとうございます', 2.6);
+    if (!JE.fast) { U.captionOn('お引き渡し', sc.family + '様、おめでとうございます'); await JE.wait(3); U.captionOff(); await JE.wait(0.6); }
     await talk(sc.thanks);
     G.guests.forEach(a => a.gesture('clap', { max: 4 }));
     await JE.wait(1.2);
@@ -376,7 +378,7 @@
   // ───────── 1 組ぶんの進行 ─────────
   G.start = async (id) => {
     const sc = JE.SCENARIOS.find(s => s.id === id); JE.newRun(); U.abortAll(); const run = JE.run;
-    document.getElementById('title').hidden = true; U.closeModal(); U.panelOff(); U.labels.clear(); U.hideDialog(); document.getElementById('studio').hidden = true; U.captionOff(); JE.cam.orbit = null;
+    document.getElementById('title').hidden = true; U.closeModal(); U.panelOff(); U.labels.clear(); U.hideDialog(); document.getElementById('studio').hidden = true; U.captionOff(); JE.cam.orbit = null; JE.cam.setShift(false);
     G.sc = sc; G.st = newState(sc); U.log.length = 0; window.__result = null;
     try {
       await U.fade(true, 0.5); await loadCast(sc); if (run !== JE.run) return;
@@ -387,7 +389,7 @@
   // ───────── タイトル ─────────
   G.title = async () => {
     JE.newRun(); U.abortAll(); const run = JE.run;
-    U.hud(false); U.hideDialog(); U.panelOff(); U.closeModal(); U.labels.clear(); U.captionOff(); document.getElementById('studio').hidden = true; document.getElementById('choices').hidden = true; document.getElementById('tip').hidden = true;
+    U.hud(false); U.hideDialog(); U.panelOff(); U.closeModal(); U.labels.clear(); U.captionOff(); document.getElementById('studio').hidden = true; JE.cam.setShift(false); document.getElementById('choices').hidden = true; document.getElementById('tip').hidden = true;
     hideAll(); JE.scene = JE.lot.scene; baseShot = null;
     JE.lot.showFinished({ type: 'two', size: 32, style: 'natural', options: ['solar', 'deck', 'garden', 'carport'] }, 'sunset');
     JE.cam.startOrbit({ center: new T.Vector3(-1, 2.8, 1), radius: 22, height: 6.2, angle: 0.5, speed: 0.03, fov: 36, swing: [-0.55, 0.75] });
