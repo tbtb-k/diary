@@ -110,8 +110,9 @@
       for (const h of sideHoles(cz + 0.3)) winAt('z', x1, h, 1);
       for (const h of sideHoles(cz - 0.2)) winAt('z', x0, h, -1);
       // 玄関ドア
-      b.box(M.walnut, doorX - 0.5, doorX + 0.5, base, base + 2.25, z1 - 0.03, z1 + 0.04, { uv: 1.2 }); b.box(glass, doorX - 0.32, doorX - 0.24, base + 0.3, base + 2.0, z1 + 0.035, z1 + 0.045, { cast: false });
-      b.cyl(M.steel, doorX + 0.36, base + 1.1, z1 + 0.08, 0.015, 0.015, 0.7, 8);
+      b.box(frameMat, doorX - 0.56, doorX + 0.56, base, base + 2.31, z1 + 0.085, z1 + 0.115);
+      b.box(M.walnut, doorX - 0.5, doorX + 0.5, base + 0.02, base + 2.25, z1 + 0.1, z1 + 0.14, { uv: 1.2 }); b.box(glass, doorX - 0.34, doorX - 0.25, base + 0.3, base + 2.0, z1 + 0.135, z1 + 0.146, { cast: false });
+      b.cyl(M.steel, doorX + 0.36, base + 1.1, z1 + 0.19, 0.016, 0.016, 0.8, 8); for (const dy of [0.75, 1.45]) b.cyl(M.steel, doorX + 0.36, base + dy, z1 + 0.165, 0.008, 0.008, 0.05, 6, { rot: [PI / 2, 0, 0] });
       // 玄関ポーチとひさし
       b.box(M.porch, doorX - 1.3, doorX + 1.3, 0, base - 0.02, z1, z1 + 1.5, { uv: 1.4 }); b.box(M.porch, doorX - 1.0, doorX + 1.0, 0, base * 0.5, z1 + 1.5, z1 + 1.85, { uv: 1.4 });
       b.box(frameMat, doorX - 1.3, doorX + 1.3, base + 2.55, base + 2.65, z1, z1 + 1.35);
@@ -237,7 +238,7 @@
     { const b = new W.Builder(); for (const [x, z] of [[d.x0, d.z0], [d.x1, d.z0], [d.x0, d.z1], [d.x1, d.z1]]) b.box(M.oak, x - 0.03, x + 0.03, 0, 0.5, z - 0.03, z + 0.03); b.box(M.white, d.x0, d.x1, 0.32, 0.335, d.z0 - 0.008, d.z0 + 0.008); b.box(M.white, d.x0, d.x1, 0.32, 0.335, d.z1 - 0.008, d.z1 + 0.008); b.box(M.white, d.x0 - 0.008, d.x0 + 0.008, 0.32, 0.335, d.z0, d.z1); b.box(M.white, d.x1 - 0.008, d.x1 + 0.008, 0.32, 0.335, d.z0, d.z1); b.build(L.stakes); }
     L.stakes.visible = true;
     lt.set('morning'); L.captureEnv();
-    JE.cam.startOrbit({ center: new T.Vector3(HX, 2.4, HZ + 1), radius: 27, height: 9.5, angle: 0.75, speed: 0.07, fov: 36 });
+    JE.cam.startOrbit({ center: new T.Vector3(HX, 2.4, HZ + 1), radius: 24, height: 9.5, angle: -0.6, speed: 0.05, fov: 36, swing: [-0.7, 0.8] });
     if (workers) workers.forEach((w, i) => { scene_add(w); w.place(i ? d.x1 + 1.6 : d.x0 + 2.0, 0, i ? d.z1 + 1.4 : d.z1 + 2.2, i ? -2.2 : 2.6); w.setBase(i ? 'work_table' : 'work_mid', 0); w.lookAt(null); w.setMood('neutral'); w.root.visible = true; });
     function scene_add(w) { if (w.root.parent !== L.scene) L.scene.add(w.root); }
     say('ground'); await JE.wait(2.2);

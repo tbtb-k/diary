@@ -144,11 +144,12 @@
     return JE.tween(dur == null ? 1.4 : dur, t => { C.pos.lerpVectors(p0, p1, t); C.look.lerpVectors(l0, l1, t); C.fov = f0 + (f1 - f0) * t; }, ease || JE.ease.inOut);
   };
   // 対象のまわりをゆっくり回る（タイトルやプラン提案の画面で使う）
-  C.startOrbit = (o) => { C.orbit = Object.assign({ center: new T.Vector3(0, 2, 0), radius: 22, height: 7, angle: 0.6, speed: 0.04, fov: 34 }, o); C.fov = C.orbit.fov; };
+  // swing: [最小角, 最大角] を渡すと、ぐるっと 1 周せず、その範囲をゆっくり行き来する（家の正面側だけを見せたいとき）
+  C.startOrbit = (o) => { C.orbit = Object.assign({ center: new T.Vector3(0, 2, 0), radius: 22, height: 7, angle: 0.6, speed: 0.04, fov: 34, swing: null, phase: 0 }, o); const b = C.orbit; if (b.swing) b.phase = Math.asin(JE.clamp((b.angle - (b.swing[0] + b.swing[1]) / 2) / ((b.swing[1] - b.swing[0]) / 2), -1, 1)); C.fov = b.fov; };
   const tmp = new T.Vector3();
   C.apply = (dt) => {
     C.t += dt;
-    if (C.orbit) { const o = C.orbit; o.angle += o.speed * dt; C.pos.set(o.center.x + Math.sin(o.angle) * o.radius, o.height, o.center.z + Math.cos(o.angle) * o.radius); C.look.copy(o.center); }
+    if (C.orbit) { const o = C.orbit; if (o.swing) { o.phase += o.speed * dt * 2.2; o.angle = (o.swing[0] + o.swing[1]) / 2 + (o.swing[1] - o.swing[0]) / 2 * Math.sin(o.phase); } else o.angle += o.speed * dt; C.pos.set(o.center.x + Math.sin(o.angle) * o.radius, o.height, o.center.z + Math.cos(o.angle) * o.radius); C.look.copy(o.center); }
     const cam = C.camera, d = C.orbit ? 0 : C.drift, t = C.t;
     // 手持ちカメラのような、ごくわずかな揺れ
     cam.position.copy(C.pos); cam.position.x += Math.sin(t * 0.31) * 0.012 * d; cam.position.y += Math.sin(t * 0.43 + 1.3) * 0.008 * d; cam.position.z += Math.cos(t * 0.27 + 0.4) * 0.012 * d;

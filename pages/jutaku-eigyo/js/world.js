@@ -40,10 +40,19 @@
     // 壁。axis 'x' は東西に伸びる壁（z=c の位置）、'z' は南北に伸びる壁（x=c の位置）。
     // holes: [{a0,a1,y0,y1}] の四角い穴（窓やドア）をあけられる。
     wall(mat, axis, c, a0, a1, y0, y1, holes, o) {
-      const t = (o && o.t) || 0.12, hs = (holes || []).slice().sort((p, q) => p.a0 - q.a0); let a = a0;
+      const t = (o && o.t) || 0.12, hs = holes || [];
       const seg = (s0, s1, b0, b1) => { if (s1 - s0 < 0.001 || b1 - b0 < 0.001) return; if (axis === 'x') this.box(mat, s0, s1, b0, b1, c - t / 2, c + t / 2, o); else this.box(mat, c - t / 2, c + t / 2, b0, b1, s0, s1, o); };
-      for (const h of hs) { seg(a, h.a0, y0, y1); seg(h.a0, h.a1, y0, h.y0); seg(h.a0, h.a1, h.y1, y1); a = h.a1; }
-      seg(a, a1, y0, y1); return this;
+      // 穴の左右の端で壁をたてに区切り、区切りごとに「穴でない高さ」だけを積む。
+      // こうすると、上下に並んだ窓（掃き出し窓の上の高窓など）でも正しく穴があく。
+      const xs = [a0, a1]; for (const h of hs) { if (h.a0 > a0 && h.a0 < a1) xs.push(h.a0); if (h.a1 > a0 && h.a1 < a1) xs.push(h.a1); }
+      xs.sort((p, q) => p - q);
+      for (let i = 0; i < xs.length - 1; i++) {
+        const s0 = xs[i], s1 = xs[i + 1], mid = (s0 + s1) / 2; if (s1 - s0 < 0.001) continue;
+        const cuts = hs.filter(h => mid > h.a0 && mid < h.a1).map(h => [Math.max(y0, h.y0), Math.min(y1, h.y1)]).sort((p, q) => p[0] - q[0]);
+        let y = y0; for (const [c0, c1] of cuts) { seg(s0, s1, y, c0); y = Math.max(y, c1); }
+        seg(s0, s1, y, y1);
+      }
+      return this;
     }
     build(parent) {
       const out = [];

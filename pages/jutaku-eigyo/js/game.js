@@ -124,7 +124,7 @@
     const cx = idx.reduce((s, i) => s + seats[i][0], 0) / idx.length;
     return { pos: [cx, 1.2, 2.5], look: [cx, 1.08, 0.85], fov: n === 3 ? 42 : 38 };
   }
-  function standGuests(spot, anim) { G.guests.forEach((a, i) => { const g = spot.guests[i]; inScene(a, JE.house.scene); a.place(g[0], g[1], g[2], g[3]); a.setBase(anim || 'idle', 0); a.lookAt('camera'); a.setMood(baseMood(G.st.trust)); }); }
+  function standGuests(spot, anim) { G.guests.forEach((a, i) => { const g = spot.guests[i]; inScene(a, JE.house.scene); a.place(g[0], g[1], g[2], JE.house.standRy(spot, g)); a.setBase(anim || 'idle', 0); a.lookAt('camera'); a.setMood(baseMood(G.st.trust)); }); }
   const useHouse = (tod) => { JE.scene = JE.house.scene; if (tod) JE.house.setTime(tod); };
 
   // ═════════ 場面 0：ブリーフィング ═════════
@@ -240,7 +240,7 @@
     await U.caption(sc.plan.when, 'プランと資金計画のご提案');
     const plan = { type: 'two', size: 32, style: 'modern', options: new Set(), down: 0, rate: 'variable', term: sc.money.terms[0] };
     JE.scene = JE.lot.scene; JE.lot.showFinished(plan, 'afternoon'); baseShot = null;
-    JE.cam.startOrbit({ center: new T.Vector3(-1, 2.6, 0.5), radius: innerWidth < 820 ? 32 : 26, height: 8.5, angle: 0.55, speed: 0.045, fov: 36 });
+    JE.cam.startOrbit({ center: new T.Vector3(-1, 2.6, 0.5), radius: innerWidth < 820 ? 30 : 23, height: 8.5, angle: 0.5, speed: 0.045, fov: 36, swing: [-0.75, 0.8] });
     G.hint = 'カルテのご要望に ✓ が付くように。ただし、頼まれていない物まで足すと「売りつけ」になる。月々の返済も忘れずに。';
     await U.fade(false, 0.8); await talk(sc.plan.intro);
     await U.studio(sc, st, plan);
@@ -309,11 +309,11 @@
     return s;
   }
   function radar(axes) {
-    const n = C.axes.length, R = 86, cx = 120, cy = 112, pt = (i, r) => { const a = -Math.PI / 2 + i * 2 * Math.PI / n; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r]; };
+    const n = C.axes.length, R = 80, cx = 160, cy = 108, pt = (i, r) => { const a = -Math.PI / 2 + i * 2 * Math.PI / n; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r]; };
     let g = ''; for (const k of [0.25, 0.5, 0.75, 1]) g += '<polygon points="' + C.axes.map((_, i) => pt(i, R * k).map(v => v.toFixed(1)).join(',')).join(' ') + '" fill="none" stroke="rgba(37,33,28,.14)"/>';
-    C.axes.forEach((a, i) => { const p = pt(i, R), l = pt(i, R + 17); g += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p[0].toFixed(1) + '" y2="' + p[1].toFixed(1) + '" stroke="rgba(37,33,28,.14)"/><text x="' + l[0].toFixed(1) + '" y="' + (l[1] + 4).toFixed(1) + '" font-size="11" text-anchor="middle" fill="#6c655b">' + a.name + '</text>'; });
+    C.axes.forEach((a, i) => { const p = pt(i, R), l = pt(i, R + 12), dx = l[0] - cx, anchor = Math.abs(dx) < 8 ? 'middle' : dx > 0 ? 'start' : 'end'; g += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p[0].toFixed(1) + '" y2="' + p[1].toFixed(1) + '" stroke="rgba(37,33,28,.14)"/><text x="' + l[0].toFixed(1) + '" y="' + (l[1] + (l[1] < cy - R ? -2 : l[1] > cy + 20 ? 12 : 4)).toFixed(1) + '" font-size="11" text-anchor="' + anchor + '" fill="#6c655b">' + a.name + '</text>'; });
     const poly = C.axes.map((a, i) => pt(i, R * Math.max(0.04, axes[a.id] / 100)).map(v => v.toFixed(1)).join(',')).join(' ');
-    return '<svg viewBox="0 0 240 216" width="100%" role="img" aria-label="5 項目の評価"><g>' + g + '</g><polygon points="' + poly + '" fill="rgba(47,93,80,.28)" stroke="#2f5d50" stroke-width="2"/></svg>';
+    return '<svg viewBox="0 0 320 216" width="100%" role="img" aria-label="5 項目の評価"><g>' + g + '</g><polygon points="' + poly + '" fill="rgba(47,93,80,.28)" stroke="#2f5d50" stroke-width="2"/></svg>';
   }
   function resultHTML(sc, st, res) {
     const fb = feedback(st), c = st.ev.c, opts = C.options.filter(o => st.plan.options.has(o.id)).map(o => o.name.replace(/（.*?）/g, ''));
@@ -390,7 +390,7 @@
     U.hud(false); U.hideDialog(); U.panelOff(); U.closeModal(); U.labels.clear(); U.captionOff(); document.getElementById('studio').hidden = true; document.getElementById('choices').hidden = true; document.getElementById('tip').hidden = true;
     hideAll(); JE.scene = JE.lot.scene; baseShot = null;
     JE.lot.showFinished({ type: 'two', size: 32, style: 'natural', options: ['solar', 'deck', 'garden', 'carport'] }, 'sunset');
-    JE.cam.startOrbit({ center: new T.Vector3(-1, 2.8, 1), radius: 24, height: 6.5, angle: 0.5, speed: 0.035, fov: 36 });
+    JE.cam.startOrbit({ center: new T.Vector3(-1, 2.8, 1), radius: 22, height: 6.2, angle: 0.5, speed: 0.03, fov: 36, swing: [-0.55, 0.75] });
     const el = document.getElementById('title'), res = JE.save.results;
     el.innerHTML = '<div class="brand"><div class="co">' + esc(C.company) + '　新人営業研修</div><h1>' + esc(C.title) + '</h1><div class="tag">' + esc(C.subtitle) + '</div><p class="lead">あなたは、住宅会社に入社したばかりの営業担当。モデルハウスでお客様をお迎えし、お話を聞き、暮らしに合う家を提案します。<br>最後に、あなたが提案した家が建ちます。</p></div>' +
       '<div><div class="cards">' + JE.SCENARIOS.map((s, i) => { const r = res[s.id]; return '<button type="button" class="scard glass" data-s="' + s.id + '"><span class="lv l' + (i + 1) + '">' + esc(s.level) + '</span><h3>' + esc(s.title) + '</h3><p>' + esc(s.sub) + '　／　' + esc(s.theme) + '</p><div class="best' + (r ? '' : ' none') + '">' + (r ? '最高 ' + (r.bestRank || r.rank) + ' ランク（' + (r.best || r.total) + ' 点）' + (r.outcome === 'contract' ? '・ご成約' : '') : 'まだ挑戦していません') + '</div></button>'; }).join('') + '</div>' +
