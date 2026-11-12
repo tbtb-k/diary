@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<!-- 外部への通信は行わない（読み込むのは同じフォルダのファイルだけ） -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' blob: data:; media-src 'self' blob: data:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<!-- 外部への通信は行わない（読み込むのは同じフォルダのファイルだけ。file: は、HTML を直接開いて使うときのため） -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file:; style-src 'self' 'unsafe-inline'; img-src 'self' file: data: blob:; connect-src 'self' blob: data:; media-src 'self' blob: data:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>はじめての一棟 ― 住宅営業3Dシミュレーター</title>
 <meta name="description" content="新人の住宅営業になって、3Dのモデルハウスでお客様を接客。ヒアリング・ご案内・プラン提案・資金計画・クロージングを体験しながら学べる研修ゲーム（Claude Codeで制作）。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f5d50'/%3E%3Cpath d='M7 15.5 16 8l9 7.5M9.5 14v10h13V14' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -272,7 +272,8 @@
     #report table{width:100%;border-collapse:collapse;margin:2mm 0} #report th,#report td{border:1px solid #999;padding:1.5mm 2.5mm;text-align:left;font-size:10pt;vertical-align:top}
     #report th{background:#eee} #report .meta{display:flex;justify-content:space-between;font-size:10pt;color:#333}
     #report .sign{display:flex;gap:12mm;margin-top:12mm} #report .sign div{flex:1;border-top:1px solid #333;padding-top:1mm;font-size:9.5pt}
-    #report .scn{page-break-inside:avoid} #report small{color:#555}
+    #report .scn{page-break-inside:avoid} #report .chapter{page-break-before:always} #report .chapter:first-of-type{page-break-before:auto} #report small{color:#555}
+    #report tr{page-break-inside:avoid}
   }
 
   /* ───────────── 画面が小さいとき ───────────── */

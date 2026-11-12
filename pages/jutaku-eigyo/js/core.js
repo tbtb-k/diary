@@ -134,7 +134,7 @@
   };
   const v3 = (a) => a.isVector3 ? a.clone() : new T.Vector3(a[0], a[1], a[2]);
   // 縦長の画面では左右が切れるので、少し広角にして補う
-  const fovFix = (f) => { const a = innerWidth / innerHeight; return a >= 1.45 ? f : JE.clamp(f * (1 + (1.45 - a) * 0.55), f, 82); };
+  const fovFix = (f) => { const a = innerWidth / innerHeight; return a >= 1.45 ? f : JE.clamp(f * (1 + (1.45 - a) * 0.9), f, 84); };
   // 右側（スマホでは下側）にパネルが出ているあいだ、映像を少しずらして人物が隠れないようにする
   C.shift = 0; C.shiftT = 0; C.setShift = (on) => { C.shiftT = on ? 1 : 0; };
   C.set = (def) => { C.orbit = null; C.pos.copy(v3(def.pos)); C.look.copy(v3(def.look)); C.fov = def.fov || C.fov; C.apply(0); };
@@ -156,7 +156,7 @@
     cam.lookAt(tmp);
     const f = fovFix(C.fov); if (Math.abs(cam.fov - f) > 0.01) { cam.fov = f; cam.updateProjectionMatrix(); }
     C.shift += (C.shiftT - C.shift) * Math.min(1, (dt || 0.016) * 4);
-    if (C.shift > 0.003) { const w = innerWidth, h = innerHeight; if (w > 820) cam.setViewOffset(w, h, C.shift * 0.15 * w, 0, w, h); else cam.setViewOffset(w, h, 0, C.shift * 0.2 * h, w, h); }
+    if (C.shift > 0.003) { const w = innerWidth, h = innerHeight; if (w > 820) cam.setViewOffset(w, h, C.shift * 0.13 * w, 0, w, h); else cam.setViewOffset(w, h, 0, C.shift * 0.2 * h, w, h); }
     else if (cam.view && cam.view.enabled) cam.clearViewOffset();
   };
 

@@ -60,7 +60,7 @@
   const setBase = (def, dur) => { baseShot = { pos: def.pos.slice(), look: def.look.slice(), fov: def.fov }; return dur === 0 ? JE.cam.set(baseShot) : JE.cam.shot(baseShot, dur == null ? 1.6 : dur); };
   function focus(av) {
     if (!baseShot || JE.fast) return; const h = av.headPos(new T.Vector3()), b = baseShot, k = 0.55;
-    JE.cam.shot({ pos: [b.pos[0] + (h.x - b.look[0]) * 0.18, b.pos[1], b.pos[2] + (h.z - b.look[2]) * 0.1], look: [b.look[0] + (h.x - b.look[0]) * k, b.look[1] + (h.y - b.look[1]) * k, b.look[2] + (h.z - b.look[2]) * k], fov: b.fov * 0.86 }, 1.1).catch(() => {});
+    JE.cam.shot({ pos: [b.pos[0] + (h.x - b.look[0]) * 0.18, b.pos[1], b.pos[2] + (h.z - b.look[2]) * 0.1], look: [b.look[0] + (h.x - b.look[0]) * k, b.look[1] + (h.y - b.look[1]) * k, b.look[2] + (h.z - b.look[2]) * k], fov: b.fov * 0.9 }, 1.1).catch(() => {});
   }
   const unfocus = () => { if (baseShot && !JE.fast) JE.cam.shot(baseShot, 1.2).catch(() => {}); };
 
@@ -131,7 +131,7 @@
   async function phaseBrief(sc) {
     G.phase = 'ブリーフィング'; U.hud(false); useHouse('morning'); hideAll();
     const s = G.senpai; inScene(s, JE.house.scene); s.place(0.6, 0, -0.15, 0); s.setBase('idle', 0); s.lookAt('camera'); s.setMood('soft');
-    setBase({ pos: [0.6, 1.5, 2.9], look: [0.6, 1.42, -0.15], fov: 36 }, 0);
+    setBase({ pos: [0.6, 1.3, 2.15], look: [0.6, 1.43, -0.15], fov: 38 }, 0);
     JE.audio.music(true); await U.fade(false, 0.8);
     const html = '<div class="eyebrow">' + esc(sc.level) + '　' + esc(sc.title) + '</div><h2>' + esc(sc.sub) + '</h2><p style="color:var(--sub)">' + esc(sc.theme) + '</p>' +
       '<div class="survey"><div class="card"><h4>来場アンケート</h4><ul>' + sc.survey.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul><div class="people">' + sc.cast.map(c => '<span>' + esc(c.label) + '（' + c.age + '）' + '</span>').join('') + '</div></div>' +
@@ -239,7 +239,7 @@
     const st = G.st, bp = C.basePrice; G.phase = 'ご提案'; U.setPhase(3); hideAll();
     await U.caption(sc.plan.when, 'プランと資金計画のご提案');
     const plan = { type: 'two', size: 32, style: 'modern', options: new Set(), down: 0, rate: 'variable', term: sc.money.terms[0] };
-    JE.scene = JE.lot.scene; JE.lot.showFinished(plan, 'afternoon');
+    JE.scene = JE.lot.scene; JE.lot.showFinished(plan, 'afternoon'); baseShot = null;
     JE.cam.startOrbit({ center: new T.Vector3(-1, 2.6, 0.5), radius: innerWidth < 820 ? 32 : 26, height: 8.5, angle: 0.55, speed: 0.045, fov: 36 });
     G.hint = 'カルテのご要望に ✓ が付くように。ただし、頼まれていない物まで足すと「売りつけ」になる。月々の返済も忘れずに。';
     await U.fade(false, 0.8); await talk(sc.plan.intro);
@@ -335,7 +335,7 @@
   // 成約したときの演出：家が建ち、ご家族へ引き渡す
   const STAGE = { ground: ['着工', '更地に、建物の位置を示す縄が張られる'], foundation: ['基礎工事', ''], frame: ['上棟', '柱が立ち、梁がかかる'], roof: ['屋根工事', ''], walls: ['外壁工事', ''], finish: ['仕上げ・外構', ''], done: ['完成', ''] };
   async function ending(sc) {
-    const st = G.st, Lt = JE.lot; hideAll(); JE.scene = Lt.scene;
+    const st = G.st, Lt = JE.lot; hideAll(); JE.scene = Lt.scene; baseShot = null;
     await JE.assets.need(['avatar:worker_a', 'avatar:worker_b']).catch(() => {});
     const workers = []; for (const id of ['worker_a', 'worker_b']) if (JE.assets.buffers['avatar:' + id]) workers.push(await P.create(id));
     Lt.setTime('morning'); await U.fade(false, 0.9);
@@ -359,7 +359,7 @@
     saveResult(sc, st, res);
     await U.caption(sc.epilogue[res.outcome], '', res.outcome === 'contract' ? 3.6 : 3.0);
     if (res.outcome === 'contract') await ending(sc);
-    else { useHouse('sunset'); const s = G.senpai; inScene(s, JE.house.scene); s.place(0.6, 0, -0.15, 0); s.setBase('idle', 0); s.lookAt('camera'); s.setMood('soft'); setBase({ pos: [0.6, 1.5, 2.9], look: [0.6, 1.42, -0.15], fov: 36 }, 0); await U.fade(false, 0.8); }
+    else { useHouse('sunset'); const s = G.senpai; inScene(s, JE.house.scene); s.place(0.6, 0, -0.15, 0); s.setBase('idle', 0); s.lookAt('camera'); s.setMood('soft'); setBase({ pos: [0.6, 1.3, 2.15], look: [0.6, 1.43, -0.15], fov: 38 }, 0); await U.fade(false, 0.8); }
     window.__result = { id: sc.id, total: res.total, rank: res.rank, outcome: res.outcome, axes: res.axes, ng: st.ng.length, trust: Math.round(st.trust), S: res.S, known: st.known.size, monthly: +st.ev.c.monthlyAll.toFixed(2), fit: +st.ev.fit.toFixed(2) };
     for (;;) {
       const idx = JE.SCENARIOS.indexOf(sc), next = JE.SCENARIOS[idx + 1], btns = [];
@@ -388,17 +388,17 @@
   G.title = async () => {
     JE.newRun(); U.abortAll(); const run = JE.run;
     U.hud(false); U.hideDialog(); U.panelOff(); U.closeModal(); U.labels.clear(); U.captionOff(); document.getElementById('studio').hidden = true; document.getElementById('choices').hidden = true; document.getElementById('tip').hidden = true;
-    hideAll(); JE.scene = JE.lot.scene;
+    hideAll(); JE.scene = JE.lot.scene; baseShot = null;
     JE.lot.showFinished({ type: 'two', size: 32, style: 'natural', options: ['solar', 'deck', 'garden', 'carport'] }, 'sunset');
     JE.cam.startOrbit({ center: new T.Vector3(-1, 2.8, 1), radius: 24, height: 6.5, angle: 0.5, speed: 0.035, fov: 36 });
     const el = document.getElementById('title'), res = JE.save.results;
     el.innerHTML = '<div class="brand"><div class="co">' + esc(C.company) + '　新人営業研修</div><h1>' + esc(C.title) + '</h1><div class="tag">' + esc(C.subtitle) + '</div><p class="lead">あなたは、住宅会社に入社したばかりの営業担当。モデルハウスでお客様をお迎えし、お話を聞き、暮らしに合う家を提案します。<br>最後に、あなたが提案した家が建ちます。</p></div>' +
       '<div><div class="cards">' + JE.SCENARIOS.map((s, i) => { const r = res[s.id]; return '<button type="button" class="scard glass" data-s="' + s.id + '"><span class="lv l' + (i + 1) + '">' + esc(s.level) + '</span><h3>' + esc(s.title) + '</h3><p>' + esc(s.sub) + '　／　' + esc(s.theme) + '</p><div class="best' + (r ? '' : ' none') + '">' + (r ? '最高 ' + (r.bestRank || r.rank) + ' ランク（' + (r.best || r.total) + ' 点）' + (r.outcome === 'contract' ? '・ご成約' : '') : 'まだ挑戦していません') + '</div></button>'; }).join('') + '</div>' +
-      '<div class="row"><button type="button" class="btn ghost small" data-a="how">あそびかた</button><button type="button" class="btn ghost small" data-a="report">研修レポート</button><button type="button" class="btn ghost small" data-a="settings">設定</button><button type="button" class="btn ghost small" data-a="about">このゲームは AI が作りました</button></div>' +
+      '<div class="row"><button type="button" class="btn ghost small" data-a="how">あそびかた</button><button type="button" class="btn ghost small" data-a="report">研修レポート</button><button type="button" class="btn ghost small" data-a="guide">講師用ガイド</button><button type="button" class="btn ghost small" data-a="settings">設定</button><button type="button" class="btn ghost small" data-a="about">このゲームは AI が作りました</button></div>' +
       '<div class="foot">' + esc(C.company) + esc(C.companyNote) + '　金額・金利はすべて練習用のサンプル値です。　記録はこのブラウザの中だけに保存され、外部には送信されません。</div></div>';
     el.hidden = false;
     el.querySelectorAll('.scard').forEach(b => b.addEventListener('click', () => { JE.audio.unlock(); JE.audio.sfx('select'); G.start(b.dataset.s); }));
-    el.querySelectorAll('[data-a]').forEach(b => b.addEventListener('click', () => { JE.audio.unlock(); JE.audio.sfx('tick'); ({ how: G.how, report: G.printReport, settings: G.settings, about: () => G.about(false) })[b.dataset.a](); }));
+    el.querySelectorAll('[data-a]').forEach(b => b.addEventListener('click', () => { JE.audio.unlock(); JE.audio.sfx('tick'); ({ how: G.how, report: G.printReport, guide: G.askGuide, settings: G.settings, about: () => G.about(false) })[b.dataset.a](); }));
     JE.audio.music(false);
     if (run === JE.run) await U.fade(false, 0.9).catch(() => {});
   };
@@ -426,13 +426,15 @@
   G.about = (first) => {
     const m = C.making || {};
     return U.ask('<div class="eyebrow">' + (first ? 'じつは' : 'このゲームについて') + '</div><h2>このゲームは、AI が作りました。</h2><p>プログラムも、モデルハウスも、3 組のお客様のセリフも、採点のしくみも。人が書いたコードは 1 行もありません。人がしたのは、やりたいことを言葉で伝えることでした。</p>' +
-      '<div class="making"><div><b>' + (m.lines || '―') + '</b><small>AI が書いたプログラムの行数</small></div><div><b>0</b><small>人が書いたコードの行数</small></div><div><b>' + (m.messages || '―') + '</b><small>完成までに人が送ったメッセージ</small></div><div><b>10 人</b><small>3D の出演者（モーション ' + (m.motions || 67) + ' 本）</small></div></div>' +
+      '<div class="making"><div><b>' + (m.lines || '―') + '</b><small>AI が書いたプログラムの行数</small></div><div><b>0</b><small>人が書いたコードの行数</small></div><div><b>' + (m.messages || '―') + '</b><small>作る内容について人が送ったメッセージ</small></div><div><b>10 人</b><small>3D の出演者（モーション ' + (m.motions || 67) + ' 本）</small></div></div>' +
       '<h3>最初に人が送った依頼</h3><div class="quote">' + esc(m.prompt || '') + '</div>' +
       '<h3>AI がやったこと</h3><ol class="steps-ai"><li><b>先に計画を見せて、了承をもらった。</b>　場面の流れ、採点、会社で使うための工夫をまとめて提案。</li><li><b>「人物をリアルに」と言われ、その場で試作して見せた。</b>　使える人物モデルを探し、実際に表示した画像で確認してもらってから着手。</li><li><b>3D の舞台を作った。</b>　床の木目や壁の質感は画像ファイルを使わず計算で生成。家は選んだプランから組み立てる。</li><li><b>営業のシナリオを書いた。</b>　聞く順番、深掘り、暮らしの言葉、資金計画、コンプライアンス。</li><li><b>自分でテストした。</b>　全員ぶんを自動で最後まで遊び、画面を撮って見た目を確かめ、直した。</li></ol>' +
       '<h3>AI にうまく頼むコツ（このゲームの作り方から）</h3><ul class="plain"><li><b>目的を伝える。</b>「何を作るか」だけでなく「誰が、何のために使うか」。</li><li><b>先に計画を出させる。</b>作る前に方向をそろえると、やり直しが減る。</li><li><b>気になる所は、遠慮なく具体的に言う。</b>「人物が微妙」→「リアルにしたい」。</li></ul>' +
       '<p style="font-size:12px;color:var(--sub);margin-top:14px">制作：Claude Code（Anthropic）　／　3D エンジン：three.js（MIT）　／　人物モデルとモーション：Microsoft Rocketbox Avatar Library（MIT）</p>',
       [{ id: 'ok', label: first ? 'へえ！' : '閉じる' }], { wide: true }).catch(() => {});
   };
+  // 講師用ガイドは答えが載っているので、開く前にひとこと確かめる
+  G.askGuide = () => U.ask('<div class="eyebrow">講師・研修担当の方へ</div><h2>講師用ガイドを印刷しますか？</h2><p>3 組のお客様それぞれについて、ニーズの一覧、各場面の模範解答と解説、提案の目安をまとめた資料です。</p><p style="color:var(--bad)">答えが載っているので、受講者の方は、まず自分の力で挑戦してからご覧ください。</p>', [{ id: 'print', label: '印刷する' }, { id: 'cancel', label: 'やめる', ghost: true }]).then(a => { if (a === 'print') G.printGuide(); }).catch(() => {});
   // 研修レポート（印刷用）
   G.printReport = () => {
     const r = JE.save.results, done = JE.SCENARIOS.filter(s => r[s.id]);
@@ -444,6 +446,25 @@
       if (x.ng.length) h += '<table><tr><th>コンプライアンスに関わる発言</th><th style="width:55%">解説</th></tr>' + x.ng.map(n => '<tr><td>' + esc(n.t) + '</td><td><b>' + esc(C.ng[n.id].name) + '</b>：' + esc(C.ng[n.id].text) + '</td></tr>').join('') + '</table>';
       h += '</div>'; }
     h += '<p><small>' + esc(C.ngNote) + '　金額・金利はすべて練習用のサンプル値です。</small></p><div class="sign"><div>受講者 所感</div><div>指導担当 コメント</div><div>確認印</div></div>';
+    document.getElementById('report').innerHTML = h;
+    if (!JE.fast) setTimeout(() => window.print(), 60);
+  };
+  // 講師用ガイド（模範解答と解説）。シナリオのデータからその場で作るので、書き換えても内容がずれない。
+  G.printGuide = () => {
+    const best = (cs) => cs.slice().sort((a, b) => RANK[b.r] - RANK[a.r])[0], ngs = (cs) => cs.filter(c => c.ng);
+    const stepRow = (label, def) => { const b = best(def.choices); return '<tr><td>' + esc(label) + '</td><td>' + esc(b.t) + '</td><td>' + esc(b.tip || '') + (ngs(def.choices).length ? '<br><small>NG：' + ngs(def.choices).map(c => esc(C.ng[c.ng].name)).join('、') + ' に当たる選択肢あり</small>' : '') + '</td></tr>'; };
+    const optName = (k) => k[0] === '@' ? C.basePrice[k.slice(1)].name + 'にする' : (C.options.find(o => o.id === k) || { name: k }).name;
+    let h = '<h1>' + esc(C.title) + '　講師用ガイド（模範解答と解説）</h1><div class="meta"><span>' + esc(C.company) + '　新人営業研修</span><span>※ 受講者には配らないでください</span></div><p><small>各場面で最も評価の高い選択と、その理由です。金額・金利はすべて練習用のサンプル値です。' + esc(C.ngNote) + '</small></p>';
+    for (const sc of JE.SCENARIOS) {
+      const m = sc.money;
+      h += '<div class="chapter"><h2>' + esc(sc.level) + '：' + esc(sc.title) + '（' + esc(sc.sub) + '）</h2><p><b>テーマ</b>　' + esc(sc.theme) + '<br><b>学習ポイント</b>　' + sc.goals.map(esc).join('／') + '</p>';
+      h += '<table><tr><th style="width:16%">分類</th><th>お客様の事情・ニーズ</th><th style="width:8%">重み</th><th style="width:32%">提案での対応</th></tr>' + Object.keys(sc.needs).map(k => { const n = sc.needs[k]; return '<tr><td>' + esc(n.cat) + '</td><td>' + esc(n.label) + '</td><td>' + n.w + '</td><td>' + (sc.plan.map[k] ? sc.plan.map[k].map(optName).map(esc).join(' または ') : '（情報として生かす）') + '</td></tr>'; }).join('') + '</table>';
+      h += '<table><tr><th style="width:16%">お出迎え</th><th style="width:40%">模範</th><th>解説</th></tr>' + sc.greet.map(d => stepRow(d.prompt, d)).join('') + '</table>';
+      h += '<table><tr><th style="width:34%">ヒアリングの質問（' + sc.hearingTurns + ' 回まで）</th><th style="width:22%">分かること</th><th>深掘りの模範・注意</th></tr>' + sc.hearing.questions.map(q => { const f = q.follow ? best(q.follow.choices) : null, ids = (q.reveals || []).concat(f && f.reveals ? f.reveals : []); return '<tr><td>' + esc(q.t) + (q.gate ? '<br><small>信頼が育つ前に聞くと、はぐらかされる</small>' : '') + '</td><td>' + (ids.length ? ids.map(i => esc(sc.needs[i].label)).join('<br>') : '―') + '</td><td>' + (f ? esc(f.t) + '<br><small>' + esc(f.tip) + '</small>' : q.fail ? '<small>' + esc(q.fail.tip) + '</small>' : '―') + '</td></tr>'; }).join('') + stepRow('締めくくり', sc.hearing.end).replace('<td>締めくくり</td>', '<td>ヒアリングの締めくくり</td>') + '</table>';
+      h += '<table><tr><th style="width:16%">ご案内（' + sc.tour.pick + ' か所）</th><th style="width:40%">模範</th><th>解説</th></tr>' + sc.tour.spots.map(sp => stepRow(sp.name, { choices: sp.talks })).join('') + '</table>';
+      h += '<p><b>ご提案の目安</b>　' + C.basePrice[sc.plan.type].name + '・' + sc.plan.sizeOk.join('〜') + ' 坪（' + esc(sc.plan.typeNote) + '）／月々のご希望 ' + m.hope + ' 万円（上限 ' + m.limit + ' 万円）／自己資金 ' + m.own + ' 万円のうち ' + m.reserve + ' 万円は残す' + (m.other ? '／' + esc(m.otherName) + ' ' + m.other + ' 万円を含む' : '') + '</p>';
+      h += '<table><tr><th style="width:16%">金額・クロージング</th><th style="width:40%">模範</th><th>解説</th></tr>' + stepRow('金額の伝え方', sc.plan.present) + sc.closing.map(d => stepRow(d.final ? '次の一歩' : d.say.filter(l => l[0] !== 'n').map(l => l[1]).join(' ').slice(0, 26) + '…', d)).join('') + '</table></div>';
+    }
     document.getElementById('report').innerHTML = h;
     if (!JE.fast) setTimeout(() => window.print(), 60);
   };
@@ -487,7 +508,7 @@
     document.getElementById('btn-menu').addEventListener('click', menu);
     addEventListener('pointerdown', () => JE.audio.unlock(), { once: true });
     try {
-      if (location.protocol === 'file:' && !window.THREE) throw new Error('プログラムを読み込めませんでした。HTML と「jutaku-eigyo」フォルダを同じ場所に置いてください。');
+      if (!window.THREE || !JE.gfx || !JE.house || !JE.lot || !JE.people) throw new Error('プログラムの一部を読み込めませんでした。HTML と「jutaku-eigyo」フォルダが同じ場所にあるか確かめて、ページを読み込み直してください。');
       U.loading(0.06, '3D エンジンを起動しています…'); await tick();
       const cv = document.getElementById('stage'), test = document.createElement('canvas').getContext('webgl2');
       if (!test) throw new Error('このブラウザでは 3D（WebGL2）を表示できません。Chrome・Edge・Safari・Firefox の新しい版でお試しください。');

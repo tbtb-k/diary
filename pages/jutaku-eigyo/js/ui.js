@@ -38,7 +38,7 @@
   U.loadingError = (html) => { const e = document.getElementById('load-err'); e.hidden = false; e.innerHTML = html; };
 
   // ───────── 暗転・見出し ─────────
-  U.fade = (on, dur) => { N.fade.style.transitionDuration = (JE.fast ? 0 : (dur == null ? 0.6 : dur)) + 's'; N.fade.style.opacity = on ? 1 : 0; return JE.wait(dur == null ? 0.65 : dur + 0.05); };
+  U.fade = (on, dur) => { N.fade.style.transitionDuration = (JE.fast ? 0 : (dur == null ? 0.6 : dur)) + 's'; N.fade.style.opacity = on ? 1 : 0; return JE.wait(dur == null ? 0.65 : dur + 0.05).then(() => { if (on) { U.hideDialog(); N.tip.hidden = true; N.choices.hidden = true; } }); };   // 暗転したら、前の場面のセリフ枠は片づける
   U.caption = async (big, small, hold) => { N.caption.querySelector('.big').textContent = big || ''; N.caption.querySelector('.small').textContent = small || ''; if (JE.fast) return; N.caption.classList.add('on'); try { await JE.wait(hold == null ? 2.4 : hold); } finally { N.caption.classList.remove('on'); } await JE.wait(0.7); };
   U.captionOn = (big, small) => { N.caption.querySelector('.big').textContent = big || ''; N.caption.querySelector('.small').textContent = small || ''; N.caption.classList.add('on'); };
   U.captionOff = () => N.caption.classList.remove('on');
@@ -103,7 +103,7 @@
   U.hud = (on) => { N.hud.hidden = !on; if (!on) { N.guest.hidden = true; U.karte.close(); } };
 
   // ───────── 右のパネル ─────────
-  U.panel = (html) => { N.panel.innerHTML = html; N.panel.hidden = false; JE.cam.setShift(true); return N.panel; };
+  U.panel = (html) => { U.hideDialog(); N.tip.hidden = true; N.panel.innerHTML = html; N.panel.hidden = false; JE.cam.setShift(true); return N.panel; };
   U.panelOff = () => { N.panel.hidden = true; N.panel.innerHTML = ''; JE.cam.setShift(false); };
 
   // ───────── カルテ ─────────
@@ -157,7 +157,7 @@
       '<div class="col r glass hide"><header><h2>② 資金計画</h2><p>金額はすべて練習用のサンプル値です。</p></header><div class="body" id="st-money"></div></div>' +
       '<button type="button" class="btn go" id="st-go">この内容で提案する</button>' +
       '<div class="tabs"><button type="button" data-t="l" class="on">① プラン</button><button type="button" data-t="r">② お金</button><button type="button" class="send" data-t="go">提案する</button></div>';
-    N.studio.hidden = false;
+    U.hideDialog(); N.tip.hidden = true; N.studio.hidden = false;
     const L = N.studio.querySelector('#st-plan'), R = N.studio.querySelector('#st-money'), cols = N.studio.querySelectorAll('.col');
     N.studio.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => { if (b.dataset.t === 'go') return submit(); cols[0].classList.toggle('hide', b.dataset.t !== 'l'); cols[1].classList.toggle('hide', b.dataset.t !== 'r'); N.studio.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b)); }));
     const rebuild = (animate) => { JE.lot.setPlan(plan, { animate }); labels(); };

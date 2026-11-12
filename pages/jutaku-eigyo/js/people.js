@@ -49,7 +49,7 @@
         if (!o.isMesh) return;
         o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false; this.meshes.push(o);
         const m = o.material; m.envMapIntensity = 0.9;
-        if (/opacity/.test(m.name)) { m.transparent = false; m.alphaTest = 0.42; m.alphaToCoverage = JE.gfx.quality !== 'low'; m.side = T.DoubleSide; m.roughness = 0.55; }
+        if (/opacity/.test(m.name)) { m.transparent = false; m.alphaTest = 0.18; /* 細い前髪が「傷」のように見えないよう、しきい値は低め */ m.alphaToCoverage = JE.gfx.quality !== 'low'; m.side = T.DoubleSide; m.roughness = 0.55; }
         if (o.morphTargetDictionary) this.morphMeshes.push(o);
       });
       this.bip = this.bones.Bip01; this.bipY = this.bip.position.y;
