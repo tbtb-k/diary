@@ -134,6 +134,23 @@ let browser;
     const sp = await page.evaluate(() => { const d = window.__game.debug, g = window.__game.world(); d.god(true); d.spawn('splitter', 1); const ok = d.killOne('splitter'); return { ok, minis: g.enemies.filter(e => e.type === 'mini' && !e.dead).length }; });
     check('分裂する敵を倒すと小さな敵が2体出る', sp.ok && sp.minis === 2, `minis=${sp.minis}`);
     await page.evaluate(() => { const g = window.__game.world(); g.enemies.forEach(e => { if (e.type === 'mini') e.dead = true; }); window.__game.debug.god(false); });
+    // 自爆する敵「ドカン」（Day 12）：近づくと点滅して爆発し、まわりの敵と自機にダメージ。爆発の前に倒せば爆発しない
+    const bm = await page.evaluate(() => {
+      const d = window.__game.debug, g = window.__game.world(), p = g.player;
+      g.enemies.forEach(e => { e.dead = true; }); g.enemies.length = 0;
+      d.spawn('bomber', 1); const b = g.enemies[g.enemies.length - 1]; b.x = p.x + 50; b.y = p.y;
+      d.spawn('drifter', 1); const v = g.enemies[g.enemies.length - 1]; v.x = p.x + 95; v.y = p.y + 20; v.spd = 0;
+      const hp0 = p.hp, k0 = g.kills, b0 = g.booms; p.inv = 0;
+      window.__game.sim(0.2, () => [0, 0]); const fused = b.fuse != null && !b.dead;
+      window.__game.sim(1.0, () => [0, 0]);
+      const r = { fused, boomed: g.booms - b0 === 1 && b.dead, victim: v.dead, hurt: hp0 - p.hp, kills: g.kills - k0 };
+      d.spawn('bomber', 1); const b2 = g.enemies[g.enemies.length - 1]; b2.x = p.x + 300; b2.y = p.y;
+      const b1 = g.booms; d.killOne('bomber'); r.safeKill = b2.dead && g.booms === b1;
+      return r;
+    });
+    check('自爆する敵は近づくと点滅して爆発し、まわりの敵も巻きこむ', bm.fused && bm.boomed && bm.victim && bm.hurt >= 18, `点滅=${bm.fused} 爆発=${bm.boomed} 巻きこみ=${bm.victim} 自機-${bm.hurt}`);
+    check('爆発する前に倒した自爆敵は爆発しない', bm.safeKill);
+    await page.evaluate(() => { const p = window.__game.world().player; p.hp = p.maxHp; });
     // 一時停止
     await page.click('#b-pause');
     check('一時停止できる', await visible(page, 'pause'));

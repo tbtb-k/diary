@@ -254,8 +254,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 11, date: '2026-11-11' };
+const GAME = { day: 12, date: '2026-11-13' };
 const PATCH_NOTES = [
+  { day: 12, date: '2026-11-13', title: '新しい敵「ドカン」が登場！',
+    items: ['トゲトゲの丸い敵は、近づくとチカチカ光って爆発するよ', '光った輪の外へ逃げれば大丈夫。爆発はまわりの敵も巻きこむよ', '爆発する前に倒しちゃえば、ドカンとはならないよ', 'すごく強くなった回は、ボスもちょっとだけ硬くなるよ'],
+    ask: '爆発をよけて、敵をまとめて巻きこめたか教えてね！' },
   { day: 11, date: '2026-11-11', title: 'ほしくずを拾いやすくしたよ！',
     items: ['ほしくずを吸い寄せる範囲を、はじめから少し広くしたよ（約1割）', '敵をよけながらでも、レベルアップしやすくなったはず', 'そのぶん、ボスはちょっとだけ硬くなったよ'],
     ask: '敵から逃げながら、ほしくずがスッと集まるか感じてみてね！' },
@@ -366,10 +369,13 @@ const ET = {
   brute: { shape: 'sq', color: '#b48cff', r: 17, hp: 46, spd: 38, dmg: 14, xp: 4, kb: 0.45, spin: 0.8 },
   shooter: { shape: 'hex', color: '#5dff9b', r: 12, hp: 18, spd: 52, dmg: 8, xp: 2, kb: 0.8, spin: 1.2 },
   splitter: { shape: 'circ', color: '#ff8ad8', r: 14, hp: 24, spd: 46, dmg: 9, xp: 2, kb: 0.7, spin: 0 },
+  bomber: { shape: 'mine', color: '#ff6b4a', r: 12, hp: 14, spd: 66, dmg: 8, xp: 2, kb: 0.9, spin: 1.6 },
   mini: { shape: 'circ', color: '#ff8ad8', r: 7, hp: 6, spd: 92, dmg: 5, xp: 1, kb: 1.3, spin: 0 },
   elite: { shape: 'star', color: '#ff7a3d', r: 26, hp: 420, spd: 47, dmg: 18, xp: 30, kb: 0.15, spin: 1.5 },
   boss: { shape: 'boss', color: '#ff3b5c', r: 46, hp: 5400, spd: 44, dmg: 24, xp: 0, kb: 0.03, spin: 0.6 },
 };
+// 自爆する敵「ドカン」：近づくとチカチカして、少したってから爆発する
+const BOMB = { near: 72, fuse: 0.9, r: 80, dmg: 18, hit: 45 };
 const hpScale = t => 1 + t / 180 + (t / 330) * (t / 330);
 const xpNeed = L => Math.floor((5 + L * 2.5 + L * L * 0.1) * (L <= 2 ? 0.8 : 1)); // 序盤(Lv1〜2)は早めに最初の強化がもらえる
 
@@ -386,7 +392,7 @@ let acc = 0, lastT = 0, lastResult = null, levelOpts = [], levelOpenAt = 0;
 function newGame(seed) {
   rng = mulberry32(seed);
   G = {
-    seed, t: 0, level: 1, xp: 0, xpNeed: xpNeed(1), kills: 0, bonus: 0,
+    seed, t: 0, level: 1, xp: 0, xpNeed: xpNeed(1), kills: 0, booms: 0, bonus: 0,
     player: { x: 0, y: 0, r: 12, hp: 100, maxHp: 100, inv: 0, speed: 150, face: -Math.PI / 2, mvx: 0, mvy: 0 },
     weapons: { pulse: 1 }, passives: {}, st: null,
     wt: { pulse: 0.3, nova: 2, chain: 1, orbitAng: 0 },
@@ -492,10 +498,10 @@ function director(dt) {
   if (t >= BOSS_AT) spawnBoss();
 }
 function pickType(t) {
-  const names = ['drifter', 'darter', 'brute', 'shooter', 'splitter'];
-  const w = [1, clamp((t - 35) / 90, 0, 0.7), clamp((t - 90) / 160, 0, 0.4), clamp((t - 150) / 250, 0, 0.3), clamp((t - 60) / 120, 0, 0.35)];
-  let r = rng() * (w[0] + w[1] + w[2] + w[3] + w[4]);
-  for (let i = 0; i < 5; i++) { r -= w[i]; if (r <= 0) return names[i]; }
+  const names = ['drifter', 'darter', 'brute', 'shooter', 'splitter', 'bomber'];
+  const w = [1, clamp((t - 35) / 90, 0, 0.7), clamp((t - 90) / 160, 0, 0.4), clamp((t - 150) / 250, 0, 0.3), clamp((t - 60) / 120, 0, 0.35), clamp((t - 100) / 140, 0, 0.3)];
+  let r = rng() * w.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < names.length; i++) { r -= w[i]; if (r <= 0) return names[i]; }
   return 'drifter';
 }
 function spawnEnemy(type, ang, rad) {
@@ -517,6 +523,8 @@ function rush() {
 }
 function spawnBoss() {
   const e = spawnEnemy('boss', rng() * TAU, G.spawnR * 0.72);
+  // Lv25 から、1レベルごとにボスHP+7%（とても強いビルドでボス戦が一瞬で終わらないように。Day 12）
+  e.hp = e.maxHp = ET.boss.hp * (1 + Math.max(0, G.level - 24) * 0.07);
   e.mode = 'chase'; e.ringCd = 2.4; e.chargeCd = 6; e.ringOff = 0; e.modeT = 0; e.cx = 0; e.cy = 0;
   G.boss = e;
   banner('ボス出現！', 'ブラックスターを倒せばクリア', '#ff3b5c', true);
@@ -544,6 +552,12 @@ function stepEnemies(dt) {
       if (e.cd <= 0 && d < 380 && !g.ending) { e.cd = 2.6 + rng(); fireE(e.x, e.y, dx, dy, 125, e.dmg, 'g'); }
     } else if (e.type === 'darter') {
       const w = Math.sin(g.t * 5 + e.seed) * 0.35; mx = dx - dy * w; my = dy + dx * w;
+    } else if (e.type === 'bomber') {
+      if (e.fuse == null && d < BOMB.near && !g.ending) { e.fuse = BOMB.fuse; Snd.play('fuse'); }
+      if (e.fuse != null) {
+        sp = e.spd * 0.15; e.fuse -= dt;
+        if (e.fuse <= 0) { explode(e); continue; }
+      }
     }
     e.x += (mx * sp + e.kx) * dt; e.y += (my * sp + e.ky) * dt;
     e.kx *= kd; e.ky *= kd;
@@ -733,6 +747,22 @@ function kill(e) {
   const r = rng();
   if (G.t > 40 && r < 0.011) dropItem(e.x, e.y, 'heal');
   else if (G.t > 60 && r > 0.996) dropItem(e.x, e.y, 'magnet');
+}
+// ドカンの爆発：輪の中の自機と敵（ボス以外）にダメージ（自爆なので撃破数には入れない）
+function explode(e) {
+  const g = G, p = g.player;
+  e.dead = true; g.booms++;
+  burst(e.x, e.y, '#ff6b4a', 26, 260, 4); burst(e.x, e.y, '#ffd84a', 14, 200, 3);
+  if (g.fxOn) FX.rings.push({ x: e.x, y: e.y, r: 10, max: BOMB.r, t: 0, dur: 0.3, color: '#ff6b4a' });
+  shake(5); Snd.play('boom');
+  const dmg = BOMB.hit * hpScale(g.t);
+  query(e.x, e.y, BOMB.r + 30, o => {
+    if (o === e || o.dead || o.type === 'boss') return; // ボスには効かない（ボス戦が短くなりすぎないように）
+    const dx = o.x - e.x, dy = o.y - e.y;
+    if (dx * dx + dy * dy < (BOMB.r + o.r) * (BOMB.r + o.r)) damage(o, dmg, dx, dy, 220);
+  });
+  const px = p.x - e.x, py = p.y - e.y;
+  if (px * px + py * py < (BOMB.r + p.r) * (BOMB.r + p.r)) { p.inv = 0; hurt(BOMB.dmg); }
 }
 function bossDown(e) {
   const g = G;
@@ -992,6 +1022,8 @@ const Snd = {
         case 'clear': [523, 659, 784, 1047, 1319].forEach((f, i) => this.tone(f, 0.45, 'triangle', 0.1, 0, i * 0.11)); break;
         case 'over': [392, 330, 262, 196].forEach((f, i) => this.tone(f, 0.35, 'triangle', 0.08, 0, i * 0.16)); break;
         case 'click': this.tone(900, 0.05, 'sine', 0.05); break;
+        case 'fuse': this.tone(1500, 0.07, 'square', 0.03); this.tone(1500, 0.07, 'square', 0.03, 0, 0.3); this.tone(1500, 0.07, 'square', 0.03, 0, 0.55); break;
+        case 'boom': this.noise(0.45, 0.16, 520); this.tone(120, 0.4, 'sine', 0.13, 40); break;
         case 'start': [392, 523, 784].forEach((f, i) => this.tone(f, 0.18, 'triangle', 0.07, 0, i * 0.06)); break;
       }
     } catch (_) { }
@@ -1102,6 +1134,7 @@ function shapePath(x, shape, r) {
   else if (shape === 'sq') { const s = r * 0.82; x.moveTo(-s, -s); x.lineTo(s, -s); x.lineTo(s, s); x.lineTo(-s, s); }
   else if (shape === 'hex') { for (let i = 0; i < 6; i++) { const a = i * TAU / 6; x.lineTo(Math.cos(a) * r, Math.sin(a) * r); } }
   else if (shape === 'star') { for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * TAU / 10, rr = i % 2 ? r * 0.5 : r; x.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } }
+  else if (shape === 'mine') { for (let i = 0; i < 16; i++) { const a = i * TAU / 16, rr = i % 2 ? r * 0.74 : r * 1.12; x.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } }
   else if (shape === 'boss') { for (let i = 0; i < 16; i++) { const a = i * TAU / 16, rr = i % 2 ? r * 0.9 : r * 1.12; x.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } }
   else if (shape === 'gem') { x.moveTo(0, -r * 1.35); x.lineTo(r * 0.8, 0); x.lineTo(0, r * 1.35); x.lineTo(-r * 0.8, 0); }
   else if (shape === 'heal') { const a = r * 0.35; x.moveTo(-a, -r); x.lineTo(a, -r); x.lineTo(a, -a); x.lineTo(r, -a); x.lineTo(r, a); x.lineTo(a, a); x.lineTo(a, r); x.lineTo(-a, r); x.lineTo(-a, a); x.lineTo(-r, a); x.lineTo(-r, -a); x.lineTo(-a, -a); }
@@ -1121,7 +1154,7 @@ function mkShape(shape, r, color, k, white) {
     x.beginPath(); x.arc(0, 0, r * 0.5, 0, TAU); x.shadowColor = color; x.shadowBlur = 16 * k; x.strokeStyle = color; x.lineWidth = 2.5; x.stroke();
     x.beginPath(); x.arc(0, 0, r * 0.22, 0, TAU); x.fillStyle = '#ffd0d8'; x.fill();
   }
-  if (!white && (shape === 'sq' || shape === 'hex')) { x.beginPath(); x.arc(0, 0, r * 0.28, 0, TAU); x.fillStyle = color; x.shadowColor = color; x.shadowBlur = 8 * k; x.fill(); }
+  if (!white && (shape === 'sq' || shape === 'hex' || shape === 'mine')) { x.beginPath(); x.arc(0, 0, r * 0.28, 0, TAU); x.fillStyle = color; x.shadowColor = color; x.shadowBlur = 8 * k; x.fill(); }
   if (shape === 'magnet') { x.beginPath(); x.arc(0, 0, r * 0.45, 0, TAU); x.fillStyle = color; x.fill(); }
   return s;
 }
@@ -1226,7 +1259,18 @@ function drawWorld() {
   // 敵
   for (const e of g.enemies) {
     if (e.dead || !inView(e.x, e.y)) continue;
-    if (e.r < 20) drawSpr(e.flash > 0 ? SPR[e.type + '_w'] : SPR[e.type], e.x, e.y, e.rot);
+    if (e.fuse != null) {
+      // ドカンの爆発の範囲（ここから出れば当たらない）
+      const k = 1 - e.fuse / BOMB.fuse;
+      ctx.setTransform(K, 0, 0, K, OX, OY);
+      ctx.globalAlpha = 0.25 + k * 0.45; ctx.strokeStyle = '#ff6b4a'; ctx.lineWidth = 2; ctx.setLineDash([7, 6]);
+      ctx.beginPath(); ctx.arc(e.x, e.y, BOMB.r, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
+      ctx.globalAlpha = 0.06 + k * 0.12; ctx.fillStyle = '#ff6b4a';
+      ctx.beginPath(); ctx.arc(e.x, e.y, BOMB.r * k, 0, TAU); ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+    const blink = e.fuse != null && Math.floor(e.fuse * (e.fuse < 0.35 ? 20 : 10)) % 2 === 0;
+    if (e.r < 20) drawSpr(e.flash > 0 || blink ? SPR[e.type + '_w'] : SPR[e.type], e.x, e.y, e.rot);
     else {
       // 大きい敵は真っ白にせず、うっすら光らせる（ずっと白く見えないように）
       drawSpr(SPR[e.type], e.x, e.y, e.rot);
@@ -1549,7 +1593,7 @@ window.__game = {
   state() {
     if (!G) return { scene };
     const p = G.player;
-    return { scene, t: +G.t.toFixed(2), hp: Math.round(p.hp), maxHp: p.maxHp, x: Math.round(p.x), y: Math.round(p.y), level: G.level, kills: G.kills,
+    return { scene, t: +G.t.toFixed(2), hp: Math.round(p.hp), maxHp: p.maxHp, x: Math.round(p.x), y: Math.round(p.y), level: G.level, kills: G.kills, booms: G.booms,
       arrows: arrowCount, enemies: G.enemies.length, gems: G.gems.length, weapons: Object.assign({}, G.weapons), passives: Object.assign({}, G.passives),
       evolved: pulseEvolved(), boss: G.boss ? Math.max(0, Math.round(G.boss.hp)) : null, clear: G.clear, over: G.over, done: !!G.done, score: calcScore(), fps: Math.round(fpsAvg), quality };
   },
