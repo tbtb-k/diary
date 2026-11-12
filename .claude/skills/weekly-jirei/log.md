@@ -54,6 +54,9 @@
 | 2026-11-09 | Copilot Studio（Agent Builder 枠の代替） | A1 Inteligência em Viagens | pages/jirei_20261109-copilot-studio-2.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/boost-efficiency-experience-case-study |
 | 2026-11-11 | Copilot Studio | T-Mobile | pages/jirei_20261111-copilot-studio.html | https://learn.microsoft.com/en-us/power-platform/guidance/case-studies/tmobile-empowers-customer-service |
 | 2026-11-11 | Copilot Studio（Agent Builder 枠の代替） | Verdantas | pages/jirei_20261111-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/26233-verdantas-microsoft-copilot-studio |
+| 2026-11-13 | Copilot Studio | OneSchool Global | pages/jirei_20261113-copilot-studio.html | https://www.microsoft.com/en/customers/story/27278-oneschool-global-microsoft-copilot-studio |
+| 2026-11-13 | Copilot Studio（Agent Builder 枠の代替） | State Farm | pages/jirei_20261113-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/26947-state-farm-microsoft-power-platform |
+| 2026-11-13 | Copilot Cowork | NFP | pages/jirei_20261113-copilot-cowork.html | https://www.microsoft.com/en/customers/story/27422-nfp-power-automate |
 
 ## ネタ帳（候補）
 
@@ -79,6 +82,11 @@
 - **Copilot Cowork?**｜Capital Group（2026-03-30 公開の Frontier 発表ブログ、本文確認済み）
   https://www.microsoft.com/en-us/microsoft-365/blog/2026/03/30/copilot-cowork-now-available-in-frontier/
   計画・日程調整・成果物づくり・役員レビューの準備で価値を感じた、という役員の発言のみ。before/after・数字なし。単独では弱い。
+
+- **Copilot Studio**｜Vanderlande（2026-09-04 表示、本文確認済み）
+  https://www.microsoft.com/en/customers/story/27170-vanderlande-microsoft-power-platform
+  Power Apps 中心。Copilot Studio は ICT のセルフサービス助手「VIGO」（Azure AI Foundry と併用）。年95万ユーロ超の削減などは主に自動化全体の数字なので、Studio 部分だけで書くなら注意。
+- **Copilot Studio?**｜adoption.microsoft.com の agent-transformation-stories 一覧で未使用のもの（未読）：Sirva、Network Rail、Kantar、Amgen、Estée Lauder、HEINEKEN、CSX、Virgin Money、TotalEnergies、LTM。
 
 ### 見送り（その枠では記事にならない。読み直さなくてよい。枠の記載がないものは Agent Builder 枠）
 
@@ -119,3 +127,4 @@
 - 2026-11-07：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（COSMO CONSULT、SCDF。Learn の事例一覧から本文確認して採用）にした。Cowork 枠は休み（techcommunity「Measuring the value of Cowork」2026-09 は方法論の解説で顧客事例なし。ほかはパートナー記事のみ）。ネタ帳候補（Learn 事例一覧・未読）：Signetic、A1、T-Mobile。ブロックされたホストなし。
 - 2026-11-09：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（Signetic、A1。Learn の事例一覧から本文確認して採用）にした。Cowork 枠は休み（名前の出た顧客事例なし。検索結果はパートナー記事と製品ページのみ）。ネタ帳候補（Learn 事例一覧・未読）：T-Mobile。ブロックされたホストなし。
 - 2026-11-11：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（T-Mobile＝Learn の事例一覧の最後の未読分、Verdantas＝顧客事例 2026-03-19）にした。2本とも Agent Builder の記載なし。Verdantas の顧客事例ページは curl では本文が取れず WebFetch で読んだ。Cowork 枠は休み（名前の出た顧客事例なし。検索結果は製品ページ・パートナー記事のみ）。Learn の Copilot Studio 事例一覧は Copilot Agent Kit の例集以外ほぼ使い切った。ブロックされたホストなし。
+- 2026-11-13：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（OneSchool Global、State Farm。adoption.microsoft.com の agent-transformation-stories 一覧から本文確認して採用）にした。2本とも Agent Builder の記載なし。Cowork 枠は NFP（顧客事例 27422、2026-10-08、Cowork が主役の初の顧客事例。URL は power-automate だが中身は Cowork）。www.softbank.jp は名前解決できず読めなかった（ソフトバンクの Copilot Studio 事例ブログ 2026-10 は未確認）。

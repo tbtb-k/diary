@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Cowork の活用事例（NFP）。2026年11月13日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>100時間かかると見ていた作業が数分に。NFP は Cowork に「考える」だけでなく「やる」まで任せました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Cowork</span>2026年11月13日／保険仲介（NFP）・後回しの仕事を任せる</p>
+
+  <h1>100時間かかると見ていた作業が数分に。NFP は Cowork に「考える」だけでなく「やる」まで任せました</h1>
+
+  <div class="lead">
+    <p>北米の保険仲介会社 NFP では、資料を探す、システムの間でデータを移す、同じ内容を打ち直すといった調整の仕事を、社員が手作業でこなしていました。</p>
+    <p>Copilot Cowork（やってほしいことを伝えると、AI が手順を計画し、メール・会議・ファイルなどをまたいで作業を進めてくれる Microsoft 365 Copilot の機能）に、こうした仕事を任せ始めました。</p>
+    <p>開発部門の責任者は、自分で100時間かかると見ていた作業を数分で終えたと話し、正式な告知なしに社員の約20%が使うまで広がりました。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>やるべきだと分かっているのに、まとまった時間がとれずに後回しになっている仕事。あちこちの資料を集め、数字を整理し、報告の形にまとめる。会議のあとに約束ごとを洗い出し、次の一手の下書きを作る。どれも1つずつは難しくないのに、手間がかかって止まってしまいます。</p>
+  <p>NFP は社員7,000人以上の保険仲介・コンサルティング会社です。出典によると、社員は調整の仕事の多くを手作業でこなしていました。個人向けの医療保険やメディケア（米国の高齢者向け公的医療保険）の申込みでは、あるシステムに入力した内容を、別の管理システムにもう一度打ち直していました。また、AI に自分の代わりに動いてもらうことに、社員は慎重でした。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>NFP は、AI に「手伝ってもらう」から「実行してもらう」へ進むために Cowork を使い始めました。転機は、アプリケーション開発部門の責任者が、自分のたまっていた仕事を Cowork に任せたことでした。Cowork は、事業部門の責任者向けの「ガバナンス・ダッシュボード」を作りました。Microsoft Fabric（社内のデータを集めて分析する Microsoft の仕組み）を使い、注意すべき点（レッドフラグ）や利用状況を示すものです。出典によると、本人が予定していなかった気づきまで示しました。</p>
+  <p>ほかにも、申込み業務の流れ全体を Cowork に分析させました。地域ごとの決まりもふまえて、Power Automate（作業を自動化するツール）で動かす仕組みの大部分を作らせています。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Cowork に仕事を任せる流れ">
+      <li><div class="box">ほしい結果を<br>伝える</div></li>
+      <li><div class="box">Cowork が<br>計画を立てる</div></li>
+      <li><div class="box">資料やデータを<br>またいで作業</div></li>
+      <li><div class="box">確認して<br>承認する</div></li>
+    </ol>
+    <figcaption>Cowork に仕事を任せる流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>人が「どんな結果がほしいか」を決めて、Cowork に伝えます。</li>
+    <li>Cowork が立てた計画を、人が確かめます。</li>
+    <li>Cowork が、ファイル・会話・会議の情報をまたいで作業を進めます。</li>
+    <li>実行の前に Cowork が承認を求め、確かめのために止まり、終わったら完了を知らせます。出典では、これを頼まなくても自分から行うと説明しています。</li>
+  </ol>
+  <p>出典では、ほかの使い方として、会議のあとの約束ごとの洗い出しと次の一手の下書き、過去の受注提案書をもとにした提案依頼書（RFP）への回答、定期的な規制・コンプライアンス（法令順守）の確認と1枚のメモへのまとめ、方針に沿った契約書の赤入れなども挙げています。</p>
+  <p class="src-note">※ 手順は、出典にある「人が結果を決め、計画を確かめ、一部を任せる」という説明を4つに整理したものです。Cowork への実際の依頼文や設定は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>資料を探し、システムの間でデータを移し、打ち直す調整の仕事を手作業でしていました。たまっていた仕事の中には、半年ほど手つかずのものもありました。</p></div>
+    <div class="after"><h3>いま</h3><p>Cowork が資料をまたいで作業し、人は承認と確認に回ります。申込みの受付は滞りなく進むようになり、開発者は半年先だと思っていた仕事に取りかかれました。</p></div>
+  </div>
+  <p>数字は NFP の担当者が出典で話したものです。開発部門の責任者は「自分なら100時間かかった作業を、Cowork は数分でやった」と振り返っています（意訳。本人の見積もりで、測った値ではありません）。Cowork は口コミで広がり、社員の約20%が使うようになりました。対象は顧客サービスやコールセンターから経営層まで広がっています。会社全体で減った時間は公表されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>小さくて結果が目に見える仕事から始めます。出典では、まず「受信トレイの整理」を頼んでみることをすすめています。</li>
+    <li>次に、後回しにしている仕事を1つ選び、「どんな結果がほしいか」を文章で書いて Cowork に伝えます。</li>
+    <li>Cowork が出す計画と、メール送信などの前の承認の画面を、1つずつ確かめながら進めます。</li>
+  </ol>
+  <p>準備するもの：Microsoft 365 Copilot のライセンスです。加えて、管理者が Cowork を有効にし、使った分だけ課金される仕組み（従量課金。Copilot Credits というポイントで支払います）をオンにしている必要があります（Microsoft Learn「Get started with Copilot Cowork」）。使えるかどうかは、社内の設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>「誰が使ってよいか、費用は誰が持つか」を先に決める</strong>
+    <p>NFP では、事業部門やコストセンター（費用を管理する単位）の責任者が、チームでの Cowork の利用を承認し、予算も持つ形にしました。依頼ごとに短い相談をして、合う道具を選んでいます。Power BI、Fabric、Copilot Studio、GitHub Copilot、Copilot Credits など、複数の道具の予算をどう配分するかも課題として挙げています。</p>
+  </div>
+  <p>出典によると、以前は「AI が自分の代わりに動く」ことへの慎重さが、利用の広がりを遅らせていました。Cowork は、大事な操作の前に承認を求める仕組みを最初から持っています。それでも、送る前の宛先や内容は自分の目で確かめてください。AI はもっともらしい間違い（ハルシネーション）をすることがあります。顧客情報など機密性の高いデータを扱う作業は、社内のルールを確かめてから任せましょう。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、「AI に聞く」から「AI に任せて、人は確かめる」へ、役割の分け方を変えたことです。人が結果を決め、計画を確かめ、承認する。この形は、報告書づくり、会議の後片づけ、定期チェックなど、手順の多い仕事に広げられます。</p>
+  <p>自分の職場に置き換えると、「時間ができたらやろう」と思って止まっている集計や資料の整理が、最初の候補になりそうです。まずは受信トレイの整理のような小さな仕事で、任せ方と確かめ方に慣れるところから始めてください。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「NFP shifts from AI that assists to AI that executes with Microsoft Copilot Cowork」（ページ表示日 2026年10月8日）<br>
+    <a href="https://www.microsoft.com/en/customers/story/27422-nfp-power-automate">https://www.microsoft.com/en/customers/story/27422-nfp-power-automate</a></p>
+    <p>使うための条件：Microsoft Learn「Get started with Copilot Cowork」（2026年9月14日付）<br>
+    <a href="https://learn.microsoft.com/en-us/copilot/microsoft-365/cowork/get-started">https://learn.microsoft.com/en-us/copilot/microsoft-365/cowork/get-started</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月13日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
