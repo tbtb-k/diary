@@ -143,6 +143,19 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 .stack{display:grid;gap:10px;margin-top:18px}
 
 .hist{text-align:left;margin-top:16px;display:grid;gap:10px}
+/* 実績 */
+.achs{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px;text-align:left}
+.achs li{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;padding:10px 12px;border-radius:14px;background:var(--panel);border:1px solid var(--faint);font-size:13px;line-height:1.45;color:var(--dim)}
+.achs li b{display:block;font-size:14.5px;color:var(--ink)}
+.achs li .md{font-size:22px;text-align:center;filter:grayscale(1) opacity(.35)}
+.achs li.got{border-color:rgba(255,216,74,.55);box-shadow:0 0 14px rgba(255,216,74,.18)}
+.achs li.got .md{filter:drop-shadow(0 0 6px rgba(255,216,74,.8))}
+.achs li.got b{color:var(--yellow)}
+.ach-new{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:10px}
+.ach-new:empty{display:none}
+.ach-new b{flex-basis:100%;font-size:13px;color:var(--yellow);text-shadow:0 0 10px rgba(255,216,74,.6)}
+.ach-new span{padding:5px 10px;border-radius:99px;font-weight:800;font-size:12px;color:#fff3c4;background:rgba(255,216,74,.12);border:1px solid rgba(255,216,74,.6);box-shadow:0 0 12px rgba(255,216,74,.35);animation:pop .4s cubic-bezier(.2,1.4,.4,1) backwards}
+.ach-new span:nth-child(3){animation-delay:.1s}.ach-new span:nth-child(4){animation-delay:.2s}.ach-new span:nth-child(n+5){animation-delay:.3s}
 .hist .panel{margin:0}
 .ic{display:block}
 </style>
@@ -171,6 +184,7 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
     <button class="btn primary" id="b-start">あそぶ</button>
     <div class="row"><button class="btn ghost" id="b-how">あそびかた</button><button class="btn ghost" id="b-snd">音：ON</button><button class="btn ghost" id="b-vib">振動：ON</button></div>
     <div class="best" id="best"></div>
+    <button class="linkbtn" id="b-ach" type="button"></button>
     <section class="panel" id="patch"></section>
     <button class="linkbtn" id="b-fb1">感想を送る（GitHub）</button>
     <div class="foot" id="ver"></div>
@@ -188,6 +202,16 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
       <li><span style="color:var(--red)" id="how-i4"></span><span><b>5:00</b>にボス「ブラックスター」が出現。倒せばクリア！</span></li>
     </ul>
     <button class="btn primary" id="b-how-ok">はじめる</button>
+  </div>
+</div>
+
+<!-- 実績 -->
+<div class="screen" id="ach" hidden>
+  <div class="inner">
+    <h2 class="big jp">実績</h2>
+    <p class="sub" id="ach-sub"></p>
+    <ul class="achs" id="achs"></ul>
+    <div class="stack"><button class="btn ghost" id="b-ach-close">とじる</button></div>
   </div>
 </div>
 
@@ -233,6 +257,7 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
     <h2 class="big res-title" id="res-title">GAME OVER</h2>
     <p class="sub" id="res-sub"></p>
     <div id="res-rec"></div>
+    <div class="ach-new" id="res-ach"></div>
     <div class="stats">
       <div class="stat wide"><b id="r-score">0</b><span>スコア</span></div>
       <div class="stat"><b id="r-time">0:00</b><span>生き延びた時間</span></div>
@@ -254,8 +279,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 12, date: '2026-11-13' };
+const GAME = { day: 13, date: '2026-11-14' };
 const PATCH_NOTES = [
+  { day: 13, date: '2026-11-14', title: '「実績」ができたよ！',
+    items: ['「1分生きのびる」「ノーダメージ1分」「ボスを倒す」など、実績が10こあるよ', '取れたら結果画面で「実績ゲット！」って出るよ', 'タイトルの「🏅 実績」から、取ったもの・まだのものを見られるよ'],
+    ask: 'いくつ取れたか、次に狙いたい実績があるか教えてね！' },
   { day: 12, date: '2026-11-13', title: '新しい敵「ドカン」が登場！',
     items: ['トゲトゲの丸い敵は、近づくとチカチカ光って爆発するよ', '光った輪の外へ逃げれば大丈夫。爆発はまわりの敵も巻きこむよ', '爆発する前に倒しちゃえば、ドカンとはならないよ', 'すごく強くなった回は、ボスもちょっとだけ硬くなるよ'],
     ask: '爆発をよけて、敵をまとめて巻きこめたか教えてね！' },
@@ -399,7 +427,7 @@ function newGame(seed) {
     enemies: [], bullets: [], ebullets: [], gems: [], items: [],
     spawnAcc: 0, nextRush: 60, elites: [150, 225], boss: null,
     pendingLevels: 0, rerolls: 2, ending: 0, done: false, over: false, clear: false, slow: 0, freeze: 0,
-    gemRR: 0, gemCombo: 0, gemComboT: 0, spawnR: spawnRadius(), fxOn: true, god: false, trailT: 0,
+    hitT: 0, noHit: 0, gemRR: 0, gemCombo: 0, gemComboT: 0, spawnR: spawnRadius(), fxOn: true, god: false, trailT: 0,
   };
   calcStats();
 }
@@ -856,6 +884,7 @@ function stepItems(dt) {
 function hurt(dmg) {
   const g = G, p = g.player;
   if (g.god || g.ending) return;
+  g.noHit = Math.max(g.noHit, g.t - g.hitT); g.hitT = g.t; // ノーダメージの最長時間（実績用）
   p.hp -= dmg; p.inv = 0.45;
   if (g.fxOn) { FX.hurt = 1; addNum(p.x, p.y - 18, dmg, '#ff4fb0', '-'); }
   shake(6); Snd.play('hurt'); vib(35);
@@ -1461,6 +1490,10 @@ function finish() {
   if (isNew) store.set('hs-best', rec);
   store.set('hs-runs', (store.get('hs-runs', 0) || 0) + 1);
   if (g.clear) store.set('hs-clears', (store.get('hs-clears', 0) || 0) + 1);
+  store.set('hs-killsum', (store.get('hs-killsum', 0) || 0) + g.kills);
+  const got = unlockAch(g);
+  $('res-ach').innerHTML = got.length ? `<b>🏅 実績ゲット！</b>${got.map(a => `<span>${a.icon} ${a.name}</span>`).join('')}` : '';
+  if (got.length) setTimeout(() => Snd.play('level'), 500);
   lastResult = Object.assign({ build: buildText(), bname: buildName() }, rec);
   const t = $('res-title');
   t.textContent = g.clear ? 'CLEAR!' : 'GAME OVER';
@@ -1482,11 +1515,38 @@ function finish() {
   scene = 'result'; el.hud.hidden = true; el.bossbar.hidden = true; hideHint();
   show('result');
 }
+/* ---- 実績（1回のプレイが終わったときに調べる。記録は hs-ach に { id: 取った日の Day } で残す） ---- */
+const ACH = [
+  { id: 'min1', icon: '⏱️', name: 'はじめの1分', d: '1分生きのびる', ok: g => g.t >= 60 },
+  { id: 'min3', icon: '🛡️', name: 'ねばり強さ', d: '3分生きのびる', ok: g => g.t >= 180 },
+  { id: 'boss', icon: '👀', name: 'ブラックスターと対面', d: '5:00 まで生きのびてボスに会う', ok: g => g.t >= BOSS_AT },
+  { id: 'clear', icon: '🏆', name: 'ほしくずの勇者', d: 'ボスを倒してクリアする', ok: g => g.clear },
+  { id: 'nohit', icon: '✨', name: 'ノーダメージ1分', d: '1分間、1回もダメージを受けない', ok: g => Math.max(g.noHit, g.t - g.hitT) >= 60 },
+  { id: 'kill500', icon: '💥', name: 'なぎ払い', d: '1回で500体倒す', ok: g => g.kills >= 500 },
+  { id: 'kill1000', icon: '🌌', name: 'ほしくず千体', d: 'これまでに合計1000体倒す', ok: () => (store.get('hs-killsum', 0) || 0) >= 1000 },
+  { id: 'arsenal', icon: '🧰', name: 'ぜんぶのせ', d: '武器を4つとも持つ', ok: g => Object.keys(g.weapons).length >= 4 },
+  { id: 'evolve', icon: '⚡', name: 'はじめての進化', d: 'パルスショットを「パルスストーム」に進化させる', ok: () => pulseEvolved() },
+  { id: 'lv30', icon: '🚀', name: 'Lv30 到達', d: '1回でレベル30になる', ok: g => g.level >= 30 },
+];
+function loadAch() { const a = store.get('hs-ach', {}); return a && typeof a === 'object' ? a : {}; }
+function unlockAch(g) {
+  const have = loadAch(), got = [];
+  for (const a of ACH) if (!have[a.id] && a.ok(g)) { have[a.id] = GAME.day; got.push(a); }
+  if (got.length) store.set('hs-ach', have);
+  return got;
+}
+function renderAch() {
+  const have = loadAch(), n = ACH.filter(a => have[a.id]).length;
+  $('ach-sub').textContent = `${n} / ${ACH.length} こ ゲット！ あそび終わるたびにチェックするよ`;
+  $('achs').innerHTML = ACH.map(a => `<li class="${have[a.id] ? 'got' : ''}"><span class="md">${a.icon}</span><span><b>${a.name}</b>${a.d}</span></li>`).join('');
+}
 function refreshTitle() {
   const best = store.get('hs-best', null), runs = store.get('hs-runs', 0) || 0, clears = store.get('hs-clears', 0) || 0;
   $('best').innerHTML = best
     ? `ベスト <b>${fmtNum(best.score)}</b> 点（${best.clear ? 'クリア' : fmtTime(best.time)}・Lv${best.level}）<br>あそんだ回数 ${runs}回${clears ? `・クリア ${clears}回` : ''}`
     : 'まだ記録なし。まずは1回あそんでみよう！';
+  const have = loadAch();
+  $('b-ach').textContent = `🏅 実績 ${ACH.filter(a => have[a.id]).length} / ${ACH.length}`;
   const n = PATCH_NOTES[0];
   $('patch').innerHTML = `<h3>きょうの更新<span>DAY ${n.day} · ${n.date}</span></h3><p class="pt">${n.title}</p><ul>${n.items.map(s => `<li>${s}</li>`).join('')}</ul>${n.ask ? `<p class="ask">試してほしいこと：${n.ask}</p>` : ''}${PATCH_NOTES.length > 1 ? '<button class="linkbtn" id="b-hist">これまでの更新を見る</button>' : ''}`;
   const hb = $('b-hist'); if (hb) hb.onclick = () => { renderHistory(); show('history'); };
@@ -1522,6 +1582,8 @@ $('b-start').onclick = () => {
 $('b-how').onclick = () => { $('b-how-ok').textContent = 'とじる'; $('b-how-ok').dataset.start = ''; show('how'); };
 $('b-how-ok').onclick = () => { store.set('hs-seen-how', true); if ($('b-how-ok').dataset.start) startGame(); else show('title'); };
 $('b-hist-close').onclick = () => show('title');
+$('b-ach').onclick = () => { renderAch(); show('ach'); };
+$('b-ach-close').onclick = () => show('title');
 $('b-snd').onclick = $('b-snd2').onclick = () => setSound(!Snd.on, true);
 function setVib(on, save) {
   vibOn = on;
@@ -1585,7 +1647,7 @@ function frame(ts) {
    テスト用の窓口（遊びには影響しない）
    ================================================================ */
 window.__game = {
-  name: 'hoshikuzu-survivor', GAME, PATCH_NOTES, UPG, ET,
+  name: 'hoshikuzu-survivor', GAME, PATCH_NOTES, UPG, ET, ACH,
   get scene() { return scene; },
   world: () => G,
   start(seed = 1, holdIt = true) { startGame(seed); hold = holdIt; return true; },
