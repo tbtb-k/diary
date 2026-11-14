@@ -279,8 +279,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 13, date: '2026-11-14' };
+const GAME = { day: 14, date: '2026-11-15' };
 const PATCH_NOTES = [
+  { day: 14, date: '2026-11-15', title: 'ちょっと軽くしたよ！',
+    items: ['光の粒やダメージ数字の後かたづけを軽くして、敵がいっぱいの場面でもカクつきにくくしたよ', 'スマホが重そうなときは、粒の数も自動で減らすようにしたよ'],
+    ask: '後半の敵だらけの場面で、動きがなめらかか感じてみてね！' },
   { day: 13, date: '2026-11-14', title: '「実績」ができたよ！',
     items: ['「1分生きのびる」「ノーダメージ1分」「ボスを倒す」など、実績が10こあるよ', '取れたら結果画面で「実績ゲット！」って出るよ', 'タイトルの「🏅 実績」から、取ったもの・まだのものを見られるよ'],
     ask: 'いくつ取れたか、次に狙いたい実績があるか教えてね！' },
@@ -1070,10 +1073,14 @@ for (const ev of ['pointerup', 'touchend', 'keydown']) addEventListener(ev, () =
    演出（見た目だけ。ゲームの進行には影響しない）
    ================================================================ */
 const FX = { parts: [], nums: [], rings: [], bolts: [], shake: 0, hurt: 0, flash: 0 };
+// 粒の上限。画質が自動で下がったら、粒も減らして軽くする（画質0.5で350個）
+function partMax() { return Math.round(700 * quality); }
+// 毎フレーム新しい配列を作らないよう、その場で詰める
+function keep(a, ok) { let j = 0; for (let i = 0; i < a.length; i++) if (ok(a[i])) a[j++] = a[i]; a.length = j; }
 const motion = reduceMotion ? 0.3 : 1;
 function burst(x, y, color, n, spd, size) {
   if (!G || !G.fxOn) return;
-  for (let i = 0; i < n && FX.parts.length < 700; i++) {
+  for (let i = 0, cap = partMax(); i < n && FX.parts.length < cap; i++) {
     const a = Math.random() * TAU, s = spd * (0.25 + Math.random() * 0.75), life = 0.3 + Math.random() * 0.45;
     FX.parts.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life, max: life, size: size * (0.6 + Math.random() * 0.8), color });
   }
@@ -1086,13 +1093,13 @@ function shake(a) { if (G && G.fxOn) FX.shake = Math.max(FX.shake, a * motion); 
 function stepFx(dt) {
   const k = Math.exp(-dt * 3.2);
   for (const p of FX.parts) { p.life -= dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= k; p.vy *= k; }
-  FX.parts = FX.parts.filter(p => p.life > 0);
+  keep(FX.parts, p => p.life > 0);
   for (const n of FX.nums) { n.life -= dt; n.y -= 34 * dt; }
-  FX.nums = FX.nums.filter(n => n.life > 0);
+  keep(FX.nums, n => n.life > 0);
   for (const r of FX.rings) r.t += dt;
-  FX.rings = FX.rings.filter(r => r.t < r.dur);
+  keep(FX.rings, r => r.t < r.dur);
   for (const b of FX.bolts) b.life -= dt;
-  FX.bolts = FX.bolts.filter(b => b.life > 0);
+  keep(FX.bolts, b => b.life > 0);
   FX.shake *= Math.exp(-dt * 10);
   FX.hurt = Math.max(0, FX.hurt - dt * 2.5);
   FX.flash = Math.max(0, FX.flash - dt * 1.5);
@@ -1100,7 +1107,7 @@ function stepFx(dt) {
   const p = G.player;
   if ((p.mvx || p.mvy) && !G.ending) {
     G.trailT -= dt;
-    if (G.trailT <= 0) { G.trailT = 0.03; FX.parts.push({ x: p.x - p.mvx * 10, y: p.y - p.mvy * 10, vx: -p.mvx * 40 + (Math.random() - 0.5) * 20, vy: -p.mvy * 40 + (Math.random() - 0.5) * 20, life: 0.3, max: 0.3, size: 3, color: '#3ef2ff' }); }
+    if (G.trailT <= 0 && FX.parts.length < partMax()) { G.trailT = 0.03; FX.parts.push({ x: p.x - p.mvx * 10, y: p.y - p.mvy * 10, vx: -p.mvx * 40 + (Math.random() - 0.5) * 20, vy: -p.mvy * 40 + (Math.random() - 0.5) * 20, life: 0.3, max: 0.3, size: 3, color: '#3ef2ff' }); }
   }
 }
 function banner(t, sub, color, jp) {
@@ -1426,7 +1433,7 @@ function hideHint() { $('hint').classList.add('off'); }
 
 function startGame(seed) {
   newGame(seed == null ? (Date.now() ^ (Math.random() * 1e9)) >>> 0 : seed);
-  FX.parts = []; FX.nums = []; FX.rings = []; FX.bolts = []; FX.shake = FX.hurt = FX.flash = 0;
+  FX.parts.length = FX.nums.length = FX.rings.length = FX.bolts.length = 0; FX.shake = FX.hurt = FX.flash = 0;
   cam.x = 0; cam.y = 0; acc = 0; hold = false;
   input.active = false; input.dx = input.dy = 0;
   scene = 'play'; show(null); el.hud.hidden = false; el.bossbar.hidden = true;
@@ -1657,7 +1664,7 @@ window.__game = {
     const p = G.player;
     return { scene, t: +G.t.toFixed(2), hp: Math.round(p.hp), maxHp: p.maxHp, x: Math.round(p.x), y: Math.round(p.y), level: G.level, kills: G.kills, booms: G.booms,
       arrows: arrowCount, enemies: G.enemies.length, gems: G.gems.length, weapons: Object.assign({}, G.weapons), passives: Object.assign({}, G.passives),
-      evolved: pulseEvolved(), boss: G.boss ? Math.max(0, Math.round(G.boss.hp)) : null, clear: G.clear, over: G.over, done: !!G.done, score: calcScore(), fps: Math.round(fpsAvg), quality };
+      evolved: pulseEvolved(), boss: G.boss ? Math.max(0, Math.round(G.boss.hp)) : null, clear: G.clear, over: G.over, done: !!G.done, score: calcScore(), fps: Math.round(fpsAvg), quality, parts: FX.parts.length, partMax: partMax() };
   },
   // 画面を描かずに高速で進める。ctrl(G) は [x, y] の移動入力を返す関数、chooser(ids, G) は選ぶ番号を返す関数
   sim(seconds, ctrl, chooser) {
@@ -1684,6 +1691,10 @@ window.__game = {
     spawn(type, n = 1) { for (let i = 0; i < n; i++) spawnEnemy(type); },
     give(id, lv = 1) { if (UPG[id].kind === 'w') G.weapons[id] = lv; else G.passives[id] = lv; calcStats(); },
     god(on = true) { G.god = on; },
+    burst(n = 100) { burst(G.player.x, G.player.y, '#3ef2ff', n, 200, 3); return FX.parts.length; },
+    stepFx(sec = 1) { for (let i = 0; i < Math.round(sec * 60); i++) stepFx(1 / 60); return FX.parts.length; },
+    fxArrays() { return [FX.parts, FX.nums, FX.rings, FX.bolts]; },
+    setQuality(q) { quality = q; resize(); return quality; },
     gems(n = 100) { for (let i = 0; i < n; i++) dropGem(G.player.x + (Math.random() - 0.5) * 600, G.player.y + (Math.random() - 0.5) * 900, 1); },
   },
 };

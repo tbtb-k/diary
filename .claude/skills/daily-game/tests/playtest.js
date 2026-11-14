@@ -181,6 +181,18 @@ let browser;
     // ほしくずをひろう範囲（Day 11：72→80）
     const mr = await page.evaluate(() => window.__game.world().st.magnetR);
     check('ほしくずをひろう範囲が 80 ある（引力フィールドなし）', Math.abs(mr - 80) < 0.01, `magnetR=${mr}`);
+    // 粒の上限と後かたづけ（Day 14：画質が下がると上限も下がる／配列を作り直さない）
+    const fx = await page.evaluate(() => {
+      const d = window.__game.debug, before = d.fxArrays();
+      const full = d.burst(2000), cap1 = window.__game.state().partMax;
+      d.setQuality(0.5); d.stepFx(1.5);
+      const low = d.burst(2000), cap2 = window.__game.state().partMax;
+      const left = d.stepFx(1.5);
+      d.setQuality(1);
+      const same = d.fxArrays().every((a, i) => a === before[i]);
+      return { full, cap1, low, cap2, left, same };
+    });
+    check('光の粒は上限を超えず、画質が下がると上限も下がり、時間で消える', fx.full <= fx.cap1 && fx.cap1 === 700 && fx.low <= fx.cap2 && fx.cap2 === 350 && fx.left < 20 && fx.same, `上限 ${fx.full}/${fx.cap1} → ${fx.low}/${fx.cap2}、1.5秒後 ${fx.left}、配列そのまま=${fx.same}`);
     // ボス
     await page.evaluate(() => { window.__game.debug.god(true); window.__game.debug.give('nova', 3); window.__game.debug.setTime(299); });
     await page.waitForFunction(() => window.__game.state().boss !== null, null, { timeout: 5000 }).catch(() => {});
