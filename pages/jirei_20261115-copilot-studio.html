@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Kantar）。2026年11月15日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>4,000件の人事資料を6週間で400本の規程に。Kantar は10のエージェントで整理しました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月15日／調査・データ（Kantar）・人事の規程整理</p>
+
+  <h1>4,000件の人事資料を6週間で400本の規程に。Kantar は10のエージェントで整理しました</h1>
+
+  <div class="lead">
+    <p>調査会社の Kantar の人事部門は、60か国の社員の質問に答えるエージェントを作りたいのに、元になる約4,000件の資料が多言語でばらばらでした。</p>
+    <p>そこで Copilot Studio で、資料さがし・翻訳・重複チェックなどを1つずつ受け持つ10のエージェントを作り、資料の整理そのものを AI に手伝わせました。</p>
+    <p>その結果、約4,000件の資料を6週間で400本の規程文書にまとめたと公表しています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>「社内の質問に答える AI を作ろう」と決めたものの、元になる規程やマニュアルを集めてみると、古い版と新しい版が混ざり、書式もばらばら。国や部署ごとに言葉も違う。AI を作る前の「資料の整理」で手が止まってしまう。そんな経験は多くの職場にあります。</p>
+  <p>Kantar は、英国に本社を置くデータと調査の会社です。人事を担う People Team（人事部門）は、60か国の社員からの人事の質問に答える「HR アドバイザリーエージェント」を作ろうとしていました。ところが、その前に多言語の資料約4,000件を整理する必要がありました。データに目印をつけ、書式をそろえ、内容を確かめる作業は、手作業が多く、複雑で、時間がかかるものでした。担当のリーダーは「こういう仕事は誰もやりたくない。本当に必要だったのは、AI の準備を手伝ってくれる AI でした」と話しています（意訳）。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>使ったのは Copilot Studio（プログラムをほとんど書かずに、社内向けの AI エージェントを作れる Microsoft のツール）です。大きな作業を小さな手順に分け、手順ごとに担当のエージェントを1つずつ作りました。出典では「10のエージェントのチーム」と紹介されています。</p>
+  <p>作ったのは、人事部門で AI の取り組みを率いる担当者（AI Solution Lead）です。Microsoft 365 Copilot を使ってきた経験を生かしました。各エージェントは社内の資料をもとに答えるように作られ、社員がすぐ使えるよう Microsoft Teams（社内のチャットと会議のツール）に公開されています。Kantar では Microsoft 365 Copilot を全社員に配っています。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="資料整理エージェントチームの流れ">
+      <li><div class="box">関係する資料を<br>さがす</div></li>
+      <li><div class="box">英語に<br>翻訳する</div></li>
+      <li><div class="box">重複を見つけ<br>ひな形を作る</div></li>
+      <li><div class="box">法令の文書と<br>照らし合わせる</div></li>
+      <li><div class="box">人事の質問に<br>答えるAIへ</div></li>
+    </ol>
+    <figcaption>資料整理エージェントチームの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>大きな「資料整理」の仕事を、小さく扱いやすい手順に分けました。</li>
+    <li>手順ごとに1つずつエージェントを作りました。たとえば、社内から関係する資料をさがして分類のために集める係、資料を英語に訳す係、重複している規程を見つけて書式の整った最初の版を作る係です。</li>
+    <li>規程を法令などの文書と照らし合わせて確かめる係のエージェントも用意しました。</li>
+    <li>整理できた規程文書をもとに、60か国の社員の質問に答える HR アドバイザリーエージェントを作りました。</li>
+  </ol>
+  <p class="src-note">※ 出典で役割が説明されているのは10のうち一部のエージェントだけです。残りのエージェントの中身や、Kantar が実際に使った設定は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>多言語の資料約4,000件に、人が目印をつけ、書式をそろえ、内容を確かめる必要がありました。手作業が多く、時間のかかる仕事でした。</p></div>
+    <div class="after"><h3>いま</h3><p>手順ごとのエージェントが整理を手伝い、資料は6週間で400本の規程文書にまとまりました。それをもとに、60か国の質問に答える人事のエージェントが動いています。</p></div>
+  </div>
+  <p>「約4,000件を6週間で400本に」は Kantar が公表した数字です。手作業で行った場合にどれくらいかかるかは公表されていません。人事への問い合わせについて、最高人事責任者（CPO）は「大きく減ると見込んでいる」と話しており、これは実績ではなく見込みです。人事部門は浮いた時間を、人材の定着と育成、職場の計画、採用候補者さがし、採用担当の管理職との関係づくりに向けようとしています。</p>
+  <p>ほかの社員も自分でエージェントを作り始めました。採用担当者は「求人票づくり」と「資料さがし」の小さなエージェントから始め、国をまたいで採用の手順をそろえ、速くできるようにしました（時間の数字は公表されていません）。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>「AI に答えさせたいけれど、元の資料が散らばっている」テーマを1つ選び、関係する資料の置き場所を書き出します。</li>
+    <li>整理の作業を「さがす・訳す・重複を消す・確かめる」のように小さな手順に分け、どれを AI に任せるか決めます。</li>
+    <li>まず1つの手順（たとえば重複さがし）だけのエージェントを作り、少ない資料で結果を人が確かめます。</li>
+  </ol>
+  <p>準備するもの：対象となる資料の一覧と、正しい最新版を判断できる担当者です。Copilot Studio を使えるか、Teams に公開できるかは、ライセンスや社内の設定で変わります。最初は情報システム部門に相談してください。</p>
+  <p class="src-note">※ 04 の3ステップは、Copilot Studio の一般的な作り方で補っています。Kantar が実際に使った設定や指示文は公開されていません。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>AI の答えは、元の資料の質で決まります</strong>
+    <p>担当リーダーは「技術は、その土台になる中身と同じくらいの良さにしかならないと早い段階で気づいた」と話しています（意訳）。だからこそ、質問に答える AI を作る前に、資料の整理から取りかかりました。資料が多言語だったため、先に英語へ訳す手順も必要でした。</p>
+  </div>
+  <p>社内で真似するときは、AI に読ませてよい資料の範囲（アクセス権）を先に決めましょう。人事の資料には個人情報や機密が含まれることがあります。また、AI はもっともらしい間違い（ハルシネーション）をすることがあります。どの版を「正」とするかや、法令との照らし合わせの結果は、最後に人が確かめてください。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、いきなり「答える AI」を作らず、「AI の準備を手伝う AI」から始めたことです。大きな仕事を小さな手順に分け、1つの手順に1つのエージェントを当てる考え方は、資料整理以外にも使えます。最高人事責任者は、Copilot Studio のおかげで、技術者でなくても業務に詳しい人がエージェントの流れを作れるようになったと話しています（意訳）。</p>
+  <p>自分の職場に置き換えると、社内 FAQ を作る前の規程の棚卸し、部署ごとに版がばらばらな手順書の統合、海外拠点の資料の翻訳と整理などが候補になりそうです。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「Kantar reimagines data prep, puts Copilot Studio agents to work readying data for AI」（2025年11月18日公開）<br>
+    <a href="https://www.microsoft.com/customers/story/25674-kantar-microsoft-copilot-studio">https://www.microsoft.com/customers/story/25674-kantar-microsoft-copilot-studio</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月15日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
