@@ -178,6 +178,21 @@ let browser;
     for (let i = 0; i < 12 && eb < 4; i++) { await wait(150); eb = await page.evaluate(() => window.__game.world().bullets.filter(b => b.evo).length); }
     check('進化後は金色の弾が出る', eb >= 4);
     await page.evaluate(() => { const g = window.__game.world(); g.enemies.forEach(e => { e.dead = true; }); });
+    // 進化：オービットLv6＋推進エンジンで「ギャラクシー」（Day 15）。玉が4→6個、輪の上の敵に当たる
+    const oe = await page.evaluate(() => {
+      const d = window.__game.debug, g = window.__game.world();
+      const th = g.passives.thrust || 0; d.give('thrust', 0); d.give('orbit', 6); const s0 = window.__game.state();
+      // 前の場面で推進エンジンを選んでいることがあるので、いったん0にしてから確かめる
+      d.give('thrust', Math.max(1, th)); const s1 = window.__game.state();
+      return { e0: s0.orbEvolved, n0: s0.orbs, e1: s1.orbEvolved, n1: s1.orbs, other: s1.evolved };
+    });
+    check('オービットLv6＋推進エンジンで進化する（推進なしでは進化しない）', oe.e0 === false && oe.e1 === true && oe.n0 === 4 && oe.n1 === 6 && oe.other === true, `玉 ${oe.n0} → ${oe.n1}`);
+    // 輪の上に硬い敵を置き、進化した玉が当たるかを数える（他の武器で倒れないよう、HPを大きくする）
+    await page.evaluate(() => { const d = window.__game.debug, g = window.__game.world(); d.spawn('brute', 1); const e = g.enemies[g.enemies.length - 1]; e.hp = e.maxHp = 1e6; e.x = g.player.x + 54 * 1.3 * 1.15; e.y = g.player.y; e.speed = 0; e.kx = e.ky = 0; window.__orbE = e; });
+    await wait(700);
+    await shot(page, '04c_galaxy_390');
+    const oh = await page.evaluate(() => { const e = window.__orbE; const hit = e.hp < e.maxHp; e.dead = true; return hit; });
+    check('進化したオービットの玉が、広がった輪の上の敵に当たる', oh);
     // ほしくずをひろう範囲（Day 11：72→80）
     const mr = await page.evaluate(() => window.__game.world().st.magnetR);
     check('ほしくずをひろう範囲が 80 ある（引力フィールドなし）', Math.abs(mr - 80) < 0.01, `magnetR=${mr}`);
