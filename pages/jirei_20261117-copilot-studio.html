@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（CSX）。2026年11月17日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>何週間もかかる予定だった資料の取り込みが数時間に。CSX は貨物の問い合わせ窓口にAIを置きました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月17日／鉄道貨物（CSX）・お客さま窓口</p>
+
+  <h1>何週間もかかる予定だった資料の取り込みが数時間に。CSX は貨物の問い合わせ窓口にAIを置きました</h1>
+
+  <div class="lead">
+    <p>米国の貨物鉄道会社 CSX は、荷主向けのWebサイト「ShipCSX」で、お客さまがもっと早く情報を見つけ、手続きを済ませられるようにしたいと考えていました。</p>
+    <p>そこで Copilot Studio で、よくある質問に答え、貨物の追跡や予定の確認もできる AI アシスタント「Chessie for ShipCSX」を作りました。</p>
+    <p>FAQ と研修資料の取り込みは数時間で終わり、動かし始めて45日で1,000社（人）以上のお客さまが4,000回を超える会話で使ったと公表しています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>お客さま向けのサイトに「よくある質問」を載せても、探しきれずに電話やメールが来る。AI で答えられるようにしたいけれど、社内の資料を AI に読ませる仕組みづくりから始めると、それだけで何週間もかかってしまう。そんな悩みは、問い合わせ窓口を持つ多くの職場にあります。</p>
+  <p>CSX は、年間340万両分以上の貨物を運ぶ鉄道会社です。荷主が貨物の追跡や出荷の管理に使う ShipCSX には、毎日7,000社（人）以上のお客さまが訪れます。当初は、FAQ と研修資料を RAG（AI が答える前に社内資料を検索して参照する仕組み）の一般的な方法で読み込む計画でした。ただ、資料を細かく分けて検索用に変換するプログラムや、業務担当者向けのアップロード画面を自前で作る必要があり、完成まで「数週間以上」かかる見込みでした。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>使ったのは Copilot Studio（プログラムをほとんど書かずに、AI エージェントを作れる Microsoft のツール）です。お客さまと話す入り口の部分を Copilot Studio で作り、リアルタイムの運行データを取りに行く裏側の部分は Microsoft Foundry（より本格的な AI を開発するための Microsoft のサービス）で作りました。</p>
+  <p>FAQ と研修資料は、Copilot Studio にもともとある「ファイルのアップロード」機能で知識として登録しました。開発の経験がない社員でも資料を追加できます。全体のとりまとめ役の「スーパーバイザーエージェント」は、質問をほかのエージェントに振り分けます。貨物の状況を答える前には、問い合わせた人がその貨車の担当として登録されているかを確かめます。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Chessie for ShipCSX が質問に答える流れ">
+      <li><div class="box">お客さまが<br>ふつうの言葉で質問</div></li>
+      <li><div class="box">とりまとめ役が<br>質問を振り分け</div></li>
+      <li><div class="box">担当の確認や<br>データの取得</div></li>
+      <li><div class="box">答えや手続きを<br>返す</div></li>
+    </ol>
+    <figcaption>Chessie for ShipCSX が質問に答える流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>FAQ と研修資料を、Copilot Studio のファイルアップロードで知識として登録しました。</li>
+    <li>貨物の追跡、予定の確認、Salesforce（顧客管理のシステム）での問い合わせ登録などは、Foundry で作ったエージェントが社内のシステムからデータを取って答えるようにしました。</li>
+    <li>とりまとめ役のエージェントが、質問の振り分けと、問い合わせた人が対象の貨車の担当かどうかの確認を受け持ちました。</li>
+    <li>使われ方の記録を Power BI（データをグラフにして見るツール）にまとめ、よく聞かれる話題が見つかったら、すぐに新しい記事を追加する運用にしました。</li>
+  </ol>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>資料を AI に読ませる仕組みを自前で作る計画で、完成まで数週間以上かかる見込みでした。お客さまは、必要な情報をサイトの中で自分で探す必要がありました。</p></div>
+    <div class="after"><h3>いま</h3><p>必要な資料の取り込みは数時間で終わりました。お客さまはふつうの言葉で質問し、答えや追跡の結果をその場で受け取れます。</p></div>
+  </div>
+  <p>「45日で1,000社（人）以上、4,000回を超える会話」は CSX が公表した数字です。担当者は「お客さまが何度も戻ってきて使ってくれている。体験を気に入ってくれている証拠だ」と話しています（意訳）。電話やメールの問い合わせがどれだけ減ったかは公表されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>社内や社外からよく聞かれる質問を10個ほど書き出し、その答えが載っている FAQ やマニュアルを集めます。</li>
+    <li>Copilot Studio で小さなエージェントを作り、集めた資料をアップロードして知識に登録します。</li>
+    <li>まず社内の数人に試してもらい、答えられなかった質問を記録して、資料を足していきます。</li>
+  </ol>
+  <p>準備するもの：公開してよい FAQ やマニュアルと、答えの正しさを確かめられる担当者です。Copilot Studio を使えるか、社外のサイトに置けるかは、ライセンスや社内の設定で変わります。最初は情報システム部門に相談してください。</p>
+  <p class="src-note">※ 04 の3ステップは、Copilot Studio の一般的な作り方で補っています。CSX が実際に使った設定は公開されていません。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>大事な情報は「誰に答えてよいか」を確かめてから返します</strong>
+    <p>CSX では、貨物の状況を答える前に、問い合わせた人がその貨車の担当として登録されているかを確かめる手順を入れています。開発は、Power Platform の管理チーム（CoE：社内の使い方を整える専門チーム）のルールのもとで進め、情報の持ち出しを防ぐ設定（DLP）や監視の仕組みも使っています。</p>
+  </div>
+  <p>社内で真似するときは、AI に読ませる資料に社外秘が混ざっていないか、最初に確かめましょう。お客さま向けに置く場合は特に注意が必要です。また、AI はもっともらしい間違い（ハルシネーション）をすることがあります。料金や契約など大事な答えは、資料の更新とあわせて人が定期的に確かめてください。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、資料を読ませる仕組みを一から作らず、ツールにもともとある機能で「まず動かした」ことです。そのうえで、よく聞かれる話題を記録から見つけ、資料を足し続けています。小さく始めて使われ方を見ながら育てる進め方は、どんな窓口にも使えます。CSX はこのあと、鉄道の現場で働く社員向けに、運行ルールや時刻表に答えるエージェントも計画しています。</p>
+  <p>自分の職場に置き換えると、取引先からの納期や手続きの問い合わせ、社内の経費や福利厚生の質問、新人が何度も聞く業務手順などが候補になりそうです。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「CSX boosts supply chain agility using Microsoft Copilot Studio and Microsoft Foundry」（2025年6月23日公開）<br>
+    <a href="https://www.microsoft.com/en/customers/story/24556-csx-microsoft-copilot-studio">https://www.microsoft.com/en/customers/story/24556-csx-microsoft-copilot-studio</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月17日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
