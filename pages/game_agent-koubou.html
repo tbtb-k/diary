@@ -71,6 +71,14 @@ button{cursor:pointer}
 .btn.primary:hover{background:var(--accent-h)}
 .btn.second{background:var(--card); color:var(--accent); border-color:var(--line-2)}
 .btn.second:hover{border-color:var(--accent)}
+.btn.danger{background:var(--ng); color:var(--card)}
+.btn.danger:hover{filter:brightness(.92)}
+.t-tools{display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-top:16px; padding-top:16px; border-top:1px solid var(--line)}
+.t-tools .btn{min-height:44px; padding:8px 16px; font-size:15px}
+.flash{margin-top:14px; padding:10px 14px; border-radius:10px; background:var(--ok-bg); color:var(--ok); font-size:15px; font-weight:700}
+.dotlist{display:grid; gap:4px; font-size:16px; line-height:1.7}
+.dotlist li::before{content:"・"}
+.reset-row{margin-top:14px; text-align:right}
 .btn.big{min-height:60px; font-size:19px; padding:14px 34px}
 .btn[disabled]{opacity:.45; cursor:not-allowed}
 .link{border:0; background:none; padding:6px 2px; color:var(--accent); font-size:15px; text-decoration:underline; text-underline-offset:3px}
@@ -886,7 +894,7 @@ const KEY = 'agent-koubou-v1';
 const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { return null; } };
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(prog)); } catch (e) {} };
 let prog = Object.assign({stars:{}, open:1, name:''}, load() || {});
-const S = {view:'title', st:null, cfg:null, step:'brief', runs:0, res:[], bonus:null, bonusSeen:false, running:false, ff:false, dirty:false, log:[], lastPass:false, prevRobot:null, clearCfg:null};
+const S = {view:'title', flash:'', st:null, cfg:null, step:'brief', runs:0, res:[], bonus:null, bonusSeen:false, running:false, ff:false, dirty:false, log:[], lastPass:false, prevRobot:null, clearCfg:null};
 
 const $ = s => document.querySelector(s);
 const app = $('#app'), layer = $('#layer');
@@ -973,6 +981,7 @@ function introRow(){
 }
 function renderTitle(){
   S.view = 'title'; S.st = null;
+  const flash = S.flash; S.flash = '';
   const cleared = ST.filter(st => starsOf(st.n)[0]).length, total = ST.reduce((a, st) => a + starCount(st.n), 0);
   const next = Math.min(prog.open, 7);
   app.innerHTML = `
@@ -987,6 +996,7 @@ function renderTitle(){
           : '<button class="btn primary big" type="button" data-act="intro">はじめに（約5分）から始める</button><button class="btn second big" type="button" data-act="stage" data-id="1">依頼1から始める</button>'}
         ${cleared >= 7 ? '<button class="btn second big" type="button" data-act="cert">修了証を見る</button>' : ''}
       </div>
+      ${flash ? `<p class="flash" role="status">${esc(flash)}</p>` : ''}
       <p class="t-note">はじめての人は「はじめに」から。1つの依頼は2〜3分で、講義では依頼1・2（約10分）をやります。<br><button class="link" type="button" data-act="gloss">ことば図鑑を開く</button></p>
     </div>
     <div class="t-robot">${robotSVG(FULL, {assemble:true, label:'指示・知識・ツール・トピックがそろった、完成したエージェント'})}</div>
@@ -1004,7 +1014,10 @@ function renderTitle(){
     <h2>依頼一覧</h2>
     <p class="muted">${cleared}/7 クリア ・ ★ ${total}/21。進み具合はこのブラウザに保存されます。</p>
     <ul class="reqlist">${introRow()}${ST.map(reqRow).join('')}</ul>
-    ${prog.open < 7 ? '<p style="margin-top:10px"><button class="link" type="button" data-act="unlockall">講師・復習用：すべての依頼を開ける</button></p>' : ''}
+    <div class="t-tools">
+      <button class="btn second" type="button" data-act="resetask">記録を消して最初に戻す</button>
+      ${prog.open < 7 ? '<button class="link" type="button" data-act="unlockall">講師・復習用：すべての依頼を開ける</button>' : ''}
+    </div>
   </section>
   <footer class="t-foot gut">
     <p>Copilot Studio（2026年11月時点）の考え方をもとに、画面や動きをゲーム用に簡単にしています。実際の画面では「知識」は「ナレッジ」と表示されます。</p>
@@ -1232,7 +1245,8 @@ function fixHTML(){
   const order = st.key === 'final' ? ['know','tool','instr'] : st.edit;
   return `<section class="card a-points" id="points"><h2>直すポイント</h2>${points}${S.dirty ? '<p class="dirty">設定を変えました。下のボタンでテストして、確かめましょう。</p>' : ''}</section>
     <section class="card edit a-edit"><h2><span class="pill">ここを直す</span>${esc(EXTRA[st.n].area)}</h2>
-      <div id="editArea">${order.map(editHTML).join('')}</div></section>
+      <div id="editArea">${order.map(editHTML).join('')}</div>
+      <p class="reset-row"><button class="link" type="button" data-act="cfgreset">設定を、この依頼の最初の状態に戻す</button></p></section>
     <section class="card agent a-agent" id="agentCard">${agentHTML('いまのエージェント')}</section>`;
 }
 function editHTML(key){
@@ -1346,14 +1360,26 @@ function showCert(){
     <ol class="cert-ls">${ST.map(st => `<li><span>${st.n}</span>${esc(st.lesson.t)}</li>`).join('')}</ol>
     <p class="cert-date">${date}</p>
   </div>
-  <div class="m-in" style="padding-top:0"><div class="m-btns"><button class="btn second" type="button" data-act="reset">記録を消して最初から</button><button class="btn primary" type="button" data-act="home">タイトルへ</button></div></div>
+  <div class="m-in" style="padding-top:0"><div class="m-btns"><button class="btn second" type="button" data-act="resetask">記録を消して最初に戻す</button><button class="btn primary" type="button" data-act="home">タイトルへ</button></div></div>
   </div>`);
 }
 function showMap(){
   openModal(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="mapT"><div class="m-in">
     <h2 class="m-h" id="mapT">依頼一覧</h2>
+    ${S.view === 'play' || S.view === 'intro' ? `<button class="btn second" type="button" data-act="restart">${S.view === 'intro' ? '「はじめに」を最初からやり直す' : `いまの依頼${S.st.n}を最初からやり直す`}</button>` : ''}
     <ul class="reqlist" style="margin-top:0">${introRow()}${ST.map(reqRow).join('')}</ul>
     <div class="m-btns"><button class="btn second" type="button" data-act="home">タイトルへ</button><button class="btn second" type="button" data-act="close">閉じる</button></div>
+    <p style="text-align:center"><button class="link" type="button" data-act="resetask">記録を消して最初に戻す</button></p>
+  </div></div>`);
+}
+function showResetConfirm(){
+  if (S.running || S.ibusy) return;
+  openModal(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="rsT"><div class="m-in">
+    <h2 class="m-h" id="rsT">最初の状態に戻しますか？</h2>
+    <p>このブラウザに保存されている、次の記録をすべて消します。</p>
+    <ul class="dotlist"><li>クリアした依頼と★</li><li>「はじめに」を見た記録</li><li>修了証に入れた名前</li></ul>
+    <p class="muted">消した記録は、元に戻せません。</p>
+    <div class="m-btns"><button class="btn second" type="button" data-act="close">やめる</button><button class="btn danger" type="button" data-act="resetdo">消して最初に戻す</button></div>
   </div></div>`);
 }
 let lastFocus = null;
@@ -1623,10 +1649,13 @@ const ACT = {
   },
   retry(){ closeModal(); go('fix'); },
   cert(){ showCert(); },
-  reset(id, b){
-    if (b.dataset.armed){ prog = {stars:{}, open:1, name:''}; save(); closeModal(); renderTitle(); scrollTo(0, 0); return; }
-    b.dataset.armed = '1'; b.textContent = 'もう一度押すと、記録を消します';
+  resetask(){ showResetConfirm(); },
+  resetdo(){
+    prog = {stars:{}, open:1, name:'', intro:false}; save();
+    closeModal(); S.flash = '記録を消して、最初の状態に戻しました。'; renderTitle(); window.scrollTo({top:0, left:0, behavior:'instant'});
   },
+  restart(){ if (S.running || S.ibusy) return; closeModal(); if (S.view === 'intro') startIntro(); else if (S.view === 'play') startStage(S.st.n); },
+  cfgreset(){ if (S.running || S.view !== 'play') return; S.cfg = clone(S.st.start); changed(true); },
 };
 function keepPos(fn){ const y = scrollY; fn(); window.scrollTo({top:y, left:0, behavior:'instant'}); }
 function move(id, d){ if (S.running) return; const l = S.cfg.topic, i = l.indexOf(id), j = i + d; if (i < 0 || j < 0 || j >= l.length) return; [l[i], l[j]] = [l[j], l[i]]; changed(true); }
