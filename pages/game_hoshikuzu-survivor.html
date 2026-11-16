@@ -279,8 +279,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 15, date: '2026-11-16' };
+const GAME = { day: 16, date: '2026-11-17' };
 const PATCH_NOTES = [
+  { day: 16, date: '2026-11-17', title: 'ほしくずが音楽になったよ！',
+    items: ['ほしくずをつづけて拾うと「ドレミソラ」の音階で音が上がっていくよ', '吸い寄せられるほしくずに、光のしっぽが付いたよ', '10個つづけて拾うたびに、キラッと光ってはじけるよ'],
+    ask: '音ONで、ほしくずをまとめて吸い込んだときの気持ちよさを感じてみてね！' },
   { day: 15, date: '2026-11-16', title: 'オービットも「進化」するよ！',
     items: ['オービットをLv6にして、推進エンジンも持っていると「ギャラクシー」に進化！', '光の玉が6個に増えて、輪が広がり、敵をはじく勢いも強くなるよ'],
     ask: 'パルス以外のビルドでも、後半「強くなった！」って感じたか教えてね！' },
@@ -433,7 +436,7 @@ function newGame(seed) {
     enemies: [], bullets: [], ebullets: [], gems: [], items: [],
     spawnAcc: 0, nextRush: 60, elites: [150, 225], boss: null,
     pendingLevels: 0, rerolls: 2, ending: 0, done: false, over: false, clear: false, slow: 0, freeze: 0,
-    hitT: 0, noHit: 0, gemRR: 0, gemCombo: 0, gemComboT: 0, spawnR: spawnRadius(), fxOn: true, god: false, trailT: 0,
+    hitT: 0, noHit: 0, gemRR: 0, gemCombo: 0, gemComboT: 0, gemChains: 0, spawnR: spawnRadius(), fxOn: true, god: false, trailT: 0,
   };
   calcStats();
 }
@@ -861,7 +864,8 @@ function stepGems(dt) {
     const d = Math.sqrt(d2) || 1;
     gm.ms += dt * 900;
     const sp = Math.min(900, 200 + gm.ms);
-    gm.x += dx / d * sp * dt; gm.y += dy / d * sp * dt;
+    gm.vx = dx / d * sp; gm.vy = dy / d * sp;
+    gm.x += gm.vx * dt; gm.y += gm.vy * dt;
     if (d < p.r + 8) { gm.dead = true; collectXp(gm.v); }
   }
   compact(g.gems);
@@ -871,6 +875,12 @@ function collectXp(v) {
   g.xp += v;
   g.gemCombo++; g.gemComboT = 0.6;
   Snd.play('gem', g.gemCombo);
+  // 10個つづけて拾うごとに、キラッと鳴って自機から光がはじける
+  if (g.gemCombo % 10 === 0) {
+    g.gemChains++; Snd.play('chain');
+    burst(g.player.x, g.player.y, '#3ef2ff', 10, 150, 2.4);
+    if (g.fxOn) FX.rings.push({ x: g.player.x, y: g.player.y, r: 12, max: 70, t: 0, dur: 0.35, color: '#3ef2ff' });
+  }
   while (g.xp >= g.xpNeed) { g.xp -= g.xpNeed; g.level++; g.xpNeed = xpNeed(g.level); g.pendingLevels++; }
 }
 function dropItem(x, y, type) { G.items.push({ x, y, type, life: 30, dead: false }); }
@@ -1048,7 +1058,8 @@ const Snd = {
         case 'shoot': this.tone(1300, 0.06, 'triangle', 0.022, 700); break;
         case 'hit': this.noise(0.04, 0.045, 2600); break;
         case 'kill': this.tone(440, 0.09, 'sine', 0.06, 110); break;
-        case 'gem': this.tone(880 + Math.min(arg || 0, 24) * 38, 0.07, 'sine', 0.04); break;
+        case 'gem': this.tone(gemFreq(arg || 1), 0.08, 'sine', 0.045); break;
+        case 'chain': this.tone(gemFreq(16), 0.16, 'triangle', 0.05); this.tone(gemFreq(18), 0.2, 'sine', 0.035, 0, 0.05); break;
         case 'level': [523, 659, 784, 1047].forEach((f, i) => this.tone(f, 0.2, 'triangle', 0.09, 0, i * 0.07)); break;
         case 'hurt': this.tone(190, 0.28, 'sawtooth', 0.1, 55); this.noise(0.15, 0.1, 420); break;
         case 'nova': this.noise(0.35, 0.08, 700); this.tone(170, 0.3, 'sine', 0.11, 60); break;
@@ -1069,6 +1080,12 @@ const Snd = {
     } catch (_) { }
   },
 };
+// ほしくずの音：つづけて拾うほど「ドレミソラ」の音階で上がる（2オクターブで頭打ち）
+const PENTA = [0, 2, 4, 7, 9];
+function gemFreq(c) {
+  const i = Math.min(Math.max(1, c), 11) - 1;
+  return 659.25 * Math.pow(2, (PENTA[i % 5] + 12 * Math.floor(i / 5)) / 12);
+}
 function setSound(on, save) {
   Snd.on = on;
   $('b-snd').textContent = $('b-snd2').textContent = '音：' + (on ? 'ON' : 'OFF');
@@ -1285,6 +1302,20 @@ function drawWorld() {
   }
   ctx.globalAlpha = 1;
   // ほしくず
+  // 吸い寄せられているほしくずの光の尾（色ごとにまとめて描く）
+  if (g.fxOn) {
+    ctx.lineCap = 'round'; ctx.globalAlpha = 0.55;
+    for (const [col, lw, lo, hi] of [['#3ef2ff', 2.2, 0, 5], ['#5dff9b', 2.8, 5, 25], ['#ff4fb0', 3.4, 25, Infinity]]) {
+      ctx.beginPath(); let any = false;
+      for (const gm of g.gems) {
+        if (!gm.mag || !gm.vx || gm.v < lo || gm.v >= hi || !inView(gm.x, gm.y)) continue;
+        const k = Math.min(0.035, 26 / (Math.hypot(gm.vx, gm.vy) || 1));
+        ctx.moveTo(gm.x, gm.y); ctx.lineTo(gm.x - gm.vx * k, gm.y - gm.vy * k); any = true;
+      }
+      if (any) { ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.stroke(); }
+    }
+    ctx.globalAlpha = 1;
+  }
   for (const gm of g.gems) { if (!inView(gm.x, gm.y)) continue; drawSpr(gm.v >= 25 ? SPR.gem25 : gm.v >= 5 ? SPR.gem5 : SPR.gem1, gm.x, gm.y, 0); }
   // アイテム
   ctx.globalCompositeOperation = 'source-over';
@@ -1672,7 +1703,7 @@ window.__game = {
     const p = G.player;
     return { scene, t: +G.t.toFixed(2), hp: Math.round(p.hp), maxHp: p.maxHp, x: Math.round(p.x), y: Math.round(p.y), level: G.level, kills: G.kills, booms: G.booms,
       arrows: arrowCount, enemies: G.enemies.length, gems: G.gems.length, weapons: Object.assign({}, G.weapons), passives: Object.assign({}, G.passives),
-      evolved: pulseEvolved(), orbEvolved: orbitEvolved(), orbs: G.weapons.orbit ? orbitShape(G.weapons.orbit).n : 0, boss: G.boss ? Math.max(0, Math.round(G.boss.hp)) : null, clear: G.clear, over: G.over, done: !!G.done, score: calcScore(), fps: Math.round(fpsAvg), quality, parts: FX.parts.length, partMax: partMax() };
+      evolved: pulseEvolved(), orbEvolved: orbitEvolved(), orbs: G.weapons.orbit ? orbitShape(G.weapons.orbit).n : 0, gemCombo: G.gemCombo, gemChains: G.gemChains, boss: G.boss ? Math.max(0, Math.round(G.boss.hp)) : null, clear: G.clear, over: G.over, done: !!G.done, score: calcScore(), fps: Math.round(fpsAvg), quality, parts: FX.parts.length, partMax: partMax() };
   },
   // 画面を描かずに高速で進める。ctrl(G) は [x, y] の移動入力を返す関数、chooser(ids, G) は選ぶ番号を返す関数
   sim(seconds, ctrl, chooser) {
@@ -1693,6 +1724,8 @@ window.__game = {
   },
   debug: {
     addXp(n) { collectXp(n); },
+    gemFreq(c) { return gemFreq(c); },
+    trails() { return G.gems.filter(gm => gm.mag && gm.vx).length; },
     hurt(n) { G.player.inv = 0; hurt(n); },
     setTime(t) { G.t = t; G.nextRush = Math.ceil((t + 0.01) / 60) * 60; G.elites = G.elites.filter(x => x > t); },
     killOne(type) { const e = G.enemies.find(o => o.type === type && !o.dead); if (e) kill(e); return !!e; },
