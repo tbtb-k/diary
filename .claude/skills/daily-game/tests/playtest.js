@@ -196,6 +196,22 @@ let browser;
     // ほしくずをひろう範囲（Day 11：72→80）
     const mr = await page.evaluate(() => window.__game.world().st.magnetR);
     check('ほしくずをひろう範囲が 80 ある（引力フィールドなし）', Math.abs(mr - 80) < 0.01, `magnetR=${mr}`);
+    // ほしくずの音階と光の尾（Day 16）：つづけて拾うほど音が上がり（2オクターブで頭打ち）、10個ごとにキラッ、吸い寄せ中は尾が出る
+    const gs = await page.evaluate(() => {
+      const d = window.__game.debug, g = window.__game.world();
+      const f = []; for (let c = 1; c <= 14; c++) f.push(d.gemFreq(c));
+      const up = f.slice(0, 11).every((v, i) => i === 0 || v > f[i - 1]), cap = f[10] === f[13], oct2 = Math.abs(f[10] / f[0] - 4) < 0.01;
+      g.gemCombo = 0; g.gemComboT = 0; const ch0 = g.gemChains;
+      for (let i = 0; i < 20; i++) d.addXp(0);
+      const chains = g.gemChains - ch0;
+      g.gems.length = 0; // 経験値0のほしくずで尾だけ確かめる（レベルアップ画面を出さない）
+      for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2, r = 50 + (i % 4) * 7; g.gems.push({ x: g.player.x + Math.cos(a) * r, y: g.player.y + Math.sin(a) * r, v: 0, mag: false, ms: 0, dead: false }); }
+      return { up, cap, oct2, chains, lo: Math.round(f[0]), hi: Math.round(f[10]) };
+    });
+    await wait(60);
+    const trails = await page.evaluate(() => window.__game.debug.trails());
+    await shot(page, '04d_gemtrail_390');
+    check('ほしくずをつづけて拾うと音が上がり、10個ごとにキラッ、吸い寄せ中は光の尾が出る', gs.up && gs.cap && gs.oct2 && gs.chains === 2 && trails >= 10, `${gs.lo}Hz→${gs.hi}Hz 頭打ち=${gs.cap} キラッ=${gs.chains}回 尾=${trails}本`);
     // 粒の上限と後かたづけ（Day 14：画質が下がると上限も下がる／配列を作り直さない）
     const fx = await page.evaluate(() => {
       const d = window.__game.debug, before = d.fxArrays();
