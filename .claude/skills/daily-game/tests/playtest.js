@@ -134,6 +134,23 @@ let browser;
     const sp = await page.evaluate(() => { const d = window.__game.debug, g = window.__game.world(); d.god(true); d.spawn('splitter', 1); const ok = d.killOne('splitter'); return { ok, minis: g.enemies.filter(e => e.type === 'mini' && !e.dead).length }; });
     check('分裂する敵を倒すと小さな敵が2体出る', sp.ok && sp.minis === 2, `minis=${sp.minis}`);
     await page.evaluate(() => { const g = window.__game.world(); g.enemies.forEach(e => { if (e.type === 'mini') e.dead = true; }); window.__game.debug.god(false); });
+    // 自爆する敵「ドカン」（Day 12）：近づくと点滅して爆発し、まわりの敵と自機にダメージ。爆発の前に倒せば爆発しない
+    const bm = await page.evaluate(() => {
+      const d = window.__game.debug, g = window.__game.world(), p = g.player;
+      g.enemies.forEach(e => { e.dead = true; }); g.enemies.length = 0;
+      d.spawn('bomber', 1); const b = g.enemies[g.enemies.length - 1]; b.x = p.x + 50; b.y = p.y; b.hp = 1e6; // 自機の武器に先に倒されないように（爆発のしくみだけを見る）
+      d.spawn('drifter', 1); const v = g.enemies[g.enemies.length - 1]; v.x = p.x + 95; v.y = p.y + 20; v.spd = 0;
+      const hp0 = p.hp, k0 = g.kills, b0 = g.booms; p.inv = 0;
+      window.__game.sim(0.2, () => [0, 0]); const fused = b.fuse != null && !b.dead;
+      window.__game.sim(1.0, () => [0, 0]);
+      const r = { fused, boomed: g.booms - b0 === 1 && b.dead, victim: v.dead, hurt: hp0 - p.hp, kills: g.kills - k0 };
+      d.spawn('bomber', 1); const b2 = g.enemies[g.enemies.length - 1]; b2.x = p.x + 300; b2.y = p.y;
+      const b1 = g.booms; d.killOne('bomber'); r.safeKill = b2.dead && g.booms === b1;
+      return r;
+    });
+    check('自爆する敵は近づくと点滅して爆発し、まわりの敵も巻きこむ', bm.fused && bm.boomed && bm.victim && bm.hurt >= 18, `点滅=${bm.fused} 爆発=${bm.boomed} 巻きこみ=${bm.victim} 自機-${bm.hurt}`);
+    check('爆発する前に倒した自爆敵は爆発しない', bm.safeKill);
+    await page.evaluate(() => { const p = window.__game.world().player; p.hp = p.maxHp; });
     // 一時停止
     await page.click('#b-pause');
     check('一時停止できる', await visible(page, 'pause'));
@@ -161,9 +178,36 @@ let browser;
     for (let i = 0; i < 12 && eb < 4; i++) { await wait(150); eb = await page.evaluate(() => window.__game.world().bullets.filter(b => b.evo).length); }
     check('進化後は金色の弾が出る', eb >= 4);
     await page.evaluate(() => { const g = window.__game.world(); g.enemies.forEach(e => { e.dead = true; }); });
+    // 進化：オービットLv6＋推進エンジンで「ギャラクシー」（Day 15）。玉が4→6個、輪の上の敵に当たる
+    const oe = await page.evaluate(() => {
+      const d = window.__game.debug, g = window.__game.world();
+      const th = g.passives.thrust || 0; d.give('thrust', 0); d.give('orbit', 6); const s0 = window.__game.state();
+      // 前の場面で推進エンジンを選んでいることがあるので、いったん0にしてから確かめる
+      d.give('thrust', Math.max(1, th)); const s1 = window.__game.state();
+      return { e0: s0.orbEvolved, n0: s0.orbs, e1: s1.orbEvolved, n1: s1.orbs, other: s1.evolved };
+    });
+    check('オービットLv6＋推進エンジンで進化する（推進なしでは進化しない）', oe.e0 === false && oe.e1 === true && oe.n0 === 4 && oe.n1 === 6 && oe.other === true, `玉 ${oe.n0} → ${oe.n1}`);
+    // 輪の上に硬い敵を置き、進化した玉が当たるかを数える（他の武器で倒れないよう、HPを大きくする）
+    await page.evaluate(() => { const d = window.__game.debug, g = window.__game.world(); d.spawn('brute', 1); const e = g.enemies[g.enemies.length - 1]; e.hp = e.maxHp = 1e6; e.x = g.player.x + 54 * 1.3 * 1.15; e.y = g.player.y; e.speed = 0; e.kx = e.ky = 0; window.__orbE = e; });
+    await wait(700);
+    await shot(page, '04c_galaxy_390');
+    const oh = await page.evaluate(() => { const e = window.__orbE; const hit = e.hp < e.maxHp; e.dead = true; return hit; });
+    check('進化したオービットの玉が、広がった輪の上の敵に当たる', oh);
     // ほしくずをひろう範囲（Day 11：72→80）
     const mr = await page.evaluate(() => window.__game.world().st.magnetR);
     check('ほしくずをひろう範囲が 80 ある（引力フィールドなし）', Math.abs(mr - 80) < 0.01, `magnetR=${mr}`);
+    // 粒の上限と後かたづけ（Day 14：画質が下がると上限も下がる／配列を作り直さない）
+    const fx = await page.evaluate(() => {
+      const d = window.__game.debug, before = d.fxArrays();
+      const full = d.burst(2000), cap1 = window.__game.state().partMax;
+      d.setQuality(0.5); d.stepFx(1.5);
+      const low = d.burst(2000), cap2 = window.__game.state().partMax;
+      const left = d.stepFx(1.5);
+      d.setQuality(1);
+      const same = d.fxArrays().every((a, i) => a === before[i]);
+      return { full, cap1, low, cap2, left, same };
+    });
+    check('光の粒は上限を超えず、画質が下がると上限も下がり、時間で消える', fx.full <= fx.cap1 && fx.cap1 === 700 && fx.low <= fx.cap2 && fx.cap2 === 350 && fx.left < 20 && fx.same, `上限 ${fx.full}/${fx.cap1} → ${fx.low}/${fx.cap2}、1.5秒後 ${fx.left}、配列そのまま=${fx.same}`);
     // ボス
     await page.evaluate(() => { window.__game.debug.god(true); window.__game.debug.give('nova', 3); window.__game.debug.setTime(299); });
     await page.waitForFunction(() => window.__game.state().boss !== null, null, { timeout: 5000 }).catch(() => {});
@@ -177,6 +221,9 @@ let browser;
     await wait(400);
     const bname = await page.evaluate(() => document.getElementById('res-bname').textContent);
     check('結果画面にビルド名が出る', /型$/.test(bname), bname);
+    const achNew = await page.evaluate(() => [...document.querySelectorAll('#res-ach span')].map(x => x.textContent));
+    const achHead = await page.evaluate(() => { const h = document.querySelector('#res-ach b'); return h ? h.textContent : ''; });
+    check('5:00まで生きのびると、結果画面に「実績ゲット！」が出る', /実績ゲット/.test(achHead) && achNew.length >= 3 && achNew.some(t => /ブラックスターと対面/.test(t)), `${achHead} ${achNew.join(' / ')}`);
     await shot(page, '07_result_390');
     await page.click('#b-retry');
     await wait(300);
@@ -187,6 +234,21 @@ let browser;
     await page.waitForFunction(() => window.__game);
     const bestText = await page.textContent('#best');
     check('リロードしてもベスト記録が残る', /ベスト/.test(bestText), bestText.trim());
+    // 実績：リロード後も残り、タイトルから一覧が見られる。取った実績は2回目には出ない
+    const achBtn = await page.textContent('#b-ach');
+    const achN = +(achBtn.match(/(\d+) \/ (\d+)/) || [])[1];
+    await page.click('#b-ach');
+    await wait(300);
+    const achList = await page.evaluate(() => ({ got: document.querySelectorAll('#achs li.got').length, all: document.querySelectorAll('#achs li').length, total: window.__game.ACH.length }));
+    check('実績がリロード後も残り、タイトルの一覧で見られる', achN >= 3 && (await visible(page, 'ach')) && achList.got === achN && achList.all === achList.total, `${achBtn.trim()} / 一覧 ${achList.got}/${achList.all}`);
+    await shot(page, '08_ach_390');
+    await page.click('#b-ach-close');
+    const again = await page.evaluate(() => { const g = window.__game; g.start(3, true); g.debug.god(true); g.debug.setTime(301); g.debug.god(false); g.debug.hurt(9999); g.hold(false); return true; });
+    await page.waitForFunction(() => window.__game.scene === 'result', null, { timeout: 8000 }).catch(() => {});
+    const achAgain = await page.evaluate(() => document.querySelectorAll('#res-ach span').length);
+    check('一度取った実績は、もう一度「ゲット」と出ない', again && achAgain === 0, `出た数=${achAgain}`);
+    await page.click('#b-home');
+    await wait(200);
     const fb = await page.evaluate(() => { let u = ''; const o = window.open; window.open = x => { u = x; return null; }; document.getElementById('b-fb1').click(); window.open = o; return u; });
     check('「感想を送る」で GitHub の感想フォームが開く', fb.startsWith('https://github.com/tbtb-k/diary/issues/new?') && /title=/.test(fb));
     await ctx.close();
