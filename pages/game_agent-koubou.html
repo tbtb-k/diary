@@ -53,7 +53,7 @@
 html{-webkit-text-size-adjust:100%}
 body{margin:0; background:var(--bg); color:var(--text); font-family:var(--f); font-size:16px; line-height:1.8; overflow-x:clip}
 body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:90; background:var(--card)}
-h1,h2,h3{margin:0; font-weight:700; line-height:1.4; text-wrap:balance}
+h1,h2,h3{margin:0; font-weight:700; line-height:1.4; text-wrap:balance; word-break:auto-phrase}
 p,ul,ol,dl,dd,pre{margin:0}
 ul,ol{padding:0; list-style:none}
 button,input{font:inherit; color:inherit}
@@ -128,7 +128,8 @@ button{cursor:pointer}
 .bar{position:sticky; top:env(safe-area-inset-top,0px); z-index:40; background:var(--card); border-bottom:1px solid var(--line)}
 .bar-in{max-width:1000px; margin:0 auto; display:flex; align-items:center; gap:12px; min-height:56px}
 .home{border:0; background:none; padding:6px 0; font-weight:700; font-size:16px; color:var(--text)}
-.bar-st{font-size:15px; color:var(--text-2); margin-left:auto; white-space:nowrap}
+.bar-r{margin-left:auto; display:flex; gap:8px}
+.head-stars{margin-left:auto}
 .bar .btn{min-height:40px; padding:6px 14px; font-size:15px}
 @media (max-width:420px){.home{font-size:15px}}
 
@@ -286,6 +287,87 @@ details.fixed li::before{content:"・"}
 .add small{display:block; font-size:13px; color:var(--text-2)}
 .add .plus{width:30px; height:30px; border-radius:50%; display:grid; place-items:center; background:var(--accent); color:var(--on-accent); font-weight:700}
 .subh{font-size:16px; font-weight:700; margin-top:18px}
+
+/* はじめに（序章） */
+.prog5-t{font-size:15px; font-weight:700; color:var(--text-2)}
+.prog5{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; margin-top:6px}
+.prog5 span{height:8px; border-radius:99px; background:var(--line)}
+.prog5 span.on{background:var(--accent)}
+.vs{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:14px}
+@media (max-width:640px){.vs{grid-template-columns:1fr}}
+.vs-col{border:1px solid var(--line); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:10px; min-height:150px; min-width:0}
+.vs-col.agent-col{border:2px solid var(--accent)}
+.vs-h{font-weight:700; font-size:17px; line-height:1.4}
+.vs-h small{display:block; font-size:14px; font-weight:400; color:var(--text-2)}
+.vs-log{display:flex; flex-direction:column; gap:8px}
+.vs-log .msg{max-width:96%; font-size:15px}
+.attach{align-self:flex-end; font-size:14px; padding:3px 10px; border-radius:6px; border:1px dashed var(--line-2); color:var(--text-2)}
+.vs-note{font-size:14px; font-weight:700; line-height:1.6; padding:8px 10px; border-radius:8px}
+.vs-note.good{background:var(--ok-bg); color:var(--ok)}
+.vs-note.bad{background:var(--ng-bg); color:var(--ng)}
+.point{border:2px solid var(--accent)}
+.point ul{display:grid; gap:8px; margin-top:10px}
+.point li{font-size:16px; line-height:1.85; padding-left:1em; text-indent:-1em}
+.point li::before{content:"・"}
+.intro-robot{max-width:260px; margin:8px auto 0}
+.robot-cap{text-align:center; font-size:15px; color:var(--text-2); margin-top:4px}
+@media (max-width:700px){
+  .robot-stick{position:sticky; top:calc(env(safe-area-inset-top,0px) + 57px); z-index:5; background:var(--card); margin-inline:-6px; padding:6px 6px 8px; border-bottom:1px solid var(--line)}
+  .robot-stick .intro-robot{max-width:190px; margin-top:0}
+  .robot-stick .robot-cap{font-size:14px; line-height:1.6}
+}
+.parts3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:14px}
+@media (max-width:700px){.parts3{grid-template-columns:1fr}}
+.p3{border:1px solid var(--line); border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:6px; min-width:0}
+.p3.given{border-color:var(--ok); background:var(--ok-bg)}
+.p3-w{font-size:21px; font-weight:700; line-height:1.3}
+.p3-ex{font-size:15px; font-weight:700; color:var(--accent)}
+.p3 p{font-size:15px; line-height:1.75}
+.p3 .eg{font-size:14px; color:var(--text-2); background:var(--sub); border-radius:8px; padding:6px 10px}
+.p3.given .eg{background:var(--card)}
+.p3 .btn{margin-top:auto; min-height:48px; font-size:16px}
+.sort-n{font-size:15px; color:var(--text-2); margin-top:8px}
+.sort-q{margin-top:8px; padding:24px 16px; border-radius:12px; background:var(--sub); text-align:center; font-size:19px; font-weight:700; line-height:1.6}
+.sort-btns{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:12px}
+.sort-btns .btn{flex-direction:column; gap:0; min-height:66px; padding:8px 4px; font-size:18px}
+.sort-btns small{font-size:13px; font-weight:400; color:inherit}
+.sort-btns .btn[disabled]{opacity:.5}
+.sort-btns .btn.picked-ok{opacity:1; background:var(--ok); border-color:var(--ok); color:var(--card)}
+.sort-btns .btn.picked-ng{opacity:1; background:var(--ng); border-color:var(--ng); color:var(--card)}
+.fb{margin-top:12px; padding:12px 14px; border-radius:10px; font-size:16px; line-height:1.8}
+.fb.ok{background:var(--ok-bg)} .fb.ng{background:var(--ng-bg)}
+.fb b{display:block}
+.fb.ok b{color:var(--ok)} .fb.ng b{color:var(--ng)}
+.sort-res{display:grid; gap:8px; margin-top:12px; font-size:15px; line-height:1.7}
+.sort-res li{display:flex; gap:10px; align-items:baseline}
+.flow4{display:grid; gap:8px; margin-top:14px}
+.flow4 li{display:grid; grid-template-columns:36px minmax(0,1fr); gap:12px; align-items:start; padding:12px 14px; border:1px solid var(--line); border-radius:12px; transition:background .35s, border-color .35s}
+.flow4 li.lit{border-color:var(--accent); background:var(--accent-2)}
+.f4n{width:34px; height:34px; border-radius:50%; display:grid; place-items:center; background:var(--sub); font-weight:700; transition:background .35s, color .35s}
+.flow4 li.lit .f4n{background:var(--accent); color:var(--on-accent)}
+.flow4 b{display:block; font-size:17px}
+.flow4 li div > span{display:block; font-size:15px; color:var(--text-2); line-height:1.7}
+.loop{display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; margin-top:16px; font-weight:700; font-size:17px}
+.loop span{padding:8px 18px; border-radius:999px; background:var(--accent-2); color:var(--accent)}
+.loop i{font-style:normal; color:var(--text-3)}
+.quiz{display:grid; gap:22px; margin-top:14px}
+.qz-q{font-size:17px; font-weight:700; line-height:1.7}
+.qz-c{display:grid; gap:8px; margin-top:8px}
+.qz-c button{text-align:left; padding:12px 14px; border-radius:10px; border:1px solid var(--line-2); background:var(--card); font-size:16px; line-height:1.6}
+.qz-c button:hover{border-color:var(--accent)}
+.qz-c button[disabled]{cursor:default}
+.qz-c button.right{border:2px solid var(--ok); background:var(--ok-bg); font-weight:700}
+.qz-c button.wrong{border:2px solid var(--ng); background:var(--ng-bg)}
+
+/* ことば図鑑 */
+.modal.wide{width:min(680px,100%)}
+.m-top{position:sticky; top:0; z-index:2; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px clamp(18px,4vw,28px) 12px; background:var(--card); border-bottom:1px solid var(--line)}
+.m-top .btn{min-height:42px; padding:6px 16px; font-size:15px}
+.gl{display:grid; gap:10px}
+.gl-i{border:1px solid var(--line); border-radius:12px; padding:12px 14px}
+.gl-i dt{display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; font-size:18px; font-weight:700}
+.gl-i dd{font-size:15px; line-height:1.85; margin-top:4px}
+.gl-i small{display:block; font-size:13px; color:var(--text-3); margin-top:4px}
 
 /* ロボット */
 .robot{display:block; width:100%; height:auto; overflow:visible}
@@ -884,6 +966,11 @@ function reqRow(st){
     <span class="req-r">${open ? starsHTML(starsOf(st.n)) : '前の依頼をクリアすると開きます'}</span>
   </button></li>`;
 }
+function introRow(){
+  return `<li><button class="req-row" type="button" data-act="intro"><span class="req-n">0</span>
+    <span><span class="req-t">はじめに：エージェントってなに？</span><span class="req-m"><span class="pill">基本</span><span class="pill lec">まずはここから</span><span>約5分・飛ばしてもOK</span></span></span>
+    <span class="req-r">${prog.intro ? '<span class="res ok">見ました</span>' : ''}</span></button></li>`;
+}
 function renderTitle(){
   S.view = 'title'; S.st = null;
   const cleared = ST.filter(st => starsOf(st.n)[0]).length, total = ST.reduce((a, st) => a + starCount(st.n), 0);
@@ -895,10 +982,12 @@ function renderTitle(){
       <h1>エージェント工房</h1>
       <p class="t-lead">社員からの依頼にこたえて、AIエージェントを1体育てるゲームです。<br>「テストする → 失敗を見る → 直す」をくり返すだけ。むずかしい操作はありません。</p>
       <div class="t-btns">
-        ${cleared ? `<button class="btn primary big" type="button" data-act="stage" data-id="${next}">${cleared >= 7 ? 'もう一度あそぶ' : `つづきから（依頼${next}）`}</button>` : '<button class="btn primary big" type="button" data-act="stage" data-id="1">はじめる</button>'}
+        ${cleared ? `<button class="btn primary big" type="button" data-act="stage" data-id="${next}">${cleared >= 7 ? 'もう一度あそぶ' : `つづきから（依頼${next}）`}</button>`
+          : prog.intro ? '<button class="btn primary big" type="button" data-act="stage" data-id="1">依頼1から始める</button>'
+          : '<button class="btn primary big" type="button" data-act="intro">はじめに（約5分）から始める</button><button class="btn second big" type="button" data-act="stage" data-id="1">依頼1から始める</button>'}
         ${cleared >= 7 ? '<button class="btn second big" type="button" data-act="cert">修了証を見る</button>' : ''}
       </div>
-      <p class="t-note">1つの依頼は2〜3分。講義では依頼1・2（約10分）をやります。</p>
+      <p class="t-note">はじめての人は「はじめに」から。1つの依頼は2〜3分で、講義では依頼1・2（約10分）をやります。<br><button class="link" type="button" data-act="gloss">ことば図鑑を開く</button></p>
     </div>
     <div class="t-robot">${robotSVG(FULL, {assemble:true, label:'指示・知識・ツール・トピックがそろった、完成したエージェント'})}</div>
   </div></header>
@@ -914,7 +1003,7 @@ function renderTitle(){
   <section class="t-sec gut">
     <h2>依頼一覧</h2>
     <p class="muted">${cleared}/7 クリア ・ ★ ${total}/21。進み具合はこのブラウザに保存されます。</p>
-    <ul class="reqlist">${ST.map(reqRow).join('')}</ul>
+    <ul class="reqlist">${introRow()}${ST.map(reqRow).join('')}</ul>
     ${prog.open < 7 ? '<p style="margin-top:10px"><button class="link" type="button" data-act="unlockall">講師・復習用：すべての依頼を開ける</button></p>' : ''}
   </section>
   <footer class="t-foot gut">
@@ -933,12 +1022,11 @@ function startStage(n, cfg){
   app.innerHTML = `
   <header class="bar gut"><div class="bar-in">
     <button class="home" type="button" data-act="home">エージェント工房</button>
-    <span class="bar-st">依頼 ${n} / 7　<span id="barStars">${starsHTML(starsOf(n))}</span></span>
-    <button class="btn second" type="button" data-act="map">一覧</button>
+    <span class="bar-r"><button class="btn second" type="button" data-act="gloss">ことば</button><button class="btn second" type="button" data-act="map">一覧</button></span>
   </div></header>
   <main class="main gut">
     <div class="head">
-      <div class="head-t"><span class="pill">${esc(st.concept)}</span>${st.lecture ? '<span class="pill lec">講義でやる</span>' : ''}<h1>依頼${n}　${esc(st.title)}</h1></div>
+      <div class="head-t"><span class="pill">${esc(st.concept)}</span>${st.lecture ? '<span class="pill lec">講義でやる</span>' : ''}<span class="head-stars" id="barStars">${starsHTML(starsOf(n))}</span><h1>依頼${n}　${esc(st.title)}</h1></div>
       <ol class="stepper" id="stepper" aria-label="進み方"></ol>
     </div>
     <div id="view"></div>
@@ -994,7 +1082,7 @@ function briefHTML(){
     <div class="req"><div class="ava c-${st.who.c}" aria-hidden="true">${esc(st.who.ini)}</div>
       <div><p class="req-who"><b>${esc(st.who.dept)} ${esc(st.who.name)}</b> からの依頼</p><p class="bubble">${esc(st.brief)}</p></div></div>
     <div class="goal"><b>今回やること</b><p>${esc(ex.goal)}</p></div>
-    <p class="term"><b>ことば</b>${esc(ex.term)}</p>
+    <p class="term"><b>ことば</b>${esc(ex.term)}　<button class="link" type="button" data-act="gloss">ことば図鑑を開く</button></p>
   </section>
   <section class="card">
     <h2>テスト項目</h2>
@@ -1264,7 +1352,7 @@ function showCert(){
 function showMap(){
   openModal(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="mapT"><div class="m-in">
     <h2 class="m-h" id="mapT">依頼一覧</h2>
-    <ul class="reqlist" style="margin-top:0">${ST.map(reqRow).join('')}</ul>
+    <ul class="reqlist" style="margin-top:0">${introRow()}${ST.map(reqRow).join('')}</ul>
     <div class="m-btns"><button class="btn second" type="button" data-act="home">タイトルへ</button><button class="btn second" type="button" data-act="close">閉じる</button></div>
   </div></div>`);
 }
@@ -1281,6 +1369,221 @@ function closeModal(){
 }
 
 /* =====================================================================
+   7.5 はじめに（序章）と ことば図鑑
+   ===================================================================== */
+const GLOSS = [
+  {w:'エージェント', ex:'仕事を覚えたアシスタント', d:'役割（指示）・資料（知識）・道具（ツール）を最初に渡しておくと、聞かれたときにそれを使って答えたり、作業したりしてくれるAIです。', s:'はじめに'},
+  {w:'Copilot Studio', ex:'エージェントを作る工房', d:'Microsoft のサービス。画面の操作と日本語の文章でエージェントを作れます。作って、試して、Teams などに公開して、使われ方を見ながら育てます。', s:'はじめに'},
+  {w:'指示', ex:'業務マニュアル', d:'エージェントの役割・口調・やってよいこと／いけないことを、文章で書いたもの。書いたとおりにふるまうので、具体的に書くのがコツです。', s:'依頼1'},
+  {w:'知識（ナレッジ）', ex:'参考資料の棚', d:'エージェントが答えの根拠にする資料。Word や PDF のファイル、SharePoint のサイト、公開されている Web サイトなどを入れられます。実際の画面では「ナレッジ」と表示されます。', s:'依頼2'},
+  {w:'根拠（参照）', ex:'答えの出どころ', d:'答えのもとになった資料の名前や条番号。聞いた人があとから正しいかを確かめられるように、示させます。', s:'依頼1・2'},
+  {w:'一般知識', ex:'AIのうろ覚え', d:'AIがもともと知っていること。オンのままだと、資料にないことも「それっぽく」答えてしまいます。業務で使うならオフにするのが基本です。Web検索も同じ考え方です。', s:'依頼3'},
+  {w:'ツール', ex:'使える道具', d:'メールを送る、リストに登録するなど、実際に「動く」ための部品。持たせた道具は使われるので、使わせたくない操作の道具は持たせません。', s:'依頼4'},
+  {w:'説明', ex:'部品に貼るラベル', d:'資料・ツール・トピックに付ける「これは何に使うか」の文章。AIは名前と説明を手がかりに、どれを使うかを選びます。', s:'依頼5'},
+  {w:'生成オーケストレーション', ex:'自分で考える頭', d:'質問を見て、どの資料・ツール・トピックを使うかを、AIが自動で決めるしくみ。新しく作るエージェントでは、最初からオンになっています。', s:'依頼4・5'},
+  {w:'トピック', ex:'会話の台本', d:'「この話題が来たら、この順番で聞いて、この文章を返す」と決めた会話の流れ。作ったとおりに、毎回同じ動きをします。', s:'依頼6'},
+  {w:'テスト', ex:'試運転', d:'作ったエージェントに実際に質問して、期待どおりに答えるかを確かめること。Copilot Studio では、作成画面のテスト用チャットで試せます。', s:'すべての依頼'},
+  {w:'公開', ex:'職場へのデビュー', d:'Teams など、みんなが使う場所でエージェントを使えるようにすること。使える人は、入れた資料の中身を聞き出せる前提で、資料を選びます。', s:'依頼7'},
+];
+function showGloss(){
+  openModal(`<div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="glT">
+    <div class="m-top"><h2 class="m-h" id="glT" tabindex="-1">ことば図鑑</h2><button class="btn second" type="button" data-act="close">閉じる</button></div>
+    <div class="m-in">
+    <p class="muted">このゲームと Copilot Studio に出てくる言葉を、たとえ話で説明します。</p>
+    <dl class="gl">${GLOSS.map(g => `<div class="gl-i"><dt>${esc(g.w)}<span class="pill">たとえ：${esc(g.ex)}</span></dt><dd>${esc(g.d)}<small>出てくるところ：${esc(g.s)}</small></dd></div>`).join('')}</dl>
+    <div class="m-btns"><button class="btn primary" type="button" data-act="close">閉じる</button></div>
+  </div></div>`);
+  const t = $('#glT'); if (t) t.focus({preventScroll:true});
+}
+
+const ISTEPS = ['チャットAIとのちがい', '3つの部品', '仕分けてみよう', '答えが出るまで', 'おさらい'];
+const VS = {
+  A:[{u:'出張の日当っていくら？'}, {b:'会社によって決まりがちがうので、お答えできません。旅費規程があれば、添付してください。'}, {att:'旅費規程.pdf を添付'}, {u:'これを読んで、出張の日当を教えて'}, {b:'添付の規程によると、国内出張の日当は1日2,500円です。'}, {note:'次に聞く人も、また資料を添付して説明するところから。', cls:'bad'}],
+  B:[{u:'出張の日当っていくら？'}, {b:'国内出張の日当は、1日2,500円です。', cite:'旅費規程.docx 第5条'}, {note:'資料を最初に渡してあるので、誰が聞いてもすぐ同じように答える。', cls:'good'}],
+};
+const P3 = [
+  {k:'instr', w:'指示', ex:'たとえるなら：業務マニュアル', d:'役割・口調・やってよいこと／いけないことを、文章で書いておきます。', eg:'例：「あなたは総務部の問い合わせ窓口です」', set:c => { c.instr = ['i_role','i_cite','i_tone']; }, cap:'名札がついて、自分の役割が分かった'},
+  {k:'know', w:'知識', ex:'たとえるなら：参考資料の棚', d:'答えの根拠にする資料です。ファイルや SharePoint のサイトを入れられます。', eg:'例：就業規則.docx、旅費規程.docx', set:c => { c.know = ['k_shugyo','k_ryohi','k_keihi']; }, cap:'資料の本棚ができた'},
+  {k:'tool', w:'ツール', ex:'たとえるなら：使える道具', d:'メールを送る、リストに登録するなど、実際に「動く」ための部品です。', eg:'例：承認者にメールで通知する', set:c => { c.tools = ['t_list','t_mail']; }, cap:'道具が使えるようになった'},
+];
+const LBL = {instr:'指示', know:'知識', tool:'ツール'}, HINTW = {instr:'業務マニュアル', know:'資料の棚', tool:'使える道具'};
+const SORT = [
+  {t:'「丁寧語で、結論から答えてください」という文章', a:'instr', why:'口調や答え方の決まりは、業務マニュアル＝指示に書きます。'},
+  {t:'就業規則.docx', a:'know', why:'答えの根拠になる資料は、資料の棚＝知識に入れます。'},
+  {t:'承認者にメールを送る', a:'tool', why:'メールを送るのは「動く」こと。使える道具＝ツールの出番です。'},
+  {t:'社内のよくある質問をまとめた SharePoint のサイト', a:'know', why:'SharePoint のサイトやページも、知識として資料の棚に入れられます。'},
+  {t:'申請の内容を、リストに登録する', a:'tool', why:'リストへの登録も「動く」こと。ツールを持たせると、エージェントが代わりにやってくれます。'},
+  {t:'「総務と関係ない質問には、担当外だと伝えてください」という文章', a:'instr', why:'やってよいこと・いけないことの線引きは、指示に書きます。'},
+];
+const FLOW4 = [
+  ['質問を受ける', '「有給は何日前までに申請すればいい？」'],
+  ['資料を探す', '知識の棚から、関係がありそうな資料を探す　→　就業規則.docx'],
+  ['該当部分を読む', '第18条「取得日の3日前までに申請する」を見つける'],
+  ['根拠つきで答える', '「取得日の3日前までに申請してください。参照：就業規則.docx 第18条」'],
+];
+const QUIZ = [
+  {q:'ふつうのチャットAIとくらべた、エージェントのいちばんの特ちょうは？', c:['答えるのが速い', '役割と資料を、最初に覚えさせておける', 'どんな質問にも答えてくれる'], a:1,
+   why:'エージェントには、役割（指示）と資料（知識）を最初に渡しておけます。だから毎回説明しなくても、誰が聞いても同じように答えます。'},
+  {q:'業務で使うエージェントが、資料に書いていないことを聞かれたら、どう答えるのがよい？', c:['一般的な話で、それっぽく答える', '聞こえなかったことにする', '「資料に記載がない」と伝えて、問い合わせ先を案内する'], a:2,
+   why:'推測で答えると、まちがった情報が広まってしまいます。「分からない」と言わせる設定は、依頼3でやります。'},
+  {q:'作ったエージェントが、思いどおりに答えてくれない。まずやることは？', c:['テストで「どこがダメか」を見てから、指示や資料を直す', '最初から全部作り直す', '使うのをあきらめる'], a:0,
+   why:'「作る → 試す → 直す」をくり返すのが基本です。依頼1〜7でも、まずテストしてから直します。'},
+];
+
+function startIntro(){
+  closeModal();
+  Object.assign(S, {view:'intro', st:null, ist:0, ibusy:false, ff:false, prevRobot:null,
+    iv:{compared:false, given:[], sortI:0, sortPick:null, sortAns:[], played:false, quiz:[]}});
+  app.innerHTML = `
+  <header class="bar gut"><div class="bar-in">
+    <button class="home" type="button" data-act="home">エージェント工房</button>
+    <span class="bar-r"><button class="btn second" type="button" data-act="gloss">ことば</button><button class="btn second" type="button" data-act="map">一覧</button></span>
+  </div></header>
+  <main class="main gut">
+    <div class="head">
+      <div class="head-t"><span class="pill">はじめに</span><span class="pill lec">約5分</span><h1>エージェントってなに？</h1></div>
+      <div><p class="prog5-t" id="ist"></p><div class="prog5" id="prog5" aria-hidden="true"></div></div>
+    </div>
+    <div id="view" class="view"></div>
+  </main>
+  <div class="actions gut"><div class="actions-in" id="actions"></div></div>`;
+  igo(0);
+}
+function igo(i){ S.ist = i; renderIntro(); window.scrollTo({top:0, left:0, behavior:'instant'}); }
+function renderIntro(){
+  $('#ist').textContent = `STEP ${S.ist + 1} / 5　${ISTEPS[S.ist]}`;
+  $('#prog5').innerHTML = ISTEPS.map((_, i) => `<span class="${i <= S.ist ? 'on' : ''}"></span>`).join('');
+  $('#view').innerHTML = [i1, i2, i3, i4, i5][S.ist]();
+  if (S.ist === 1) mountRobot($('#robot'), introCfg());
+  renderIntroActions();
+}
+const quizDone = () => QUIZ.every((_, i) => S.iv.quiz[i] != null);
+const introDone = () => { const v = S.iv; return [v.compared, v.given.length === 3, v.sortAns.length === SORT.length, v.played, quizDone()][S.ist]; };
+function renderIntroActions(){
+  const done = introDone(), last = S.ist === 4;
+  const hint = ['上のボタンで、同じ質問を送ってみましょう。', '3つの部品を、新人ロボに渡してみましょう。', '全部で6問。仕分けてみましょう。', '「動きを見る」を押してみましょう。', '3問に答えてみましょう。'][S.ist];
+  $('#actions').innerHTML = `${done ? '' : `<p class="note">${hint}</p>`}
+    ${S.ist > 0 ? '<button class="btn second" type="button" data-act="iback">戻る</button>' : ''}
+    ${last && done ? '<button class="btn primary big" type="button" data-act="ifinish">依頼1へ進む ▶</button>'
+      : `<button class="btn primary big" type="button" data-act="inext" ${done ? '' : 'disabled'}>次へ ▶</button>`}`;
+}
+
+/* STEP 1：チャットAIとのちがい */
+function vsItemHTML(it){
+  if (it.u) return `<div class="msg u">${esc(it.u)}</div>`;
+  if (it.b) return `<div class="msg b">${esc(it.b)}</div>${it.cite ? `<div class="cite">参照：<b>${esc(it.cite)}</b></div>` : ''}`;
+  if (it.att) return `<div class="attach">（${esc(it.att)}）</div>`;
+  return `<p class="vs-note ${it.cls}">${esc(it.note)}</p>`;
+}
+function i1(){
+  const v = S.iv;
+  return `<section class="card">
+    <h2>まずは、ふつうのチャットAIとくらべてみよう</h2>
+    <p class="muted">同じ質問「出張の日当っていくら？」を、2つに送ってみます。</p>
+    <div class="vs">
+      <div class="vs-col"><p class="vs-h">ふつうのチャットAI<small>その場で頼む相手</small></p><div class="vs-log" id="vsA">${v.compared ? VS.A.map(vsItemHTML).join('') : ''}</div></div>
+      <div class="vs-col agent-col"><p class="vs-h">エージェント<small>仕事を覚えたアシスタント</small></p><div class="vs-log" id="vsB">${v.compared ? VS.B.map(vsItemHTML).join('') : ''}</div></div>
+    </div>
+    ${v.compared ? '' : '<p style="margin-top:14px"><button class="btn primary" type="button" data-act="icompare" id="cmpBtn">同じ質問を送ってみる</button></p>'}
+  </section>
+  ${v.compared ? `<section class="card point"><h2>ちがいはここ</h2><ul>
+    <li><b>チャットAI</b>は、その場で説明と資料を渡して頼む相手です。次に使う人も、また最初から説明します。</li>
+    <li><b>エージェント</b>は、役割と資料を最初に覚えさせておいた相手です。誰が聞いても、同じ資料をもとに同じように答えます。だから部署のみんなで、同じ品質で使えます。</li>
+    <li><b>Copilot Studio</b> は、このエージェントを、画面の操作と日本語の文章で作るための道具です。</li></ul></section>` : ''}`;
+}
+async function playVs(el, items){
+  for (const it of items){
+    if (it.b){
+      const m = document.createElement('div'); m.className = 'msg b'; el.appendChild(m); keepVisible(m);
+      await typeInto(m, it.b);
+      if (it.cite) el.insertAdjacentHTML('beforeend', `<div class="cite">参照：<b>${esc(it.cite)}</b></div>`);
+    } else el.insertAdjacentHTML('beforeend', vsItemHTML(it));
+    keepVisible(el.lastElementChild);
+    await sleep(it.u ? 450 : 650);
+  }
+}
+async function introCompare(){
+  if (S.ibusy || S.iv.compared) return;
+  S.ibusy = true; const b = $('#cmpBtn'); if (b) b.disabled = true;
+  if (matchMedia('(max-width: 640px)').matches){ await playVs($('#vsA'), VS.A); await playVs($('#vsB'), VS.B); }
+  else await Promise.all([playVs($('#vsA'), VS.A), playVs($('#vsB'), VS.B)]);
+  S.iv.compared = true; S.ibusy = false;
+  const y = scrollY; renderIntro(); window.scrollTo({top:y, behavior:'instant'});
+  keepVisible(document.querySelector('.point'));
+}
+
+/* STEP 2：3つの部品 */
+function introCfg(){ const c = {instr:[], know:[], gk:false, web:false, tools:[], topic:[], desc:{}}; P3.filter(p => S.iv.given.includes(p.k)).forEach(p => p.set(c)); return c; }
+function i2(){
+  const g = S.iv.given;
+  const cap = g.length ? P3.filter(p => g.includes(p.k)).map(p => p.cap).join('。') + '。' : 'まだ何も教わっていない新人ロボです。自分の役割も分からず、目が回っています。';
+  return `<section class="card">
+    <h2>エージェントは、3つの部品でできている</h2>
+    <p class="muted">新しく来た新人アシスタントに、仕事を教えるのと同じです。下の3つを、新人ロボに渡してみましょう。</p>
+    <div class="robot-stick"><div class="intro-robot" id="robot"></div>
+    <p class="robot-cap">${cap}</p></div>
+    <div class="parts3">${P3.map(p => { const on = g.includes(p.k); return `<div class="p3${on ? ' given' : ''}"><p class="p3-w">${p.w}</p><p class="p3-ex">${p.ex}</p><p>${p.d}</p><p class="eg">${esc(p.eg)}</p>
+      <button class="btn ${on ? 'second' : 'primary'}" type="button" data-act="igive" data-id="${p.k}" ${on ? 'disabled' : ''}>${on ? '渡しました ✓' : `${p.w}を渡す`}</button></div>`; }).join('')}</div>
+  </section>
+  ${g.length === 3 ? `<section class="card point"><h2>指示 ＋ 知識 ＋ ツール ＝ 仕事を覚えたアシスタント</h2><ul>
+    <li>指示で「どうふるまうか」、知識で「何をもとに答えるか」、ツールで「何ができるか」が決まります。</li>
+    <li>このほかに、決まった会話の流れ（トピック）などの部品もあります。出てきたら、画面上の「ことば」で確かめられます。</li></ul></section>` : ''}`;
+}
+
+/* STEP 3：仕分け */
+function i3(){
+  const v = S.iv, n = SORT.length;
+  if (v.sortAns.length === n){
+    const ok = v.sortAns.filter(Boolean).length;
+    return `<section class="card"><h2>仕分け、おつかれさまでした</h2><p class="sum-n" style="margin-top:8px">${n}問中 ${ok}問 正解</p>
+      <ul class="sort-res">${SORT.map((s, j) => `<li><span class="res ${v.sortAns[j] ? 'ok' : 'ng'}">${v.sortAns[j] ? '○' : '×'}</span><span>${esc(s.t)}　→ <b>${LBL[s.a]}</b></span></li>`).join('')}</ul></section>
+      <section class="card point"><h2>迷ったときの見分け方</h2><ul><li>文章で決まりを書くもの → <b>指示</b></li><li>読ませて、答えの根拠にするもの → <b>知識</b></li><li>実際に動いて、作業するもの → <b>ツール</b></li></ul></section>`;
+  }
+  const s = SORT[v.sortI], pick = v.sortPick;
+  return `<section class="card"><h2>指示・知識・ツールに、仕分けてみよう</h2>
+    <p class="sort-n">${n}問中 ${v.sortI + 1}問目</p>
+    <div class="sort-q">${esc(s.t)}</div>
+    <div class="sort-btns">${['instr','know','tool'].map(k => `<button class="btn second${pick ? (k === s.a ? ' picked-ok' : (k === pick ? ' picked-ng' : '')) : ''}" type="button" data-act="isort" data-id="${k}" ${pick ? 'disabled' : ''}>${LBL[k]}<small>${HINTW[k]}</small></button>`).join('')}</div>
+    ${pick ? `<div class="fb ${pick === s.a ? 'ok' : 'ng'}"><b>${pick === s.a ? '○ 正解！' : `× 正解は「${LBL[s.a]}」`}</b>${esc(s.why)}</div>
+      <p style="margin-top:12px"><button class="btn primary" type="button" data-act="isortnext" id="sortNext">${v.sortI + 1 < n ? '次の問題へ' : '結果を見る'}</button></p>` : ''}
+  </section>`;
+}
+
+/* STEP 4：答えが出るまで */
+function i4(){
+  const v = S.iv;
+  return `<section class="card"><h2>質問されると、エージェントの中ではこう動く</h2>
+    <p class="muted">AIが「もともと知っていること」ではなく、「渡した資料」から答えるのがポイントです。</p>
+    <ol class="flow4" id="flow4">${FLOW4.map(([b, s], i) => `<li class="${v.played ? 'lit' : ''}"><span class="f4n">${i + 1}</span><div><b>${b}</b><span>${esc(s)}</span></div></li>`).join('')}</ol>
+    ${v.played ? '' : '<p style="margin-top:14px"><button class="btn primary" type="button" data-act="iplay" id="playBtn">動きを見る</button></p>'}
+  </section>
+  ${v.played ? `<section class="card point"><h2>だから、作ったら必ずテスト</h2><ul>
+    <li>資料が足りないと、AIは「うろ覚え（一般知識）」で、それっぽく答えてしまうことがあります。</li>
+    <li>作ったら、実際に質問してみる。ダメなところが見つかったら、指示や資料を直す。これをくり返して育てます。</li></ul>
+    <div class="loop"><span>作る</span><i>→</i><span>試す</span><i>→</i><span>直す</span><i>→ くり返す</i></div>
+    <p class="muted" style="margin-top:12px">このゲームの依頼1〜7も、この順番で進みます。</p></section>` : ''}`;
+}
+async function introPlay(){
+  if (S.ibusy || S.iv.played) return;
+  S.ibusy = true; const b = $('#playBtn'); if (b) b.disabled = true;
+  for (const li of document.querySelectorAll('#flow4 li')){ li.classList.add('lit'); keepVisible(li); await sleep(850); }
+  S.iv.played = true; S.ibusy = false;
+  const y = scrollY; renderIntro(); window.scrollTo({top:y, behavior:'instant'});
+  keepVisible(document.querySelector('.point'));
+}
+
+/* STEP 5：おさらい */
+function i5(){
+  const v = S.iv;
+  return `<section class="card"><h2>おさらいクイズ</h2><p class="muted">3問だけ。答えると、すぐに解説が出ます。</p>
+    <div class="quiz">${QUIZ.map((q, i) => { const a = v.quiz[i]; return `<div><p class="qz-q">Q${i + 1}. ${esc(q.q)}</p>
+      <div class="qz-c">${q.c.map((c, j) => `<button type="button" data-act="iquiz" data-id="${i}:${j}" class="${a != null ? (j === q.a ? 'right' : (j === a ? 'wrong' : '')) : ''}" ${a != null ? 'disabled' : ''}>${esc(c)}</button>`).join('')}</div>
+      ${a != null ? `<div class="fb ${a === q.a ? 'ok' : 'ng'}"><b>${a === q.a ? '○ 正解！' : '× 惜しい！'}</b>${esc(q.why)}</div>` : ''}</div>`; }).join('')}</div>
+  </section>
+  ${quizDone() ? `<section class="card point"><h2>準備OK！</h2><ul><li>エージェントの基本がそろいました。依頼1から、実際にエージェントを直していきましょう。</li><li>分からない言葉は、画面上の「ことば」からいつでも確かめられます。</li></ul></section>` : ''}`;
+}
+
+/* =====================================================================
    8. 操作
    ===================================================================== */
 const ACT = {
@@ -1294,6 +1597,19 @@ const ACT = {
   test(){ runTests(); },
   ff(){ S.ff = true; },
   showclear(){ showClear(); },
+  intro(){ startIntro(); },
+  gloss(){ showGloss(); },
+  icompare(){ introCompare(); },
+  igive(id){ if (S.view !== 'intro' || S.iv.given.includes(id)) return; S.iv.given.push(id); keepPos(renderIntro); if (S.iv.given.length === 3) keepVisible(document.querySelector('.point')); },
+  isort(id){ if (S.view !== 'intro' || S.iv.sortPick) return; S.iv.sortPick = id; keepPos(renderIntro); keepVisible($('#sortNext')); },
+  isortnext(){ const v = S.iv; if (!v.sortPick) return; v.sortAns.push(v.sortPick === SORT[v.sortI].a); v.sortPick = null;
+    if (v.sortAns.length < SORT.length){ v.sortI++; keepPos(renderIntro); } else { renderIntro(); window.scrollTo({top:0, behavior:'instant'}); } },
+  iplay(){ introPlay(); },
+  iquiz(id){ const [i, j] = id.split(':').map(Number); if (S.iv.quiz[i] != null) return; S.iv.quiz[i] = j; keepPos(renderIntro);
+    if (quizDone()){ prog.intro = true; save(); keepVisible(document.querySelector('.point')); } },
+  inext(){ if (S.ibusy || !introDone()) return; igo(S.ist + 1); },
+  iback(){ if (S.ibusy) return; igo(S.ist - 1); },
+  ifinish(){ prog.intro = true; save(); startStage(1); },
   add(id){ if (S.running) return; if (!S.cfg.topic.includes(id)) S.cfg.topic.push(id); changed(true); },
   rm(id){ if (S.running) return; const l = S.cfg.topic, i = l.indexOf(id); if (i >= 0) l.splice(i, 1); changed(true); },
   up(id){ move(id, -1); },
@@ -1312,6 +1628,7 @@ const ACT = {
     b.dataset.armed = '1'; b.textContent = 'もう一度押すと、記録を消します';
   },
 };
+function keepPos(fn){ const y = scrollY; fn(); window.scrollTo({top:y, left:0, behavior:'instant'}); }
 function move(id, d){ if (S.running) return; const l = S.cfg.topic, i = l.indexOf(id), j = i + d; if (i < 0 || j < 0 || j >= l.length) return; [l[i], l[j]] = [l[j], l[i]]; changed(true); }
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
