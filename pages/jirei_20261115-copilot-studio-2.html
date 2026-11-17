@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（LTM）。2026年11月15日作成。公開情報（Microsoft Adoption）をもとにまとめています。">
+<title>休暇申請も規程さがしもチャットで完結。LTM の人事エージェントは約50万件の相談に対応しました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月15日／IT コンサルティング（LTM）・人事と営業</p>
+
+  <h1>休暇申請も規程さがしもチャットで完結。LTM の人事エージェントは約50万件の相談に対応しました</h1>
+
+  <div class="lead">
+    <p>約87,000人が働く IT コンサルティング会社の LTM では、休暇申請や規程さがしのたびに複数のシステムを行き来する必要があり、社員と人事の両方に手間がかかっていました。</p>
+    <p>そこで Copilot Studio で人事の窓口をまとめるエージェント「RAIma」を作り、Teams のチャットから申請や質問ができるようにしました。営業向けにも、提案資料をさがすエージェントを作っています。</p>
+    <p>RAIma は公開以来、約50万件のやりとりに対応し、毎月7万8,000人以上が使い、全体の生産性が15%上がったと公表しています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>休暇を申請するときは勤怠のシステム、規程を確かめるときは社内ポータル、パソコンの申請は別の窓口。どこで何をすればよいか分からず、結局人事に問い合わせる。人事の担当者は、同じような質問や手続きの対応に追われてしまう。そんな場面はよくあります。</p>
+  <p>LTM は、40か国以上で事業をする IT コンサルティングの会社です。休暇の申請、規程の確認、勤怠の修正、各種の申請などの日常の手続きは、別々のシステムにまたがる手作業が多く、社員や管理職を待たせ、人事の事務の負担を増やしていました。営業部門でも、提案依頼（RFP）に答えるたびに、事例や最新の提案資料、過去の提案書をさがすのに多くの時間を使っていました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>使ったのは Copilot Studio（プログラムをほとんど書かずに、社内向けの AI エージェントを作れる Microsoft のツール）です。人事の窓口を1つにまとめるエージェント「RAIma」を作り、Microsoft 365 Copilot の中で使えるようにしました。入社から退職までの人事の手続きを、1つの会話の窓口で扱う考え方です。</p>
+  <p>RAIma は、SharePoint（社内の共有ファイル置き場）、ServiceNow（社内の申請や問い合わせを管理する仕組み）、社内の人事システムにつながっています。4か月かからずに作り上げました。LTM ではチームの90%が AI の研修を受けています。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="人事エージェント RAIma の流れ">
+      <li><div class="box">社員が Teams で<br>話しかける</div></li>
+      <li><div class="box">RAIma が<br>用件を理解</div></li>
+      <li><div class="box">規程や人事<br>システムを参照</div></li>
+      <li><div class="box">答える・申請や<br>受付票を作る</div></li>
+    </ol>
+    <figcaption>人事エージェント RAIma の流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>社員は、Microsoft Teams（社内のチャットと会議のツール）の Copilot Chat から RAIma に話しかけます。</li>
+    <li>RAIma は、規程についての質問に答えるだけでなく、休暇の申請、座席の予約、パソコンなどの備品の申請、問い合わせの受付票づくりまで、その場で手続きを進めます。</li>
+    <li>新しく入った社員には、入社日から45日目までの手順を案内し、必要な作業や情報、社内ツールの使い方を手伝います。</li>
+    <li>管理職には、状況に合わせたダッシュボード（数字をまとめた画面）と分析を示し、判断を助けます。</li>
+  </ol>
+  <p>営業向けには、Copilot Studio で「A.S.K Agentic AI」という助手を作りました。40以上の SharePoint の資料置き場や過去の提案書につながり、営業担当者が普通の言葉で質問すると、関係する事例や最新の承認済み資料を見つけたり、提案依頼への回答の下書きを作ったりします。答えは、その人が見てよい資料の範囲（アクセス権）に合わせて返します。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>休暇申請や規程確認のたびに、別々のシステムを行き来する手作業がありました。社員や管理職は待たされ、人事は事務の対応に追われていました。</p></div>
+    <div class="after"><h3>いま</h3><p>Teams のチャット1つで、質問と手続きができます。社員は「システムを渡り歩かなくても、チャットで全部そろう」と話しています（意訳）。</p></div>
+  </div>
+  <p>LTM が公表した数字では、RAIma は公開以来約50万件のやりとりに対応し、フィードバック率は75%（出典の表現のままで、定義は書かれていません）、全体の生産性は15%上がりました。毎月7万8,000人以上が使っています。答えの正確さと対応できる範囲が広がり、作るときと保守の手間も減ったとしています。人事の取り組みとして、この1年で6つの賞を受けました。</p>
+  <p>営業の A.S.K Agentic AI は、営業・提案前の技術支援・営業支援の1,000人以上が使えます。時間の短縮などの数字は公表されていません。2026年の Stevie Awards で営業支援の部門の銀賞を受けています。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>人事や総務によく来る問い合わせと手続きを10個ほど書き出し、「答えるだけ」のものと「手続きが要る」ものに分けます。</li>
+    <li>まず「答えるだけ」の質問に絞り、規程の置き場所（SharePoint など）をもとに答えるエージェントを試作します。</li>
+    <li>少人数で使ってもらい、答えの正しさを確かめてから、申請などの手続きとのつなぎこみを情報システム部門と相談します。</li>
+  </ol>
+  <p>準備するもの：よくある質問の一覧と、最新の規程です。Copilot Studio を使えるか、ServiceNow などの社内システムにつなげるかは、ライセンスや社内の設定で変わります。最初は情報システム部門に相談してください。</p>
+  <p class="src-note">※ 04 の3ステップは、Copilot Studio の一般的な作り方で補っています。LTM が実際に使った設定や作った順番は公開されていません。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>答えるだけでなく「手続き」まで任せるなら、つなぎこみが要ります</strong>
+    <p>出典によると、LTM の困りごとは「別々のシステムをまたぐ手作業」でした。RAIma は SharePoint、ServiceNow、人事システムにつなぐことで、質問への回答に加えて、休暇申請などの手続きまで進められるようになっています。営業の助手では、その人が見てよい資料だけを返すアクセス権の仕組みを入れています。</p>
+  </div>
+  <p>社内で真似するときは、人事の情報には個人情報が多いことを忘れないでください。誰がどの情報を見られるか（アクセス権）を先に決めましょう。また、AI はもっともらしい間違い（ハルシネーション）をすることがあります。規程の解釈や大事な申請は、人が確かめられる窓口を残しておくと安心です。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、窓口を1つにまとめ、「調べる」と「手続きする」を同じ会話でできるようにしたことです。同じ考え方を、人事だけでなく営業の資料さがしにも広げています。最高情報責任者（CIO）は「くり返しの仕事はエージェントが受け持ち、人は発想や判断、お客様の事情を持ちこむ」と話しています（意訳）。</p>
+  <p>自分の職場に置き換えると、経費精算や出張の手続き、IT の問い合わせ窓口、営業の提案資料さがしなど、「いくつものシステムや置き場所をまたいで調べる仕事」が候補になりそうです。</p>
+
+  <footer>
+    <p>出典：Microsoft Adoption「LTM transforms HR and Sales Organization with AI-Powered Copilot Agents」（ページ更新日 2026年8月17日）<br>
+    <a href="https://adoption.microsoft.com/en-us/agent-transformation-stories/ltm/">https://adoption.microsoft.com/en-us/agent-transformation-stories/ltm/</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月15日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

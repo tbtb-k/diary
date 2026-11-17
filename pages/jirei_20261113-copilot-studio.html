@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（OneSchool Global）。2026年11月13日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>1本に最大1時間かかっていた教材の点検が15分に。OneSchool Global の「点検係エージェント」</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月13日／教育（OneSchool Global）・教材の品質チェック</p>
+
+  <h1>1本に最大1時間かかっていた教材の点検が15分に。OneSchool Global の「点検係エージェント」</h1>
+
+  <div class="lead">
+    <p>20か国に学校をもつ教育ネットワークの OneSchool Global では、毎年約4,000本の教材を人の手で点検していて、1本に最大1時間かかっていました。</p>
+    <p>社内の発案をもとに、Copilot Studio で教材を点検するエージェント（AI の助手）を作り、評価表の下書きまで自動で用意するようにしました。</p>
+    <p>点検の時間は1本15分になり、年間で約3,000時間を減らせたと公表しています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>マニュアルや研修資料、手順書を、決まったルールに沿っているか毎年見直す。量が多く、1本ずつ読んで、チェック表に書きこみ、承認に回す。大事な仕事なのに、時間がかかって本来の業務を圧迫してしまう。そんな場面は多くの職場にあります。</p>
+  <p>OneSchool Global は、120以上の校舎で8,000人以上が学ぶ学校のネットワークです。先生が書く「Assignment（学期単位の大きな教材）」は、毎年約4,000本を点検する必要がありました。内容、地域ごとの教育基準に合っているか、採点の基準を確かめ、承認の流れに回す作業で、1本に最大1時間かかっていました。基準は国や州で違い、教材は毎年見直しが要ります。先生からは「事務作業を減らして、教えることに時間を使いたい」という声が出ていました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>使ったのは Copilot Studio（プログラムをほとんど書かずに、社内向けの AI エージェントを作れる Microsoft のツール）です。作ったのは「Assignment Review Agent（教材点検エージェント）」で、教材を集め、基準と照らし合わせ、評価表の下書きを Word で作ります。</p>
+  <p>きっかけは社内からでした。北米の職員が試作品を作り、点検で一番時間のかかる部分を AI が手伝えることを示しました。本番の仕組みは、パートナー企業の Engage Squared と一緒に作っています。教材が置かれた学習管理システム Canvas（オンラインで授業や教材を管理する仕組み）と、SharePoint（社内の共有ファイル置き場）につないでいます。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="教材点検エージェントの流れ">
+      <li><div class="box">先生が教材の<br>リンクを渡す</div></li>
+      <li><div class="box">見るページを<br>選ぶ</div></li>
+      <li><div class="box">AI が基準と<br>照らし合わせる</div></li>
+      <li><div class="box">評価表の下書き<br>（Word）を作る</div></li>
+      <li><div class="box">先生が直して<br>承認する</div></li>
+    </ol>
+    <figcaption>教材点検エージェントの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>先生が教材（コース）のリンクを渡すと、エージェントが Canvas から関係する内容を集めます。</li>
+    <li>先生が、点検に含めるページを選びます。関係のない部分は見ないようにします。</li>
+    <li>エージェントが、教育基準と採点の基準に照らして内容を確かめ、意見をまとめた文と、記入済みの評価表を Word で作ります。</li>
+    <li>先生が中身を直して承認します。どの段階でも人の承認が必要です。</li>
+    <li>点検ごとに「どの教材を、誰が点検し、結果はどうだったか」が記録され、学校全体の状況を見られるようになりました。</li>
+  </ol>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>年に約4,000本の教材を人が1本ずつ読み、基準を確かめ、評価表を書いていました。1本に最大1時間かかっていました。</p></div>
+    <div class="after"><h3>いま</h3><p>エージェントが下書きまでを用意し、先生は確認と仕上げに集中します。1本の点検は15分になりました。</p></div>
+  </div>
+  <p>OneSchool Global が公表した数字では、点検時間は75%減り、年間で約3,000時間（教員の勤務日にして375日分）を減らせました。経験のある教員が確かめたところ、エージェントの判定はおよそ90%正確だったとしています。記録が残るので、校舎ごとのばらつきを見つけて研修につなげることもできるようになりました。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>毎年・毎月くり返している「書類の点検」を1つ選び、いまのチェック表を用意します。</li>
+    <li>チェック表の項目を、「何が書かれていれば合格か」が分かる文章に書き直します。</li>
+    <li>過去の点検済みの書類を数本使い、エージェントの結果と人の結果を比べます。合うまで指示を直します。</li>
+  </ol>
+  <p>準備するもの：点検のルールとチェック表、点検済みの見本です。Copilot Studio を使えるかどうか、外部のシステム（この事例では Canvas）につなげるかどうかは、ライセンスや社内の設定で変わります。最初は情報システム部門に相談してください。</p>
+  <p class="src-note">※ 04 の3ステップは、Copilot Studio の一般的な作り方で補っています。OneSchool Global が実際に使った設定や指示文は公開されていません。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>正確さは約90%。最後は人が決める前提です</strong>
+    <p>出典では、判定の正確さは「経験のある教員が確かめて約90%」とされています。そのため、どの段階でも人の承認を必須にしています。また、基準は国や州で違うため、地域ごとの決まりを守れる作りにする必要がありました。</p>
+  </div>
+  <p>社内で真似するときは、AI が見てよい資料の範囲（アクセス権）を先に決めておきましょう。AI はもっともらしい間違い（ハルシネーション）をすることがあります。「AI が合格と言ったから OK」にはせず、人が確かめる流れを残してください。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、AI に判断を任せたのではなく、「集める・照らし合わせる・下書きする」を任せたことです。人は確認と仕上げに集中できます。OneSchool Global は次に、教材を作る段階から先生を手伝う「Assignment Design Agent（教材づくりエージェント）」を計画しています。点検の前の段階に広げる、という順番も参考になります。</p>
+  <p>自分の職場に置き換えると、契約書のひな形チェック、社内規程に沿った申請書の確認、マニュアルの年次見直しなど、「基準と照らし合わせて表に記入する」仕事が候補になりそうです。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「OneSchool Global transforms curriculum quality at scale with Microsoft Copilot Studio」（ページ表示日 2026年9月15日）<br>
+    <a href="https://www.microsoft.com/en/customers/story/27278-oneschool-global-microsoft-copilot-studio">https://www.microsoft.com/en/customers/story/27278-oneschool-global-microsoft-copilot-studio</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月13日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
