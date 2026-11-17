@@ -30,3 +30,4 @@
 
 - 2026-11-17：旧ルーティン（claude.ai のチャット側で作ったもの）は Artifact を作るだけで、GitHub への push ができていなかった。Code のルーティン＋このスキルに作り直した。
 - 2026-11-17：ネットワークで読めるかを確認。`mc.merill.net`・`github.blog`・`openai.com`・`blog.google`・`*.watch.impress.co.jp`・`www.publickey1.jp`・`www.kesslernity.com` は、環境の許可リストに入れるまで「CONNECT tunnel failed, response 403」で読めなかった。`www.microsoft.com`・`news.microsoft.com` は相手サイト側が自動アクセスを断ることがある（403）。
+- 2026-11-17：環境（Default）の許可リストに 15 ホストを追加（`mc.merill.net`・`github.blog`・`openai.com`・`blog.google`・`workspaceupdates.googleblog.com`・`ai.watch.impress.co.jp`・`cloud.watch.impress.co.jp`・`www.watch.impress.co.jp`・`forest.watch.impress.co.jp`・`www.publickey1.jp`・`www.kesslernity.com`・`techcrunch.com`・`www.theregister.com`・`qiita.com`・`blog-en.topedia.com`）。追加後は読めることを確認。ただし `openai.com` は相手サイト側が 403 を返す → OpenAI の話題は GitHub Changelog・Microsoft の発表・報道（TechCrunch など）で裏を取る。
