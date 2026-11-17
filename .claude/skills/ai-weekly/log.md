@@ -1,0 +1,33 @@
+# AI Weekly 記録帳
+
+毎号の公開記録と、実行で気づいたことのメモです。号数は「前号の番号＋1」です（試作号が No.00）。
+
+## 発行済み
+
+| No. | 号 | 対象期間 | ファイル | メモ |
+|---|---|---|---|---|
+| 00 | 2026/09/23号 | 09/16–09/22 | `pages/report_20260923.html` | 試作号。完成形の見本 |
+| 01 | 2026/09/30号 | 09/23–09/29 | `pages/report_20260930.html` | 旧ルーティン作成。サイトへは手作業でアップ |
+| 02 | 2026/10/07号 | 09/30–10/06 | `pages/report_20261007.html` | 旧ルーティン作成（Artifact のみ）。2026-11-17 にサイトへ追加 |
+| 03 | 2026/10/14号 | 10/07–10/13 | `pages/report_20261014.html` | 同上 |
+| 04 | 2026/10/21号 | 10/14–10/20 | `pages/report_20261021.html` | 同上 |
+| 05 | 2026/10/28号 | 10/21–10/27 | `pages/report_20261028.html` | 同上 |
+| 06 | 2026/11/04号 | 10/28–11/03 | `pages/report_20261104.html` | 同上 |
+| 07 | 2026/11/11号 | 11/04–11/10 | `pages/report_20261111.html` | 同上 |
+
+<!-- 新しい号はこの上に1行ずつ足す（例：| 08 | 2026/11/18号 | 11/11–11/17 | `pages/report_20261118.html` | Ignite 週 | ） -->
+
+## 続けて追いかける話題
+
+前号の「来週以降の注目予定」に入れたものから、続報が出たら本編で拾うものです。号を出すたびに、終わったものは消し、新しいものを足します。
+
+- Microsoft Ignite 2026（11/17–20）の発表 → 11/18号・11/25号で拾う
+- 12/02 Power Platform プロンプトのモデル移行・Claude／Grok 退役（MC1536101）
+- 12月上旬〜中旬 従量課金モデル（GPT-6 Astra、Claude Fable 5.1）の GA（MC1519122）
+- 12/08 Power BI で M365 Copilot が既定で有効に（MC1546429）
+
+## 実行メモ
+
+- 2026-11-17：旧ルーティン（claude.ai のチャット側で作ったもの）は Artifact を作るだけで、GitHub への push ができていなかった。Code のルーティン＋このスキルに作り直した。
+- 2026-11-17：ネットワークで読めるかを確認。`mc.merill.net`・`github.blog`・`openai.com`・`blog.google`・`*.watch.impress.co.jp`・`www.publickey1.jp`・`www.kesslernity.com` は、環境の許可リストに入れるまで「CONNECT tunnel failed, response 403」で読めなかった。`www.microsoft.com`・`news.microsoft.com` は相手サイト側が自動アクセスを断ることがある（403）。
+- 2026-11-17：環境（Default）の許可リストに 15 ホストを追加（`mc.merill.net`・`github.blog`・`openai.com`・`blog.google`・`workspaceupdates.googleblog.com`・`ai.watch.impress.co.jp`・`cloud.watch.impress.co.jp`・`www.watch.impress.co.jp`・`forest.watch.impress.co.jp`・`www.publickey1.jp`・`www.kesslernity.com`・`techcrunch.com`・`www.theregister.com`・`qiita.com`・`blog-en.topedia.com`）。追加後は読めることを確認。ただし `openai.com` は相手サイト側が 403 を返す → OpenAI の話題は GitHub Changelog・Microsoft の発表・報道（TechCrunch など）で裏を取る。
