@@ -279,8 +279,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 16, date: '2026-11-17' };
+const GAME = { day: 17, date: '2026-11-18' };
 const PATCH_NOTES = [
+  { day: 17, date: '2026-11-18', title: 'ボス戦を、決着がつきやすくしたよ！',
+    items: ['ボスが出ているあいだは、自爆する敵「ドカン」が来なくなったよ', 'ボス戦が1分つづくと、ボスが弱ってひびが入るよ。そこからは攻撃がぐっと効くよ'],
+    ask: 'ボス戦がむずかしすぎたり、長すぎたりしなかったか教えてね！' },
   { day: 16, date: '2026-11-17', title: 'ほしくずが音楽になったよ！',
     items: ['ほしくずをつづけて拾うと「ドレミソラ」の音階で音が上がっていくよ', '吸い寄せられるほしくずに、光のしっぽが付いたよ', '10個つづけて拾うたびに、キラッと光ってはじけるよ'],
     ask: '音ONで、ほしくずをまとめて吸い込んだときの気持ちよさを感じてみてね！' },
@@ -337,6 +340,7 @@ const REPO = 'tbtb-k/diary';
    ================================================================ */
 const TAU = Math.PI * 2, STEP = 1 / 60;
 const BOSS_AT = 300;      // ボスが出る時間（秒）
+const BOSS_WEAK = { at: 60, mul: 1.6 }; // ボス戦が長引いたら、ボスが弱って受けるダメージが増える（Day 17）
 const VIEW_MIN = 400;     // 画面の短い辺に映る広さ（ゲーム内の長さ）
 const MAX_EN = 260;       // 同時に出る敵の上限
 const MAX_GEMS = 350;     // ほしくずの上限（超えたら既存のほしくずに合算）
@@ -536,7 +540,7 @@ function director(dt) {
 }
 function pickType(t) {
   const names = ['drifter', 'darter', 'brute', 'shooter', 'splitter', 'bomber'];
-  const w = [1, clamp((t - 35) / 90, 0, 0.7), clamp((t - 90) / 160, 0, 0.4), clamp((t - 150) / 250, 0, 0.3), clamp((t - 60) / 120, 0, 0.35), clamp((t - 100) / 140, 0, 0.3)];
+  const w = [1, clamp((t - 35) / 90, 0, 0.7), clamp((t - 90) / 160, 0, 0.4), clamp((t - 150) / 250, 0, 0.3), clamp((t - 60) / 120, 0, 0.35), G.boss ? 0 : clamp((t - 100) / 140, 0, 0.3)]; // ボス戦中はドカンを出さない（Day 17）
   let r = rng() * w.reduce((a, b) => a + b, 0);
   for (let i = 0; i < names.length; i++) { r -= w[i]; if (r <= 0) return names[i]; }
   return 'drifter';
@@ -562,6 +566,7 @@ function spawnBoss() {
   const e = spawnEnemy('boss', rng() * TAU, G.spawnR * 0.72);
   // Lv25 から、1レベルごとにボスHP+7%（とても強いビルドでボス戦が一瞬で終わらないように。Day 12）
   e.hp = e.maxHp = ET.boss.hp * (1 + Math.max(0, G.level - 24) * 0.07);
+  e.born = G.t; e.weak = false;
   e.mode = 'chase'; e.ringCd = 2.4; e.chargeCd = 6; e.ringOff = 0; e.modeT = 0; e.cx = 0; e.cy = 0;
   G.boss = e;
   banner('ボス出現！', 'ブラックスターを倒せばクリア', '#ff3b5c', true);
@@ -605,6 +610,12 @@ function stepEnemies(dt) {
 function bossAI(e, dt, dx, dy, d) {
   const g = G, enraged = e.hp < e.maxHp * 0.5, kd = Math.exp(-dt * 7);
   e.rot += e.spin * dt * (enraged ? 2 : 1);
+  if (!e.weak && g.t - e.born >= BOSS_WEAK.at && !g.ending) {
+    e.weak = true;
+    banner('ボスが弱った！', 'ひびが入ったよ。今がチャンス！', '#ffd84a', true);
+    Snd.play('big'); shake(6); vib(40);
+    if (g.fxOn) FX.rings.push({ x: e.x, y: e.y, r: e.r, max: e.r * 4, t: 0, dur: 0.6, color: '#ffd84a' });
+  }
   if (e.mode === 'chase') {
     const sp = e.spd * (d > 420 ? 2.6 : 1) * (enraged ? 1.15 : 1);
     e.x += (dx * sp + e.kx) * dt; e.y += (dy * sp + e.ky) * dt;
@@ -757,7 +768,7 @@ function jag(pts) {
 }
 function damage(e, dmg, dx, dy, kb) {
   if (e.dead) return;
-  const v = dmg * (0.9 + rng() * 0.2);
+  const v = dmg * (0.9 + rng() * 0.2) * (e.weak ? BOSS_WEAK.mul : 1);
   e.hp -= v; e.flash = 0.08;
   if (kb) { const l = Math.hypot(dx, dy) || 1; e.kx += dx / l * kb * e.kb; e.ky += dy / l * kb * e.kb; }
   if (G.fxOn && G.t - e.numT > 0.2) { e.numT = G.t; addNum(e.x, e.y - e.r, v, '#ffffff'); }
@@ -1356,6 +1367,20 @@ function drawWorld() {
       ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.fillRect(e.x - 22, e.y - e.r - 12, 44, 4);
       ctx.fillStyle = '#ff7a3d'; ctx.fillRect(e.x - 22, e.y - e.r - 12, 44 * clamp(e.hp / e.maxHp, 0, 1), 4);
     }
+    if (e.type === 'boss' && e.weak) {
+      // 弱ったボスには、回る黄色いひび（Day 17）
+      ctx.setTransform(K, 0, 0, K, OX, OY);
+      ctx.globalAlpha = 0.6 + Math.sin(now * 10) * 0.3; ctx.strokeStyle = '#ffd84a'; ctx.lineWidth = 2.2; ctx.lineJoin = 'round';
+      ctx.beginPath();
+      for (let i = 0; i < 4; i++) {
+        const a0 = e.rot + i * TAU / 4, c = Math.cos(a0), s = Math.sin(a0), q = -s, w = c;
+        ctx.moveTo(e.x + c * e.r * 0.28, e.y + s * e.r * 0.28);
+        ctx.lineTo(e.x + c * e.r * 0.55 + q * 6, e.y + s * e.r * 0.55 + w * 6);
+        ctx.lineTo(e.x + c * e.r * 0.78 - q * 5, e.y + s * e.r * 0.78 - w * 5);
+        ctx.lineTo(e.x + c * e.r * 1.02, e.y + s * e.r * 1.02);
+      }
+      ctx.stroke(); ctx.globalAlpha = 1;
+    }
   }
   // 弾
   ctx.globalCompositeOperation = 'lighter';
@@ -1728,6 +1753,7 @@ window.__game = {
     trails() { return G.gems.filter(gm => gm.mag && gm.vx).length; },
     hurt(n) { G.player.inv = 0; hurt(n); },
     setTime(t) { G.t = t; G.nextRush = Math.ceil((t + 0.01) / 60) * 60; G.elites = G.elites.filter(x => x > t); },
+    hitBoss(n) { const b = G.boss; if (!b || b.dead) return 0; const h = b.hp; damage(b, n, 0, 0, 0); return h - b.hp; },
     killOne(type) { const e = G.enemies.find(o => o.type === type && !o.dead); if (e) kill(e); return !!e; },
     spawn(type, n = 1) { for (let i = 0; i < n; i++) spawnEnemy(type); },
     give(id, lv = 1) { if (UPG[id].kind === 'w') G.weapons[id] = lv; else G.passives[id] = lv; calcStats(); },

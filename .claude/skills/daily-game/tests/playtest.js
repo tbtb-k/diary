@@ -137,6 +137,7 @@ let browser;
     // 自爆する敵「ドカン」（Day 12）：近づくと点滅して爆発し、まわりの敵と自機にダメージ。爆発の前に倒せば爆発しない
     const bm = await page.evaluate(() => {
       const d = window.__game.debug, g = window.__game.world(), p = g.player;
+      d.give('regen', 0); // ナノリペアの回復でダメージが18未満に見えないように（Day 17）
       g.enemies.forEach(e => { e.dead = true; }); g.enemies.length = 0;
       d.spawn('bomber', 1); const b = g.enemies[g.enemies.length - 1]; b.x = p.x + 50; b.y = p.y; b.hp = 1e6; // 自機の武器に先に倒されないように（爆発のしくみだけを見る）
       d.spawn('drifter', 1); const v = g.enemies[g.enemies.length - 1]; v.x = p.x + 95; v.y = p.y + 20; v.spd = 0;
@@ -230,6 +231,29 @@ let browser;
     check('5:00 でボスが出る', (await page.evaluate(() => window.__game.state())).boss !== null);
     await wait(1200);
     await shot(page, '06_boss_390');
+    // ボス戦中はドカンが出ない／60秒たつとボスが弱って受けるダメージが増える（Day 17）
+    const bw = await page.evaluate(() => {
+      const g = window.__game, G = g.world();
+      G.enemies.forEach(e => { if (e.type === 'bomber') e.dead = true; });
+      const hpKeep = G.boss.hp; G.boss.hp = G.boss.maxHp = 1e6;
+      g.sim(40, () => [0, 0]);
+      const bombers = G.enemies.filter(e => e.type === 'bomber' && !e.dead).length;
+      const weak0 = G.boss.weak;
+      let before = 0; for (let i = 0; i < 20; i++) before += g.debug.hitBoss(100);
+      G.boss.born = G.t - 59.97;
+      return { bombers, weak0, before, hpKeep };
+    });
+    await wait(500);
+    const bw2 = await page.evaluate(() => {
+      const g = window.__game, G = g.world();
+      let after = 0; for (let i = 0; i < 20; i++) after += g.debug.hitBoss(100);
+      return { weak: G.boss.weak, after, banner: document.getElementById('banner').textContent };
+    });
+    check('ボス戦中はドカンが出ない', bw.bombers === 0 && !bw.weak0, `40秒でドカン ${bw.bombers}体`);
+    const ratio = bw2.after / bw.before;
+    check('ボス戦が60秒続くとボスが弱り、受けるダメージが約1.6倍になる', bw2.weak && ratio > 1.4 && ratio < 1.8 && /弱った/.test(bw2.banner), `×${ratio.toFixed(2)} / ${bw2.banner}`);
+    await shot(page, '06b_boss_weak_390');
+    await page.evaluate(() => { const B = window.__game.world().boss; B.hp = B.maxHp = 5400; });
     // ゲームオーバー → 結果 → もう1回
     await page.evaluate(() => { window.__game.debug.god(false); window.__game.debug.hurt(9999); });
     await page.waitForFunction(() => window.__game.scene === 'result', null, { timeout: 8000 }).catch(() => {});
