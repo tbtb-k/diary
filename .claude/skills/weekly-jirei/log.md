@@ -61,6 +61,8 @@
 | 2026-11-15 | Copilot Studio（Agent Builder 枠の代替） | LTM | pages/jirei_20261115-copilot-studio-2.html | https://adoption.microsoft.com/en-us/agent-transformation-stories/ltm/ |
 | 2026-11-17 | Copilot Studio | CSX | pages/jirei_20261117-copilot-studio.html | https://www.microsoft.com/en/customers/story/24556-csx-microsoft-copilot-studio |
 | 2026-11-17 | Copilot Studio（Agent Builder 枠の代替） | The Estée Lauder Companies | pages/jirei_20261117-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/23488-the-estee-lauder-companies-microsoft-copilot-studio |
+| 2026-11-19 | Copilot Studio | Rumo | pages/jirei_20261119-copilot-studio.html | https://www.microsoft.com/en/customers/story/25656-rumo-microsoft-copilot-studio |
+| 2026-11-19 | Copilot Studio（Agent Builder 枠の代替） | TotalEnergies | pages/jirei_20261119-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/25505-totalenergies-agents |
 
 ## ネタ帳（候補）
 
@@ -99,7 +101,17 @@
 - **Copilot Studio**｜Amgen（2025-04-30 公開、本文確認済み）
   https://www.microsoft.com/en/customers/story/23550-amgen-microsoft-copilot-studio
   研究開発の知識検索「Catalyst Copilot」、6週間で構築。成果の数字なし。
-- **Copilot Studio?**｜adoption.microsoft.com の一覧で未使用のもの：Virgin Money（24471）、Sirva（Dynamics 365 Contact Center）、Network Rail（Power Apps）、TotalEnergies（25505）、Dow（19829）。見送り：Wipro（2026-04-20、Studio は一般論のみで、エージェントは ISV 製）、EY（2025-11-18、数字なし）。
+- **Copilot Studio?**｜adoption.microsoft.com の一覧で未使用のもの：Virgin Money（24471）、Sirva（Dynamics 365 Contact Center）、Network Rail（Power Apps）、Dow（19829）。見送り：Wipro（2026-04-20、Studio は一般論のみで、エージェントは ISV 製）、EY（2025-11-18、数字なし）。
+
+- **Copilot Studio?**｜Amey（2025-08-01、本文確認済み）
+  https://www.microsoft.com/en/customers/story/24970-amey-agents
+  現場作業員が安全手順を聞ける「SharePoint エージェント」が中心（Agent Builder の記載なし）。数字なし。どちらの枠にも弱い。
+- **Copilot Studio?**｜Prague Airport（2025-07-10、本文確認済み）
+  https://www.microsoft.com/en/customers/story/24667-prague-airport-microsoft-365-copilot
+  Copilot Studio は製品名のみ。エージェントの作り方の記載なし。弱い。
+- **Copilot Studio?**｜Swiss Post（2025-12-18、本文確認済み）
+  https://www.microsoft.com/customers/story/25880-swiss-post-microsoft-365-copilot
+  Copilot 展開と研修が中心。Studio は「試している」程度。弱い。
 
 ### 見送り（その枠では記事にならない。読み直さなくてよい。枠の記載がないものは Agent Builder 枠）
 
@@ -143,3 +155,4 @@
 - 2026-11-13：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（OneSchool Global、State Farm。adoption.microsoft.com の agent-transformation-stories 一覧から本文確認して採用）にした。2本とも Agent Builder の記載なし。Cowork 枠は NFP（顧客事例 27422、2026-10-08、Cowork が主役の初の顧客事例。URL は power-automate だが中身は Cowork）。www.softbank.jp は名前解決できず読めなかった（ソフトバンクの Copilot Studio 事例ブログ 2026-10 は未確認）。
 - 2026-11-15：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（Kantar＝顧客事例 2025-11-18、LTM＝adoption.microsoft.com 2026-08-17 更新。ネタ帳の未読候補を本文確認して採用）にした。2本とも Agent Builder の記載なし。Kantar の顧客事例は curl では本文が取れず WebFetch で読んだ。LTM は curl で本文を取得できた。Cowork 枠は休み（検索結果は製品ページ・パートナー記事・既掲載の Inside Track のみ。GA ブログに LTM・Koch・Ooredoo Qatar などの社名はあるが中身なし）。windowsforum.com は名前解決できず読めなかった。
 - 2026-11-17：Agent Builder 枠は、WebSearch（標準・拡張）でも顧客事例が出ず、Copilot Studio を2本（CSX＝2025-06-23、Estée Lauder＝2025-04-16。adoption.microsoft.com の一覧にある顧客事例から本文確認して採用。どちらも公開から1年超）にした。2本とも Agent Builder の記載なし（ELC は「agent builder tool」という一般的な言い回しのみ）。Cowork 枠は休み（blogs.microsoft.com の copilot-cowork タグ4本、2026-09-28 のデータ発表ブログにも名前の出た顧客の使い方なし。SoftwareONE の記事は会員限定）。adoption の agent-transformation-stories は個別ページが廃止され、一覧は顧客事例へのリンクになっていた。顧客事例は curl では本文が取れず WebFetch で読んだ。www.softbank.jp は今回も接続できなかった。
+- 2026-11-19：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（Rumo＝2025-11-11、TotalEnergies＝2025-10-22。どちらも顧客事例を WebFetch で本文確認）にした。2本とも Agent Builder の記載なし。Cowork 枠は休み（検索結果は製品ページ・パートナー記事・Dynamics 365 プラグイン解説・既掲載の Inside Track のみ）。www.softbank.jp は今回も名前解決できず読めなかった（ネットワーク設定で許可が必要）。
