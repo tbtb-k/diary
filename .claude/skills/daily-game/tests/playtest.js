@@ -195,7 +195,8 @@ let browser;
     const oh = await page.evaluate(() => { const e = window.__orbE; const hit = e.hp < e.maxHp; e.dead = true; return hit; });
     check('進化したオービットの玉が、広がった輪の上の敵に当たる', oh);
     // ほしくずをひろう範囲（Day 11：72→80）
-    const mr = await page.evaluate(() => window.__game.world().st.magnetR);
+    // 前の場面で引力フィールドを選んでいることがあるので、いったん0にしてから確かめる（Day 18）
+    const mr = await page.evaluate(() => { const g = window.__game.world(), m = g.passives.magnet || 0; window.__game.debug.give('magnet', 0); const r = g.st.magnetR; window.__game.debug.give('magnet', m); return r; });
     check('ほしくずをひろう範囲が 80 ある（引力フィールドなし）', Math.abs(mr - 80) < 0.01, `magnetR=${mr}`);
     // ほしくずの音階と光の尾（Day 16）：つづけて拾うほど音が上がり（2オクターブで頭打ち）、10個ごとにキラッ、吸い寄せ中は尾が出る
     const gs = await page.evaluate(() => {
@@ -239,19 +240,26 @@ let browser;
       g.sim(40, () => [0, 0]);
       const bombers = G.enemies.filter(e => e.type === 'bomber' && !e.dead).length;
       const weak0 = G.boss.weak;
+      const barWeak0 = document.getElementById('bossbar').classList.contains('weak');
       let before = 0; for (let i = 0; i < 20; i++) before += g.debug.hitBoss(100);
       G.boss.born = G.t - 59.97;
-      return { bombers, weak0, before, hpKeep };
+      return { bombers, weak0, barWeak0, before, hpKeep };
     });
     await wait(500);
     const bw2 = await page.evaluate(() => {
       const g = window.__game, G = g.world();
       let after = 0; for (let i = 0; i < 20; i++) after += g.debug.hitBoss(100);
-      return { weak: G.boss.weak, after, banner: document.getElementById('banner').textContent };
+      const bb = document.getElementById('bossbar'), tag = bb.querySelector('.bw');
+      const fillBg = getComputedStyle(document.getElementById('bossfill')).backgroundImage;
+      return { weak: G.boss.weak, after, banner: document.getElementById('banner').textContent,
+        barWeak: bb.classList.contains('weak'), tagShown: !!tag && getComputedStyle(tag).display !== 'none' && tag.getBoundingClientRect().width > 0,
+        tagText: tag ? tag.textContent : '', yellow: /255, 216, 74/.test(fillBg),
+        fits: bb.getBoundingClientRect().right <= innerWidth && (!tag || tag.getBoundingClientRect().right <= innerWidth) };
     });
     check('ボス戦中はドカンが出ない', bw.bombers === 0 && !bw.weak0, `40秒でドカン ${bw.bombers}体`);
     const ratio = bw2.after / bw.before;
     check('ボス戦が60秒続くとボスが弱り、受けるダメージが約1.6倍になる', bw2.weak && ratio > 1.4 && ratio < 1.8 && /弱った/.test(bw2.banner), `×${ratio.toFixed(2)} / ${bw2.banner}`);
+    check('ボスが弱るとHPバーが黄色に変わり「弱ってる！」の印が出る（弱る前は出ない）', !bw.barWeak0 && bw2.barWeak && bw2.tagShown && bw2.yellow && bw2.fits, `前=${bw.barWeak0} 後=${bw2.barWeak} 印=「${bw2.tagText}」 黄色=${bw2.yellow} はみ出しなし=${bw2.fits}`);
     await shot(page, '06b_boss_weak_390');
     await page.evaluate(() => { const B = window.__game.world().boss; B.hp = B.maxHp = 5400; });
     // ゲームオーバー → 結果 → もう1回

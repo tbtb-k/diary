@@ -57,6 +57,13 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 .bossbar{margin:12px auto 0;max-width:320px;text-align:center;font:900 11px/1 var(--display);letter-spacing:.28em;color:#ffb3bf}
 .bossbar div{height:9px;border-radius:5px;background:rgba(255,59,92,.15);border:1px solid rgba(255,59,92,.65);overflow:hidden;margin-top:6px}
 .bossbar i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--orange));transform-origin:0 50%}
+.bossbar .bw{display:none;margin-left:.4em;font:800 11px/1 "M PLUS Rounded 1c",system-ui,sans-serif;letter-spacing:.06em;color:#1a1030;background:var(--yellow);border-radius:4px;padding:2px 6px;vertical-align:1px}
+.bossbar.weak{color:#ffe98a}
+.bossbar.weak .bw{display:inline-block}
+.bossbar.weak div{border-color:#ffd84a;background:rgba(255,216,74,.14);animation:bwpulse .7s ease-in-out infinite alternate}
+.bossbar.weak i{background:linear-gradient(90deg,#ffd84a,#fff3b0)}
+@keyframes bwpulse{from{box-shadow:0 0 2px rgba(255,216,74,.3)}to{box-shadow:0 0 14px rgba(255,216,74,.95)}}
+@media (prefers-reduced-motion: reduce){.bossbar.weak div{animation:none;box-shadow:0 0 10px rgba(255,216,74,.8)}}
 
 #banner{position:fixed;left:0;right:0;top:30%;z-index:6;text-align:center;pointer-events:none;opacity:0;padding:0 16px}
 #banner.on{animation:ban 2s cubic-bezier(.2,.9,.2,1) forwards}
@@ -171,7 +178,7 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
     <button id="b-pause" aria-label="一時停止"></button>
   </div>
   <div class="hudrow2"><span>LV <b id="lv">1</b></span><span>KILL <b id="kills">0</b></span></div>
-  <div class="bossbar" id="bossbar" hidden>BLACK STAR<div><i id="bossfill"></i></div></div>
+  <div class="bossbar" id="bossbar" hidden>BLACK STAR<b class="bw">弱ってる！×1.6</b><div><i id="bossfill"></i></div></div>
 </div>
 <div id="banner"></div>
 <div id="hint" class="off"><span>指をおいて、すべらせると動くよ　攻撃は自動！</span></div>
@@ -279,8 +286,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 17, date: '2026-11-18' };
+const GAME = { day: 18, date: '2026-11-19' };
 const PATCH_NOTES = [
+  { day: 18, date: '2026-11-19', title: '弱ったボスが、ひと目でわかるよ！',
+    items: ['ボスが弱ると、上のHPバーが黄色く光って点滅するよ', 'バーに「弱ってる！×1.6」の印も出るから、ボスが画面の外にいても今がチャンスってわかるよ'],
+    ask: 'ボス戦の後半、黄色いバーに気づけたか教えてね！' },
   { day: 17, date: '2026-11-18', title: 'ボス戦を、決着がつきやすくしたよ！',
     items: ['ボスが出ているあいだは、自爆する敵「ドカン」が来なくなったよ', 'ボス戦が1分つづくと、ボスが弱ってひびが入るよ。そこからは攻撃がぐっと効くよ'],
     ask: 'ボス戦がむずかしすぎたり、長すぎたりしなかったか教えてね！' },
@@ -1485,6 +1495,7 @@ function updateHud() {
   setText(el.lv, g.level); setText(el.kills, g.kills);
   const showBoss = !!(g.boss && !g.boss.dead);
   if (el.bossbar.hidden === showBoss) el.bossbar.hidden = !showBoss;
+  if (showBoss) el.bossbar.classList.toggle('weak', !!g.boss.weak);
   if (showBoss) el.bossf.style.transform = `scaleX(${clamp(g.boss.hp / g.boss.maxHp, 0, 1)})`;
 }
 function show(id) { for (const s of document.querySelectorAll('.screen')) s.hidden = s.id !== id; }
