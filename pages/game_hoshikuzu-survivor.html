@@ -286,8 +286,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 18, date: '2026-11-19' };
+const GAME = { day: 19, date: '2026-11-20' };
 const PATCH_NOTES = [
+  { day: 19, date: '2026-11-20', title: 'ドカンの爆発で「○体まきこみ！」',
+    items: ['自爆する敵「ドカン」の爆発で敵を2体以上たおすと、その場に「○体まきこみ！」って出るよ', '5体以上まきこむと、文字が大きな黄色になるよ'],
+    ask: 'ドカンを敵の群れのそばで爆発させて、何体まきこめるか試してみてね！' },
   { day: 18, date: '2026-11-19', title: '弱ったボスが、ひと目でわかるよ！',
     items: ['ボスが弱ると、上のHPバーが黄色く光って点滅するよ', 'バーに「弱ってる！×1.6」の印も出るから、ボスが画面の外にいても今がチャンスってわかるよ'],
     ask: 'ボス戦の後半、黄色いバーに気づけたか教えてね！' },
@@ -443,7 +446,7 @@ let acc = 0, lastT = 0, lastResult = null, levelOpts = [], levelOpenAt = 0;
 function newGame(seed) {
   rng = mulberry32(seed);
   G = {
-    seed, t: 0, level: 1, xp: 0, xpNeed: xpNeed(1), kills: 0, booms: 0, bonus: 0,
+    seed, t: 0, level: 1, xp: 0, xpNeed: xpNeed(1), kills: 0, booms: 0, lastChain: 0, chainBest: 0, bonus: 0,
     player: { x: 0, y: 0, r: 12, hp: 100, maxHp: 100, inv: 0, speed: 150, face: -Math.PI / 2, mvx: 0, mvy: 0 },
     weapons: { pulse: 1 }, passives: {}, st: null,
     wt: { pulse: 0.3, nova: 2, chain: 1, orbitAng: 0 },
@@ -818,12 +821,18 @@ function explode(e) {
   burst(e.x, e.y, '#ff6b4a', 26, 260, 4); burst(e.x, e.y, '#ffd84a', 14, 200, 3);
   if (g.fxOn) FX.rings.push({ x: e.x, y: e.y, r: 10, max: BOMB.r, t: 0, dur: 0.3, color: '#ff6b4a' });
   shake(5); Snd.play('boom');
-  const dmg = BOMB.hit * hpScale(g.t);
+  const dmg = BOMB.hit * hpScale(g.t), k0 = g.kills;
   query(e.x, e.y, BOMB.r + 30, o => {
     if (o === e || o.dead || o.type === 'boss') return; // ボスには効かない（ボス戦が短くなりすぎないように）
     const dx = o.x - e.x, dy = o.y - e.y;
     if (dx * dx + dy * dy < (BOMB.r + o.r) * (BOMB.r + o.r)) damage(o, dmg, dx, dy, 220);
   });
+  // 2体以上まきこんだら「○体まきこみ！」（Day 19）
+  const n = g.kills - k0; g.lastChain = n;
+  if (n >= 2) {
+    g.chainBest = Math.max(g.chainBest, n); Snd.play('chain');
+    if (g.fxOn) FX.nums.push({ x: e.x, y: e.y - 40, text: n + '体まきこみ！', color: n >= 5 ? '#ffd84a' : '#ffb39e', life: 1.1, max: 1.1, big: n >= 5 ? 19 : 15 });
+  }
   const px = p.x - e.x, py = p.y - e.y;
   if (px * px + py * py < (BOMB.r + p.r) * (BOMB.r + p.r)) { p.inv = 0; hurt(BOMB.dmg); }
 }
@@ -1438,9 +1447,20 @@ function drawWorld() {
   // ダメージの数字
   ctx.font = '800 11px "Orbitron", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   for (const n of FX.nums) {
+    if (n.big) continue;
     ctx.globalAlpha = clamp(n.life / 0.65 * 1.6, 0, 1);
     ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillText(n.text, n.x + 1, n.y + 1);
     ctx.fillStyle = n.color; ctx.fillText(n.text, n.x, n.y);
+  }
+  // 「○体まきこみ！」（Day 19）：大きめの文字で、出た瞬間に少しふくらむ
+  for (const n of FX.nums) {
+    if (!n.big) continue;
+    const k = n.max - n.life, sc = k < 0.12 ? 0.7 + k / 0.12 * 0.45 : Math.max(1, 1.15 - (k - 0.12) * 1.5);
+    const hw = Math.max(0, W / 2 / scale - 62), x = clamp(n.x, cam.x - hw, cam.x + hw); // 画面の端で文字が切れないように
+    ctx.globalAlpha = clamp(n.life / n.max * 2.2, 0, 1);
+    ctx.font = `900 ${Math.round(n.big * sc)}px "M PLUS Rounded 1c", sans-serif`;
+    ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(20,4,10,.85)'; ctx.strokeText(n.text, x, n.y);
+    ctx.fillStyle = n.color; ctx.fillText(n.text, x, n.y);
   }
   ctx.globalAlpha = 1;
   drawArrows();
@@ -1737,7 +1757,7 @@ window.__game = {
   state() {
     if (!G) return { scene };
     const p = G.player;
-    return { scene, t: +G.t.toFixed(2), hp: Math.round(p.hp), maxHp: p.maxHp, x: Math.round(p.x), y: Math.round(p.y), level: G.level, kills: G.kills, booms: G.booms,
+    return { scene, t: +G.t.toFixed(2), hp: Math.round(p.hp), maxHp: p.maxHp, x: Math.round(p.x), y: Math.round(p.y), level: G.level, kills: G.kills, booms: G.booms, lastChain: G.lastChain, chainBest: G.chainBest,
       arrows: arrowCount, enemies: G.enemies.length, gems: G.gems.length, weapons: Object.assign({}, G.weapons), passives: Object.assign({}, G.passives),
       evolved: pulseEvolved(), orbEvolved: orbitEvolved(), orbs: G.weapons.orbit ? orbitShape(G.weapons.orbit).n : 0, gemCombo: G.gemCombo, gemChains: G.gemChains, boss: G.boss ? Math.max(0, Math.round(G.boss.hp)) : null, clear: G.clear, over: G.over, done: !!G.done, score: calcScore(), fps: Math.round(fpsAvg), quality, parts: FX.parts.length, partMax: partMax() };
   },

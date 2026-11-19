@@ -151,6 +151,27 @@ let browser;
     });
     check('自爆する敵は近づくと点滅して爆発し、まわりの敵も巻きこむ', bm.fused && bm.boomed && bm.victim && bm.hurt >= 18, `点滅=${bm.fused} 爆発=${bm.boomed} 巻きこみ=${bm.victim} 自機-${bm.hurt}`);
     check('爆発する前に倒した自爆敵は爆発しない', bm.safeKill);
+    // 「○体まきこみ！」（Day 19）：爆発で2体以上倒すと大きな文字が出る。1体では出ない
+    // 文字は演出なので sim（演出オフ）ではなく、ふつうの時間の流れで確かめる
+    const chainSetup = (k) => page.evaluate((k) => {
+      const d = window.__game.debug, g = window.__game.world(), p = g.player;
+      d.god(true);
+      g.enemies.forEach(e => { e.dead = true; }); g.enemies.length = 0;
+      d.fxArrays()[1].length = 0;
+      d.spawn('bomber', 1); const b = g.enemies[g.enemies.length - 1]; b.x = p.x + 50; b.y = p.y; b.hp = 1e6;
+      for (let i = 0; i < k; i++) { d.spawn('drifter', 1); const v = g.enemies[g.enemies.length - 1]; v.x = p.x + 80 + i * 6; v.y = p.y + 30 - i * 12; v.spd = 0; v.hp = 1; }
+      b.fuse = 0.001; // 次のフレームの最初（武器より先）に爆発する
+    }, k);
+    const chainRead = () => page.evaluate(() => {
+      const d = window.__game.debug, g = window.__game.world(), big = d.fxArrays()[1].find(n => n.big);
+      return { chain: g.lastChain, best: g.chainBest, text: big ? big.text : '' };
+    });
+    await chainSetup(4); await wait(150); const c4 = await chainRead();
+    await shot(page, '04b_chain_390');
+    await chainSetup(1); await wait(150); const c1 = await chainRead();
+    await page.evaluate(() => window.__game.debug.god(false));
+    const ch = { chain4: c4.chain, best: c4.best, text: c4.text, chain1: c1.chain, big1: !!c1.text };
+    check('ドカンで2体以上倒すと「○体まきこみ！」が出る（1体では出ない）', ch.chain4 === 4 && ch.text === '4体まきこみ！' && ch.best >= 4 && ch.chain1 === 1 && !ch.big1, JSON.stringify(ch));
     await page.evaluate(() => { const p = window.__game.world().player; p.hp = p.maxHp; });
     // 一時停止
     await page.click('#b-pause');
