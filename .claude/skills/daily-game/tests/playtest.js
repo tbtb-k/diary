@@ -252,6 +252,15 @@ let browser;
     await page.waitForFunction(() => window.__game.state().boss !== null, null, { timeout: 5000 }).catch(() => {});
     check('5:00 でボスが出る', (await page.evaluate(() => window.__game.state())).boss !== null);
     await wait(1200);
+    // 遊んでいる最中に実績が取れると、その場で画面の上に小さく出る（Day 20）
+    const at = await page.evaluate(() => {
+      let have = {}; try { have = JSON.parse(localStorage.getItem('hs-ach') || '{}'); } catch (_) {}
+      const t = document.getElementById('achtoast'), r = t.getBoundingClientRect(), bb = document.getElementById('bossbar').getBoundingClientRect();
+      return { scene: window.__game.scene, boss: !!have.boss, on: t.classList.contains('on'), text: t.textContent, op: +getComputedStyle(t).opacity,
+        fits: r.left >= 0 && r.right <= innerWidth, below: r.top >= bb.bottom - 1, got: window.__game.world().achGot.map(a => a.id) };
+    });
+    check('遊んでいる最中に実績が取れると、その場で「実績ゲット！」が出る（結果画面を待たない）', at.scene === 'play' && at.boss && at.on && at.op > 0.5 && /実績ゲット/.test(at.text) && at.fits && at.below && at.got.includes('boss'),
+      `場面=${at.scene} 保存=${at.boss} 表示=「${at.text}」 はみ出しなし=${at.fits} ボスバーの下=${at.below} この回=${at.got.join(',')}`);
     await shot(page, '06_boss_390');
     // ボス戦中はドカンが出ない／60秒たつとボスが弱って受けるダメージが増える（Day 17）
     const bw = await page.evaluate(() => {
