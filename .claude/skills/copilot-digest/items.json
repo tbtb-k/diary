@@ -1,0 +1,1011 @@
+{
+ "version": 1,
+ "last_cutoff": "2026-11-21T05:25:04Z",
+ "last_issue": "20261121",
+ "issues": [
+  {
+   "issue": "20261121",
+   "file": "pages/admin_20261121-copilot.html",
+   "period_from": "2026-11-14T00:00:00Z",
+   "period_to": "2026-11-21T05:25:04Z",
+   "counts": {
+    "new": 41,
+    "updated": 0,
+    "minor": 0,
+    "carry": 0,
+    "done": 0
+   }
+  }
+ ],
+ "items": {
+  "MC1562277": {
+   "title_ja": "Teams のチャネル全体を対象に Copilot に質問・要約できる",
+   "title_en": "Microsoft Teams: Copilot in channels provides channel-wide context",
+   "services": [
+    "Microsoft Teams"
+   ],
+   "level": "green",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Microsoft Teams is adding a channel-level Copilot feature allowing users to ask questions and summarize all posts and replies in a channel. Public preview starts December 2026 worldwide, with no action required. Copilot responses will include source citations and be available on Teams desktop and mobile.",
+   "pub_date": "2026-11-20T23:36:02Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "green",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1562275": {
+   "title_ja": "Copilot ライセンスがない人の検索画面が新しくなる",
+   "title_en": "Microsoft 365 Copilot app: New search experience for Microsoft 365 users without a Microsoft 365 Copilot license",
+   "services": [
+    "Microsoft Copilot (Microsoft 365)"
+   ],
+   "level": "amber",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": "2026-12-19",
+   "group": null,
+   "summary_en": "Microsoft 365 is updating the Copilot app's search experience for users without a Copilot license, enabling modern search controls by default starting late November 2026. Users can toggle back to classic search. The update improves file and third-party content search while respecting access permissions.",
+   "pub_date": "2026-11-20T23:35:27Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "amber",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1562269": {
+   "title_ja": "Copilot デスクトップアプリと Edge の間で、パスワードや閲覧履歴を同期できるようになる",
+   "title_en": "Sync between Copilot desktop app and Microsoft Edge",
+   "services": [
+    "Microsoft 365 Copilot Chat"
+   ],
+   "level": "amber",
+   "verdict": "check",
+   "act_by": null,
+   "keep_until": "2026-12-31",
+   "group": null,
+   "summary_en": "Optional sync of passwords, personal info, settings, and browsing history between Copilot desktop app and Microsoft Edge will roll out worldwide in December 2026. Sync is account-based, opt-in, excludes payment info, and aims to improve user continuity and organizational productivity. Review governance before enabling.",
+   "pub_date": "2026-11-20T23:31:47Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "amber",
+     "verdict": "check"
+    }
+   ]
+  },
+  "MC1557754": {
+   "title_ja": "利用上限を超えても Copilot Credits（従量課金）でモデルを使い続けられるようになる",
+   "title_en": "Microsoft Copilot: Continue using models after reaching usage limits with Copilot Credits",
+   "services": [
+    "Microsoft Copilot (Microsoft 365)"
+   ],
+   "level": "red",
+   "verdict": "check",
+   "act_by": null,
+   "keep_until": "2026-12-31",
+   "group": null,
+   "summary_en": "Microsoft Copilot now allows continued use of models after license usage limits via usage-based billing (UBB) with Copilot Credits. Users see credit indicators and can choose between Auto mode or credit-consuming models. Admins manage access and spending through updated policies and controls. Rollout begins December 2026.",
+   "pub_date": "2026-11-20T17:47:55Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "red",
+     "verdict": "check"
+    }
+   ]
+  },
+  "MC1535647": {
+   "title_ja": "Copilot アプリのホーム画面と移動のしかたが刷新される",
+   "title_en": "Microsoft Copilot app: Updates to Home and navigation",
+   "services": [
+    "Microsoft Copilot (Microsoft 365)"
+   ],
+   "level": "amber",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": "2026-12-31",
+   "group": "workspaces",
+   "summary_en": "Microsoft Copilot app updates include a new Home with integrated Chat, Cowork, Projects, and Workspaces. Projects organize related tasks and files without storing content, available on major platforms. Workspaces replace Notebooks for team collaboration. Rollout starts late October 2026; licensing and billing configurations affect access.",
+   "pub_date": "2026-11-20T17:11:31Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "amber",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1561862": {
+   "title_ja": "ワークフローの手順として Python コードを実行",
+   "title_en": "Run Python code as a workflow step",
+   "services": [
+    "Microsoft Copilot (Power Platform)"
+   ],
+   "level": "grey",
+   "verdict": "cond",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "We are announcing the ability to use the Code node to run Python as a step in a workflow for logic that expressions and connectors cannot handle in Copilot Studio. This feature will reach general availability on December 1, 2026. How does this affect me? Makers can add Python steps to workflows for data transforms, file parsing and conversion (e.g. PDF to text, CSV, or XML), and calls to APIs that don't have a connector. The code can be generated using natural language using AI, or Makers can wr...",
+   "pub_date": "2026-11-20T15:26:54Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "grey",
+     "verdict": "cond"
+    }
+   ]
+  },
+  "MC1561859": {
+   "title_ja": "エージェントが作った文書をワークフローの出力にできる",
+   "title_en": "Generate documents from the Agent node in workflows",
+   "services": [
+    "Microsoft Copilot (Power Platform)"
+   ],
+   "level": "grey",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "We are announcing the ability to generate documents from the Agent node in workflows within Copilot Studio. This feature will reach general availability on December 3, 2026. How does this affect me? With this feature, the Agent node can now return files that the agent generates, such as PDF, Word, Excel, PowerPoint, and CSV, as workflow outputs. Key functionality of this feature includes: Ability to work with both inline agents and existing (published) agents. Generated files appear as an ordere...",
+   "pub_date": "2026-11-20T15:22:06Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "grey",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1560996": {
+   "title_ja": "Entra のエージェント用 ID で Dataverse にアクセス",
+   "title_en": "Copilot Studio - Create Dataverse agent users with Microsoft Entra agent 's user account",
+   "services": [
+    "Microsoft Copilot (Power Platform)"
+   ],
+   "level": "grey",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "We are announcing the ability to create Dataverse agent users with Microsoft Entra agent's user account in Copilot Studio. This feature will reach general availability on December 8th, 2026. How does this affect me? This feature enables you to securely deploy agents to access and interact with Dataverse data by using enterprise-managed Microsoft Entra agent identities. It enables agents to be provisioned as Dataverse agent users with dedicated, least-privileged security roles based on their inte...",
+   "pub_date": "2026-11-20T01:57:14Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "grey",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1518034": {
+   "title_ja": "Clipchamp の Copilot 動画作成に管理者用スイッチが付く",
+   "title_en": "Clipchamp/ Copilot 'Create a video' experience is going to have an admin control available",
+   "services": [
+    "Microsoft Clipchamp"
+   ],
+   "level": "blue",
+   "verdict": "cond",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Microsoft Clipchamp is adding an admin policy control to manage user access to the AI video creation feature, defaulting to disabled. The feature is now only available from Clipchamp Home. Rollout begins late November 2026, with no action needed to keep the feature disabled.",
+   "pub_date": "2026-11-20T00:50:19Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "blue",
+     "verdict": "cond"
+    }
+   ]
+  },
+  "MC1560929": {
+   "title_ja": "Workforce Insights エージェントに管理者用の設定画面",
+   "title_en": "Updates to Workforce Insights Agent (Frontier) for Admins in Microsoft 365 Copilot",
+   "services": [
+    "Microsoft Copilot (Microsoft 365)"
+   ],
+   "level": "blue",
+   "verdict": "check",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Microsoft 365 Copilot's Workforce Insights Agent (Frontier) adds a workspace for admins to configure organizational data and context, improving AI-driven responses. Rolling out mid-November 2026 for Frontier tenants, it requires specific admin roles and licensing, with controls for data access, configuration, and compliance.",
+   "pub_date": "2026-11-20T00:13:14Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "blue",
+     "verdict": "check"
+    }
+   ]
+  },
+  "MC1560923": {
+   "title_ja": "Copilot ダッシュボードの利用分類が 4 種類から 13 種類に",
+   "title_en": "Enhanced prompt categories for Microsoft 365 Copilot in Microsoft Copilot Dashboard and Agent 365 Business Analytics",
+   "services": [
+    "Microsoft Viva"
+   ],
+   "level": "green",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Microsoft 365 Copilot introduces 13 enhanced prompt categories replacing four legacy ones in the Copilot Dashboard and Agent 365 Business Analytics. This update, rolling out worldwide in December 2026, offers detailed insights into Copilot Chat usage by licensed users, with no admin action needed.",
+   "pub_date": "2026-11-20T00:04:07Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "green",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1560922": {
+   "title_ja": "Copilot デスクトップアプリで、チャット内のリンクがアプリの中で開くようになる",
+   "title_en": "Microsoft Copilot: In-app browsing will be enabled by default in the desktop app",
+   "services": [
+    "Microsoft Copilot (Microsoft 365)"
+   ],
+   "level": "red",
+   "verdict": "check",
+   "act_by": "2027-01-03",
+   "keep_until": "2027-01-03",
+   "group": null,
+   "summary_en": "Microsoft Copilot desktop app will enable in-app browsing by default starting January 2027, allowing users to open websites shared in chat within the app alongside conversations. No action is needed unless organizations want to disable or manage this feature via policies.",
+   "pub_date": "2026-11-20T00:03:31Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "red",
+     "verdict": "check"
+    }
+   ]
+  },
+  "MC1560920": {
+   "title_ja": "Clipchamp Video Hub で Copilot 動画作成（プレビュー）",
+   "title_en": "Copilot video creation in Clipchamp Video Hub is now live in Frontier Public",
+   "services": [
+    "Microsoft Clipchamp"
+   ],
+   "level": "blue",
+   "verdict": "cond",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Copilot video creation in Clipchamp Video Hub is now in public preview, enabling users to create and refine videos from documents and prompts using Copilot Credits. Admins must enable Anthropic models and configure spending policies. Videos export as MP4 with an AI watermark, and some preview limitations apply.",
+   "pub_date": "2026-11-20T00:01:12Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "blue",
+     "verdict": "cond"
+    }
+   ]
+  },
+  "MC1560916": {
+   "title_ja": "新しいAIモデル「GPT-6.2 Sol」「Astra」が使えるようになる",
+   "title_en": "Microsoft Copilot: GPT-6.2 Sol and Astra rolling out",
+   "services": [
+    "Microsoft Copilot (Microsoft 365)"
+   ],
+   "level": "amber",
+   "verdict": "cond",
+   "act_by": null,
+   "keep_until": "2026-12-19",
+   "group": null,
+   "summary_en": "Microsoft Copilot is expanding AI model options with GPT-6.2 Sol and Astra, rolling out across Cowork, Copilot Studio, Word, Excel, PowerPoint, and Chat. Astra requires enabling the OpenAI subprocessor. Users with appropriate licenses and configurations get default access; no action is needed but reviewing settings and guidance is recommended.",
+   "pub_date": "2026-11-19T23:58:17Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "amber",
+     "verdict": "cond"
+    }
+   ]
+  },
+  "MC1532253": {
+   "title_ja": "Teams 会議の Copilot ポリシーが 2 つに分かれる",
+   "title_en": "Enhanced Copilot and AI controls for meetings",
+   "services": [
+    "Microsoft Teams"
+   ],
+   "level": "amber",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": "2026-12-31",
+   "group": null,
+   "summary_en": "Microsoft Teams is replacing the Copilot meeting policy with two policies—MeetingAI and TranscriptionWithMeetingAI—for clearer control over AI and transcription in meetings. New meeting options provide granular management of AI use. Rollout begins December 2026; existing settings will be automatically mapped with no admin action required.",
+   "pub_date": "2026-11-19T22:31:02Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "amber",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1560402": {
+   "title_ja": "分類ノードで Decision モデルを選べる",
+   "title_en": "Copilot Studio – Use the Decision model in the Classify node in Workflows",
+   "services": [
+    "Microsoft Copilot (Power Platform)"
+   ],
+   "level": "grey",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "We are announcing the ability to choose Decision models in Classify nodes within a workflow in Copilot Studio. This feature will reach general availability on November 19, 2026. How does this affect me? Makers can choose a decision model in the Classify node for more efficient, higher volume classification. You can define categories and descriptions as you do today, and Category-based branching, outputs, and the automatic Other category will continue to work. This change will not affect existing...",
+   "pub_date": "2026-11-19T13:39:17Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "grey",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1559644": {
+   "title_ja": "［教育機関向け］OneNote Class Notebook に AI 授業ツール",
+   "title_en": "[Education] AI-powered teaching tools in OneNote Class Notebook",
+   "services": [
+    "Microsoft 365 apps",
+    "Microsoft 365 suite"
+   ],
+   "level": "green",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "OneNote Class Notebook will integrate AI-powered Copilot teaching tools for educators to create personalized resources and interactive activities. Rolling out globally in November 2026, these tools require no extra license and allow educators to prepare and share materials within Class Notebook, with separate controls for Copilot and Learning Activities.",
+   "pub_date": "2026-11-18T23:42:17Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "green",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1559641": {
+   "title_ja": "OneNote の Copilot が新しくなる",
+   "title_en": "New Copilot experience in OneNote",
+   "services": [
+    "Microsoft 365 apps"
+   ],
+   "level": "green",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "The new Copilot experience in OneNote enhances editing and reasoning across notes, ink, annotations, and files, enabling better information synthesis and content creation. Rollout starts November 2026 for Frontier Public and January 2027 worldwide on Windows and iPad; other platforms will follow later. No admin action needed.",
+   "pub_date": "2026-11-18T23:41:03Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "green",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1559638": {
+   "title_ja": "Copilot ノートブックが「ワークスペース」に変わる",
+   "title_en": "New capabilities in Copilot Workspaces",
+   "services": [
+    "Microsoft Copilot (Microsoft 365)"
+   ],
+   "level": "amber",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": "2026-12-31",
+   "group": "workspaces",
+   "summary_en": "Copilot Notebooks is evolving into Copilot Workspaces with new collaboration features like activity feed, team presence, and group ownership. Rollout began November 2026 (Frontier Public) and worldwide availability starts December 2026. No immediate admin action is needed; update user guidance accordingly.",
+   "pub_date": "2026-11-18T23:36:20Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "amber",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1559633": {
+   "title_ja": "SharePoint のページに Copilot エージェントを埋め込める",
+   "title_en": "Microsoft SharePoint: Agent Chat web part to bring Copilot agents into SharePoint pages",
+   "services": [
+    "SharePoint Online"
+   ],
+   "level": "green",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "The Agent Chat web part lets SharePoint authors embed Microsoft 365 Copilot agents into pages for easier discovery and interaction. Rolling out from November 2026 to March 2027 worldwide, it requires no admin action. Permissions remain separate, and no compliance impact is expected.",
+   "pub_date": "2026-11-18T23:34:27Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "green",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1559632": {
+   "title_ja": "Copilot ワークスペースが会話の記憶を保持する",
+   "title_en": "Copilot Workspaces: Updated workspace memory",
+   "services": [
+    "Microsoft Copilot (Microsoft 365)"
+   ],
+   "level": "amber",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": "2026-12-31",
+   "group": "workspaces",
+   "summary_en": "Copilot in Workspaces now retains workspace memory to provide more relevant, consistent responses across sessions, improving productivity. Public Preview began November 2026; General Availability starts December 2026. No admin action is needed, but users should be informed of the update. No compliance issues identified.",
+   "pub_date": "2026-11-18T23:33:40Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "amber",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1488488": {
+   "title_ja": "Dataverse のプロンプト列を既存データに一括生成",
+   "title_en": "Microsoft Dataverse - Bulk generate prompt column values for existing records (backfill)",
+   "services": [
+    "Microsoft Dataverse"
+   ],
+   "level": "grey",
+   "verdict": "cond",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "We are introducing bulk generation of prompt column values for existing Dataverse records. Now, you can have AI-generated values across existing data without requiring record updates to trigger execution. This feature will reach general availability on November 16, 2026. How does this affect me? When selected, this capability will run asynchronously as a background job and will consume Copilot or AIB credits. Users can monitor and manage the job and view its credit usage in System Jobs. Two envi...",
+   "pub_date": "2026-11-18T18:01:05Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "grey",
+     "verdict": "cond"
+    }
+   ]
+  },
+  "MC1486291": {
+   "title_ja": "Copilot のガイド付きオンボーディング",
+   "title_en": "Microsoft 365 Copilot: new guided Copilot onboarding experience",
+   "services": [
+    "Microsoft 365 suite",
+    "Microsoft Copilot (Microsoft 365)",
+    "Microsoft Viva"
+   ],
+   "level": "blue",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Microsoft 365 Copilot introduces an optional, admin-led guided onboarding experience for Frontier participants, rolling out late October to November 2026. It personalizes training based on user roles and licenses, requires admin enablement, and supports reporting via Viva Learning to boost adoption and confidence.",
+   "pub_date": "2026-11-18T17:18:44Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "blue",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1519871": {
+   "title_ja": "Copilot Code がモバイルと Mac にも拡大",
+   "title_en": "Copilot Code is rolling out in Frontier",
+   "services": [
+    "Microsoft Copilot (Microsoft 365)"
+   ],
+   "level": "blue",
+   "verdict": "cond",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Copilot Code is expanding in the Frontier program to mobile (iOS/Android) and Mac, with local Sandbox on Windows for secure local execution. It supports GitHub Copilot CLI sign-in via Microsoft 365 accounts. Admins control access via licenses, spending policies, and execution location settings. Usage-based billing applies.",
+   "pub_date": "2026-11-18T17:11:58Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "blue",
+     "verdict": "cond"
+    }
+   ]
+  },
+  "MC1483844": {
+   "title_ja": "GPT-6.1 Sol と Claude Sonnet 5.5 の展開",
+   "title_en": "Microsoft Copilot: GPT 6.1 Sol and Claude Sonnet 5.5 beginning to roll out today",
+   "services": [
+    "Microsoft 365 apps"
+   ],
+   "level": "green",
+   "verdict": "cond",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Microsoft Copilot is rolling out GPT-6.1 Sol and Claude Sonnet 5.5 models starting September 30, 2026, across Cowork, Copilot Studio, Word, Excel, PowerPoint, and Chat. No admin action is required, but enabling Anthropic and OpenAI subprocessors affects model availability. Usage limits and notifications apply.",
+   "pub_date": "2026-11-17T23:30:04Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "green",
+     "verdict": "cond"
+    }
+   ]
+  },
+  "MC1558033": {
+   "title_ja": "Copilot でのアプリ作成機能（Managed Runtime）が正式提供に",
+   "title_en": "Microsoft 365 Copilot: Copilot Managed Runtime expands app building at general availability",
+   "services": [
+    "Microsoft 365 suite"
+   ],
+   "level": "amber",
+   "verdict": "cond",
+   "act_by": null,
+   "keep_until": "2026-12-19",
+   "group": null,
+   "summary_en": "Microsoft 365 Copilot Managed Runtime, now generally available, enables IT-governed app building within tenant boundaries across Copilot Cowork, Studio, and Code. Admins manage apps, policies, and credits via the Microsoft 365 admin center. App building expands beyond the Frontier Program with environment routing and governance controls.",
+   "pub_date": "2026-11-17T23:01:18Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "amber",
+     "verdict": "cond"
+    }
+   ]
+  },
+  "MC1558024": {
+   "title_ja": "管理センターで複数テナントをまとめて管理",
+   "title_en": "Microsoft 365 admin center: New multi-tenant management experiences",
+   "services": [
+    "Microsoft 365 suite"
+   ],
+   "level": "blue",
+   "verdict": "cond",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Microsoft 365 admin center will introduce multi-tenant management for centralized control of Copilot, agents, costs, and services across tenants. Available from mid-November 2026, it enables unified tenant linking, insights, and configuration management. Organizations must link tenants via Microsoft Entra tenant governance to use these features.",
+   "pub_date": "2026-11-17T22:58:48Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "blue",
+     "verdict": "cond"
+    }
+   ]
+  },
+  "MC1558023": {
+   "title_ja": "PowerPoint の Copilot に営業向けスキル",
+   "title_en": "Microsoft Copilot in PowerPoint for Windows, Mac, and the web: Introducing new sales-focused skills",
+   "services": [
+    "Microsoft 365 apps"
+   ],
+   "level": "green",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Microsoft Copilot in PowerPoint is introducing new sales-focused skills worldwide by late November 2026 to help sales teams prepare and refine presentations, work with sales data, and support sales conversations. No admin action is needed; users with licenses can enable these skills via the Sales plugin.",
+   "pub_date": "2026-11-17T22:58:02Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "green",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1558020": {
+   "title_ja": "Copilot Credits の利用状況を API で取得",
+   "title_en": "Power Platform admin center - Reporting API for Copilot Credits (preview)",
+   "services": [
+    "Microsoft Copilot (Power Platform)"
+   ],
+   "level": "grey",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "We are announcing the Reporting API for Copilot Credits in Power Platform admin center. This feature is now available in public preview. How does this affect me? This feature enables you to access Copilot Credit usage from Copilot Studio through the Power Platform API. The new API methods provide insights on usage by resource, environment, user, and feature. Details on how to use these of the new API methods can be found here. Admins may leverage these reports for more insight on Copilot Studio...",
+   "pub_date": "2026-11-17T22:55:36Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "grey",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1557759": {
+   "title_ja": "エージェントや Cowork の使い道を自動で分類する機能（プレビュー）",
+   "title_en": "Microsoft 365 Copilot: Use case classification for agent sessions and Copilot Cowork (Frontier public preview)",
+   "services": [
+    "Microsoft Copilot (Microsoft 365)"
+   ],
+   "level": "amber",
+   "verdict": "cond",
+   "act_by": null,
+   "keep_until": "2026-12-19",
+   "group": null,
+   "summary_en": "Microsoft 365 Copilot introduces use case classification for agent sessions and Copilot Cowork activity in public preview starting mid-November 2026. Enabled by default for eligible Frontier tenants, it helps analyze AI usage and optimize investments. Admins can manage classification and AI value settings, with user opt-out options available.",
+   "pub_date": "2026-11-17T19:12:58Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "amber",
+     "verdict": "cond"
+    }
+   ]
+  },
+  "MC1557730": {
+   "title_ja": "常時動くクラウドエージェント「Autopilot」",
+   "title_en": "Autopilot availability in Frontier",
+   "services": [
+    "Microsoft Copilot (Microsoft 365)"
+   ],
+   "level": "blue",
+   "verdict": "check",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Autopilot will roll out in Frontier Public starting November 17, 2026, as an always-on cloud agent requiring admin enablement and Microsoft 365 Copilot licensing. It features its own identity, security controls, and compliance considerations. Admins must configure access and billing; users create Autopilots via Copilot Home.",
+   "pub_date": "2026-11-17T18:38:43Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "blue",
+     "verdict": "check"
+    }
+   ]
+  },
+  "MC1239927": {
+   "title_ja": "Teams 通訳エージェントの「逐次通訳」が正式提供へ",
+   "title_en": "Microsoft Teams: Consecutive interpretation in Interpreter agent will be generally available",
+   "services": [
+    "Microsoft Copilot (Microsoft 365)"
+   ],
+   "level": "blue",
+   "verdict": "cond",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Consecutive interpretation in Microsoft Teams Interpreter, currently in public preview, will roll out to general availability by late 2026. It offers turn-by-turn AI-generated spoken translation using usage-based billing with Copilot Credits. Organizations must set spending policies and have eligible meeting organizers with Copilot licenses.",
+   "pub_date": "2026-11-17T17:06:18Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "blue",
+     "verdict": "cond"
+    }
+   ]
+  },
+  "MC1557509": {
+   "title_ja": "ワークフローを個人ではなくアプリの ID で所有できる",
+   "title_en": "Copilot Studio - Service principal authentication for workflows",
+   "services": [
+    "Microsoft Copilot (Power Platform)"
+   ],
+   "level": "grey",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "We are announcing service principal authentication for workflows in Copilot Studio. This feature will reach general availability by December 17, 2026. How does this affect me? With this feature, workflows will be able to be owned under a service principle (a Microsoft Entra app registration) instead of a named user account. This will allow production automation to continue running when people leave or change roles, passwords, or multi-factor authentication. This feature supports least-privilege,...",
+   "pub_date": "2026-11-17T16:04:22Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "grey",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1556104": {
+   "title_ja": "PowerPoint の Copilot に「プラグイン」が追加される",
+   "title_en": "Microsoft PowerPoint: Introducing plugins for Microsoft 365 Copilot",
+   "services": [
+    "Microsoft 365 apps"
+   ],
+   "level": "red",
+   "verdict": "cond",
+   "act_by": null,
+   "keep_until": "2026-12-10",
+   "group": "ppt-plugins",
+   "summary_en": "Microsoft 365 Copilot in PowerPoint will gain plugins to enhance capabilities with specialized skills and connectors, improving presentation workflows. Rollout starts mid-November 2026 worldwide across Windows, Mac, and web. Admins should review and manage plugin access; no compliance issues identified.",
+   "pub_date": "2026-11-16T22:28:47Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "red",
+     "verdict": "cond"
+    }
+   ]
+  },
+  "MC1556095": {
+   "title_ja": "PowerPoint の Copilot に「プラグイン」が追加される（Mac）",
+   "title_en": "Plugins in PowerPoint for Microsoft 365 Copilot [Mac]",
+   "services": [
+    "Microsoft 365 apps"
+   ],
+   "level": "red",
+   "verdict": "cond",
+   "act_by": null,
+   "keep_until": "2026-12-10",
+   "group": "ppt-plugins",
+   "summary_en": "Plugins will be added to PowerPoint for Microsoft 365 Copilot on Mac, enhancing presentation capabilities. The rollout starts mid-November 2026 and completes by early December. Users can access plugins in Copilot, and admins can manage plugin access via the Microsoft 365 admin center. No compliance issues noted.",
+   "pub_date": "2026-11-16T22:26:41Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "red",
+     "verdict": "cond"
+    }
+   ]
+  },
+  "MC1556094": {
+   "title_ja": "Learning Agent が仕事内容に合わせた学習を提案",
+   "title_en": "Microsoft 365 Copilot: Learning Agent introduces personalized learning experiences",
+   "services": [
+    "Microsoft Copilot (Microsoft 365)"
+   ],
+   "level": "blue",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Microsoft 365 Copilot Learning Agent will provide personalized learning experiences based on users' work context, roles, and activities. Rolling out from mid-November to late December 2026, it offers relevant prompts, faster upskilling, and continuous skill development, requiring specific admin and user settings to be enabled.",
+   "pub_date": "2026-11-16T22:26:09Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "blue",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1556093": {
+   "title_ja": "Learning Agent が Teams に学習の通知を送る",
+   "title_en": "Microsoft 365 Copilot: Learning Agent introduces personalized upskilling notifications in Teams",
+   "services": [
+    "Microsoft Copilot (Microsoft 365)"
+   ],
+   "level": "blue",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Microsoft 365 Copilot Learning Agent will deliver personalized upskilling notifications in Teams based on users' roles and usage. Rolling out from mid-November 2026, it helps users access relevant training within Teams, enhancing AI fluency and confidence. Admins can manage notifications via Viva Learning settings.",
+   "pub_date": "2026-11-16T22:25:29Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "blue",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1556090": {
+   "title_ja": "PowerPoint の Copilot に「プラグイン」が追加される（Windows）",
+   "title_en": "Plugins in PowerPoint for Microsoft 365 Copilot [Win32]",
+   "services": [
+    "Microsoft 365 apps"
+   ],
+   "level": "red",
+   "verdict": "cond",
+   "act_by": null,
+   "keep_until": "2026-12-10",
+   "group": "ppt-plugins",
+   "summary_en": "Plugins will be added to PowerPoint for Microsoft 365 Copilot on Windows, enhancing presentation capabilities with new skills and connectors. Rollout starts mid-November 2026, completing by early December. Admins can manage plugin access via the Microsoft 365 admin center. No compliance issues identified.",
+   "pub_date": "2026-11-16T22:21:35Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "red",
+     "verdict": "cond"
+    }
+   ]
+  },
+  "MC1449182": {
+   "title_ja": "Copilot Pages とノートブックが OneDrive に保存されるように",
+   "title_en": "Microsoft 365 Copilot: Copilot Pages and Notebooks Creation in OneDrive",
+   "services": [
+    "Microsoft Copilot (Microsoft 365)"
+   ],
+   "level": "green",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Starting mid-October 2026, newly created Microsoft 365 Copilot Pages and Notebooks will be stored in OneDrive for Business, enabling existing governance, compliance, data protection, retention, and lifecycle management. Existing Copilot content remains unchanged; no user action is required.",
+   "pub_date": "2026-11-16T17:10:38Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "green",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1552503": {
+   "title_ja": "ワークフローの実行ごとのクレジット消費量が見える",
+   "title_en": "Copilot Studio - Credit visibility in run view & monitor in workflows",
+   "services": [
+    "Microsoft Copilot (Power Platform)"
+   ],
+   "level": "grey",
+   "verdict": "ok",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "We are announcing Copilot Credit visibility in run view and monitors in workflows in Copilot Studio. This feature reached general availability on November 11, 2026. How does this affect me? Makers will now be able to see how many Copilot Credits each workflow run consumes directly from the workflow designer. This allows makers to predict and control the cost of automation before scaling it to production, and to quickly identify which steps are driving consumption. This feature brings the followi...",
+   "pub_date": "2026-11-14T03:38:06Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "grey",
+     "verdict": "ok"
+    }
+   ]
+  },
+  "MC1461529": {
+   "title_ja": "Release Planner の廃止",
+   "title_en": "Release Planner Retirement: D365, Power Platform, and Dataverse Move to AI at Work",
+   "services": [
+    "Dynamics 365 Apps",
+    "Microsoft Power Automate",
+    "Power Apps"
+   ],
+   "level": "grey",
+   "verdict": "none",
+   "act_by": null,
+   "keep_until": null,
+   "group": null,
+   "summary_en": "Release Planner is now retired. To stay informed about upcoming capabilities and prepare your organization for feature rollout and adoption, use the resources shared below. To view product availability for Dynamics 365, Power Platform and Copilot Studio, visit the new Learn page at https://aka.ms/d365-product-availability. Starting this fall, Dynamics 365, Power Platform, and Dataverse roadmap content is joining the AI at Work roadmap, giving customers a single destination to discover upcoming c...",
+   "pub_date": "2026-11-14T01:05:15Z",
+   "first_issue": "20261121",
+   "last_issue": "20261121",
+   "closed_issue": null,
+   "history": [
+    {
+     "issue": "20261121",
+     "level": "grey",
+     "verdict": "none"
+    }
+   ]
+  }
+ }
+}
