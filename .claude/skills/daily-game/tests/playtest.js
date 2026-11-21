@@ -247,6 +247,13 @@ let browser;
       return { full, cap1, low, cap2, left, same };
     });
     check('光の粒は上限を超えず、画質が下がると上限も下がり、時間で消える', fx.full <= fx.cap1 && fx.cap1 === 700 && fx.low <= fx.cap2 && fx.cap2 === 350 && fx.left < 20 && fx.same, `上限 ${fx.full}/${fx.cap1} → ${fx.low}/${fx.cap2}、1.5秒後 ${fx.left}、配列そのまま=${fx.same}`);
+    // 粒は色と明るさごとにまとめて塗る（Day 21：700粒でも塗る回数はひとけた〜数十回）
+    await page.evaluate(() => window.__game.debug.burst(2000));
+    await wait(80);
+    const pb = await page.evaluate(() => { const s = window.__game.state(); return { parts: s.parts, calls: s.partCalls }; });
+    await shot(page, '04e_parts_390');
+    check('光の粒は色と明るさごとにまとめて塗られる（たくさんあっても塗る回数が少ない）', pb.parts >= 400 && pb.calls >= 1 && pb.calls <= 40, `粒 ${pb.parts} 個 → 塗った回数 ${pb.calls}`);
+    await page.evaluate(() => window.__game.debug.stepFx(1.5));
     // ボス
     await page.evaluate(() => { window.__game.debug.god(true); window.__game.debug.give('nova', 3); window.__game.debug.setTime(299); });
     await page.waitForFunction(() => window.__game.state().boss !== null, null, { timeout: 5000 }).catch(() => {});
