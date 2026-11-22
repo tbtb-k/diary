@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="2026/11/21〜11/23 の Copilot 関連のメッセージセンター投稿0件と、前号からの持ち越し14件を、管理者の対応要否と、オンにしたときの影響で整理した週次ダイジェスト（2026/11/23号・No.01）">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Copilot 管理ダイジェスト 2026/11/23号</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@700;900&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: 一列の業務ブリーフ。上に件数の比率バー、続いて「今週やること」、あとは放置したときの影響が大きい順に並べる */
+:root {
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --fg: #18212c;
+  --muted: #586473;
+  --line: #d9dfe6;
+  --accent: #0e6a6a;
+  --red: #b8322a;   --red-bg: #fbeceb;
+  --amber: #9a6410; --amber-bg: #fbf2e2;
+  --blue: #2a64a8;  --blue-bg: #e8f0fa;
+  --green: #2d7a50; --green-bg: #e7f4ec;
+  --grey: #6b7684;  --grey-bg: #eceff3;
+  --font-display: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11161c; --surface: #19212a; --fg: #e6ebf0; --muted: #9aa6b4; --line: #2c3743;
+    --accent: #5cc4c0;
+    --red: #f08a80;   --red-bg: #3a1f1d;
+    --amber: #e6b25c; --amber-bg: #372a14;
+    --blue: #86b6ee;  --blue-bg: #1b2b40;
+    --green: #7fcf9f; --green-bg: #18301f;
+    --grey: #a3adb9;  --grey-bg: #252e38;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11161c; --surface: #19212a; --fg: #e6ebf0; --muted: #9aa6b4; --line: #2c3743;
+  --accent: #5cc4c0;
+  --red: #f08a80;   --red-bg: #3a1f1d;
+  --amber: #e6b25c; --amber-bg: #372a14;
+  --blue: #86b6ee;  --blue-bg: #1b2b40;
+  --green: #7fcf9f; --green-bg: #18301f;
+  --grey: #a3adb9;  --grey-bg: #252e38;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.75;
+}
+.wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- header ---------- */
+.top {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  margin-top: calc(-1 * env(safe-area-inset-top, 0px));
+  padding-top: calc(env(safe-area-inset-top, 0px) + 2.25rem);
+  padding-bottom: 2rem;
+}
+.top .wrap { display: grid; gap: 0.9rem; }
+.eyebrow {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;
+  font-size: 0.78rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 500;
+}
+.eyebrow .draft {
+  border: 1px solid var(--accent); color: var(--accent);
+  padding: 0 0.5em; border-radius: 3px; letter-spacing: 0.04em;
+}
+h1 {
+  font-family: var(--font-display); font-weight: 900;
+  font-size: clamp(1.75rem, 5vw, 2.4rem); line-height: 1.25; margin: 0;
+  text-wrap: balance;
+}
+.period { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.period strong { color: var(--fg); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.mix { display: grid; gap: 0.6rem; margin-top: 0.4rem; }
+.mix-bar {
+  display: flex; height: 14px; border-radius: 3px; overflow: hidden;
+  background: var(--line);
+}
+.mix-bar span { display: block; height: 100%; }
+.mix-legend {
+  display: flex; flex-wrap: wrap; gap: 0.4rem 1.25rem; margin: 0; padding: 0; list-style: none;
+  font-size: 0.85rem;
+}
+.mix-legend li { display: flex; align-items: center; gap: 0.4rem; }
+.mix-legend b { font-variant-numeric: tabular-nums; }
+.sw { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+.sw-red { background: var(--red); } .sw-amber { background: var(--amber); }
+.sw-blue { background: var(--blue); } .sw-green { background: var(--green); }
+.sw-grey { background: var(--grey); }
+
+/* ---------- sections ---------- */
+main { display: grid; gap: 2.75rem; padding-block: 2.25rem 3.5rem; }
+section { display: grid; gap: 1rem; }
+.sec-head { display: grid; gap: 0.3rem; }
+.sec-head h2 {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; margin: 0;
+  display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; text-wrap: balance;
+}
+.sec-head p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+.count { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+
+.level {
+  font-family: var(--font-body); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em;
+  padding: 0.1em 0.6em; border-radius: 3px; white-space: nowrap;
+}
+.lv-red { color: var(--red); background: var(--red-bg); }
+.lv-amber { color: var(--amber); background: var(--amber-bg); }
+.lv-blue { color: var(--blue); background: var(--blue-bg); }
+.lv-green { color: var(--green); background: var(--green-bg); }
+.lv-grey { color: var(--grey); background: var(--grey-bg); }
+
+/* ---------- todo ---------- */
+.todo {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+  margin: 0; padding: 0.4rem 0; list-style: none;
+}
+.todo li + li { border-top: 1px solid var(--line); }
+.todo label {
+  display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; align-items: start;
+  padding: 0.85rem 1.1rem; cursor: pointer;
+}
+.todo input { width: 18px; height: 18px; margin-top: 0.3rem; accent-color: var(--accent); }
+.todo .t { font-weight: 700; display: block; }
+.todo .d { color: var(--muted); font-size: 0.88rem; display: block; }
+.todo input:checked + span .t { text-decoration: line-through; color: var(--muted); }
+
+/* ---------- verdict chips ---------- */
+.vd {
+  display: inline-block; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.03em;
+  padding: 0.05em 0.6em; border-radius: 999px; white-space: nowrap; line-height: 1.7;
+}
+.vd-ok { color: var(--green); background: var(--green-bg); }
+.vd-cond { color: var(--amber); background: var(--amber-bg); }
+.vd-check { color: var(--red); background: var(--red-bg); }
+
+/* ---------- detail cards ---------- */
+.cards { display: grid; gap: 1rem; }
+.item {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+  padding: 1.1rem 1.25rem 1.2rem; display: grid; gap: 0.7rem; min-width: 0;
+}
+.item-meta { display: flex; flex-wrap: wrap; gap: 0.4rem 0.6rem; align-items: center; font-size: 0.8rem; }
+.mc { font-family: var(--font-mono); color: var(--muted); font-size: 0.8rem; }
+.tag {
+  font-size: 0.72rem; color: var(--muted); border: 1px solid var(--line);
+  padding: 0 0.45em; border-radius: 3px;
+}
+.item h3 { margin: 0; font-size: 1.05rem; line-height: 1.55; font-weight: 700; text-wrap: balance; }
+.item dl { margin: 0; display: grid; grid-template-columns: 7.5em 1fr; gap: 0.45rem 1rem; }
+.item dt { color: var(--muted); font-size: 0.85rem; font-weight: 500; padding-top: 0.1em; }
+.item dd { margin: 0; min-width: 0; }
+.item dd.where { display: grid; gap: 0.3rem; }
+.item .risk-sep { grid-column: 1 / -1; border-top: 1px dashed var(--line); margin-block: 0.2rem; }
+.item dd.judge { display: grid; gap: 0.3rem; }
+.item dd.judge .vd { justify-self: start; }
+.path code, .item code {
+  font-family: var(--font-mono); font-size: 0.85em; background: var(--grey-bg);
+  padding: 0.05em 0.35em; border-radius: 3px; overflow-wrap: anywhere;
+}
+.src {
+  justify-self: start; font-size: 0.72rem; font-weight: 700; padding: 0.05em 0.55em; border-radius: 3px;
+  border: 1px solid currentColor;
+}
+.src-art { color: var(--green); }
+.src-doc { color: var(--blue); }
+.src-guess { color: var(--amber); }
+.src-none { color: var(--grey); }
+.item .more { font-size: 0.85rem; justify-self: start; }
+
+/* ---------- compact lists ---------- */
+.rows {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+  margin: 0; padding: 0; list-style: none;
+}
+.rows li {
+  display: grid; grid-template-columns: 7.2rem 1fr; gap: 0.2rem 1rem;
+  padding: 0.9rem 1.1rem;
+}
+.rows li + li { border-top: 1px solid var(--line); }
+.rows .mc { padding-top: 0.15rem; }
+.rows .body { min-width: 0; display: grid; gap: 0.2rem; }
+.rows .ttl { font-weight: 700; }
+.rows .note { color: var(--muted); font-size: 0.88rem; }
+.rows .note b { color: var(--fg); font-weight: 500; }
+.rows .verdict {
+  font-size: 0.88rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.5rem;
+  margin-top: 0.15rem;
+}
+.rows .verdict .lbl { color: var(--muted); font-size: 0.8rem; }
+.rows .verdict .txt { flex: 1 1 16rem; min-width: 0; }
+
+/* ---------- diff / carry ---------- */
+.diff-stats { display: flex; flex-wrap: wrap; gap: 0.4rem 0.5rem; margin: 0; padding: 0; list-style: none; font-size: 0.85rem; }
+.diff-stats li {
+  display: flex; align-items: baseline; gap: 0.35rem;
+  border: 1px solid var(--line); border-radius: 999px; padding: 0.05rem 0.75rem; background: var(--bg);
+}
+.diff-stats b { font-variant-numeric: tabular-nums; font-size: 0.95rem; }
+.diff-stats .k { color: var(--muted); }
+.diff-note {
+  margin: 0; background: var(--surface); border: 1px dashed var(--line); border-radius: 6px;
+  padding: 0.9rem 1.1rem; color: var(--muted); font-size: 0.9rem;
+}
+.tag-upd { color: var(--accent); border-color: var(--accent); font-weight: 700; }
+.tag-carry { color: var(--muted); border-style: dashed; }
+.rows .change { font-size: 0.88rem; }
+.rows .change b { font-weight: 700; }
+
+/* ---------- about ---------- */
+.about {
+  border-top: 1px solid var(--line); padding-top: 1.75rem;
+  display: grid; gap: 1rem; font-size: 0.9rem; color: var(--muted);
+}
+.about h2 { font-family: var(--font-display); font-size: 1.05rem; color: var(--fg); margin: 0; }
+.about h3 { font-size: 0.9rem; color: var(--fg); margin: 0.4rem 0 0; }
+.about ul { margin: 0; padding-left: 1.2em; display: grid; gap: 0.35rem; }
+.legend { display: grid; gap: 0.45rem; margin: 0; }
+.legend div { display: grid; grid-template-columns: 8.5em 1fr; gap: 0.75rem; align-items: start; }
+.legend dt { margin: 0; }
+.legend dd { margin: 0; }
+
+@media (max-width: 560px) {
+  .item dl { grid-template-columns: 1fr; gap: 0.1rem; }
+  .item dd { margin-bottom: 0.45rem; }
+  .rows li { grid-template-columns: 1fr; }
+  .legend div { grid-template-columns: 1fr; gap: 0.1rem; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .todo input:checked + span .t { transition: color 0.15s; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="eyebrow"><span>週次ダイジェスト</span><span>No.01</span><span>2026/11/23号</span></div>
+    <h1>Copilot 管理ダイジェスト</h1>
+    <p class="period">対象期間 <strong>2026/11/21 14:25 〜 11/23 07:08</strong>（日本時間）　この期間に出た・更新された Copilot 関連のメッセージセンターの投稿は <strong>0 件</strong>でした（週末をはさむ短い期間のため）。今週は、前の号から持ち越した <strong>14 件</strong>の期限と対応を中心にまとめています。</p>
+    <div class="mix" aria-label="仕分け結果の内訳">
+      <div class="mix-bar" role="img" aria-label="今週の新規・更新は0件"></div>
+      <ul class="mix-legend">
+        <li><span class="sw sw-red"></span>要判断 <b>0</b></li>
+        <li><span class="sw sw-amber"></span>確認推奨 <b>0</b></li>
+        <li><span class="sw sw-blue"></span>必要なら有効化 <b>0</b></li>
+        <li><span class="sw sw-green"></span>対応不要 <b>0</b></li>
+        <li><span class="sw sw-grey"></span>Copilot Studio・Power Platform <b>0</b></li>
+      </ul>
+    </div>
+    <ul class="diff-stats" aria-label="前の号からの変化">
+      <li><span class="k">新規</span><b>0</b></li>
+      <li><span class="k">更新</span><b>0</b></li>
+      <li><span class="k">持ち越し</span><b>14</b></li>
+      <li><span class="k">完了</span><b>0</b></li>
+    </ul>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="todo" aria-labelledby="todo-h">
+    <div class="sec-head">
+      <h2 id="todo-h">今週やること</h2>
+      <p>今週は新しいお知らせがないので、持ち越しのうち期限が近いもの・費用や情報の扱いに関わるものから選びました。チェックはこのブラウザにだけ保存されます。</p>
+    </div>
+    <ul class="todo">
+      <li><label><input type="checkbox" id="todo-1"><span><span class="t">PowerPoint の Copilot プラグインを全員に使わせてよいか決める</span><span class="d">12月上旬に展開が完了します（目安 12/10）。他社製プラグインはデータの送り先を確認してから（MC1556104 ほか）</span></span></label></li>
+      <li><label><input type="checkbox" id="todo-2"><span><span class="t">Copilot Credits の支出ポリシー（月の上限）を決めておく</span><span class="d">12月から、利用上限を超えても従量課金で使い続けられるようになります（MC1557754）</span></span></label></li>
+      <li><label><input type="checkbox" id="todo-3"><span><span class="t">Copilot アプリと Edge の同期を、今の Edge の方針で止められるか確認する</span><span class="d">12月から。パスワード同期を禁止している会社は特に（MC1562269）</span></span></label></li>
+      <li><label><input type="checkbox" id="todo-4"><span><span class="t">「ノートブック → ワークスペース」と Teams 会議ポリシーの変更を周知する準備</span><span class="d">どちらも12月から。名前・画面・会議の設定が変わります（MC1559638 ほか・MC1532253）</span></span></label></li>
+      <li><label><input type="checkbox" id="todo-5"><span><span class="t">アプリ内ブラウザ（標準オン）をオフにするか方針を決める</span><span class="d">対応期限は 2027/1/3。年末年始をはさむので早めに（MC1560922）</span></span></label></li>
+    </ul>
+  </section>
+
+  <section id="diff" aria-labelledby="diff-h">
+    <div class="sec-head">
+      <h2 id="diff-h">先週からの変化</h2>
+      <p>前の号のあとに Microsoft が書きかえたお知らせと、期限が過ぎて一覧から外したお知らせです。</p>
+    </div>
+    <p class="diff-note">前の号から内容が変わったお知らせはありません。期限を過ぎて一覧から外したお知らせもありません。</p>
+  </section>
+
+  <section id="carry" aria-labelledby="carry-h">
+    <div class="sec-head">
+      <h2 id="carry-h">前の号からの持ち越し <span class="count">14 件</span></h2>
+      <p>前の号までの「要判断」「確認推奨」のうち、まだ期限や展開の時期が来ていないものです（同じ機能の投稿はまとめて 10 行にしています）。期限が近い順に並べました。期限を過ぎると自動で「完了」になります。</p>
+    </div>
+    <ul class="rows">
+      <li><span class="mc">MC1556104 / MC1556090 / MC1556095</span><span class="body"><span class="ttl"><span class="level lv-red">要判断</span> PowerPoint の Copilot に「プラグイン」が追加される（Windows・Mac・Web）</span><span class="note">初出 2026/11/21号 ／ 期限・目安 2026/12/10（12月上旬に展開完了）</span><span class="verdict"><span class="lbl">オンでいい？</span><span class="vd vd-cond">条件つきでOK</span><span class="txt">他社製プラグインは、データの送り先と利用規約を確認してから許可してください。</span></span></span></li>
+      <li><span class="mc">MC1557759</span><span class="body"><span class="ttl"><span class="level lv-amber">確認推奨</span> エージェントや Cowork の使い道を自動で分類する機能（Frontier 参加テナントのみ・プレビュー）</span><span class="note">初出 2026/11/21号 ／ 期限・目安 2026/12/19</span><span class="verdict"><span class="lbl">オンでいい？</span><span class="vd vd-cond">条件つきでOK</span><span class="txt">集計の目的と、誰がどこまで見られるかを社内に説明してから使うのがおすすめです。</span></span></span></li>
+      <li><span class="mc">MC1558033</span><span class="body"><span class="ttl"><span class="level lv-amber">確認推奨</span> Copilot でのアプリ作成機能（Managed Runtime）が正式提供に</span><span class="note">初出 2026/11/21号 ／ 期限・目安 2026/12/19</span><span class="verdict"><span class="lbl">オンでいい？</span><span class="vd vd-cond">条件つきでOK</span><span class="txt">アプリを作れる人の範囲と、クレジットの上限を決めてからなら問題ありません。</span></span></span></li>
+      <li><span class="mc">MC1560916</span><span class="body"><span class="ttl"><span class="level lv-amber">確認推奨</span> 新しいAIモデル「GPT-6.2 Sol」「Astra」が使えるようになる</span><span class="note">初出 2026/11/21号 ／ 期限・目安 2026/12/19</span><span class="verdict"><span class="lbl">オンでいい？</span><span class="vd vd-cond">条件つきでOK</span><span class="txt">GPT-6.2 Sol はそのままで問題になりにくいです。Astra は OpenAI をサブプロセッサ（処理の委託先）として許可している場合だけ使えるので、その設定を社内ルールと照らして決めてください。</span></span></span></li>
+      <li><span class="mc">MC1562275</span><span class="body"><span class="ttl"><span class="level lv-amber">確認推奨</span> Copilot ライセンスがない人の検索画面が新しくなる</span><span class="note">初出 2026/11/21号 ／ 期限・目安 2026/12/19（11月下旬〜）</span><span class="verdict"><span class="lbl">オンでいい？</span><span class="vd vd-ok">オンでOK</span><span class="txt">SharePoint や OneDrive の共有設定をまだ見直していないなら、この機会に確認しておくと安心です。</span></span></span></li>
+      <li><span class="mc">MC1532253</span><span class="body"><span class="ttl"><span class="level lv-amber">確認推奨</span> Teams 会議の Copilot ポリシーが 2 つに分かれる</span><span class="note">初出 2026/11/21号 ／ 期限・目安 2026/12/31（12月〜）</span><span class="verdict"><span class="lbl">オンでいい？</span><span class="vd vd-ok">オンでOK</span><span class="txt">会議の記録を残す・残さないの社内ルールがあれば、開催者向けの案内を更新してください。</span></span></span></li>
+      <li><span class="mc">MC1559638 / MC1559632 / MC1535647</span><span class="body"><span class="ttl"><span class="level lv-amber">確認推奨</span> Copilot ノートブックが「ワークスペース」に変わり、ホーム画面も刷新される</span><span class="note">初出 2026/11/21号 ／ 期限・目安 2026/12/31（12月から全世界で展開）</span><span class="verdict"><span class="lbl">オンでいい？</span><span class="vd vd-ok">オンでOK</span><span class="txt">名前と画面が変わるので、利用者への周知を。共有するワークスペースのメンバー範囲にも注意してもらいましょう。</span></span></span></li>
+      <li><span class="mc">MC1557754</span><span class="body"><span class="ttl"><span class="level lv-red">要判断</span> 利用上限を超えても Copilot Credits（従量課金）でモデルを使い続けられるようになる</span><span class="note">初出 2026/11/21号 ／ 期限・目安 2026/12/31（12月〜）</span><span class="verdict"><span class="lbl">オンでいい？</span><span class="vd vd-check">先に確認</span><span class="txt">支出ポリシーで月の上限を決めてあればオンで問題ありません。上限を決めないままオンにするのは避けてください。</span></span></span></li>
+      <li><span class="mc">MC1562269</span><span class="body"><span class="ttl"><span class="level lv-amber">確認推奨</span> Copilot デスクトップアプリと Edge の間で、パスワードや閲覧履歴を同期できるようになる</span><span class="note">初出 2026/11/21号 ／ 期限・目安 2026/12/31（12月〜）</span><span class="verdict"><span class="lbl">オンでいい？</span><span class="vd vd-check">先に確認</span><span class="txt">Edge でパスワード同期を禁止している会社は、Copilot アプリでも同じ方針で止められるかを確認してから広めてください。</span></span></span></li>
+      <li><span class="mc">MC1560922</span><span class="body"><span class="ttl"><span class="level lv-red">要判断</span> Copilot デスクトップアプリで、チャット内のリンクがアプリの中で開くようになる</span><span class="note">初出 2026/11/21号 ／ 対応期限 2027/01/03（1月上旬から標準でオン）</span><span class="verdict"><span class="lbl">オンでいい？</span><span class="vd vd-check">先に確認</span><span class="txt">Edge で閲覧やダウンロードを制限している会社は、アプリ内ブラウザにも同じ制限を設定できるまで <code>BrowsingEnabled</code> を <code>Off</code> にしておくのが安全です。</span></span></span></li>
+    </ul>
+  </section>
+
+  <section id="red" aria-labelledby="red-h">
+    <div class="sec-head">
+      <h2 id="red-h"><span class="level lv-red">要判断</span>放置すると自動でオンになる・お金や期限が絡む <span class="count">0 件</span></h2>
+      <p>何もしないと会社の意思と関係なく利用者側の挙動が変わるもの。オンのままでよいかを決めてください。</p>
+    </div>
+    <p class="diff-note">今週はありません。前の号からの「要判断」は、上の持ち越しに並んでいます。</p>
+  </section>
+
+  <section id="amber" aria-labelledby="amber-h">
+    <div class="sec-head">
+      <h2 id="amber-h"><span class="level lv-amber">確認推奨</span>自動で変わるが、設定は引き継がれる・周知が必要 <span class="count">0 件</span></h2>
+      <p>管理者の操作はほぼ不要。ただし画面や名前が変わるので、一度見ておく・利用者に知らせておくと安心です。</p>
+    </div>
+    <p class="diff-note">今週はありません。前の号からの「確認推奨」は、上の持ち越しに並んでいます。</p>
+  </section>
+
+  <section id="blue" aria-labelledby="blue-h">
+    <div class="sec-head">
+      <h2 id="blue-h"><span class="level lv-blue">必要なら有効化</span>放置すればオフのまま <span class="count">0 件</span></h2>
+      <p>使いたい場合だけ管理者が設定します。何もしなければ利用者には出てきません。</p>
+    </div>
+    <p class="diff-note">今週はありません。</p>
+  </section>
+
+  <section id="green" aria-labelledby="green-h">
+    <div class="sec-head">
+      <h2 id="green-h"><span class="level lv-green">対応不要</span>利用者向けの機能追加 <span class="count">0 件</span></h2>
+      <p>管理者の操作はいりません。</p>
+    </div>
+    <p class="diff-note">今週はありません。</p>
+  </section>
+
+  <section id="grey" aria-labelledby="grey-h">
+    <div class="sec-head">
+      <h2 id="grey-h"><span class="level lv-grey">担当者向け</span>Copilot Studio・Power Platform <span class="count">0 件</span></h2>
+      <p>エージェントやワークフローを作る人、Power Platform の担当者向けです。</p>
+    </div>
+    <p class="diff-note">今週はありません。</p>
+  </section>
+
+  <section id="about" class="about" aria-labelledby="about-h">
+    <h2 id="about-h">この資料について</h2>
+    <ul>
+      <li>情報源は、Microsoft 365 メッセージセンターの公開アーカイブ <a href="https://mc.merill.net/" target="_blank" rel="noopener">mc.merill.net</a> の RSS です。Microsoft 社員が個人で運営している非公式サイトで、全テナント共通の投稿が載っています。</li>
+      <li>契約しているライセンスによっては、自社のテナントには届かない投稿も含まれます。設定を変える前に、自社のメッセージセンターで MC 番号を検索して確認してください。</li>
+      <li>仕分けと日本語の要約は Claude が投稿の要約文から作成しました。日付や条件は要約の記載どおりです。</li>
+      <li>「オンのままだと」「オンでいい？」は、投稿の内容と、セキュリティ・費用についての一般的な考え方をもとにした Claude の見立てです。結論は会社のルールによって変わるので、最終判断は情報セキュリティ担当と相談してください。</li>
+      <li>「過去の投稿の更新」は、今週内容が更新された以前の投稿です。</li>
+      <li>前の号と比べた「更新」「持ち越し」「完了」は、毎号の記録（お知らせごとの判定と期限）と見比べて出しています。期限を過ぎた「要判断」「確認推奨」は、自動で「完了」として一覧から外します。</li>
+      <li>毎週月曜の朝に自動で作っています。</li>
+    </ul>
+    <h3>「オンでいい？」の判定</h3>
+    <dl class="legend">
+      <div><dt><span class="vd vd-ok">オンでOK</span></dt><dd>そのまま使って問題になりにくいもの。必要なら利用者への案内だけ。</dd></div>
+      <div><dt><span class="vd vd-cond">条件つきでOK</span></dt><dd>書いてある条件（範囲を絞る、上限を決めるなど）を満たせば問題ないもの。</dd></div>
+      <div><dt><span class="vd vd-check">先に確認</span></dt><dd>社内ルールや既存の設定と食い違う可能性があり、オンにする前に確認が必要なもの。</dd></div>
+    </dl>
+    <h3>「どこを触る」の根拠</h3>
+    <dl class="legend">
+      <div><dt><span class="src src-art">記事に記載</span></dt><dd>投稿そのものに設定方法が書かれています。</dd></div>
+      <div><dt><span class="src src-doc">公式ドキュメント</span></dt><dd>投稿には書かれていないため、Microsoft Learn の説明から補いました。</dd></div>
+      <div><dt><span class="src src-guess">推測</span></dt><dd>関連する既存の設定場所からの推測です。画面で確認してから操作してください。</dd></div>
+      <div><dt><span class="src src-none">記載なし</span></dt><dd>設定場所が要約に書かれていません。詳細記事を確認してください。</dd></div>
+    </dl>
+  </section>
+</main>
+
+<script>
+(function () {
+  var KEY = 'copilot-digest-todo:' + location.pathname;
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
+  document.querySelectorAll('.todo input[type=checkbox]').forEach(function (box) {
+    if (saved[box.id]) box.checked = true;
+    box.addEventListener('change', function () {
+      saved[box.id] = box.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+    });
+  });
+})();
+</script>
+</body>
+</html>

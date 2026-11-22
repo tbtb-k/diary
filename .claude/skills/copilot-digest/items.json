@@ -1,7 +1,7 @@
 {
  "version": 1,
- "last_cutoff": "2026-11-21T05:25:04Z",
- "last_issue": "20261121",
+ "last_cutoff": "2026-11-22T22:08:48Z",
+ "last_issue": "20261123",
  "issues": [
   {
    "issue": "20261121",
@@ -13,6 +13,19 @@
     "updated": 0,
     "minor": 0,
     "carry": 0,
+    "done": 0
+   }
+  },
+  {
+   "issue": "20261123",
+   "file": "pages/admin_20261123-copilot.html",
+   "period_from": "2026-11-21T05:25:04Z",
+   "period_to": "2026-11-22T22:08:48Z",
+   "counts": {
+    "new": 0,
+    "updated": 0,
+    "minor": 0,
+    "carry": 14,
     "done": 0
    }
   }
