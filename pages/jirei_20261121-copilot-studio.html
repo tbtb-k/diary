@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Dow）。2026年11月21日作成。公開情報（Microsoft 365 Copilot Blog）をもとにまとめています。">
+<title>運賃請求書の誤りを、数日がかりから数秒で見つけられるようになりました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月21日／化学メーカー（Dow）・物流の請求書チェック</p>
+
+  <h1>運賃請求書の誤りを、数日がかりから数秒で見つけられるようになりました</h1>
+
+  <div class="lead">
+    <p>米国の化学メーカー Dow では、物流チームが年10万件の PDF 請求書を手作業で確かめており、料金の誤りを見落とすおそれがありました。</p>
+    <p>そこで Copilot Studio で、請求書を読み取って契約条件と照らし合わせるエージェントと、結果を言葉で調べられるエージェントの2つを作りました。</p>
+    <p>試験運用を始めて数週間で、これまで数日〜数週間かかっていた過大請求や誤りを、数秒で見つけられるようになったと紹介されています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>取引先から届く請求書の形式がばらばらで、1枚ずつ開いて契約の単価と見比べている。件数が多すぎて全部は確かめきれず、細かな上乗せ料金は「たぶん合っているだろう」と通してしまう。経理や購買、物流の担当者なら、思い当たる場面があるのではないでしょうか。</p>
+  <p>Dow は、1日に最大4,000件の出荷を、トラックや船などあらゆる輸送手段で手配しています。物流チームは、料金の誤りや過払いにつながるミスがないか、請求書を手作業で確かめていました。ただ、PDF の請求書だけで年10万件あり、中には20ページに及ぶものもあります。量も形式も多すぎて、効率よく監査（中身のチェック）ができない状態でした。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>使ったのは Copilot Studio（プログラムをほとんど書かずに、AI エージェントを作れる Microsoft のツール）です。Dow はまず Microsoft と合同のワークショップを開き、エージェントが役立つ業務を洗い出しました。そのうえで、ばらつきの少ない「北米のトラック輸送」の請求書だけに範囲をしぼって始めています。</p>
+  <p>作ったエージェントは2つです。1つ目は、人が指示しなくても裏で動き続ける「自律型」のエージェントです。2つ目は、社員が質問すると答える「Freight Agent（運賃エージェント）」で、社内のデータ基盤「Integrated Data Hub」にある4万3,000件の請求書をもとに答えます。開発には物流チームの専門家も加わりました。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Dow の2つのエージェントが請求書の誤りを見つける流れ">
+      <li><div class="box">メールで<br>PDF 請求書が届く</div></li>
+      <li><div class="box">エージェントが<br>内容を読み取る</div></li>
+      <li><div class="box">契約条件と<br>照らし合わせる</div></li>
+      <li><div class="box">ずれを色分けして<br>画面に表示</div></li>
+      <li><div class="box">社員が質問して<br>原因を調べる</div></li>
+    </ol>
+    <figcaption>Dow の2つのエージェントが請求書の誤りを見つける流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>自律型のエージェントが、受信メールを見張り、添付された PDF の請求書を見つけます。</li>
+    <li>請求書の中身を読み取り、分析しやすい形のデータに整えます。</li>
+    <li>運賃・計上済みの費用・請求額が、取り決めた契約条件と合っているかを確かめます。</li>
+    <li>食い違い、条件に合わない請求、金額の誤りを色分けし、ダッシュボード（数字を一覧できる画面）に出します。</li>
+    <li>社員は Freight Agent にふだんの言葉で質問し、運送会社・トラック・製品の種類ごとに比べて原因を調べます。</li>
+  </ol>
+  <p class="src-note">※ 手順の順番は記事の記述をもとに整理したものです。Copilot Studio での具体的な設定内容は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>年10万件の PDF 請求書を人が確かめていました。過大請求や誤りを見つけるのに、数日から数週間かかることもありました。</p></div>
+    <div class="after"><h3>いま</h3><p>エージェントが誤りの候補を数秒で示します。二重の請求や、荷下ろしの遅れで上がった料金なども追えるようになりました。</p></div>
+  </div>
+  <p>試験運用を始めて数週間で、社員とエージェントが一緒に、数千件の請求書から異常を見つけ、節約できそうな金額を示せるようになったと、Microsoft のブログで紹介されています。全世界のあらゆる輸送手段に広げれば、運賃を数百万ドル規模で節約できる見込みだとしています。ただし、これは見込みの数字で、実際に節約できた金額は公表されていません。担当の責任者は「年間の運賃は数十億ドルを超える。エージェントが過大請求を見つけ、チームはより価値の高い仕事に集中できる」と話しています（意訳）。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>毎月たくさん届き、決まった条件と見比べている書類（請求書、見積書、経費の申請など）を1つ選びます。</li>
+    <li>範囲を小さくしぼります。Dow のように「この取引先の、この種類の書類だけ」から始めると、効果を確かめやすくなります。</li>
+    <li>照らし合わせる元の条件（契約の単価表など）を整理し、Copilot Studio のエージェントに「何と何を比べ、どこが違えば知らせるか」を決めて試します。</li>
+  </ol>
+  <p>準備物は、見比べる書類のサンプルと、正しい条件が書かれた資料、そして業務に詳しい担当者です。メールを見張って自動で動かす仕組みや、社内のデータ基盤につなぐことができるかは、ライセンスや社内の設定で変わります。まず IT 部門に確認してください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>先にデータを整え、範囲をしぼる</strong>
+    <p>Dow は、エージェントを作る前から社内のデータ基盤を整え、社員がデータや AI を扱えるようにする研修も進めていました。記事は、Copilot を組織のデータにしっかり結びつけることを、うまく進めるための要点として挙げています。最初の対象をばらつきの少ない北米のトラック輸送にしぼったことも、早く効果を示せた理由とされています。</p>
+  </div>
+  <p>社内で真似するときは、AI が示した「誤りの候補」をそのまま支払い停止などに使わず、最後は人が確かめる流れにしてください。記事も、時間のかかる作業はエージェントに任せつつ、大事な判断には人が関わり続ける設計をすすめています。AI はもっともらしい間違い（ハルシネーション）をすることもあります。請求書や契約書には取引先の情報が含まれるので、誰がエージェントの結果を見られるかも先に決めておきましょう。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、人が「全部は見きれない」とあきらめていた照合作業を、エージェントに先にやってもらい、人は気になるところだけを調べる形に変えたことです。決まったルールと見比べる仕事は、請求書に限らず、経費精算や発注書、検査記録など多くの業務にあります。Dow もすでに物流と業務運営で100を超える使い道を洗い出し、研究開発の特許づくりを助けるエージェントなども作り始めています。</p>
+  <p>自分の職場に置き換えると、たとえば「経費の申請が社内規程に合っているか」「見積書の単価が契約どおりか」といった確認作業が当てはまります。まずは件数が多く、ルールがはっきりしている書類1種類から始めると、効果が見えやすいでしょう。</p>
+
+  <footer>
+    <p>出典：Microsoft 365 Copilot Blog（Microsoft Tech Community）「Dow is targeting millions in cost savings with Microsoft 365 Copilot and agents」（2025年3月18日公開）<br>
+    <a href="https://techcommunity.microsoft.com/blog/microsoft365copilotblog/dow-is-targeting-millions-in-cost-savings-with-microsoft-365-copilot-and-agents/4393480">https://techcommunity.microsoft.com/blog/microsoft365copilotblog/dow-is-targeting-millions-in-cost-savings-with-microsoft-365-copilot-and-agents/4393480</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月21日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

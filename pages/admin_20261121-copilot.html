@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="2026/11/14〜11/21 の Copilot 関連のメッセージセンター投稿41件を、管理者の対応要否と、オンにしたときの影響で仕分けた週次ダイジェスト（2026/11/21号・No.00）">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Copilot 管理ダイジェスト 2026/11/21号</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@700;900&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: 一列の業務ブリーフ。上に件数の比率バー、続いて「今週やること」、あとは放置したときの影響が大きい順に並べる */
+:root {
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --fg: #18212c;
+  --muted: #586473;
+  --line: #d9dfe6;
+  --accent: #0e6a6a;
+  --red: #b8322a;   --red-bg: #fbeceb;
+  --amber: #9a6410; --amber-bg: #fbf2e2;
+  --blue: #2a64a8;  --blue-bg: #e8f0fa;
+  --green: #2d7a50; --green-bg: #e7f4ec;
+  --grey: #6b7684;  --grey-bg: #eceff3;
+  --font-display: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11161c; --surface: #19212a; --fg: #e6ebf0; --muted: #9aa6b4; --line: #2c3743;
+    --accent: #5cc4c0;
+    --red: #f08a80;   --red-bg: #3a1f1d;
+    --amber: #e6b25c; --amber-bg: #372a14;
+    --blue: #86b6ee;  --blue-bg: #1b2b40;
+    --green: #7fcf9f; --green-bg: #18301f;
+    --grey: #a3adb9;  --grey-bg: #252e38;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11161c; --surface: #19212a; --fg: #e6ebf0; --muted: #9aa6b4; --line: #2c3743;
+  --accent: #5cc4c0;
+  --red: #f08a80;   --red-bg: #3a1f1d;
+  --amber: #e6b25c; --amber-bg: #372a14;
+  --blue: #86b6ee;  --blue-bg: #1b2b40;
+  --green: #7fcf9f; --green-bg: #18301f;
+  --grey: #a3adb9;  --grey-bg: #252e38;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.75;
+}
+.wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- header ---------- */
+.top {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  margin-top: calc(-1 * env(safe-area-inset-top, 0px));
+  padding-top: calc(env(safe-area-inset-top, 0px) + 2.25rem);
+  padding-bottom: 2rem;
+}
+.top .wrap { display: grid; gap: 0.9rem; }
+.eyebrow {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;
+  font-size: 0.78rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 500;
+}
+.eyebrow .draft {
+  border: 1px solid var(--accent); color: var(--accent);
+  padding: 0 0.5em; border-radius: 3px; letter-spacing: 0.04em;
+}
+h1 {
+  font-family: var(--font-display); font-weight: 900;
+  font-size: clamp(1.75rem, 5vw, 2.4rem); line-height: 1.25; margin: 0;
+  text-wrap: balance;
+}
+.period { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.period strong { color: var(--fg); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.mix { display: grid; gap: 0.6rem; margin-top: 0.4rem; }
+.mix-bar {
+  display: flex; height: 14px; border-radius: 3px; overflow: hidden;
+  background: var(--line);
+}
+.mix-bar span { display: block; height: 100%; }
+.mix-legend {
+  display: flex; flex-wrap: wrap; gap: 0.4rem 1.25rem; margin: 0; padding: 0; list-style: none;
+  font-size: 0.85rem;
+}
+.mix-legend li { display: flex; align-items: center; gap: 0.4rem; }
+.mix-legend b { font-variant-numeric: tabular-nums; }
+.sw { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+.sw-red { background: var(--red); } .sw-amber { background: var(--amber); }
+.sw-blue { background: var(--blue); } .sw-green { background: var(--green); }
+.sw-grey { background: var(--grey); }
+
+/* ---------- sections ---------- */
+main { display: grid; gap: 2.75rem; padding-block: 2.25rem 3.5rem; }
+section { display: grid; gap: 1rem; }
+.sec-head { display: grid; gap: 0.3rem; }
+.sec-head h2 {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; margin: 0;
+  display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; text-wrap: balance;
+}
+.sec-head p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+.count { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+
+.level {
+  font-family: var(--font-body); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em;
+  padding: 0.1em 0.6em; border-radius: 3px; white-space: nowrap;
+}
+.lv-red { color: var(--red); background: var(--red-bg); }
+.lv-amber { color: var(--amber); background: var(--amber-bg); }
+.lv-blue { color: var(--blue); background: var(--blue-bg); }
+.lv-green { color: var(--green); background: var(--green-bg); }
+.lv-grey { color: var(--grey); background: var(--grey-bg); }
+
+/* ---------- todo ---------- */
+.todo {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+  margin: 0; padding: 0.4rem 0; list-style: none;
+}
+.todo li + li { border-top: 1px solid var(--line); }
+.todo label {
+  display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; align-items: start;
+  padding: 0.85rem 1.1rem; cursor: pointer;
+}
+.todo input { width: 18px; height: 18px; margin-top: 0.3rem; accent-color: var(--accent); }
+.todo .t { font-weight: 700; display: block; }
+.todo .d { color: var(--muted); font-size: 0.88rem; display: block; }
+.todo input:checked + span .t { text-decoration: line-through; color: var(--muted); }
+
+/* ---------- verdict chips ---------- */
+.vd {
+  display: inline-block; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.03em;
+  padding: 0.05em 0.6em; border-radius: 999px; white-space: nowrap; line-height: 1.7;
+}
+.vd-ok { color: var(--green); background: var(--green-bg); }
+.vd-cond { color: var(--amber); background: var(--amber-bg); }
+.vd-check { color: var(--red); background: var(--red-bg); }
+
+/* ---------- detail cards ---------- */
+.cards { display: grid; gap: 1rem; }
+.item {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+  padding: 1.1rem 1.25rem 1.2rem; display: grid; gap: 0.7rem; min-width: 0;
+}
+.item-meta { display: flex; flex-wrap: wrap; gap: 0.4rem 0.6rem; align-items: center; font-size: 0.8rem; }
+.mc { font-family: var(--font-mono); color: var(--muted); font-size: 0.8rem; }
+.tag {
+  font-size: 0.72rem; color: var(--muted); border: 1px solid var(--line);
+  padding: 0 0.45em; border-radius: 3px;
+}
+.item h3 { margin: 0; font-size: 1.05rem; line-height: 1.55; font-weight: 700; text-wrap: balance; }
+.item dl { margin: 0; display: grid; grid-template-columns: 7.5em 1fr; gap: 0.45rem 1rem; }
+.item dt { color: var(--muted); font-size: 0.85rem; font-weight: 500; padding-top: 0.1em; }
+.item dd { margin: 0; min-width: 0; }
+.item dd.where { display: grid; gap: 0.3rem; }
+.item .risk-sep { grid-column: 1 / -1; border-top: 1px dashed var(--line); margin-block: 0.2rem; }
+.item dd.judge { display: grid; gap: 0.3rem; }
+.item dd.judge .vd { justify-self: start; }
+.path code, .item code {
+  font-family: var(--font-mono); font-size: 0.85em; background: var(--grey-bg);
+  padding: 0.05em 0.35em; border-radius: 3px; overflow-wrap: anywhere;
+}
+.src {
+  justify-self: start; font-size: 0.72rem; font-weight: 700; padding: 0.05em 0.55em; border-radius: 3px;
+  border: 1px solid currentColor;
+}
+.src-art { color: var(--green); }
+.src-doc { color: var(--blue); }
+.src-guess { color: var(--amber); }
+.src-none { color: var(--grey); }
+.item .more { font-size: 0.85rem; justify-self: start; }
+
+/* ---------- compact lists ---------- */
+.rows {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+  margin: 0; padding: 0; list-style: none;
+}
+.rows li {
+  display: grid; grid-template-columns: 7.2rem 1fr; gap: 0.2rem 1rem;
+  padding: 0.9rem 1.1rem;
+}
+.rows li + li { border-top: 1px solid var(--line); }
+.rows .mc { padding-top: 0.15rem; }
+.rows .body { min-width: 0; display: grid; gap: 0.2rem; }
+.rows .ttl { font-weight: 700; }
+.rows .note { color: var(--muted); font-size: 0.88rem; }
+.rows .note b { color: var(--fg); font-weight: 500; }
+.rows .verdict {
+  font-size: 0.88rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.5rem;
+  margin-top: 0.15rem;
+}
+.rows .verdict .lbl { color: var(--muted); font-size: 0.8rem; }
+.rows .verdict .txt { flex: 1 1 16rem; min-width: 0; }
+
+/* ---------- diff / carry ---------- */
+.diff-stats { display: flex; flex-wrap: wrap; gap: 0.4rem 0.5rem; margin: 0; padding: 0; list-style: none; font-size: 0.85rem; }
+.diff-stats li {
+  display: flex; align-items: baseline; gap: 0.35rem;
+  border: 1px solid var(--line); border-radius: 999px; padding: 0.05rem 0.75rem; background: var(--bg);
+}
+.diff-stats b { font-variant-numeric: tabular-nums; font-size: 0.95rem; }
+.diff-stats .k { color: var(--muted); }
+.diff-note {
+  margin: 0; background: var(--surface); border: 1px dashed var(--line); border-radius: 6px;
+  padding: 0.9rem 1.1rem; color: var(--muted); font-size: 0.9rem;
+}
+.tag-upd { color: var(--accent); border-color: var(--accent); font-weight: 700; }
+.tag-carry { color: var(--muted); border-style: dashed; }
+.rows .change { font-size: 0.88rem; }
+.rows .change b { font-weight: 700; }
+
+/* ---------- about ---------- */
+.about {
+  border-top: 1px solid var(--line); padding-top: 1.75rem;
+  display: grid; gap: 1rem; font-size: 0.9rem; color: var(--muted);
+}
+.about h2 { font-family: var(--font-display); font-size: 1.05rem; color: var(--fg); margin: 0; }
+.about h3 { font-size: 0.9rem; color: var(--fg); margin: 0.4rem 0 0; }
+.about ul { margin: 0; padding-left: 1.2em; display: grid; gap: 0.35rem; }
+.legend { display: grid; gap: 0.45rem; margin: 0; }
+.legend div { display: grid; grid-template-columns: 8.5em 1fr; gap: 0.75rem; align-items: start; }
+.legend dt { margin: 0; }
+.legend dd { margin: 0; }
+
+@media (max-width: 560px) {
+  .item dl { grid-template-columns: 1fr; gap: 0.1rem; }
+  .item dd { margin-bottom: 0.45rem; }
+  .rows li { grid-template-columns: 1fr; }
+  .legend div { grid-template-columns: 1fr; gap: 0.1rem; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .todo input:checked + span .t { transition: color 0.15s; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="eyebrow"><span>週次ダイジェスト</span><span>No.00</span><span>2026/11/21号</span><span class="draft">試作号</span></div>
+    <h1>Copilot 管理ダイジェスト</h1>
+    <p class="period">対象期間 <strong>2026/11/14 〜 11/21</strong>　Copilot に関係するメッセージセンターの投稿 <strong>41 件</strong>を、放置したときの影響で仕分けました。各項目に「オンのままだとどうなるか」と「オンにしてよいか」の見立てを付けています。</p>
+    <div class="mix" aria-label="仕分け結果の内訳">
+      <div class="mix-bar" role="img" aria-label="要判断5件、確認推奨9件、必要なら有効化10件、対応不要8件、Copilot Studio・Power Platform 9件">
+        <span class="sw-red" style="width: calc(5 / 41 * 100%)"></span>
+        <span class="sw-amber" style="width: calc(9 / 41 * 100%)"></span>
+        <span class="sw-blue" style="width: calc(10 / 41 * 100%)"></span>
+        <span class="sw-green" style="width: calc(8 / 41 * 100%)"></span>
+        <span class="sw-grey" style="width: calc(9 / 41 * 100%)"></span>
+      </div>
+      <ul class="mix-legend">
+        <li><span class="sw sw-red"></span>要判断 <b>5</b></li>
+        <li><span class="sw sw-amber"></span>確認推奨 <b>9</b></li>
+        <li><span class="sw sw-blue"></span>必要なら有効化 <b>10</b></li>
+        <li><span class="sw sw-green"></span>対応不要 <b>8</b></li>
+        <li><span class="sw sw-grey"></span>Copilot Studio・Power Platform <b>9</b></li>
+      </ul>
+    </div>
+    <ul class="diff-stats" aria-label="前の号からの変化">
+      <li><span class="k">新規</span><b>41</b></li>
+      <li><span class="k">更新</span><b>0</b></li>
+      <li><span class="k">持ち越し</span><b>0</b></li>
+      <li><span class="k">完了</span><b>0</b></li>
+    </ul>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="todo" aria-labelledby="todo-h">
+    <div class="sec-head">
+      <h2 id="todo-h">今週やること</h2>
+      <p>ここだけ読めば今週は大丈夫です。チェックはこのブラウザにだけ保存されます。</p>
+    </div>
+    <ul class="todo">
+      <li><label><input type="checkbox" id="todo-1"><span><span class="t">Copilot アプリ内でのWebページ表示を許可するか決める</span><span class="d">2027/1 から標準でオンになります。Edge に閲覧やダウンロードの制限をかけているなら、1/3 までにポリシーでオフに（MC1560922）</span></span></label></li>
+      <li><label><input type="checkbox" id="todo-2"><span><span class="t">PowerPoint の Copilot プラグインを全員に使わせてよいか確認する</span><span class="d">今まさに展開中で、12月上旬に完了します。他社製プラグインはデータの送り先を見てから（MC1556104 ほか）</span></span></label></li>
+      <li><label><input type="checkbox" id="todo-3"><span><span class="t">Copilot Credits の支出ポリシー（上限）を見直す</span><span class="d">12月から、利用上限を超えても従量課金で使い続けられるようになります（MC1557754）</span></span></label></li>
+      <li><label><input type="checkbox" id="todo-4"><span><span class="t">ユーザーへ「ノートブックがワークスペースに変わる」ことを周知する</span><span class="d">12月から全世界で展開。名前と画面が変わるので問い合わせが増えそうです（MC1559638 ほか）</span></span></label></li>
+    </ul>
+  </section>
+
+  <section id="diff" aria-labelledby="diff-h">
+    <div class="sec-head">
+      <h2 id="diff-h">先週からの変化</h2>
+      <p>前の号のあとに Microsoft が書きかえたお知らせと、期限が過ぎて一覧から外したお知らせです。</p>
+    </div>
+    <p class="diff-note">この号が最初の号なので、比べる前の号はありません。次の号からは、前の号のあとに内容が変わったお知らせの「何が変わったか」と、期限が過ぎて一覧から外したお知らせがここに並びます。</p>
+  </section>
+
+  <section id="carry" aria-labelledby="carry-h">
+    <div class="sec-head">
+      <h2 id="carry-h">前の号からの持ち越し <span class="count">0 件</span></h2>
+      <p>前の号までの「要判断」「確認推奨」のうち、まだ期限や展開の時期が来ていないものです。期限を過ぎると自動で「完了」になります。</p>
+    </div>
+    <p class="diff-note">持ち越しはありません（最初の号）。</p>
+  </section>
+
+  <section id="red" aria-labelledby="red-h">
+    <div class="sec-head">
+      <h2 id="red-h"><span class="level lv-red">要判断</span>放置すると自動でオンになる・お金や期限が絡む <span class="count">5 件</span></h2>
+      <p>何もしないと会社の意思と関係なく利用者側の挙動が変わるもの。オンのままでよいかを決めてください。</p>
+    </div>
+    <div class="cards">
+      <article class="item">
+        <div class="item-meta"><span class="mc">MC1560922</span><span class="tag">Microsoft Copilot</span><span class="tag">対応期限 2027/1/3</span></div>
+        <h3>Copilot デスクトップアプリで、チャット内のリンクがアプリの中で開くようになる</h3>
+        <dl>
+          <dt>何が変わる</dt><dd>チャットに出てきたWebサイトを、ブラウザではなく Copilot アプリの中で、会話と並べて表示します。これまでは任意の機能でした。</dd>
+          <dt>いつから</dt><dd>2027年1月上旬〜1月末に展開（Windows・Mac）</dd>
+          <dt>放置すると</dt><dd>標準でオンになります。</dd>
+          <dt>どこを触る</dt><dd class="where"><span class="path">Intune などの端末管理ツールで <code>BrowsingEnabled</code> ポリシーを <code>Off</code> にすると無効化できます。ダウンロードや権限などを細かく制御するポリシーも追加されます。</span><span class="src src-art">記事に記載</span></dd>
+          <div class="risk-sep" role="presentation"></div>
+          <dt>オンのままだと</dt><dd>Webページが、会社で管理しているブラウザ（Edge など）ではなく Copilot アプリの中で開きます。ダウンロードもアプリの中で行われます。記事ではアプリ内ブラウザ専用の管理ポリシーが新しく用意されているため、Edge にかけている制限がそのまま効くとは限りません。</dd>
+          <dt>オンでいい？</dt><dd class="judge"><span class="vd vd-check">先に確認</span><span>Edge で閲覧できるサイトやダウンロードを制限している会社は、同じ制限をアプリ内ブラウザにも設定できるまでオフにしておくのが安全です。特に制限をかけていないなら、オンのままでも大きな問題は起きにくいです。</span></dd>
+        </dl>
+        <a class="more" href="https://mc.merill.net/message/MC1560922" target="_blank" rel="noopener">詳細を見る</a>
+      </article>
+
+      <article class="item">
+        <div class="item-meta"><span class="mc">MC1556104 / MC1556090 / MC1556095</span><span class="tag">PowerPoint</span></div>
+        <h3>PowerPoint の Copilot に「プラグイン」が追加される</h3>
+        <dl>
+          <dt>何が変わる</dt><dd>専門的なスキルや外部サービスとの連携（コネクタ）を、PowerPoint の Copilot から使えるようになります。Windows・Mac・Web が対象です。</dd>
+          <dt>いつから</dt><dd>11月中旬に開始、12月上旬に完了（展開中）</dd>
+          <dt>放置すると</dt><dd>利用者がプラグインを使える状態になります。</dd>
+          <dt>どこを触る</dt><dd class="where"><span class="path">Microsoft 365 管理センターでプラグインの利用可否を管理します。具体的な画面名は要約に書かれていないため、詳細記事で確認してください。</span><span class="src src-none">画面名の記載なし</span></dd>
+          <div class="risk-sep" role="presentation"></div>
+          <dt>オンのままだと</dt><dd>プラグインを通じて、スライドの内容や Copilot への指示が外部のサービスに渡る可能性があります。どこにデータが渡るかはプラグインごとに違います。</dd>
+          <dt>オンでいい？</dt><dd class="judge"><span class="vd vd-cond">条件つきでOK</span><span>Microsoft 製のプラグインは問題になりにくいです。他社製のプラグインは、データの送り先と利用規約を確認してから許可してください。</span></dd>
+        </dl>
+        <a class="more" href="https://mc.merill.net/message/MC1556104" target="_blank" rel="noopener">詳細を見る</a>
+      </article>
+
+      <article class="item">
+        <div class="item-meta"><span class="mc">MC1557754</span><span class="tag">Microsoft Copilot</span><span class="tag">費用</span></div>
+        <h3>利用上限を超えても、Copilot Credits（従量課金）でモデルを使い続けられるようになる</h3>
+        <dl>
+          <dt>何が変わる</dt><dd>ライセンスの利用上限に達したあと、従量課金の Copilot Credits を使って上位モデルを使い続けられます。利用者にはクレジット残量の表示と「自動モード / クレジットを使うモデル」の選択肢が出ます。</dd>
+          <dt>いつから</dt><dd>2026年12月〜</dd>
+          <dt>放置すると</dt><dd>要約からは標準の挙動が読み取れません。費用に直結するので、自社の支出ポリシーの設定を先に確認するのが安全です。</dd>
+          <dt>どこを触る</dt><dd class="where"><span class="path">Microsoft 365 管理センター › Copilot › <code>Billing &amp; usage</code>（課金と使用状況）の課金ポリシー。画面が「課金」メニュー側へ移っている場合もあります。</span><span class="src src-doc">公式ドキュメント</span></dd>
+          <div class="risk-sep" role="presentation"></div>
+          <dt>オンのままだと</dt><dd>上限に達しても利用が止まらないので、利用者にとっては便利です。一方で、使った分のクレジットがそのまま費用になるため、請求が想定より増える可能性があります。</dd>
+          <dt>オンでいい？</dt><dd class="judge"><span class="vd vd-check">先に確認</span><span>支出ポリシーで月の上限を決めてあればオンで問題ありません。上限を決めないままオンにするのは避けてください。</span></dd>
+        </dl>
+        <a class="more" href="https://mc.merill.net/message/MC1557754" target="_blank" rel="noopener">詳細を見る</a>
+      </article>
+    </div>
+  </section>
+
+  <section id="amber" aria-labelledby="amber-h">
+    <div class="sec-head">
+      <h2 id="amber-h"><span class="level lv-amber">確認推奨</span>自動で変わるが、設定は引き継がれる・周知が必要 <span class="count">9 件</span></h2>
+      <p>管理者の操作はほぼ不要。ただし画面や名前が変わるので、一度見ておく・利用者に知らせておくと安心です。</p>
+    </div>
+    <div class="cards">
+      <article class="item">
+        <div class="item-meta"><span class="mc">MC1532253</span><span class="tag">Teams</span><span class="tag">過去の投稿の更新</span></div>
+        <h3>Teams 会議の Copilot ポリシーが 2 つに分かれる</h3>
+        <dl>
+          <dt>何が変わる</dt><dd>今の「Copilot」会議ポリシーが、<code>MeetingAI</code>（会議中のAI）と <code>TranscriptionWithMeetingAI</code>（文字起こし付きAI）の 2 つに置き換わります。会議の開催者側にも細かい AI 設定が増えます。</dd>
+          <dt>いつから</dt><dd>2026年12月〜</dd>
+          <dt>放置すると</dt><dd>今の設定は自動で新しいポリシーに引き継がれます。操作は不要です。</dd>
+          <dt>どこを触る</dt><dd class="where"><span class="path">Teams 管理センター › 会議 › 会議ポリシー（今の Copilot 設定がある場所）で、新しい項目名を一度確認。</span><span class="src src-guess">推測</span></dd>
+          <div class="risk-sep" role="presentation"></div>
+          <dt>オンのままだと</dt><dd>設定が引き継がれるので、利用者から見た変化はほとんどありません。会議の開催者が、会議ごとに AI の使い方（文字起こしを残すかどうかなど）を細かく選べるようになります。</dd>
+          <dt>オンでいい？</dt><dd class="judge"><span class="vd vd-ok">オンでOK</span><span>会議の記録を残す・残さないの社内ルールがあれば、開催者向けの案内を更新してください。PowerShell などのスクリプトで会議ポリシーを管理している場合は、古い設定名を使っていないかも確認を（推測）。</span></dd>
+        </dl>
+        <a class="more" href="https://mc.merill.net/message/MC1532253" target="_blank" rel="noopener">詳細を見る</a>
+      </article>
+
+      <article class="item">
+        <div class="item-meta"><span class="mc">MC1560916</span><span class="tag">Microsoft Copilot</span></div>
+        <h3>新しいAIモデル「GPT-6.2 Sol」「Astra」が使えるようになる</h3>
+        <dl>
+          <dt>何が変わる</dt><dd>Cowork、Copilot Studio、Word、Excel、PowerPoint、Chat で選べるモデルが増えます。</dd>
+          <dt>いつから</dt><dd>展開中</dd>
+          <dt>放置すると</dt><dd>対象ライセンスを持つ利用者は標準で使えます。Astra は OpenAI を「サブプロセッサ（処理の委託先）」として許可している場合だけ使えます。</dd>
+          <dt>どこを触る</dt><dd class="where"><span class="path">Microsoft 365 管理センター › Copilot › 設定 › <code>Data access</code>（データ アクセス）› 「Microsoft のサブプロセッサとして動作する AI プロバイダー」。Anthropic の設定場所として公式に書かれている画面で、OpenAI も同じ場所かは推測です。</span><span class="src src-guess">推測を含む</span></dd>
+          <div class="risk-sep" role="presentation"></div>
+          <dt>オンのままだと</dt><dd>利用者が選べるモデルが増えます。Astra を使う場合、データが OpenAI 社（Microsoft の委託先）で処理されます。</dd>
+          <dt>オンでいい？</dt><dd class="judge"><span class="vd vd-cond">条件つきでOK</span><span>GPT-6.2 Sol は追加の許可が要らないモデルなので、そのままで問題になりにくいです。Astra は、Microsoft 以外の会社でのデータ処理を社内ルールで認めているかを確認してから、OpenAI のサブプロセッサ設定を決めてください。</span></dd>
+        </dl>
+        <a class="more" href="https://mc.merill.net/message/MC1560916" target="_blank" rel="noopener">詳細を見る</a>
+      </article>
+
+      <article class="item">
+        <div class="item-meta"><span class="mc">MC1559638 / MC1559632 / MC1535647</span><span class="tag">Microsoft Copilot</span></div>
+        <h3>Copilot ノートブックが「ワークスペース」に変わり、ホーム画面も刷新される</h3>
+        <dl>
+          <dt>何が変わる</dt><dd>ノートブックがチーム向けの「ワークスペース」になり、アクティビティ表示・メンバーの在席表示・グループでの所有ができるようになります。ワークスペース内の会話の記憶も保持されます。Copilot アプリのホームも Chat・Cowork・Projects・Workspaces をまとめた画面に変わります。</dd>
+          <dt>いつから</dt><dd>2026年12月から全世界で展開（ホーム刷新は10月下旬から順次）</dd>
+          <dt>放置すると</dt><dd>自動で切り替わります。管理者の操作は不要です。</dd>
+          <dt>どこを触る</dt><dd class="where"><span class="path">設定変更はなし。社内マニュアルや利用者への案内を更新してください。</span><span class="src src-art">記事に記載</span></dd>
+          <div class="risk-sep" role="presentation"></div>
+          <dt>オンのままだと</dt><dd>ノートブックが、チームで共有・共同所有できる場所になります。会話の記憶が残るので、以前の内容が後の回答に反映されます。</dd>
+          <dt>オンでいい？</dt><dd class="judge"><span class="vd vd-ok">オンでOK</span><span>機密情報を入れたワークスペースを共有するときは、メンバーの範囲に注意するよう利用者に案内してください。</span></dd>
+        </dl>
+        <a class="more" href="https://mc.merill.net/message/MC1559638" target="_blank" rel="noopener">詳細を見る</a>
+      </article>
+
+      <article class="item">
+        <div class="item-meta"><span class="mc">MC1562275</span><span class="tag">Microsoft Copilot</span></div>
+        <h3>Copilot ライセンスがない人の検索画面が新しくなる</h3>
+        <dl>
+          <dt>何が変わる</dt><dd>Microsoft 365 Copilot アプリの検索が新しい画面に変わり、ファイルや外部サービスの中身を探しやすくなります。アクセス権限は今まで通り守られます。</dd>
+          <dt>いつから</dt><dd>2026年11月下旬〜</dd>
+          <dt>放置すると</dt><dd>標準で新しい検索になります。利用者は自分で以前の検索に戻せます。</dd>
+          <dt>どこを触る</dt><dd class="where"><span class="path">管理者の設定は不要。ヘルプデスクに「戻し方」を共有しておくと問い合わせが減ります。</span><span class="src src-art">記事に記載</span></dd>
+          <div class="risk-sep" role="presentation"></div>
+          <dt>オンのままだと</dt><dd>アクセス権限は今まで通りなので、見られなかったファイルが見えるようになることはありません。ただ、探しやすくなる分、共有範囲が広すぎるファイル（「社内の全員」に共有されたものなど）が目に付きやすくなります。</dd>
+          <dt>オンでいい？</dt><dd class="judge"><span class="vd vd-ok">オンでOK</span><span>SharePoint や OneDrive の共有設定をまだ見直していないなら、この機会に確認しておくと安心です。</span></dd>
+        </dl>
+        <a class="more" href="https://mc.merill.net/message/MC1562275" target="_blank" rel="noopener">詳細を見る</a>
+      </article>
+
+      <article class="item">
+        <div class="item-meta"><span class="mc">MC1562269</span><span class="tag">Copilot Chat</span></div>
+        <h3>Copilot デスクトップアプリと Edge の間で、パスワードや閲覧履歴を同期できるようになる</h3>
+        <dl>
+          <dt>何が変わる</dt><dd>パスワード、個人情報、設定、閲覧履歴をアカウント単位で同期できます。支払い情報は対象外です。</dd>
+          <dt>いつから</dt><dd>2026年12月〜</dd>
+          <dt>放置すると</dt><dd>同期は利用者が自分で選ぶ「オプトイン」方式です。記事は有効にする前に社内ルールを確認するよう勧めています。</dd>
+          <dt>どこを触る</dt><dd class="where"><span class="path">要約に設定場所の記載はありません。パスワード同期を社内で認めているか、情報セキュリティ担当と確認してください。</span><span class="src src-none">記載なし</span></dd>
+          <div class="risk-sep" role="presentation"></div>
+          <dt>オンのままだと</dt><dd>利用者が同期をオンにすると、会社で使っているパスワードや閲覧履歴が Copilot アプリにも保存されます。端末をなくしたときやアカウントが乗っ取られたときに、影響が広がる可能性があります。</dd>
+          <dt>オンでいい？</dt><dd class="judge"><span class="vd vd-check">先に確認</span><span>Edge でパスワード同期を禁止している会社は、Copilot アプリでも同じ方針で止められるかを確認してから広めてください。</span></dd>
+        </dl>
+        <a class="more" href="https://mc.merill.net/message/MC1562269" target="_blank" rel="noopener">詳細を見る</a>
+      </article>
+
+      <article class="item">
+        <div class="item-meta"><span class="mc">MC1558033</span><span class="tag">Microsoft 365</span></div>
+        <h3>Copilot でのアプリ作成機能（Managed Runtime）が正式提供に</h3>
+        <dl>
+          <dt>何が変わる</dt><dd>Cowork・Copilot Studio・Copilot Code でのアプリ作成が、Frontier プログラム以外にも広がります。作れる環境や使えるクレジットを管理者が統制できます。</dd>
+          <dt>いつから</dt><dd>正式提供済み</dd>
+          <dt>放置すると</dt><dd>要約からは標準の挙動が読み取れません。誰がアプリを作れるかを一度確認してください。</dd>
+          <dt>どこを触る</dt><dd class="where"><span class="path">Microsoft 365 管理センターでアプリ・ポリシー・クレジットを管理。具体的な画面名は詳細記事で確認してください。</span><span class="src src-none">画面名の記載なし</span></dd>
+          <div class="risk-sep" role="presentation"></div>
+          <dt>オンのままだと</dt><dd>利用者が業務用のアプリを自分で作れるようになります。管理部門が把握していないアプリが増えたり、アプリの作成や実行でクレジットを消費したりします。</dd>
+          <dt>オンでいい？</dt><dd class="judge"><span class="vd vd-cond">条件つきでOK</span><span>アプリを作れる人の範囲と、クレジットの上限を決めてからなら問題ありません。</span></dd>
+        </dl>
+        <a class="more" href="https://mc.merill.net/message/MC1558033" target="_blank" rel="noopener">詳細を見る</a>
+      </article>
+
+      <article class="item">
+        <div class="item-meta"><span class="mc">MC1557759</span><span class="tag">Microsoft Copilot</span><span class="tag">Frontier 参加テナントのみ</span></div>
+        <h3>エージェントや Cowork の使い道を自動で分類する機能（プレビュー）</h3>
+        <dl>
+          <dt>何が変わる</dt><dd>AI がどんな用途に使われているかを自動で分類し、投資効果の分析に使えるようにします。</dd>
+          <dt>いつから</dt><dd>2026年11月中旬〜（パブリックプレビュー）</dd>
+          <dt>放置すると</dt><dd>Frontier に参加している対象テナントでは標準でオンになります。利用者は自分で除外（オプトアウト）できます。参加していなければ関係ありません。</dd>
+          <dt>どこを触る</dt><dd class="where"><span class="path">要約に設定場所の記載はありません。分類と「AI の価値」設定を管理者が変更できる、とだけ書かれています。</span><span class="src src-none">記載なし</span></dd>
+          <div class="risk-sep" role="presentation"></div>
+          <dt>オンのままだと</dt><dd>利用者が AI を何に使っているかが自動で分類され、管理者が集計を見られるようになります。利用者によっては「監視されている」と感じるかもしれません。</dd>
+          <dt>オンでいい？</dt><dd class="judge"><span class="vd vd-cond">条件つきでOK</span><span>集計の目的と、誰がどこまで見られるかを社内に説明してから使うのがおすすめです。</span></dd>
+        </dl>
+        <a class="more" href="https://mc.merill.net/message/MC1557759" target="_blank" rel="noopener">詳細を見る</a>
+      </article>
+    </div>
+  </section>
+
+  <section id="blue" aria-labelledby="blue-h">
+    <div class="sec-head">
+      <h2 id="blue-h"><span class="level lv-blue">必要なら有効化</span>放置すればオフのまま <span class="count">10 件</span></h2>
+      <p>使いたい場合だけ管理者が設定します。何もしなければ利用者には出てきません。「オンにするなら」に、有効化するときの注意点をまとめています。</p>
+    </div>
+    <ul class="rows">
+      <li><span class="mc">MC1518034</span><span class="body"><span class="ttl">Clipchamp の Copilot 動画作成に管理者用スイッチが付く</span><span class="note"><b>標準は無効。</b>11月下旬〜。機能は Clipchamp のホームからだけ使えるようになります。</span><span class="verdict"><span class="lbl">オンにするなら</span><span class="vd vd-cond">条件つきでOK</span><span class="txt">必要な部署だけに許可するのがおすすめ。AI で作った動画を社外に出す前の確認ルールも決めておくと安心です。</span></span></span></li>
+      <li><span class="mc">MC1560920</span><span class="body"><span class="ttl">Clipchamp Video Hub で Copilot 動画作成（プレビュー）</span><span class="note">Frontier 向け。<b>Anthropic モデルの許可と支出ポリシーの設定が必要。</b>書き出した動画には AI 透かしが入ります。</span><span class="verdict"><span class="lbl">オンにするなら</span><span class="vd vd-cond">条件つきでOK</span><span class="txt">Anthropic 社でのデータ処理を認めることと、クレジットの消費が前提です。まずは少人数で試すのがおすすめです。</span></span></span></li>
+      <li><span class="mc">MC1557730</span><span class="body"><span class="ttl">常時動くクラウドエージェント「Autopilot」</span><span class="note">11/17〜 Frontier 向け。<b>管理者の有効化と Microsoft 365 Copilot ライセンスが必要。</b>専用の ID を持つため、セキュリティ面の確認も必要です。</span><span class="verdict"><span class="lbl">オンにするなら</span><span class="vd vd-check">先に確認</span><span class="txt">専用の ID で常に動くエージェントなので、与える権限が大きいほど影響も大きくなります。情報セキュリティ担当と権限の範囲を決め、少人数で試してから広げてください。</span></span></span></li>
+      <li><span class="mc">MC1519871</span><span class="body"><span class="ttl">Copilot Code がモバイルと Mac にも拡大</span><span class="note">Frontier 向け。<b>ライセンス・支出ポリシー・実行場所の設定で制御。</b>従量課金です。</span><span class="verdict"><span class="lbl">オンにするなら</span><span class="vd vd-cond">条件つきでOK</span><span class="txt">プログラムを実行できる機能なので、開発部門など必要な人に限るのが安全です。実行場所の設定と支出の上限を先に決めてください。</span></span></span></li>
+      <li><span class="mc">MC1239927</span><span class="body"><span class="ttl">Teams 通訳エージェントの「逐次通訳」が正式提供へ</span><span class="note">2026年後半。<b>従量課金のため支出ポリシーの設定が必要。</b>開催者に Copilot ライセンスが必要です。</span><span class="verdict"><span class="lbl">オンにするなら</span><span class="vd vd-cond">条件つきでOK</span><span class="txt">使った分だけ費用がかかるので、支出の上限を決めてから。AI による翻訳なので、契約など重要な場面では内容の正確さに注意が必要です。</span></span></span></li>
+      <li><span class="mc">MC1556094</span><span class="body"><span class="ttl">Learning Agent が仕事内容に合わせた学習を提案</span><span class="note">11月中旬〜12月下旬。<b>管理者側と利用者側の設定の有効化が必要。</b></span><span class="verdict"><span class="lbl">オンにするなら</span><span class="vd vd-ok">オンでOK</span><span class="txt">役割や利用状況をもとに提案する機能です。どんな情報をもとに提案しているかを、利用者に説明できるようにしておくと安心です。</span></span></span></li>
+      <li><span class="mc">MC1556093</span><span class="body"><span class="ttl">Learning Agent が Teams に学習の通知を送る</span><span class="note">11月中旬〜。<b>Viva Learning の設定で通知を管理。</b></span><span class="verdict"><span class="lbl">オンにするなら</span><span class="vd vd-ok">オンでOK</span><span class="txt">Teams の通知が増えます。多すぎると感じたら Viva Learning の設定で調整してください。</span></span></span></li>
+      <li><span class="mc">MC1486291</span><span class="body"><span class="ttl">Copilot のガイド付きオンボーディング</span><span class="note">Frontier 向け。<b>管理者の有効化が必要。</b>役割やライセンスに合わせた研修を表示し、Viva Learning で受講状況を確認できます。</span><span class="verdict"><span class="lbl">オンにするなら</span><span class="vd vd-ok">オンでOK</span><span class="txt">研修を案内する機能で、リスクは小さめです。</span></span></span></li>
+      <li><span class="mc">MC1560929</span><span class="body"><span class="ttl">Workforce Insights エージェントに管理者用の設定画面</span><span class="note">11月中旬〜 Frontier 向け。<b>特定の管理者ロールとライセンスが必要。</b></span><span class="verdict"><span class="lbl">オンにするなら</span><span class="vd vd-check">先に確認</span><span class="txt">組織のデータ（組織構成など）を設定して使う機能です。人事に関わる情報を扱う可能性があるので、誰が結果を見られるかを先に決めてください。</span></span></span></li>
+      <li><span class="mc">MC1558024</span><span class="body"><span class="ttl">管理センターで複数テナントをまとめて管理</span><span class="note">11月中旬〜。<b>Microsoft Entra のテナントガバナンスでテナント同士をリンクした場合のみ。</b>テナントが 1 つなら関係ありません。</span><span class="verdict"><span class="lbl">オンにするなら</span><span class="vd vd-cond">条件つきでOK</span><span class="txt">複数テナントの設定を一か所で変えられる分、管理者の権限が集中します。使う場合は、操作できる管理者を絞ってください。</span></span></span></li>
+    </ul>
+  </section>
+
+  <section id="green" aria-labelledby="green-h">
+    <div class="sec-head">
+      <h2 id="green-h"><span class="level lv-green">対応不要</span>利用者向けの機能追加 <span class="count">8 件</span></h2>
+      <p>管理者の操作はいりません。ただし 1 件だけ、データの扱いで確認しておきたいものがあります（MC1483844）。</p>
+    </div>
+    <ul class="rows">
+      <li><span class="mc">MC1483844</span><span class="body"><span class="ttl">GPT-6.1 Sol と Claude Sonnet 5.5 の展開</span><span class="note">9/30〜（過去の投稿の更新）。使えるかどうかはサブプロセッサの設定で変わります。</span><span class="verdict"><span class="lbl">オンのままだと</span><span class="vd vd-cond">条件つきでOK</span><span class="txt">Claude のモデルを使うと、データは Anthropic 社（Microsoft の委託先）で処理されます。EU・英国以外の商用テナント（日本を含む）では、この許可が標準でオンです（公式ドキュメント）。社内ルールで認めていなければ、サブプロセッサ設定をオフにしてください。</span></span></span></li>
+      <li><span class="mc">MC1562277</span><span class="body"><span class="ttl">Teams のチャネル全体を対象に Copilot に質問・要約できる</span><span class="note">12月からパブリックプレビュー。回答には出典が付きます。</span><span class="verdict"><span class="lbl">オンのままだと</span><span class="vd vd-ok">オンでOK</span><span class="txt">チャネルの古い投稿も要約に出てくるようになります。</span></span></span></li>
+      <li><span class="mc">MC1559641</span><span class="body"><span class="ttl">OneNote の Copilot が新しくなる</span><span class="note">手書きや注釈、添付ファイルもまとめて扱えます。全世界展開は 2027年1月（Windows・iPad）。</span><span class="verdict"><span class="lbl">オンのままだと</span><span class="vd vd-ok">オンでOK</span><span class="txt">利用者にとって便利になるだけで、管理面の影響は小さいです。</span></span></span></li>
+      <li><span class="mc">MC1559633</span><span class="body"><span class="ttl">SharePoint のページに Copilot エージェントを埋め込める</span><span class="note">11月〜2027年3月に展開。権限の扱いは今まで通りです。</span><span class="verdict"><span class="lbl">オンのままだと</span><span class="vd vd-ok">オンでOK</span><span class="txt">ページを見られる権限と、エージェントが参照するデータの権限は別々に管理されます（記事に記載）。</span></span></span></li>
+      <li><span class="mc">MC1558023</span><span class="body"><span class="ttl">PowerPoint の Copilot に営業向けスキル</span><span class="note">11月下旬。利用者が「Sales プラグイン」を有効にすると使えます。</span><span class="verdict"><span class="lbl">オンのままだと</span><span class="vd vd-ok">オンでOK</span><span class="txt">プラグインの扱いは、上の「要判断」の PowerPoint プラグインと同じ方針で考えてください。</span></span></span></li>
+      <li><span class="mc">MC1560923</span><span class="body"><span class="ttl">Copilot ダッシュボードの利用分類が 4 種類から 13 種類に</span><span class="note">12月。どんな用途で使われているかが細かく見えるようになります。</span><span class="verdict"><span class="lbl">オンのままだと</span><span class="vd vd-ok">オンでOK</span><span class="txt">レポートの見え方が変わるだけです。以前の集計と比べるときは、分類が変わったことに注意してください。</span></span></span></li>
+      <li><span class="mc">MC1449182</span><span class="body"><span class="ttl">Copilot Pages とノートブックが OneDrive に保存されるように</span><span class="note">10月中旬〜（過去の投稿の更新）。既存の保持ポリシーなどがそのまま効きます。</span><span class="verdict"><span class="lbl">オンのままだと</span><span class="vd vd-ok">オンでOK</span><span class="txt">管理しやすくなる変更です。作成者の OneDrive に保存されるので、退職者の OneDrive を削除すると一緒に消える可能性があります。保持期間の設定を確認しておくと安心です。</span></span></span></li>
+      <li><span class="mc">MC1559644</span><span class="body"><span class="ttl">［教育機関向け］OneNote Class Notebook に AI 授業ツール</span><span class="note">11月。追加ライセンスは不要です。</span><span class="verdict"><span class="lbl">オンのままだと</span><span class="vd vd-ok">オンでOK</span><span class="txt">教育機関のテナントだけに関係します。</span></span></span></li>
+    </ul>
+  </section>
+
+  <section id="grey" aria-labelledby="grey-h">
+    <div class="sec-head">
+      <h2 id="grey-h"><span class="level lv-grey">担当者向け</span>Copilot Studio・Power Platform <span class="count">9 件</span></h2>
+      <p>エージェントやワークフローを作る人、Power Platform の担当者向け。費用に関わるものは太字にしています。</p>
+    </div>
+    <ul class="rows">
+      <li><span class="mc">MC1488488</span><span class="body"><span class="ttl">Dataverse のプロンプト列を既存データに一括生成</span><span class="note">11/16 正式提供。<b>実行するとクレジットを消費します。</b></span><span class="verdict"><span class="lbl">使うなら</span><span class="vd vd-cond">条件つきでOK</span><span class="txt">大量のデータに一括で実行すると、その分クレジットを消費します。実行前に対象の件数を確認してください。</span></span></span></li>
+      <li><span class="mc">MC1561862</span><span class="body"><span class="ttl">ワークフローの手順として Python コードを実行</span><span class="note">12/1 正式提供</span><span class="verdict"><span class="lbl">使うなら</span><span class="vd vd-cond">条件つきでOK</span><span class="txt">Python から外部のサービスを呼び出せるので、データの持ち出し経路になりえます。Power Platform のデータ損失防止（DLP）ポリシーでどこまで制御できるか確認してください。</span></span></span></li>
+      <li><span class="mc">MC1552503</span><span class="body"><span class="ttl">ワークフローの実行ごとのクレジット消費量が見える</span><span class="note">11/11 正式提供。<b>費用の見積もりに使えます。</b></span><span class="verdict"><span class="lbl">使うなら</span><span class="vd vd-ok">オンでOK</span><span class="txt">費用が見えるようになる改善なので、積極的に活用してください。</span></span></span></li>
+      <li><span class="mc">MC1558020</span><span class="body"><span class="ttl">Copilot Credits の利用状況を API で取得</span><span class="note">プレビュー。<b>リソース・環境・利用者ごとの消費量を集計できます。</b></span><span class="verdict"><span class="lbl">使うなら</span><span class="vd vd-ok">オンでOK</span><span class="txt">利用状況を取得するための機能です。</span></span></span></li>
+      <li><span class="mc">MC1561859</span><span class="body"><span class="ttl">エージェントが作った文書をワークフローの出力にできる</span><span class="note">12/3 正式提供。PDF・Word・Excel・PowerPoint・CSV</span><span class="verdict"><span class="lbl">使うなら</span><span class="vd vd-ok">オンでOK</span><span class="txt">作られた文書の保存先と共有範囲だけ、ワークフロー側で決めておいてください。</span></span></span></li>
+      <li><span class="mc">MC1560996</span><span class="body"><span class="ttl">Entra のエージェント用 ID で Dataverse にアクセス</span><span class="note">12/8 正式提供</span><span class="verdict"><span class="lbl">使うなら</span><span class="vd vd-ok">オンでOK</span><span class="txt">エージェントを専用の ID で管理できるので、管理面ではむしろ改善です。</span></span></span></li>
+      <li><span class="mc">MC1557509</span><span class="body"><span class="ttl">ワークフローを個人ではなくアプリの ID で所有できる</span><span class="note">12/17 正式提供</span><span class="verdict"><span class="lbl">使うなら</span><span class="vd vd-ok">オンでOK</span><span class="txt">作成者が退職してもワークフローが止まらなくなる改善です。</span></span></span></li>
+      <li><span class="mc">MC1560402</span><span class="body"><span class="ttl">分類ノードで Decision モデルを選べる</span><span class="note">11/19 正式提供</span><span class="verdict"><span class="lbl">使うなら</span><span class="vd vd-ok">オンでOK</span><span class="txt">大量の分類を効率よく処理するための選択肢が増えるだけです。</span></span></span></li>
+      <li><span class="mc">MC1461529</span><span class="body"><span class="ttl">Release Planner の廃止</span><span class="note">過去の投稿の更新。Dynamics 365・Power Platform の予定は Microsoft Learn の新しいページで確認します。機能の追加ではないため、判定はありません。</span></span></li>
+    </ul>
+  </section>
+
+  <section id="about" class="about" aria-labelledby="about-h">
+    <h2 id="about-h">この資料について</h2>
+    <ul>
+      <li>情報源は、Microsoft 365 メッセージセンターの公開アーカイブ <a href="https://mc.merill.net/" target="_blank" rel="noopener">mc.merill.net</a> の RSS です。Microsoft 社員が個人で運営している非公式サイトで、全テナント共通の投稿が載っています。</li>
+      <li>契約しているライセンスによっては、自社のテナントには届かない投稿も含まれます。設定を変える前に、自社のメッセージセンターで MC 番号を検索して確認してください。</li>
+      <li>仕分けと日本語の要約は Claude が投稿の要約文から作成しました。日付や条件は要約の記載どおりです。</li>
+      <li>「オンのままだと」「オンでいい？」は、投稿の内容と、セキュリティ・費用についての一般的な考え方をもとにした Claude の見立てです。結論は会社のルールによって変わるので、最終判断は情報セキュリティ担当と相談してください。</li>
+      <li>「過去の投稿の更新」は、今週内容が更新された以前の投稿です。</li>
+      <li>前の号と比べた「更新」「持ち越し」「完了」は、毎号の記録（お知らせごとの判定と期限）と見比べて出しています。期限を過ぎた「要判断」「確認推奨」は、自動で「完了」として一覧から外します。</li>
+      <li>毎週月曜の朝に自動で作っています。</li>
+    </ul>
+    <h3>「オンでいい？」の判定</h3>
+    <dl class="legend">
+      <div><dt><span class="vd vd-ok">オンでOK</span></dt><dd>そのまま使って問題になりにくいもの。必要なら利用者への案内だけ。</dd></div>
+      <div><dt><span class="vd vd-cond">条件つきでOK</span></dt><dd>書いてある条件（範囲を絞る、上限を決めるなど）を満たせば問題ないもの。</dd></div>
+      <div><dt><span class="vd vd-check">先に確認</span></dt><dd>社内ルールや既存の設定と食い違う可能性があり、オンにする前に確認が必要なもの。</dd></div>
+    </dl>
+    <h3>「どこを触る」の根拠</h3>
+    <dl class="legend">
+      <div><dt><span class="src src-art">記事に記載</span></dt><dd>投稿そのものに設定方法が書かれています。</dd></div>
+      <div><dt><span class="src src-doc">公式ドキュメント</span></dt><dd>投稿には書かれていないため、Microsoft Learn の説明から補いました。</dd></div>
+      <div><dt><span class="src src-guess">推測</span></dt><dd>関連する既存の設定場所からの推測です。画面で確認してから操作してください。</dd></div>
+      <div><dt><span class="src src-none">記載なし</span></dt><dd>設定場所が要約に書かれていません。詳細記事を確認してください。</dd></div>
+    </dl>
+  </section>
+</main>
+
+<script>
+(function () {
+  var KEY = 'copilot-digest-todo:' + location.pathname;
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
+  document.querySelectorAll('.todo input[type=checkbox]').forEach(function (box) {
+    if (saved[box.id]) box.checked = true;
+    box.addEventListener('change', function () {
+      saved[box.id] = box.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（TotalEnergies）。2026年11月19日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>設備の故障原因の特定が25〜45%改善。全社員の Copilot から業務別のエージェントへ広げました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月19日／エネルギー（TotalEnergies）・設備保守と購買</p>
+
+  <h1>設備の故障原因の特定が25〜45%改善。全社員の Copilot から業務別のエージェントへ広げました</h1>
+
+  <div class="lead">
+    <p>約120か国で事業を行う TotalEnergies は、約3万人に Microsoft 365 Copilot を配ったあと、AI を個人の便利な道具にとどめず、現場の業務そのものに組み込みたいと考えていました。</p>
+    <p>そこで Copilot Studio で、設備保守の報告書を分析するエージェント「MARGE」と、購買の手続きを支えるエージェント「BuyerCompanion」を作りました。</p>
+    <p>MARGE では故障原因の特定が25〜45%改善し、BuyerCompanion では一部の購買で最大10%のコスト削減が見込めると公表しています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>全社に AI を配ったものの、使い方は人それぞれ。メールの下書きや要約には便利でも、「部署の大事な業務」にはなかなか届かない。そんな段階で止まっている職場は少なくありません。</p>
+  <p>TotalEnergies は2023年末に少人数で Microsoft 365 Copilot を試し、2024年初めに経営層へ、その数週間後に約3万人へ広げました。IT 部門の責任者は「AI を入れるだけでは足りず、社員が自分のものとして使うことが必要だとすぐに分かった」と話しています（意訳）。そこで次の段階として、設備保守や購買といった業務ごとのエージェントづくりに進みました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>使ったのは Copilot Studio（プログラムをほとんど書かずに、AI エージェントを作れる Microsoft のツール）です。工場などの設備保守向けに「MARGE」を、購買向けに「BuyerCompanion」を作りました。MARGE は Microsoft の業界向けチームの支援で、BuyerCompanion はパートナー企業 Witivio と一緒に作っています。</p>
+  <p>MARGE は、保守作業の報告書を自動で分析し、分類します。BuyerCompanion は、5万ユーロまでの購買を対象に、仕様書の下書きから取引先探しまでを支えます。必要な内容に合った既存の包括契約（あらかじめ結んである取引の枠組み）を探し、社内ルールに合っているかも確かめて、提案を出します。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="BuyerCompanion が購買を支える流れ">
+      <li><div class="box">担当者が<br>買いたい物を伝える</div></li>
+      <li><div class="box">仕様書の下書き<br>取引先の候補</div></li>
+      <li><div class="box">包括契約と<br>社内ルールを確認</div></li>
+      <li><div class="box">提案を受けて<br>担当者が判断</div></li>
+    </ol>
+    <figcaption>BuyerCompanion が購買を支える流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>Microsoft 365 Copilot を少人数で試し、経営層、全社へと段階的に広げました。研修、ワークショップ、ウェビナー、質問会、利用者のコミュニティを用意し、展開中は平均で1日1回のイベントを開きました。</li>
+    <li>使われ方を継続して測り、その結果をもとに次の打ち手を決めました。</li>
+    <li>業務ごとの課題に向けて、Copilot Studio で MARGE（設備保守）と BuyerCompanion（購買）を作りました。</li>
+    <li>社内の審査委員会で、エージェントが生む価値、技術面の実現性、サイバーセキュリティ、ほかのエージェントとの重複を確かめてから広げる仕組みにしました。</li>
+  </ol>
+  <p class="src-note">※ 2つのエージェントの具体的な作り方（つないだデータや設定）は公開されていません。上の手順は記事に書かれた進め方を整理したものです。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>Copilot は全社に行きわたったものの、使い方は個人の作業が中心でした。保守報告書の分析や購買の下準備に AI を使う仕組みはまだありませんでした。</p></div>
+    <div class="after"><h3>いま</h3><p>保守報告書はエージェントが自動で分析・分類します。購買では仕様書の下書き、取引先や包括契約の候補、社内ルールの確認までエージェントが手伝います。</p></div>
+  </div>
+  <p>TotalEnergies が公表した数字では、MARGE によって故障原因の特定が25〜45%改善しました。BuyerCompanion は、一部の購買で最大10%のコスト削減が見込めるとしています。BuyerCompanion はフランスで動いており、将来は世界の1万5,000人の社員を支える可能性があります。Copilot については、1年後に社員の70%が同僚に勧めており、70%が毎週、半数近くが毎日使っているとしています。ほかにも30を超えるアプリが動いているか、開発中です。作業時間の削減量は公表されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>部署の中で「毎回同じ手順で、資料を読んで判断している作業」を1つ選びます（例：報告書の分類、見積もり前の確認）。</li>
+    <li>その作業で使う規程や過去の資料を集め、判断の基準を短い文章にまとめます。</li>
+    <li>Copilot Studio で小さなエージェントを作り、過去の実例で答えを試して、担当者と結果を比べます。</li>
+  </ol>
+  <p>準備物は、判断の基準になる規程や資料と、結果を確かめる担当者です。Copilot Studio を使えるかどうか、社内のシステムとつなげるかどうかは、ライセンスや社内の設定で変わります。まず IT 部門に確認してください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>作る前に「本当に必要か」を見きわめる</strong>
+    <p>TotalEnergies は社内に審査委員会を置き、エージェントが生む価値、技術面の実現性、サイバーセキュリティを評価し、同じようなエージェントが重複しないようにしています。IT 部門の責任者は「厳しさと身軽さ、革新と安全のバランスが必要だ」と話しています（意訳）。また、AI は人を置きかえるのではなく人の力を高めるものだと、社員に説明して安心してもらうことも大切にしています。</p>
+  </div>
+  <p>社内で真似するときは、購買や契約のように金額やルールがかかわる業務ほど、AI の提案を担当者が必ず確かめる流れにしてください。AI はもっともらしい間違い（ハルシネーション）を答えることがあります。取引先の情報や契約の中身など機密情報を扱う場合は、エージェントを使える人の範囲も先に決めておきましょう。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例は、「全員に AI を配る」段階から「業務ごとにエージェントを作る」段階へ、順を追って進んだ例です。広く使われる土台を作ってから、価値の大きい業務を選び、審査をして広げるという進め方は、どの業種でも参考になります。</p>
+  <p>自分の職場に置き換えると、たとえば点検記録や問い合わせ履歴の分類、発注前の社内ルール確認などが当てはまります。まずは「件数が多く、判断の基準がはっきりしている作業」から1つ選ぶと始めやすいでしょう。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「From Microsoft 365 Copilot to Copilot Studio: TotalEnergies at the forefront of AI transformation」（2025年10月22日公開）<br>
+    <a href="https://www.microsoft.com/en/customers/story/25505-totalenergies-agents">https://www.microsoft.com/en/customers/story/25505-totalenergies-agents</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月19日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

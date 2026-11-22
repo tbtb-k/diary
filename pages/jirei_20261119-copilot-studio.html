@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Rumo）。2026年11月19日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>運転士が手順書を探す時間が、4分超から3秒になりました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月19日／鉄道物流（Rumo）・運転現場の手順確認</p>
+
+  <h1>運転士が手順書を探す時間が、4分超から3秒になりました</h1>
+
+  <div class="lead">
+    <p>ブラジル最大の鉄道物流会社 Rumo では、1,700人を超える運転士が紙の手順書を持ち歩き、走行中に疑問が出ると列車を止めて調べていました。</p>
+    <p>そこで Copilot Studio で、運転士がスマートフォンから質問すると、承認済みの手順書をもとに答える AI エージェント「RUTI Maquinista」を作りました。</p>
+    <p>手順を探す時間は平均4分超から3秒になり、年7,644時間の作業時間を取り戻したと公表しています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>現場で「この場合の手順はどうだったか」と迷ったとき、分厚いマニュアルをめくるか、上司に電話して確かめるしかない。マニュアルが改訂されるたびに印刷し直して配り、古い版が手元に残っていないか心配になる。そんな悩みは、工場や店舗、倉庫など現場を持つ多くの職場にあります。</p>
+  <p>Rumo の運転士は、1人あたり約4kgの紙の手順書をかばんに入れて乗務していました。走行中に疑問が出ると、列車を止め、資料を探し、上司に連絡する必要がありました。運転士の一人は「列車を止める影響はとても大きい」と話しています（意訳）。改訂のたびに何千ページも印刷し直す負担もありました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>使ったのは Copilot Studio（プログラムをほとんど書かずに、AI エージェントを作れる Microsoft のツール）です。Rumo は Copilot Studio で、鉄道の現場に合わせた安全な AI エージェント「RUTI Maquinista」を作りました。答えのもとになる手順書は SharePoint（社内の共有ファイル置き場）に置き、文章の生成には Azure OpenAI（Microsoft のクラウドで動く生成 AI）を使っています。</p>
+  <p>エージェントが参照する情報は、すべて Rumo 自身の規程担当チームが更新しています。答えは承認済みの知識の範囲に限られます。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="運転士が RUTI Maquinista で手順を確かめる流れ">
+      <li><div class="box">運転士が<br>社用スマホで質問</div></li>
+      <li><div class="box">社員かどうかを<br>確認</div></li>
+      <li><div class="box">承認済みの<br>手順書を探す</div></li>
+      <li><div class="box">答えが<br>画面に出る</div></li>
+    </ol>
+    <figcaption>運転士が RUTI Maquinista で手順を確かめる流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>Microsoft Entra ID（社員のアカウントを管理する仕組み）を使い、Rumo の社員だけが使えるようにしました。</li>
+    <li>規程担当チームが手順書を整え、AI が参照する範囲を承認済みの知識だけに限りました。</li>
+    <li>Copilot Studio でエージェントを作り、SharePoint と Azure OpenAI につなぎました。</li>
+    <li>会社支給のスマートフォンに配りました。二段階認証、決まったアプリしか使えない「キオスク」設定、機密情報を分けて保管する仕組みを組み合わせています。</li>
+    <li>運転士は質問を入力するだけで、その場で答えを受け取れるようになりました。</li>
+  </ol>
+  <p class="src-note">※ 手順の順番は記事の記述をもとに整理したものです。Copilot Studio での具体的な設定内容は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>約4kgの紙の手順書を持ち歩き、手順を探すのに平均4分以上。疑問が出ると列車を止めて、上司に連絡していました。</p></div>
+    <div class="after"><h3>いま</h3><p>スマートフォンで質問すると、平均3秒で手順が見つかります。運転士は「いまは全部が手のひらの中にある」と話しています（意訳）。</p></div>
+  </div>
+  <p>Rumo が公表した数字では、手順を探す時間が平均4分超から3秒になり、取り戻した作業時間は年7,644時間です。印刷しなくてよくなった紙は年130万ページで、投資は2か月以内に回収できたとしています。導入の最初の1か月半で、運転士の約50%が使い始めました。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>現場で「よく迷う手順」を3つほど書き出し、それが載っているマニュアルを1つに決めます。</li>
+    <li>そのマニュアルの最新版を、担当部署が管理する SharePoint の場所に置きます。古い版は置きません。</li>
+    <li>Copilot Studio でエージェントを作り、その場所だけを知識に登録して、書き出した質問で答えを確かめます。</li>
+  </ol>
+  <p>準備物は、最新版のマニュアルと、その内容に責任を持つ担当者です。Copilot Studio を使えるかどうか、社外の端末から使えるかどうかは、ライセンスや社内の設定で変わります。まず IT 部門に確認してください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>安全にかかわる情報は「誰が・どこまで」を先に決める</strong>
+    <p>Rumo では安全の手順を扱うため、社員だけが使えるようにし、答えの範囲を承認済みの知識に限りました。担当者は「二段階認証、必要な知識だけに絞った保管場所、キオスク」の3つを挙げています（意訳）。CTO（最高技術責任者）も、AI エージェントが広がるほど、機会と責任が同じだけ生まれると話しています（意訳）。</p>
+  </div>
+  <p>社内で真似するときは、マニュアルの更新担当を決め、古い情報が残らないようにしてください。AI はもっともらしい間違い（ハルシネーション）を答えることがあります。安全にかかわる判断では、答えのもとになった手順書の該当箇所を必ず確かめる運用にしましょう。機密の資料をうっかり知識に入れないことも大切です。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、AI に「何でも答えさせる」のではなく、担当チームが承認した手順書だけを答えのもとにしたことです。情報の持ち主をはっきりさせたうえで、現場の手元に届ける形は、安全手順に限らず、社内規程や作業標準など多くの分野で使えます。Rumo も、法務や技術部門などへの展開を検討しています。</p>
+  <p>自分の職場に置き換えると、たとえば店舗の接客マニュアル、倉庫の出荷手順、設備の点検手順などが当てはまります。「現場で迷ったとき、誰かに電話して聞いている情報」から始めると、効果が見えやすいでしょう。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「Microsoft AI cuts Rumo's frontline response time from 4 minutes to just 3 seconds」（2025年11月11日公開）<br>
+    <a href="https://www.microsoft.com/en/customers/story/25656-rumo-microsoft-copilot-studio">https://www.microsoft.com/en/customers/story/25656-rumo-microsoft-copilot-studio</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月19日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>
