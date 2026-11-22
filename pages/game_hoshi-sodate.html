@@ -382,8 +382,7 @@ details.table th:first-child,details.table td:first-child,details.table td:last-
   </details>
 
   <div class="actions">
-    <button type="button" class="btn" id="btn-random">🎲 おまかせ</button>
-    <button type="button" class="btn" id="btn-earth">🌍 地球っぽく</button>
+    <button type="button" class="btn" id="btn-random">🎲 おまかせ（ぜんぶくじ引き）</button>
     <button type="button" class="btn primary" id="btn-start">▶ 46億年をスタート</button>
   </div>
   <p class="how">1ステップ＝4600万年。約5分で46億年が過ぎるよ（速さは途中で変えられる）。とちゅうで3回だけ「神さまの一手」が使える。星はドラッグで回せるよ。</p>
@@ -975,8 +974,13 @@ function pct(x){ return Math.round(clamp(x, 0, 1) * 100) + '%'; }
 function store(k, v){ try { if (v === undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
 
 /* ───────── パラメーター ───────── */
-var EARTH = { temp: 50, atm: 50, water: 70, size: 1, volcano: 50, moon: true, meteor: 30 };
-var params = Object.assign({}, EARTH);
+// 最初の設定は毎回くじ引き（決まった「正解の設定」から始まらないように）
+function randomParams(){
+  var r = Math.random;
+  return { temp: 30 + Math.floor(r() * 45), atm: 15 + Math.floor(r() * 75), water: Math.floor(r() * 101),
+    size: Math.floor(r() * 3), volcano: Math.floor(r() * 101), moon: r() < 0.7, meteor: Math.floor(r() * 80) };
+}
+var params = randomParams();
 var seed = 1 + Math.floor(Math.random() * 99999);
 var mode = 'setup';
 var sim = null, speed = 1, acc = 0, ending = false, album = {}, lastParams = null, lastSeed = 0;
@@ -1503,12 +1507,9 @@ $('#p-moon').addEventListener('click', function(){ params.moon = !params.moon; w
 function setSeed(v){ seed = clamp(Math.floor(+v) || 1, 1, 99999); $('#p-seed').value = seed; buildTerrain(seed); refreshSetup(); }
 $('#p-seed').addEventListener('change', function(){ setSeed(this.value); });
 $('#btn-seed').addEventListener('click', function(){ setSeed(1 + Math.floor(Math.random() * 99999)); });
-$('#btn-earth').addEventListener('click', function(){ Object.assign(params, EARTH); writeParams(); refreshSetup(); });
 $('#btn-random').addEventListener('click', function(){
-  var r = Math.random;
-  params.temp = 30 + Math.floor(r() * 45); params.atm = 15 + Math.floor(r() * 75); params.water = Math.floor(r() * 101);
-  params.size = Math.floor(r() * 3); params.volcano = Math.floor(r() * 101); params.moon = r() < 0.7; params.meteor = Math.floor(r() * 80);
-  seed = 1 + Math.floor(r() * 99999); buildTerrain(seed);
+  params = randomParams();
+  seed = 1 + Math.floor(Math.random() * 99999); buildTerrain(seed);
   writeParams(); refreshSetup();
 });
 $('#btn-start').addEventListener('click', function(){ readParams(); startGame(); });
