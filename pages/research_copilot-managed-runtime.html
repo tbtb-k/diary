@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Microsoft Copilot Managed Runtime（社内アプリを Microsoft 365 の中で安全に動かす Microsoft 運用の基盤）を、公式情報27本で確かめて図と表でまとめた調査メモ（2026年11月22日調べ）。">
+<meta name="description" content="Microsoft Copilot Managed Runtime（社内アプリを Microsoft 365 の中で安全に動かす Microsoft 運用の基盤）のしくみ・管理・料金と、Copilot クレジットの財布・買い方・前払い運用の注意点を、公式情報37本で確かめて図と表でまとめた調査メモ（2026年11月22日調べ）。">
 <style>
   *{box-sizing:border-box}
   html{color-scheme:light dark}
@@ -41,6 +41,10 @@
   --na:#59615F;
   --na-soft:#E5E9E8;
   --hl:#FFF3C4;
+  --c-pp:#2A57A3;
+  --c-cw:#9C5410;
+  --c-rt:#008C7E;
+  --on-chart:#FFFFFF;
   --f-display:"M PLUS 1","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
   --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
@@ -70,6 +74,10 @@
     --na:#A7B0AE;
     --na-soft:#252D2C;
     --hl:#332E12;
+    --c-pp:#5B89E8;
+    --c-cw:#C27830;
+    --c-rt:#1EA193;
+    --on-chart:#0F1413;
     color-scheme:dark;
   }
 }
@@ -97,6 +105,10 @@
   --na:#A7B0AE;
   --na-soft:#252D2C;
   --hl:#332E12;
+  --c-pp:#5B89E8;
+  --c-cw:#C27830;
+  --c-rt:#1EA193;
+  --on-chart:#0F1413;
   color-scheme:dark;
 }
 
@@ -329,6 +341,45 @@ pre.cmd .cm{color:var(--muted)}
 
 footer{border-top:1px solid var(--line);padding-top:16px;font-size:.82rem;color:var(--muted);display:grid;gap:6px}
 
+/* ---------- お金の出どころ ---------- */
+.order{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px}
+.o-step{flex:1 1 180px;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px 10px 50px;position:relative;display:grid;gap:2px}
+.o-step b{font-size:.92rem}
+.o-step > span:not(.o-n){font-size:.8rem;color:var(--muted)}
+.o-n{position:absolute;left:12px;top:12px;width:26px;height:26px;border-radius:50%;border:2px solid var(--rt);color:var(--rt);font-family:var(--f-mono);font-size:.82rem;display:grid;place-items:center}
+.o-step.o-last{border-style:dashed}
+@media (max-width:620px){
+  .order{flex-direction:column}
+  .order .f-op{transform:rotate(90deg);padding:0}
+}
+.reasons{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.reasons > div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:4px;align-content:start;min-width:0}
+.reasons b{font-size:.94rem}
+.reasons p{font-size:.86rem;color:var(--muted)}
+.dg .b-wallet{fill:var(--sunk);stroke:var(--ink);stroke-width:1.6}
+.dg .b-formula{fill:var(--warn-soft);stroke:var(--warn);stroke-width:1.2;stroke-dasharray:6 4}
+.dg .t-warn{fill:var(--warn);font-size:12.5px;font-weight:700}
+.dg .brk{stroke:var(--muted);stroke-width:1.2;fill:none}
+
+/* ---------- 財布の積み上げ棒 ---------- */
+.stack-wrap{display:grid;gap:8px}
+.stack{display:flex;gap:2px;height:40px}
+.seg{display:flex;align-items:center;padding:0 10px;color:var(--on-chart);font-size:.8rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:6px;flex-basis:0}
+.seg:first-child{border-radius:4px 0 0 4px}
+.seg:last-child{border-radius:0 4px 4px 0;padding:0}
+.seg-pp{background:var(--c-pp);flex-grow:15000}
+.seg-cw{background:var(--c-cw);flex-grow:9500}
+.seg-rt{background:var(--c-rt);flex-grow:500}
+.stack-axis{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:.72rem;color:var(--muted);border-top:1px solid var(--line);padding-top:2px}
+.stack-legend{list-style:none;padding:0;margin:0;display:grid;gap:6px;font-size:.86rem}
+.stack-legend li{display:grid;grid-template-columns:14px 1fr auto;gap:10px;align-items:center}
+.sw{width:14px;height:14px;border-radius:3px}
+.sw-pp{background:var(--c-pp)}
+.sw-cw{background:var(--c-cw)}
+.sw-rt{background:var(--c-rt)}
+.stack-legend .v{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
+.stack-legend li.key{font-weight:700}
+
 @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
 html{scroll-behavior:smooth}
 </style>
@@ -344,7 +395,7 @@ html{scroll-behavior:smooth}
     <span class="chip mono">2026-11-22 調べ</span>
   </div>
   <h1>Copilot Managed Runtime のしくみ</h1>
-  <p class="lead">Copilot で作った社内アプリは「どこで」「どんなルールで」動くのか。Microsoft の公式ドキュメントを中心に27本の資料を読み、しくみ・管理・料金・できること／できないことを図と表で整理しました。</p>
+  <p class="lead">Copilot で作った社内アプリは「どこで」「どんなルールで」動くのか。Microsoft の公式ドキュメントを中心に37本の資料を読み、しくみ・管理・料金・できること／できないことに加えて、Copilot クレジットの「財布」と買い方まで図と表で整理しました。</p>
   <dl class="meta">
     <div><dt>調査対象</dt><dd>Microsoft Copilot Managed Runtime（略して CMR）</dd></div>
     <div><dt>調査日</dt><dd>2026年11月22日（主な出典は 2026年11月17〜20日更新）</dd></div>
@@ -364,12 +415,15 @@ html{scroll-behavior:smooth}
     <li><a href="#devflow">開発の流れ</a></li>
     <li><a href="#admin">管理者ができること</a></li>
     <li><a href="#cost">料金のしくみ（グラフ）</a></li>
+    <li><a href="#wallet">お金の出どころ：上限と支払い方法</a></li>
+    <li><a href="#pool">財布は1つ、ポケットは別（図）</a></li>
+    <li><a href="#prepaid">前払いだけで運用する場合（グラフ）</a></li>
     <li><a href="#matrix">できること・できないこと</a></li>
     <li><a href="#compare">Power Platform・Azure との違い</a></li>
     <li><a href="#timeline">これまでとこれから</a></li>
     <li><a href="#checklist">導入前チェックリスト</a></li>
     <li><a href="#notes">注意点</a></li>
-    <li><a href="#sources">根拠（出典27本）</a></li>
+    <li><a href="#sources">根拠（出典37本）</a></li>
   </ol>
 </nav>
 
@@ -402,7 +456,7 @@ html{scroll-behavior:smooth}
     <table>
       <tbody>
         <tr><th scope="row">正式名称</th><td>Microsoft Copilot Managed Runtime（Copilot Managed Runtime、略称 CMR）</td></tr>
-        <tr><th scope="row">何をするもの</th><td>アプリ・エージェント・ワークフローを動かすための、Microsoft が運用するホスティングと実行の基盤。サインイン、データへの接続、IT 部門からの見える化も含みます<span class="c"><a href="#s26">[26]</a></span></td></tr>
+        <tr><th scope="row">何をするもの</th><td>アプリ・エージェント・ワークフローを動かすための、Microsoft が運用するホスティングと実行の基盤。サインイン、データへの接続、IT 部門からの見える化も含みます<span class="c"><a href="#s2">[2]</a><a href="#s26">[26]</a></span></td></tr>
         <tr><th scope="row">作る道具か？</th><td>いいえ。作るのは Cowork や Copilot Studio などで、CMR はそれを動かす側です<span class="c"><a href="#s26">[26]</a></span></td></tr>
         <tr><th scope="row">状態</th><td><span class="pill p-ok">GA</span> 2026年11月17日発表。全世界で11月中旬〜12月中旬に順次展開<span class="c"><a href="#s24">[24]</a><a href="#s27">[27]</a></span></td></tr>
         <tr><th scope="row">提供範囲</th><td>商用クラウドの対象テナントには自動で提供され、管理者の申し込みは不要<span class="c"><a href="#s5">[5]</a></span></td></tr>
@@ -905,7 +959,276 @@ html{scroll-behavior:smooth}
       <li><span>よく使う人のグループ向けに、上限を高くしたポリシー（例：1,000クレジット＝10ドル）を追加する</span></li>
       <li><span>アラートを設定し、利用者からの「追加リクエスト」に対応する</span></li>
     </ol>
-    <p class="tbl-note">ポリシーが重なった場合は「1人あたりの上限が一番高いもの」が適用され、上限に達しても別のポリシーには切り替わりません。上限は毎月1日にリセットされます。支払いは前払いの容量パック → 事前購入プラン（P3）→ 従量課金の順に使われます<span class="c"><a href="#s20">[20]</a></span>。</p>
+    <p class="tbl-note">ポリシーが重なった場合は「1人あたりの上限が一番高いもの」が適用され、上限に達しても別のポリシーには切り替わりません。上限は毎月1日にリセットされます。支払いは前払いの容量パック → 事前購入プラン（P3）→ 従量課金の順に使われます<span class="c"><a href="#s20">[20]</a></span>。くわしくは次の<a href="#wallet">「お金の出どころ」</a>で整理しています。</p>
+  </div>
+</section>
+
+<!-- ===================== お金の出どころ ===================== -->
+<section id="wallet" aria-labelledby="h-wallet">
+  <h2 id="h-wallet">お金の出どころ：「上限」と「支払い方法」は別もの</h2>
+  <p class="lead">支出ポリシーは「使っていい上限」を決める設定で、お金を払う手段ではありません。公式にも「Spending policies are limits, not purchases（支出ポリシーは上限であって、購入ではない）」と書かれています<span class="c"><a href="#s20">[20]</a></span>。支払い方法は、管理センターの「Copilot ＞ コスト管理 ＞ 開始」にある「Billing method」で別に選びます<span class="c"><a href="#s20">[20]</a><a href="#s29">[29]</a></span>。</p>
+
+  <div class="analogy">
+    <h3>スマホの料金に例えると</h3>
+    <dl>
+      <div><dt>支出ポリシー</dt><dd>「この人は月◯ギガまで」という上限の設定。クレジットを取り置いたり配ったりはしません<span class="c"><a href="#s20">[20]</a></span></dd></div>
+      <div><dt>支払い方法</dt><dd>そのギガ代をプリペイドで払うか、後払いにするか</dd></div>
+      <div><dt>ポリシーを消したら？</dt><dd>上限がなくなるだけ。クレジットは返金も再配分もされません<span class="c"><a href="#s20">[20]</a></span></dd></div>
+    </dl>
+  </div>
+
+  <div class="sub-block">
+    <h3>支払い方法は3種類。使われる順番が決まっている</h3>
+    <div class="order" role="group" aria-label="クレジットが使われる順番：容量パック、P3、従量課金">
+      <div class="o-step"><span class="o-n">1</span><b>容量パック</b><span>前払い・毎月補充</span></div>
+      <div class="f-op" aria-hidden="true">→</div>
+      <div class="o-step"><span class="o-n">2</span><b>事前購入プラン（P3）</b><span>前払い・1年分</span></div>
+      <div class="f-op" aria-hidden="true">→</div>
+      <div class="o-step o-last"><span class="o-n">3</span><b>従量課金</b><span>後払い・使った分だけ（任意）</span></div>
+    </div>
+    <p class="tbl-note">複数を選ぶと前払いの分から先に使われ、はみ出した分だけが従量課金になります<span class="c"><a href="#s20">[20]</a><a href="#s30">[30]</a></span>。</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th scope="col">方法</th><th scope="col">どんなもの</th><th scope="col">買う場所</th><th scope="col">使い残し・返金</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">容量パック</th><td>テナント（会社）単位のライセンス。毎月 25,000 クレジットが補充される<span class="c"><a href="#s32">[32]</a></span></td><td>Microsoft 365 管理センターの Marketplace（「Microsoft Copilot Studio」で検索）<span class="c"><a href="#s32">[32]</a></span></td><td>毎月補充。繰り越しについての記載はなし</td></tr>
+          <tr><th scope="row">事前購入プラン（P3）</th><td>1年分を前払いでまとめ買い。量に応じて 5〜20% 引き（30万〜3億クレジットの9段階）<span class="c"><a href="#s34">[34]</a></span></td><td>Azure ポータルの「予約」、または管理センターの「Buy Pre-purchase Credits」<span class="c"><a href="#s29">[29]</a><a href="#s33">[33]</a></span></td><td>使い残しは期間の終わりに失効<span class="c"><a href="#s34">[34]</a></span>。キャンセル・交換はできない<span class="c"><a href="#s33">[33]</a></span></td></tr>
+          <tr><th scope="row">従量課金</th><td>使った分だけ、月末締めで Azure サブスクリプションに請求。1クレジット＝0.01ドル<span class="c"><a href="#s34">[34]</a></span></td><td>管理センターで Azure サブスクリプションを紐づける<span class="c"><a href="#s29">[29]</a></span></td><td>使った分だけなので、使い残しは出ない</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="notes">
+      <li><span class="n-h">P3 だけでは完結しません</span><span>公式には「P3 と従量課金は別々の支払い方法ではなく、P3 は従量課金の上に乗る」と書かれています。P3 を使うときも、Azure サブスクリプションでの従量課金の設定が土台になります<span class="c"><a href="#s29">[29]</a></span>。</span></li>
+      <li><span class="n-h">2027年1月1日から、P3 は EA か CSP パートナー経由でしか買えなくなります</span><span>購入も更新も、エンタープライズ契約（EA）か販売パートナー（CSP）経由に限られます。オンラインでの購入は終わり、割引の扱いも変わると案内されています<span class="c"><a href="#s33">[33]</a></span>。</span></li>
+      <li><span class="n-h">大企業向け：Azure の利用額の約束（MACC）に充てられます</span><span>Azure の利用額を約束する契約（MACC）を結んでいる場合、従量課金と P3 の支払いはその消化に回ります<span class="c"><a href="#s34">[34]</a></span>。</span></li>
+      <li><span class="n-h">アプリを「使う」分には、定額の選択肢もあります</span><span>Power Apps Premium ライセンスを持つ人は、Managed Runtime のアプリを使ってもクレジットを消費しません<span class="c"><a href="#s20">[20]</a></span>。</span></li>
+    </ul>
+  </div>
+
+  <div class="sub-block">
+    <h3>買う窓口は3つ</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th scope="col">窓口</th><th scope="col">どんな会社向け？</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Microsoft から直接（オンライン・MCA-E）</th><td>管理センターや Azure を自分たちで操作できる会社</td></tr>
+          <tr><th scope="row">販売パートナー経由（CSP）</th><td>国内のライセンス販売会社などから買う。手配・請求・サポートをパートナーがまとめて担当</td></tr>
+          <tr><th scope="row">エンタープライズ契約（EA）</th><td>大企業向けの包括契約。通常はライセンス販売パートナーを通して結ぶ</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tbl-note">どの窓口でどの商品（容量パック・P3・従量課金）を買えるかの公式の対応表は、ライセンスガイドの該当部分を本文で確認できなかったため未確認です<span class="c"><a href="#s34">[34]</a></span>。</p>
+  </div>
+
+  <div class="sub-block">
+    <h3>販売パートナー経由で買う主な理由</h3>
+    <p class="tbl-note"><span class="tag t-gap">このページの整理</span>家電を「メーカー直販」ではなく「量販店」で買うのに近い考え方です。</p>
+    <div class="reasons">
+      <div><b>もう同じ窓口で契約している</b><p>Microsoft 365 や Azure をすでにそのパートナー経由で契約していれば、同じ契約に足すのが自然です。従量課金は Azure サブスクリプションに請求されるので、Azure をパートナー経由で契約していれば請求もそこから届きます。</p></div>
+      <div><b>P3 は今後パートナー経由が本命</b><p>2027年1月1日から、P3 の購入・更新は EA か CSP パートナー経由だけになります<span class="c"><a href="#s33">[33]</a></span>。</p></div>
+      <div><b>日本の会社の購買ルールに合う</b><p>見積 → 稟議 → 発注 → 請求書払いの流れに乗せやすくなります。従量課金は月ごとに金額が変わる後払いなので、予算を取りにくいのが難点です。</p></div>
+      <div><b>相談できる</b><p>どの買い方がよいか、月いくらになるかの試算、管理センターの設定、更新期限の管理まで任せられます。クレジットは仕組みが複雑なので効果が大きい部分です。</p></div>
+      <div><b>値引きの相談ができる場合も</b><p>まとめ買いや他製品とのセットなど、パートナー独自の条件があるかどうかは会社によって違います。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 財布とポケット ===================== -->
+<section id="pool" aria-labelledby="h-pool">
+  <h2 id="h-pool">財布は1つ、ポケットは別</h2>
+  <p class="lead">Cowork・Copilot Code・Managed Runtime・Copilot Studio は、どれも同じ Copilot クレジットを使います。公式には「従量課金に対応した各サービスで使える共通の通貨」と書かれています<span class="c"><a href="#s28">[28]</a></span>。違うのは、使っていい枠（ポケット）の決め方です。</p>
+  <figure class="fig">
+    <div class="fig-scroll" tabindex="0" aria-label="財布とポケットの図（横にスクロールできます）">
+      <svg class="dg" viewBox="0 0 900 470" role="img" aria-label="容量パック、P3、従量課金の順に会社で1つの Copilot クレジットの財布に入り、そこから Power Platform の環境、Cowork、Copilot Code、Managed Runtime の4つのポケットに分かれて使われる。Microsoft 365 側で使える量は、買った量から環境への割り当てを引いた分になる図">
+        <defs>
+          <marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+        </defs>
+        <rect class="b-row" x="90" y="16" width="220" height="62" rx="10"/>
+        <text class="tx" x="200" y="42" text-anchor="middle">① 容量パック</text>
+        <text class="ts" x="200" y="62" text-anchor="middle">前払い・毎月補充</text>
+        <rect class="b-row" x="340" y="16" width="220" height="62" rx="10"/>
+        <text class="tx" x="450" y="42" text-anchor="middle">② 事前購入プラン（P3）</text>
+        <text class="ts" x="450" y="62" text-anchor="middle">前払い・1年分</text>
+        <rect class="b-row" x="590" y="16" width="220" height="62" rx="10" style="stroke-dasharray:6 4"/>
+        <text class="tx" x="700" y="42" text-anchor="middle">③ 従量課金（任意）</text>
+        <text class="ts" x="700" y="62" text-anchor="middle">後払い・はみ出した分だけ</text>
+        <line class="ln" x1="200" y1="78" x2="200" y2="116" marker-end="url(#a5)"/>
+        <line class="ln" x1="450" y1="78" x2="450" y2="116" marker-end="url(#a5)"/>
+        <line class="ln" x1="700" y1="78" x2="700" y2="116" marker-end="url(#a5)"/>
+
+        <rect class="b-wallet" x="30" y="120" width="840" height="80" rx="14"/>
+        <text class="tx" x="450" y="152" text-anchor="middle" style="font-size:15px">会社で1つの財布：Copilot クレジットの残高</text>
+        <text class="ts" x="450" y="178" text-anchor="middle">①→②→③ の順に使われる。残高が尽きると、どのポケットも使えなくなる</text>
+
+        <line class="ln" x1="127" y1="200" x2="127" y2="266" marker-end="url(#a5)"/>
+        <line class="ln" x1="342" y1="200" x2="342" y2="266" marker-end="url(#a5)"/>
+        <line class="ln" x1="557" y1="200" x2="557" y2="266" marker-end="url(#a5)"/>
+        <line class="ln" x1="772" y1="200" x2="772" y2="266" marker-end="url(#a5)"/>
+        <text class="tl" x="137" y="238">先に取り分け</text>
+
+        <rect class="b-data" x="30" y="270" width="195" height="80" rx="10"/>
+        <text class="tx" x="127" y="298" text-anchor="middle">Power Platform の環境</text>
+        <text class="ts" x="127" y="318" text-anchor="middle">Copilot Studio のエージェント</text>
+        <text class="ts" x="127" y="336" text-anchor="middle">環境ごとに割り当て</text>
+        <rect class="b-build" x="245" y="270" width="195" height="80" rx="10"/>
+        <text class="tx" x="342" y="298" text-anchor="middle">Cowork の枠</text>
+        <text class="ts" x="342" y="318" text-anchor="middle">Cowork の作業</text>
+        <text class="ts" x="342" y="336" text-anchor="middle">アプリを「作る」分もここ</text>
+        <rect class="b-build" x="460" y="270" width="195" height="80" rx="10"/>
+        <text class="tx" x="557" y="298" text-anchor="middle">Copilot Code の枠</text>
+        <text class="ts" x="557" y="318" text-anchor="middle">Code の作業</text>
+        <text class="ts" x="557" y="336" text-anchor="middle">アプリを「作る」分もここ</text>
+        <rect class="b-rt" x="675" y="270" width="195" height="80" rx="10"/>
+        <text class="tx" x="772" y="298" text-anchor="middle">Managed Runtime の枠</text>
+        <text class="ts" x="772" y="318" text-anchor="middle">公開したアプリを「使う」分</text>
+        <text class="ts" x="772" y="336" text-anchor="middle">使った人ごとに計上</text>
+
+        <polyline class="brk" points="30,358 30,364 225,364 225,358"/>
+        <text class="tl" x="127" y="382" text-anchor="middle">Power Platform 管理センター</text>
+        <text class="ts" x="127" y="398" text-anchor="middle">環境ごとに割り当て</text>
+        <polyline class="brk" points="245,358 245,364 870,364 870,358"/>
+        <text class="tl" x="557" y="382" text-anchor="middle">Microsoft 365 管理センター</text>
+        <text class="ts" x="557" y="398" text-anchor="middle">人ごとの上限（支出ポリシー）</text>
+
+        <rect class="b-formula" x="30" y="414" width="840" height="44" rx="10"/>
+        <text class="t-warn" x="450" y="441" text-anchor="middle">Microsoft 365 側で使える量 ＝ 買った量 − Power Platform の環境に割り当て済みの量</text>
+      </svg>
+    </div>
+    <p class="scroll-hint">← 図は横にスクロールできます →</p>
+    <figcaption>前払いの容量パックについては「どちらの管理センターのサービスにも使える」「環境に割り当てた分だけ Microsoft 365 側で使える量が減る」と明記されています<span class="c"><a href="#s29">[29]</a></span>。P3 と従量課金が同じように扱われるかは明記されていません。</figcaption>
+  </figure>
+
+  <div class="sub-block">
+    <h3>ポケットが別だから起きること</h3>
+    <ul class="notes">
+      <li><span class="n-h">Cowork 用のポリシーだけでは、アプリは使えません</span><span>アプリを作る分は作った人の Cowork の枠から、使う分は使った人の Managed Runtime の枠から引かれます。公式のトラブル例にも「Cowork だけを対象にしたポリシーでは、アプリの実行はまかなえない」とあります<span class="c"><a href="#s20">[20]</a></span>。</span></li>
+      <li><span class="n-h">財布が尽きると、枠が残っていても全員止まります</span><span>前払いの分を使い切り、従量課金もオフだと、アプリを使う人がまとめてブロックされる例が公式に載っています<span class="c"><a href="#s20">[20]</a></span>。ほかのポケットの使いすぎで財布が尽きた場合も、理屈では同じことが起きます（「この順に止まる」とまでは書かれていません）。</span></li>
+      <li><span class="n-h">Copilot Studio の管理は Microsoft 365 管理センターへ引っ越し中です</span><span>希望した会社から移る形（オプトイン）です。Microsoft 365 側で環境を対象にしたポリシーを作ると、その環境では Power Platform 側の割り当てと課金プランが効かなくなり、ポリシーを外すと自動で戻ります。優先順位は「Microsoft 365 ＞ Power Platform」「環境・エージェント単位 ＞ 人単位」です<span class="c"><a href="#s31">[31]</a></span>。</span></li>
+    </ul>
+  </div>
+
+  <div class="sub-block">
+    <h3>2つの管理センターの違い</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th scope="col">&nbsp;</th><th scope="col">Power Platform 管理センター</th><th scope="col">Microsoft 365 管理センター</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">主な使い道</th><td>Copilot Studio のエージェント</td><td>Cowork・Copilot Code・Managed Runtime・Work IQ API など<span class="c"><a href="#s28">[28]</a></span></td></tr>
+          <tr><th scope="row">上限のかけ方</th><td>環境（作業部屋）ごとに割り当てる</td><td>人ごとの支出ポリシー。Copilot Studio は環境・エージェント単位のポリシーも作れる<span class="c"><a href="#s31">[31]</a></span></td></tr>
+          <tr><th scope="row">財布との関係</th><td>割り当てた分が先に取り分けられる</td><td>残り（買った量 − 環境への割り当て）から使う<span class="c"><a href="#s29">[29]</a></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sub-block">
+    <h3>Power Platform の「似た名前の別もの」</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th scope="col">名前</th><th scope="col">正体</th><th scope="col">お金？</th><th scope="col">いまの状態</th></tr></thead>
+        <tbody>
+          <tr class="row-key"><th scope="row">Copilot クレジット</th><td>AI を使うたびに減る共通の通貨</td><td><span class="pill p-ok">お金</span></td><td>これからの主役。Copilot Studio も Cowork もこれで払う<span class="c"><a href="#s28">[28]</a></span></td></tr>
+          <tr><th scope="row">AI Builder クレジット</th><td>Power Apps・Power Automate の AI 機能（書類の読み取りなど）専用のポイント</td><td><span class="pill p-ok">お金</span></td><td>2026年11月1日で新規購入・更新が終了。機能は残り、Copilot クレジットで払う形へ。自動での変換はなし<span class="c"><a href="#s35">[35]</a><a href="#s36">[36]</a></span></td></tr>
+          <tr><th scope="row">Power Platform リクエスト</th><td>1人が1日に呼び出せる API の回数の枠（有料ライセンスは1日40,000回など）</td><td><span class="pill p-na">回数の枠</span></td><td>毎日リセットされ、繰り越しなし。エージェントや Work IQ API などの AI の実行は含まれず、Copilot クレジットを消費<span class="c"><a href="#s37">[37]</a></span></td></tr>
+          <tr><th scope="row">Dataverse 容量</th><td>データを保存できる量（GB）の枠</td><td><span class="pill p-na">容量の枠</span></td><td>クレジットとは別に管理</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="notes">
+      <li><span class="n-h">AI Builder は、残っている AI Builder クレジットが先に使われます</span><span>なくなったら Copilot クレジットで払い、どちらもなければ止まります<span class="c"><a href="#s36">[36]</a></span>。Microsoft 365 管理センターで作る環境単位のポリシーは AI Builder の機能には効かないため、AI Builder を使う環境は急いで移さない方が安全です<span class="c"><a href="#s31">[31]</a></span>。</span></li>
+      <li><span class="n-h">Power Apps Premium の人がアプリを使うと、1日のリクエスト枠から数えられます</span><span>枠を超えた分は Copilot クレジットで払います<span class="c"><a href="#s20">[20]</a></span>。</span></li>
+      <li class="n-gap"><span class="n-h"><span class="tag t-gap">記載ゆれ</span>ライセンスに付いていた AI Builder クレジットの扱い</span><span>「2026年11月1日で削除」と書くページ<span class="c"><a href="#s35">[35]</a></span>と、「契約期間の終わりまで使える」と書くページ<span class="c"><a href="#s36">[36]</a></span>があります。自社の契約で確認してください。</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== 前払い運用 ===================== -->
+<section id="prepaid" aria-labelledby="h-prepaid">
+  <h2 id="h-prepaid">前払いのクレジットだけで運用する場合</h2>
+  <p class="lead">従量課金を使わず、販売パートナーなどから買ったクレジットだけで回すやり方は、毎月の費用が読みやすいのが利点です。その代わり「尽きたら止まる」ので、Cowork やアプリを広げる前に次の点を押さえておきます。</p>
+
+  <ul class="notes">
+    <li><span class="n-h">使い切ると、補充されるまで止まります</span><span>Managed Runtime のアプリは、前払いの分が尽きて従量課金もオフだと利用者がブロックされます<span class="c"><a href="#s20">[20]</a></span>。Cowork などは、ポリシーの上限に達するとその月は使えなくなります<span class="c"><a href="#s30">[30]</a></span>。</span></li>
+    <li><span class="n-h">環境への割り当てが多いと、Microsoft 365 側に回る分が減ります</span><span>買ったクレジットをすべて Power Platform の環境に配りきっていると、Cowork やアプリに使える分はゼロになります<span class="c"><a href="#s29">[29]</a></span>。「未割り当て」を残しておくのがポイントです。</span></li>
+    <li><span class="n-h">余っても繰り越せません</span><span>容量パックは毎月補充される形です<span class="c"><a href="#s32">[32]</a></span>。Copilot クレジットは毎月リセットされ、使い残しは翌月に繰り越されません（<a href="https://tbtb-k.github.io/diary/pages/research_power-platform-credit-allocation.html">過去の調査メモ</a>）。足りないと止まり、余るともったいないので、量の見極めが大事です。</span></li>
+    <li class="n-gap"><span class="n-h"><span class="tag t-gap">記載ゆれ</span>容量パックが Cowork・アプリに使えるか、公式の書き方がそろっていません</span><span>Managed Runtime の課金ページは容量パックを支払い順の1番目に挙げ<span class="c"><a href="#s20">[20]</a></span>、設定ページは「どちらの管理センターのサービスにも使える」としています<span class="c"><a href="#s29">[29]</a></span>。一方、容量パックのページは「クレジットのポリシーは今のところ Copilot Chat だけ」と書いています<span class="c"><a href="#s32">[32]</a></span>。容量パックだけで運用するときに Azure サブスクリプションが要るかも書かれていません。購入元に確認するのが確実です。</span></li>
+  </ul>
+
+  <div class="chart" role="figure" aria-labelledby="stack-t">
+    <div class="chart-h">
+      <b id="stack-t">例：月の途中で財布が尽きるまで</b>
+      <span>数字は説明用の架空の値です。毎月 25,000 クレジットを前払いで買い、従量課金はオフの場合</span>
+    </div>
+    <div class="stack-wrap">
+      <div class="stack" aria-hidden="true">
+        <div class="seg seg-pp" title="Copilot Studio の環境に割り当て：15,000">環境に割り当て 15,000</div>
+        <div class="seg seg-cw" title="Cowork の利用（月の半ばまで）：9,500">Cowork 9,500</div>
+        <div class="seg seg-rt" title="残り：500（アプリの呼び出し約5,000回分）"></div>
+      </div>
+      <div class="stack-axis" aria-hidden="true"><span>0</span><span>25,000（月の購入量）</span></div>
+    </div>
+    <ul class="stack-legend">
+      <li><span class="sw sw-pp" aria-hidden="true"></span><span>Copilot Studio の環境に割り当て（先に取り分け）</span><span class="v">15,000</span></li>
+      <li><span class="sw sw-cw" aria-hidden="true"></span><span>Cowork の利用（月の半ばまで）</span><span class="v">9,500</span></li>
+      <li class="key"><span class="sw sw-rt" aria-hidden="true"></span><span>残り ＝ アプリの呼び出し約5,000回分</span><span class="v">500</span></li>
+    </ul>
+    <p class="cap-note">残り500を使い切ると、一人ひとりが月100クレジットの上限に届いていなくても、アプリを使う人全員が止まります</p>
+  </div>
+
+  <div class="sub-block">
+    <h3>どれくらい使う？（容量パック1つ＝月25,000クレジットと比べて）</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th scope="col">使い方</th><th scope="col">目安</th><th scope="col">根拠</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Managed Runtime のアプリを100人が使う</th><td>1人の上限を月100クレジットにすると、最大 <b>10,000／月</b></td><td class="c"><a href="#s20">[20]</a></td></tr>
+          <tr><th scope="row">Cowork でアプリを1本作る</th><td><b>250〜1,350クレジット以上</b>（AI モデル・複雑さ・作り直しの回数で変わる）</td><td><a href="https://tbtb-k.github.io/diary/pages/research_cowork-app-credit.html">過去の調査メモ</a></td></tr>
+          <tr><th scope="row">Cowork を日常的に使う</th><td>ポリシーの上限の目安として <b>1人月2,000クレジット以上</b></td><td class="c"><a href="#s30">[30]</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tbl-note">Cowork を10人に広げるだけで約20,000クレジットになり、容量パック1つ分がほぼ埋まります。しかも Copilot Studio のエージェントと同じ財布です。</p>
+  </div>
+
+  <div class="sub-block">
+    <h3>設計のルール：ポケットの合計を、財布の中身以下にする</h3>
+    <div class="formula" role="group" aria-label="上限の合計が使える残高以下になるようにする式">
+      <div class="f-chip"><b>Cowork</b><span>人数 × 1人の上限</span></div>
+      <div class="f-op" aria-hidden="true">＋</div>
+      <div class="f-chip"><b>Copilot Code</b><span>人数 × 1人の上限</span></div>
+      <div class="f-op" aria-hidden="true">＋</div>
+      <div class="f-chip"><b>Managed Runtime</b><span>人数 × 1人の上限</span></div>
+      <div class="f-op" aria-hidden="true">≦</div>
+      <div class="f-chip f-total"><b>使える残高</b><span>買った量 − 環境への割り当て</span></div>
+    </div>
+    <p class="tbl-note"><span class="tag t-gap">このページの整理</span>この式が成り立っていれば、どこかのポケットが上限まで使っても財布は尽きません。</p>
+  </div>
+
+  <div class="sub-block">
+    <h3>止めないための対策</h3>
+    <ol class="check">
+      <li><span><b>従量課金を「保険」としてだけオンにする。</b>前払いの分を使い切ったあとのはみ出し分にだけかかり、支出ポリシーの上限で使いすぎも防げます<span class="c"><a href="#s20">[20]</a><a href="#s29">[29]</a></span></span></li>
+      <li><span><b>アラートは財布全体の残高で見る。</b>7〜8割を使った時点で気づけるようにします。パートナー経由の追加購入は手配に時間がかかるためです。消費状況は「Copilot ＞ コスト管理」で確認できます<span class="c"><a href="#s20">[20]</a></span></span></li>
+      <li><span><b>毎日アプリを使う人は Power Apps Premium にする。</b>アプリの利用分のクレジットを消費しません<span class="c"><a href="#s20">[20]</a></span></span></li>
+      <li><span><b>Copilot Studio の環境への割り当てを見直す。</b>未割り当てを残すか、追加で買うかを決めます<span class="c"><a href="#s29">[29]</a></span></span></li>
+      <li><span><b>P3 で買っている場合は、2027年1月からの変更を購入元に確認する</b><span class="c"><a href="#s33">[33]</a></span></span></li>
+    </ol>
+  </div>
+
+  <div class="sub-block">
+    <h3>購入元に確認したいこと</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th scope="col">確認すること</th><th scope="col">なぜ大事？</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">どの形で買っている？</th><td>容量パック（毎月補充）、P3（1年分・期限あり）、従量課金の請求のとりまとめ、のどれかで、使い残しや止まり方が変わります</td></tr>
+          <tr><th scope="row">有効期限と繰り越しは？</th><td>P3 は使い残すと期間の終わりに失効し、返金も交換もできません<span class="c"><a href="#s33">[33]</a><a href="#s34">[34]</a></span></td></tr>
+          <tr><th scope="row">何に使える？</th><td>Cowork・Copilot Code・Managed Runtime のアプリにも使えるか。容量パックは公式の書き方がそろっていません<span class="c"><a href="#s20">[20]</a><a href="#s32">[32]</a></span></td></tr>
+          <tr><th scope="row">使い切ったらどうなる？</th><td>従量課金をオンにしていないと、利用者が止まります<span class="c"><a href="#s20">[20]</a></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tbl-note">手持ちがどちらか分からないときの目安：容量パックは Microsoft 365 管理センターで購入するライセンスとして、P3 は Azure ポータルの「予約」で購入するプランとして管理されます<span class="c"><a href="#s32">[32]</a><a href="#s33">[33]</a></span>。</p>
   </div>
 </section>
 
@@ -938,6 +1261,8 @@ html{scroll-behavior:smooth}
         <tr><th scope="row">管理者が全アプリを一覧・停止する</th><td><span class="pill p-ok">○ できる</span></td><td>ブロック（データは残る）と削除</td><td class="c"><a href="#s17">[17]</a></td></tr>
         <tr><th scope="row">監査ログを取る</th><td><span class="pill p-ok">○ できる</span></td><td>Microsoft Purview に記録</td><td class="c"><a href="#s15">[15]</a></td></tr>
         <tr><th scope="row">アプリ単位で料金の上限を決める</th><td><span class="pill p-ng">✕ できない</span></td><td>支出ポリシーは利用者・グループ単位。アプリは個別に選べない</td><td class="c"><a href="#s13">[13]</a></td></tr>
+        <tr class="row-key"><th scope="row">Cowork 用のポリシーで、アプリの利用分もまかなう</th><td><span class="pill p-ng">✕ できない</span></td><td>アプリを使う分には、Managed Runtime を含むポリシーが別に必要</td><td class="c"><a href="#s20">[20]</a></td></tr>
+        <tr><th scope="row">前払いのクレジットだけで運用する</th><td><span class="pill p-cond">△ 条件付き</span></td><td>使い切ると補充まで止まる。容量パックが Cowork・アプリに使えるかは記載ゆれ</td><td class="c"><a href="#s20">[20]</a><a href="#s29">[29]</a><a href="#s32">[32]</a></td></tr>
         <tr><th scope="row">政府機関向けクラウド・中国で使う</th><td><span class="pill p-na">ー 未確認</span></td><td>CLI に切り替えオプション（usgov・china など）はあるが、提供状況の明記は見つからず</td><td class="c"><a href="#s9">[9]</a><a href="#s5">[5]</a></td></tr>
       </tbody>
     </table>
@@ -969,8 +1294,10 @@ html{scroll-behavior:smooth}
   <ol class="tl">
     <li><span class="tl-d">2026-09-25</span><span class="tl-t">パブリックプレビューを発表</span><span>Copilot の Home・Code・Autopilot と同時に「会社の Microsoft 365 の中でコードを安全に動かす基盤」として紹介<span class="c"><a href="#s25">[25]</a></span></span></li>
     <li><span class="tl-d">2026-09 〜 11月中旬</span><span class="tl-t">プレビューを各テナントへ展開</span><span>この期間のアプリ作成（Cowork）は Frontier プログラム参加者に限定<span class="c"><a href="#s27">[27]</a></span></span></li>
+    <li><span class="tl-d">2026-11-01</span><span class="tl-t"><span class="tag t-3rd">料金</span>AI Builder クレジットの新規購入・更新が終了</span><span>AI Builder の機能は、Copilot クレジットで払う形へ<span class="c"><a href="#s36">[36]</a></span></span></li>
     <li class="tl-now"><span class="tl-d">2026-11-17</span><span class="tl-t">Ignite で一般提供（GA）を発表</span><span>あわせて Fabric 連携、Copilot Studio エージェントのローカル開発、Code Agents の3つのプレビューを発表<span class="c"><a href="#s24">[24]</a></span></span></li>
     <li class="tl-now"><span class="tl-d">2026-11中旬 〜 12月中旬</span><span class="tl-t">GA を全世界へ順次展開（いまここ）</span><span>Cowork でのアプリ作成が Frontier プログラム以外にも開放<span class="c"><a href="#s27">[27]</a></span></span></li>
+    <li class="tl-future"><span class="tl-d">2027-01-01</span><span class="tl-t"><span class="tag t-3rd">料金</span>P3 の購入・更新が EA か CSP パートナー経由だけに</span><span>オンラインでの購入は終了<span class="c"><a href="#s33">[33]</a></span></span></li>
     <li class="tl-future"><span class="tl-d">今後</span><span class="tl-t">Code Agents（早期アクセス）</span><span>「近日提供」とされ、日付は未発表<span class="c"><a href="#s24">[24]</a></span></span></li>
   </ol>
 </section>
@@ -1007,7 +1334,7 @@ html{scroll-behavior:smooth}
 
 <!-- ===================== 根拠 ===================== -->
 <section id="sources" aria-labelledby="h-sources">
-  <h2 id="h-sources">根拠（出典27本）</h2>
+  <h2 id="h-sources">根拠（出典37本）</h2>
   <p class="lead">すべて 2026年11月22日に本文を確認しました。日付は Microsoft Learn の更新日（<span class="mono">ms.date</span>）と、ページ情報の最終更新日です。</p>
 
   <p class="src-group">しくみ・開発</p>
@@ -1056,11 +1383,25 @@ html{scroll-behavior:smooth}
     <li id="s26"><div class="src-top"><span class="src-n">[26]</span><a class="src-t" href="https://www.microsoft.com/en-us/copilot/products/copilot-managed-runtime">Copilot Managed Runtime for Apps, Agents &amp; Workflows（製品ページ）</a></div><div class="src-meta"><span class="tag t-off">公式</span><span>microsoft.com</span><span class="mono">日付不明</span></div><p class="src-sum">「作る・動かす・統制する」の3本柱。FAQ で「アプリを作るツールではなく、作る体験とは別のもの」と明言。</p><span class="src-url">https://www.microsoft.com/en-us/copilot/products/copilot-managed-runtime</span></li>
     <li id="s27"><div class="src-top"><span class="src-n">[27]</span><a class="src-t" href="https://mc.merill.net/message/MC1558033">MC1558033：Copilot Managed Runtime expands app building at general availability</a></div><div class="src-meta"><span class="tag t-3rd">公式の転載</span><span>Microsoft 365 メッセージセンター（mc.merill.net のミラーで確認）</span><span class="mono">公開 2026-11-17</span></div><p class="src-sum">GA の展開時期（11月中旬〜12月中旬）、Cowork のアプリ作成が Frontier 以外にも開放されること、管理者が事前にやるべき準備。原文は管理センターのメッセージセンターで確認できます。</p><span class="src-url">https://mc.merill.net/message/MC1558033</span></li>
   </ol>
+
+  <p class="src-group">クレジットの財布と買い方</p>
+  <ol class="sources">
+    <li id="s28"><div class="src-top"><span class="src-n">[28]</span><a class="src-t" href="https://learn.microsoft.com/en-us/copilot/plan/usage-based-billing-overview-copilot-credits">Usage-Based Billing and Cost Management for Copilot Credits</a></div><div class="src-meta"><span class="tag t-off">公式</span><span>Microsoft Learn</span><span class="mono">2026-10-30（更新 2026-11-17）</span></div><p class="src-sum">Copilot クレジットは従量課金に対応した各サービスで使える共通の通貨。対象サービス（Cowork・Managed Runtime・Code・Work IQ API・Copilot Studio）と支払い方法の種類。</p><span class="src-url">https://learn.microsoft.com/en-us/copilot/plan/usage-based-billing-overview-copilot-credits</span></li>
+    <li id="s29"><div class="src-top"><span class="src-n">[29]</span><a class="src-t" href="https://learn.microsoft.com/en-us/copilot/implement/usage-based-billing-copilot-credits-setup">Set up usage-based billing for Copilot Credits</a></div><div class="src-meta"><span class="tag t-off">公式</span><span>Microsoft Learn</span><span class="mono">2026-10-30（更新 2026-11-19）</span></div><p class="src-sum">支払い方法の設定手順。P3 は従量課金の上に乗る、容量パックは両方の管理センターで使える、環境への割り当て分だけ Microsoft 365 側で使える量が減る、支払いの順番。</p><span class="src-url">https://learn.microsoft.com/en-us/copilot/implement/usage-based-billing-copilot-credits-setup</span></li>
+    <li id="s30"><div class="src-top"><span class="src-n">[30]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-manage-copilot-credits">Managing AI experiences enabled by usage-based billing</a></div><div class="src-meta"><span class="tag t-off">公式</span><span>Microsoft Learn</span><span class="mono">2026-10-30（更新 2026-11-11）</span></div><p class="src-sum">支出ポリシーの管理。前払いの分から先に使う、上限の目安（1人月2,000クレジット以上）、上限到達でその月は使えなくなる。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-manage-copilot-credits</span></li>
+    <li id="s31"><div class="src-top"><span class="src-n">[31]</span><a class="src-t" href="https://learn.microsoft.com/en-us/copilot/implement/usage-based-billing-manage-copilot-studio-costs">Manage Copilot Studio costs in the Microsoft 365 admin center</a></div><div class="src-meta"><span class="tag t-off">公式</span><span>Microsoft Learn</span><span class="mono">2026-10-30（更新 2026-11-04）</span></div><p class="src-sum">Copilot Studio のコスト管理を Microsoft 365 管理センターへ移すオプトイン。人単位と環境・エージェント単位のポリシー、優先順位、AI Builder には効かないこと。</p><span class="src-url">https://learn.microsoft.com/en-us/copilot/implement/usage-based-billing-manage-copilot-studio-costs</span></li>
+    <li id="s32"><div class="src-top"><span class="src-n">[32]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-365/copilot/pay-as-you-go/copilot-capacity-packs">Use Capacity Packs vs Pay-as-you-go Billing for Microsoft Copilot Chat</a></div><div class="src-meta"><span class="tag t-off">公式</span><span>Microsoft Learn</span><span class="mono">2026-04-29（更新 2026-11-03）</span></div><p class="src-sum">容量パックは毎月25,000クレジットが補充されるテナント単位のライセンス。購入場所、従量課金との組み合わせ。ポリシーは今のところ Copilot Chat のみと記載。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-365/copilot/pay-as-you-go/copilot-capacity-packs</span></li>
+    <li id="s33"><div class="src-top"><span class="src-n">[33]</span><a class="src-t" href="https://learn.microsoft.com/en-us/azure/cost-management-billing/reservations/copilot-credit-p3">Copilot Credit P3 - Microsoft Cost Management</a></div><div class="src-meta"><span class="tag t-off">公式</span><span>Microsoft Learn</span><span class="mono">2026-11-19</span></div><p class="src-sum">P3 は1年契約の前払い。Azure ポータルの「予約」で購入、キャンセル・交換不可。2027年1月1日から購入・更新は EA か CSP パートナー経由のみ。</p><span class="src-url">https://learn.microsoft.com/en-us/azure/cost-management-billing/reservations/copilot-credit-p3</span></li>
+    <li id="s34"><div class="src-top"><span class="src-n">[34]</span><a class="src-t" href="https://www.microsoft.com/licensing/guidance/CopilotCreditsGuide">Copilot Credits Licensing Guidance</a></div><div class="src-meta"><span class="tag t-off">公式</span><span>Microsoft Licensing Resources</span><span class="mono">日付不明（後半は本文を読み切れず）</span></div><p class="src-sum">従量課金は1クレジット0.01ドル、P3 の割引率（5〜20%の9段階）、使い残しは期間の終わりに失効、従量課金と P3 は MACC の消化に充てられる。</p><span class="src-url">https://www.microsoft.com/licensing/guidance/CopilotCreditsGuide</span></li>
+    <li id="s35"><div class="src-top"><span class="src-n">[35]</span><a class="src-t" href="https://learn.microsoft.com/en-us/ai-builder/credit-management">Licensing and AI Builder credits</a></div><div class="src-meta"><span class="tag t-off">公式</span><span>Microsoft Learn</span><span class="mono">2026-10-08（更新 2026-10-09）</span></div><p class="src-sum">AI Builder クレジットの扱い。新規の容量アドオン購入は終了し Copilot クレジットを購入、ライセンス付属分は2026年11月1日で削除と記載。</p><span class="src-url">https://learn.microsoft.com/en-us/ai-builder/credit-management</span></li>
+    <li id="s36"><div class="src-top"><span class="src-n">[36]</span><a class="src-t" href="https://learn.microsoft.com/en-us/ai-builder/endofaibcredits">End of AI Builder credits</a></div><div class="src-meta"><span class="tag t-off">公式</span><span>Microsoft Learn</span><span class="mono">2026-10-02</span></div><p class="src-sum">2026年11月1日で AI Builder の容量アドオンと付属クレジットが終了。機能は Copilot クレジットで継続、自動変換なし、AI Builder クレジットが先に使われる。</p><span class="src-url">https://learn.microsoft.com/en-us/ai-builder/endofaibcredits</span></li>
+    <li id="s37"><div class="src-top"><span class="src-n">[37]</span><a class="src-t" href="https://learn.microsoft.com/en-us/power-platform/admin/api-request-limits-allocations">Requests limits and allocations - Power Platform</a></div><div class="src-meta"><span class="tag t-off">公式</span><span>Microsoft Learn</span><span class="mono">2026-11-10（更新 2026-11-11）</span></div><p class="src-sum">Power Platform リクエストは1日の API 呼び出し回数の枠（有料ライセンスは1日40,000回など）。繰り越しなし。AI の実行は含まれず Copilot クレジットを消費。</p><span class="src-url">https://learn.microsoft.com/en-us/power-platform/admin/api-request-limits-allocations</span></li>
+  </ol>
 </section>
 
 <footer>
   <p>調査日：2026年11月22日。提供状況・画面・料金はテナントや時期によって変わります。導入前には最新の公式ドキュメントと管理センターの表示で確認してください。</p>
-  <p>出典の日付：Microsoft Learn 各ページ 2026-11-12〜2026-11-20 ／ Tech Community 2026-11-17 ／ メッセージセンター MC1558033 2026-11-17 ／ Official Microsoft Blog 2026-09-25 ／ 製品ページ 日付不明。</p>
+  <p>出典の日付：Microsoft Learn 各ページ（最終更新 2026-10-02〜2026-11-20）／ Tech Community 2026-11-17 ／ メッセージセンター MC1558033 2026-11-17 ／ Official Microsoft Blog 2026-09-25 ／ 製品ページ・ライセンスガイド 日付不明。</p>
   <p>第三者の解説記事（Cloud Wars・DEV Community など）は今回の環境から読めなかったため、根拠には使っていません。</p>
 </footer>
 
