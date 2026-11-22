@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Agent Builder の活用事例（日本マイクロソフト）。2026年11月23日作成。公開情報（Microsoft Source Asia）をもとにまとめています。">
+<title>サポート窓口の仕事を数十の工程に分けた日本マイクロソフトは、Agent Builder で役割の違う3つのエージェントを作りました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Agent Builder</span>2026年11月23日／IT・ソフトウェア（日本マイクロソフト）・サポート窓口の問い合わせ対応</p>
+
+  <h1>サポート窓口の仕事を数十の工程に分けた日本マイクロソフトは、Agent Builder で役割の違う3つのエージェントを作りました</h1>
+
+  <div class="lead">
+    <p>日本マイクロソフトは、問い合わせ対応のうち、どこに AI を使うと効果が出るのかを見きわめたいと考えていました。</p>
+    <p>そこで、サポート窓口の業務を数十の工程に分け、AI が効く工程だけを、Microsoft 365 Copilot の Agent Builder（資料を読んで答えるエージェントを、ふだんの言葉で作れるツール）で3つのエージェントにしました。</p>
+    <p>この仕組みをお客様の環境に広げた例では、半年間で問い合わせ対応の費用を「約1億円」減らすことに役立ったと、マイクロソフトが公表しています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>問い合わせが来るたびに、内容を読み、足りない情報を聞き返し、公開されている手引きで済むかを調べ、最後に担当の窓口を探す。1件の対応の中に、性格の違う作業がいくつも混ざっている。そんな窓口は少なくありません。</p>
+  <p>「AI に任せたい」と思っても、対応をまるごと任せるのは難しいものです。日本マイクロソフトは、まず窓口の仕事を細かく分けて、AI が力を出せる工程を特定するところから始めました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>日本マイクロソフトは、自社で新しい技術を先に使い、その学びを製品やお客様の支援に生かす「カスタマーゼロ」に取り組んでいます。今回は、社員が個人やチームでエージェントを作って成果を共有する「Copilot Agent Contest」も行いました。</p>
+  <p>サポート業務の例では、窓口の仕事を分析して数十の工程に分け、AI が効く工程を選びました。お客様の環境でも同じように再現でき、簡単に作れて、すぐ効果が出ることを目指し、Agent Builder で3つの独立したエージェントを作っています。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="サポート業務を分けてエージェントにするまでの流れ">
+      <li><div class="box">窓口の仕事を<br>分析する</div></li>
+      <li><div class="box">数十の工程に<br>分ける</div></li>
+      <li><div class="box">AI が効く工程を<br>選ぶ</div></li>
+      <li><div class="box">Agent Builder で<br>3つのエージェント</div></li>
+    </ol>
+    <figcaption>サポート業務最適化エージェントができるまでの流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>1つ目のエージェントは、一次回答の案を考え、足りない情報を聞き取ります。</li>
+    <li>2つ目のエージェントは、公開されている情報で解決できる問い合わせかどうかを判定します。</li>
+    <li>3つ目のエージェントは、適切な問い合わせ先を特定します。</li>
+    <li>それぞれのエージェントに、担当の工程で読ませる資料と役割の説明を設定します。</li>
+  </ol>
+  <p class="src-note">※ 手順4は、Agent Builder の一般的な作り方で補っています。日本マイクロソフトが実際に使った資料や指示文、設定は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>問い合わせの要否の判断、情報の整理、窓口探しまで、一連の対応を人が担っていました（出典の説明にもとづく整理です）。</p></div>
+    <div class="after"><h3>いま</h3><p>仕分け、回答の支援、情報集めをエージェントが受け持ち、人はより複雑な判断や対応に集中できるようになります。</p></div>
+  </div>
+  <p>お客様の環境に広げた例では、半年間で問い合わせ対応にかかる費用を「約1億円」減らすことに役立ったと、マイクロソフトが公表しています。これはお客様の環境での数字で、日本マイクロソフト社内の数字ではありません。お客様の名前や規模、計算方法は公表されていません。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>問い合わせ対応など、毎日くり返す仕事を1つ選び、付せんや表で工程を細かく書き出します。</li>
+    <li>その中から「決まった資料を見て判断している工程」を1つか2つ選びます。窓口の案内や、手引きで済むかの判定などが候補です。</li>
+    <li>選んだ工程ごとに、Agent Builder で小さなエージェントを作ります。1つのエージェントに何でもさせず、役割を1つにしぼって数人で試します。</li>
+  </ol>
+  <p>必要なもの：Microsoft 365 Copilot の利用環境と、読ませてよい手引きや窓口一覧です。Agent Builder が使えるかどうかは、会社のライセンスや管理者の設定で変わります。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>最初に「どこを任せるか」を決めることが要になります</strong>
+    <p>出典には、作るときに苦労した点は書かれていません。ただ、この事例の進め方そのものが、対応をまるごと AI に任せず、数十の工程から AI が効くところだけを選ぶ、という点に工夫があります。簡単に作れて、すぐ効果が出る範囲にしぼったことも、出典で目標として挙げられています。</p>
+  </div>
+  <p>社内で真似するときは、エージェントに読ませる資料が、見せてよい相手に合っているかを先に確かめましょう。AI はもっともらしい間違い（ハルシネーション）を答えることがあるので、お客様へ返す回答や窓口の判断は、人が確認してから使ってください。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、「大きなエージェントを1つ作る」のではなく、仕事を分けてから「役割の違う小さなエージェントを並べる」形にしたことです。この考え方は、窓口業務に限らず、申請の受付や社内の相談対応にも当てはまります。</p>
+  <p>自分の職場に置き換えると、たとえば経費や総務の相談では、「必要な書類を聞き返す」「規程を見れば済むかを判定する」「担当部署を案内する」の3つに分けられそうです。まずは、いちばん時間を取られている工程を1つ選んで、小さく試してみてください。</p>
+
+  <footer>
+    <p>出典：Microsoft Source Asia（Japan News Center）「日経 225 企業の 87 %が AI エージェントを活用」（2026年7月27日公開）<br>
+    <a href="https://news.microsoft.com/source/asia/features/nikkei-225-ai-agent-adoption-2026/?lang=ja">https://news.microsoft.com/source/asia/features/nikkei-225-ai-agent-adoption-2026/?lang=ja</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月23日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

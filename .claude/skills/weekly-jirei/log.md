@@ -65,6 +65,8 @@
 | 2026-11-19 | Copilot Studio（Agent Builder 枠の代替） | TotalEnergies | pages/jirei_20261119-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/25505-totalenergies-agents |
 | 2026-11-21 | Copilot Studio | Dow | pages/jirei_20261121-copilot-studio.html | https://techcommunity.microsoft.com/blog/microsoft365copilotblog/dow-is-targeting-millions-in-cost-savings-with-microsoft-365-copilot-and-agents/4393480 |
 | 2026-11-21 | Copilot Studio（Agent Builder 枠の代替） | Virgin Money | pages/jirei_20261121-copilot-studio-2.html | https://www.microsoft.com/en/customers/story/24471-virgin-money-microsoft-365-copilot |
+| 2026-11-23 | Agent Builder | 日本マイクロソフト（カスタマーゼロ・サポート業務最適化） | pages/jirei_20261123-agent-builder.html | https://news.microsoft.com/source/asia/features/nikkei-225-ai-agent-adoption-2026/?lang=ja |
+| 2026-11-23 | Copilot Studio | Microsoft サポート（Business Applications） | pages/jirei_20261123-copilot-studio.html | https://www.microsoft.com/en/customers/story/27645-microsoft-microsoft-copilot-studio |
 
 ## ネタ帳（候補）
 
@@ -122,6 +124,13 @@
   https://www.microsoft.com/en/customers/story/26794-sirva-dynamics-365-contact-center
   Dynamics 365 Contact Center 中心。Studio の回答下書き・品質チェックのエージェントは概念実証の段階で、成果の数字なし。弱い。
 
+- **Copilot Studio**｜日本マイクロソフト社内の技術問い合わせエージェント（2026-07-27 公開、本文確認済み）
+  https://news.microsoft.com/source/asia/features/nikkei-225-ai-agent-adoption-2026/?lang=ja
+  Agent Builder 枠で使った記事と同じ出典。ナレッジで一次回答→専門チームへ引き継ぎ→回答を自動でナレッジ化。半年で人の対応件数が1/12、毎月約20件のナレッジ追加。同じ記事にりそな・INPEX（掲載済み）も。分量は少なめ。
+- **Copilot Studio?**｜Games Global（2025-04-08、本文確認済み）
+  https://www.microsoft.com/en/customers/story/23332-games-global-microsoft-copilot-studio
+  Power Automate のワークショップが中心で、Studio は人事チャットボット1件のみ。年22,370時間などは自動化全体の数字。弱い。
+
 ### 見送り（その枠では記事にならない。読み直さなくてよい。枠の記載がないものは Agent Builder 枠）
 
 - OBC（2026-04-06）：「エージェントビルダー」は回答文を整えるツールづくりに一言出てくるだけ。
@@ -129,6 +138,7 @@
 - （Cowork 枠）京都府（2026-09-28）https://www.microsoft.com/ja-jp/customers/story/27235-kyoto-prefecture-microsoft-365-copilot ：Cowork は「検証で大きな可能性を実感した」という期待の段階で、具体的な作業や結果がない。記事の中心は Copilot Chat と Copilot Studio。
 - （Cowork 枠）JBS（2026-09-11）https://www.microsoft.com/ja-jp/customers/story/27149-japan-business-systems-microsoft-copilot ：Cowork は「導入した」「アンバサダーが部内で広める」「社内イベントの応募資料づくりに使える3つの道具の1つ」と出てくるだけ。
 - （Cowork 枠）GET AI（2026-09-22）、東京建物、富士通：Cowork は道具の一覧や「新しく出た」の一言だけ。
+- （Cowork 枠）Inside Track「Making AI adoption stick: What we learned after launching Copilot Cowork at Microsoft」（2026-11-12）：社内の定着施策（#HowICowork、週間利用者 約35,000→約45,000）が中心で、Cowork に任せた具体的な作業の記載がない。
 - NTTドコモ（2026-05-14）https://www.microsoft.com/ja-jp/customers/story/26409-ntt-docomo-microsoft-365-e5 ：部長14人が「上長エージェント」を作成したが、使ったツールの記載がない。
 
 ## 実行メモ
@@ -166,3 +176,4 @@
 - 2026-11-17：Agent Builder 枠は、WebSearch（標準・拡張）でも顧客事例が出ず、Copilot Studio を2本（CSX＝2025-06-23、Estée Lauder＝2025-04-16。adoption.microsoft.com の一覧にある顧客事例から本文確認して採用。どちらも公開から1年超）にした。2本とも Agent Builder の記載なし（ELC は「agent builder tool」という一般的な言い回しのみ）。Cowork 枠は休み（blogs.microsoft.com の copilot-cowork タグ4本、2026-09-28 のデータ発表ブログにも名前の出た顧客の使い方なし。SoftwareONE の記事は会員限定）。adoption の agent-transformation-stories は個別ページが廃止され、一覧は顧客事例へのリンクになっていた。顧客事例は curl では本文が取れず WebFetch で読んだ。www.softbank.jp は今回も接続できなかった。
 - 2026-11-19：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（Rumo＝2025-11-11、TotalEnergies＝2025-10-22。どちらも顧客事例を WebFetch で本文確認）にした。2本とも Agent Builder の記載なし。Cowork 枠は休み（検索結果は製品ページ・パートナー記事・Dynamics 365 プラグイン解説・既掲載の Inside Track のみ）。www.softbank.jp は今回も名前解決できず読めなかった（ネットワーク設定で許可が必要）。
 - 2026-11-21：Agent Builder 枠は、WebSearch（標準）でも顧客事例が出ず、Copilot Studio を2本（Dow＝techcommunity 2025-03-18、Virgin Money＝顧客事例 2025-07-23。adoption.microsoft.com の一覧から本文確認して採用。どちらも公開から1年超）にした。2本とも Agent Builder の記載なし。Cowork 枠は休み（techcommunity「(Co)work in Progress」は架空の例のみ、ほかは製品ページ・パートナー記事）。Pulse の西欧向け記事（Ma'aden の月2,200時間など）はツール名がなく見送り。Virgin Money の顧客事例は WebFetch では要約のみ、curl で本文を取得。ブロックされたホストなし。
+- 2026-11-23：Agent Builder 枠は、日本マイクロソフトのカスタマーゼロ（news.microsoft.com の Source Asia 日本語記事 2026-07-27。サポート業務を数十の工程に分け Agent Builder で3つのエージェント、お客様環境で半年約1億円削減に寄与）で久しぶりに成立。news.microsoft.com は WebFetch では読めた（curl は Cloudflare で不可）。Copilot Studio 枠は Microsoft サポートの新しい顧客事例（27645、2026-11-18）。同じ回に Microsoft 系が2本になった（日本法人の社内例と米国のサポート部門）。Cowork 枠は休み（Ignite 2026 の techcommunity 記事は社名のみ、Inside Track 2026-11-12 は定着施策のみ）。Vanderlande の VIGO は再確認したが数字なし。www.softbank.jp は今回も名前解決できず読めなかった。
