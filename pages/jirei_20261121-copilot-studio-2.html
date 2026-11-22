@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copilot Studio の活用事例（Virgin Money）。2026年11月21日作成。公開情報（Microsoft Customer Stories）をもとにまとめています。">
+<title>カード再発行の案内に半数以上が応じ、その97%が手続きを最後まで終えました</title>
+<style>
+  :root{
+    --ink:#1f2933;
+    --ink-soft:#54626f;
+    --accent:#2563a8;
+    --accent-soft:#eaf1f9;
+    --tool:#1f7a6d;
+    --tool-soft:#e4f3f0;
+    --line:#dbe3ec;
+    --bg:#ffffff;
+    --bg-soft:#f5f8fb;
+    --warn-bg:#fff8e8;
+    --warn-line:#e8c980;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+      --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+      --warn-bg:#2b2413; --warn-line:#7a6531;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6ebf0; --ink-soft:#a3afbb; --accent:#7fb0e6; --accent-soft:#1b2a3b;
+    --tool:#6cc7b8; --tool-soft:#16302c; --line:#2e3a46; --bg:#12171c; --bg-soft:#19212a;
+    --warn-bg:#2b2413; --warn-line:#7a6531;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    padding:32px 16px 64px;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    line-height:1.85;
+    background:var(--bg);
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .meta{font-size:13px;color:var(--ink-soft);letter-spacing:.04em;}
+  .badge{
+    display:inline-block;padding:3px 10px;margin-right:8px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .badge.tool{background:var(--tool-soft);color:var(--tool);}
+  h1{
+    font-size:27px;line-height:1.5;margin:14px 0 18px;
+    letter-spacing:.01em;
+  }
+  .lead{
+    background:var(--bg-soft);border-left:4px solid var(--accent);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:18px 20px;margin:0 0 40px;font-size:15.5px;
+  }
+  .lead p{margin:0 0 8px;}
+  .lead p:last-child{margin-bottom:0;}
+  h2{
+    font-size:20px;margin:44px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  h2 .num{color:var(--accent);margin-right:10px;font-size:16px;}
+  h3.sub{font-size:16px;margin:28px 0 10px;}
+  p{margin:0 0 16px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin-bottom:8px;}
+  .figure{
+    margin:24px 0 28px;padding:22px 18px;
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    text-align:center;
+  }
+  .figure figcaption{margin-top:12px;font-size:13px;color:var(--ink-soft);}
+  .flow{
+    list-style:none;margin:0;padding:0;
+    display:flex;align-items:stretch;justify-content:center;gap:0;
+  }
+  .flow li{display:flex;align-items:center;margin:0;flex:1 1 0;}
+  .flow .box{
+    flex:1;min-height:76px;display:flex;align-items:center;justify-content:center;
+    padding:10px 8px;border:1.5px solid var(--accent);border-radius:8px;
+    background:var(--bg);font-size:14px;font-weight:700;line-height:1.5;
+  }
+  .flow li:last-child .box{background:var(--accent-soft);}
+  .flow li + li::before{
+    content:"→";flex:0 0 auto;padding:0 6px;color:var(--accent);font-weight:700;
+  }
+  @media (max-width:560px){
+    .flow{flex-direction:column;}
+    .flow li{flex-direction:column;}
+    .flow li + li::before{content:"↓";padding:4px 0;}
+    .flow .box{width:100%;min-height:0;}
+  }
+  .ba{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px;}
+  .ba > div{
+    flex:1 1 240px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;
+  }
+  .ba .after{border-color:var(--accent);background:var(--accent-soft);}
+  .ba h3{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  .ba .after h3{color:var(--accent);}
+  .ba p{margin:0;font-size:15px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:0 0 20px;}
+  .steps li{
+    counter-increment:step;position:relative;padding-left:42px;margin-bottom:16px;
+  }
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--accent);color:var(--bg);font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note{
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;font-size:15px;
+  }
+  .note strong{display:block;margin-bottom:6px;}
+  .note p:last-child{margin-bottom:0;}
+  .src-note{font-size:13px;color:var(--ink-soft);}
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent);word-break:break-all;}
+  @media print{
+    body{padding:0;font-size:12pt;}
+    h2{page-break-after:avoid;}
+    .figure,.ba,.note{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="meta"><span class="badge">AI活用事例</span><span class="badge tool">Copilot Studio</span>2026年11月21日／銀行（Virgin Money）・お客さま対応</p>
+
+  <h1>カード再発行の案内に半数以上が応じ、その97%が手続きを最後まで終えました</h1>
+
+  <div class="lead">
+    <p>英国の大手銀行 Virgin Money は、お客さまの問い合わせを最初の1回で解決したいと考えていましたが、昔ながらのチャットボットが複数に分かれていました。</p>
+    <p>そこで Copilot Studio で、複数の仮想アシスタントを1つにまとめた AI エージェント「Redi」を作り、銀行側から先に案内を送る使い方も始めました。</p>
+    <p>カード再発行の案内メッセージには約54%のお客さまが応じ、そのうち97%が最後まで手続きを終えたと公表しています。</p>
+  </div>
+
+  <h2><span class="num">01</span>こんな場面、ありませんか</h2>
+  <p>お客さまから問い合わせが来るのを待ち、電話やチャットで一件ずつ答えている。案内用のチャットボットはあるものの、用件ごとに別々で、結局は担当者に回ってくる。「先にこちらから知らせておけば、問い合わせ自体が減るのに」と感じたことがある人は多いのではないでしょうか。</p>
+  <p>Virgin Money は、英国で660万の個人・法人のお客さまを持つ銀行です。お客さま対応の責任者は「問い合わせは最初の1回で、毎回解決したい」と話しています（意訳）。一方で、それまでは用途ごとの仮想アシスタント（自動で受け答えする仕組み）が複数あり、昔ながらのチャットボットから抜け出す必要がありました。</p>
+
+  <h2><span class="num">02</span>やってみたこと</h2>
+  <p>使ったのは Copilot Studio（プログラムをほとんど書かずに、AI エージェントを作れる Microsoft のツール）です。Virgin Money は Microsoft と組み、AI エージェント「Redi」を作りました。Redi は複数の仮想アシスタントを1つにまとめたもので、その場での受け答えと、決まった作業の自動化をこなします。</p>
+  <p>社内の業務アプリづくりを進めるチーム（BizApps の推進組織）の責任者は、Copilot Studio を選んだ主な理由として、Microsoft の業務アプリの仕組みとつながる機能の強さを挙げています。「最初は基本的なチャットボットだったものが、すっかり統合された AI の仕組みに育った」と話しています（意訳）。</p>
+
+  <figure class="figure">
+    <ol class="flow" aria-label="Redi がカード再発行を案内し、必要なときに担当者へつなぐ流れ">
+      <li><div class="box">新しいカードの<br>発送時期が来る</div></li>
+      <li><div class="box">Redi が先に<br>メッセージを送る</div></li>
+      <li><div class="box">お客さまが<br>住所を確認する</div></li>
+      <li><div class="box">難しい用件は<br>担当者へつなぐ</div></li>
+    </ol>
+    <figcaption>Redi がカード再発行を案内し、必要なときに担当者へつなぐ流れ（公開記事をもとに作図しました）</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>Copilot Studio で Redi を作り、それまで別々だった仮想アシスタントを1つにまとめました。</li>
+    <li>お客さまに新しいカードを送る時期が来ると、Redi が自動でメッセージを送り、届け先の住所を確かめます。</li>
+    <li>ふだんの問い合わせには Redi が答え、決まった手続きは自動で進めます。</li>
+    <li>込み入った用件は Redi が内容を見分け、人の手が必要なときは担当者に引き継ぎます。</li>
+    <li>Redi が集めたやり取りの傾向を、サービスの見直しに使っています。</li>
+  </ol>
+  <p class="src-note">※ 手順の順番は記事の記述をもとに整理したものです。Copilot Studio での具体的な設定内容は公開されていません。</p>
+
+  <h2><span class="num">03</span>どう変わったか</h2>
+  <div class="ba">
+    <div class="before"><h3>これまで</h3><p>用途ごとに昔ながらのチャットボットが分かれていました。お客さまからの連絡を待って対応するのが中心でした。</p></div>
+    <div class="after"><h3>いま</h3><p>1つの Redi が受け答えと案内をまとめて担います。担当者は Redi を「必要なときにお客さまを回してくれる同僚」と見ています（意訳）。</p></div>
+  </div>
+  <p>Virgin Money が公表した数字では、カード再発行などの案内メッセージに応じたお客さまは約54%で、そのうち97%が手続きを最後まで終えました。お客さま満足度の調査にも良い反応が表れているとしていますが、満足度の具体的な数字は公表されていません。金融サービス分野の賞で「AI の最も優れた活用」を受賞したことも紹介されています。</p>
+
+  <h2><span class="num">04</span>明日から試すには</h2>
+  <ol class="steps">
+    <li>お客さまや社員から「毎回同じ内容で来る問い合わせ」と、その前に先回りして知らせられそうなこと（期限・発送・更新など）を書き出します。</li>
+    <li>その中から1つを選び、知らせる内容と、相手に確かめてほしいこと（住所や日付など）を短い文にまとめます。</li>
+    <li>Copilot Studio で小さなエージェントを作り、「ここから先は担当者へ」という引き継ぎの条件を決めてから、社内の少人数で試します。</li>
+  </ol>
+  <p>準備物は、よくある問い合わせの一覧と、答えのもとになる正しい資料、引き継ぎ先の担当者です。社外のお客さまに使うか、外部のチャットやメッセージにつなげるかは、ライセンスや社内の設定、承認の手続きで変わります。まず IT 部門に確認してください。</p>
+
+  <h2><span class="num">05</span>つまずきやすいところ</h2>
+  <div class="note">
+    <strong>人に引き継ぐ場面を先に決めておく</strong>
+    <p>出典には、導入での具体的な苦労は書かれていません。ただ、Redi は決まった用件をこなす一方で、込み入った用件は見分けて人の担当者に渡す役割を持っています。担当者が共感の必要な対応や影響の大きい問い合わせに集中できるよう、役割を分けていることがうかがえます。</p>
+  </div>
+  <p>社内で真似するときは、住所や口座など個人情報を扱う場面で、本人確認や表示する情報の範囲を必ず決めてください。AI はもっともらしい間違い（ハルシネーション）を答えることがあります。お金や契約にかかわる答えは、もとになる資料を正しく保ち、迷ったら人に回す設計にしましょう。先回りの案内は、送りすぎるとかえって迷惑になるので、送る条件も決めておくと安心です。</p>
+
+  <h2><span class="num">06</span>おわりに</h2>
+  <p>この事例のポイントは、エージェントを「聞かれたら答える窓口」だけでなく、「必要なことを先に知らせて、手続きを最後まで案内する役」として使ったことです。問い合わせを待つより先に知らせる形は、銀行に限らず、更新の手続きや提出物の締め切り、機器の交換時期など多くの場面で使えます。</p>
+  <p>自分の職場に置き換えると、たとえば「社員証の更新時期のお知らせと申請の受付」や「契約更新の案内と確認」などが当てはまります。毎年、同じ時期に同じ問い合わせが集中するものから始めると、効果が見えやすいでしょう。</p>
+
+  <footer>
+    <p>出典：Microsoft Customer Stories「Virgin Money modernises banking with Microsoft Copilot Studio」（2025年7月23日公開）<br>
+    <a href="https://www.microsoft.com/en/customers/story/24471-virgin-money-microsoft-365-copilot">https://www.microsoft.com/en/customers/story/24471-virgin-money-microsoft-365-copilot</a></p>
+    <p>相談窓口：○○（社内で共有するときに記入してください）</p>
+    <p>この記事は、公開情報をもとに Claude がまとめました（2026年11月21日作成）。数字は出典元の公表値です。</p>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -137,6 +137,7 @@ let browser;
     // 自爆する敵「ドカン」（Day 12）：近づくと点滅して爆発し、まわりの敵と自機にダメージ。爆発の前に倒せば爆発しない
     const bm = await page.evaluate(() => {
       const d = window.__game.debug, g = window.__game.world(), p = g.player;
+      d.give('regen', 0); // ナノリペアの回復でダメージが18未満に見えないように（Day 17）
       g.enemies.forEach(e => { e.dead = true; }); g.enemies.length = 0;
       d.spawn('bomber', 1); const b = g.enemies[g.enemies.length - 1]; b.x = p.x + 50; b.y = p.y; b.hp = 1e6; // 自機の武器に先に倒されないように（爆発のしくみだけを見る）
       d.spawn('drifter', 1); const v = g.enemies[g.enemies.length - 1]; v.x = p.x + 95; v.y = p.y + 20; v.spd = 0;
@@ -150,6 +151,27 @@ let browser;
     });
     check('自爆する敵は近づくと点滅して爆発し、まわりの敵も巻きこむ', bm.fused && bm.boomed && bm.victim && bm.hurt >= 18, `点滅=${bm.fused} 爆発=${bm.boomed} 巻きこみ=${bm.victim} 自機-${bm.hurt}`);
     check('爆発する前に倒した自爆敵は爆発しない', bm.safeKill);
+    // 「○体まきこみ！」（Day 19）：爆発で2体以上倒すと大きな文字が出る。1体では出ない
+    // 文字は演出なので sim（演出オフ）ではなく、ふつうの時間の流れで確かめる
+    const chainSetup = (k) => page.evaluate((k) => {
+      const d = window.__game.debug, g = window.__game.world(), p = g.player;
+      d.god(true);
+      g.enemies.forEach(e => { e.dead = true; }); g.enemies.length = 0;
+      d.fxArrays()[1].length = 0;
+      d.spawn('bomber', 1); const b = g.enemies[g.enemies.length - 1]; b.x = p.x + 50; b.y = p.y; b.hp = 1e6;
+      for (let i = 0; i < k; i++) { d.spawn('drifter', 1); const v = g.enemies[g.enemies.length - 1]; v.x = p.x + 80 + i * 6; v.y = p.y + 30 - i * 12; v.spd = 0; v.hp = 1; }
+      b.fuse = 0.001; // 次のフレームの最初（武器より先）に爆発する
+    }, k);
+    const chainRead = () => page.evaluate(() => {
+      const d = window.__game.debug, g = window.__game.world(), big = d.fxArrays()[1].find(n => n.big);
+      return { chain: g.lastChain, best: g.chainBest, text: big ? big.text : '' };
+    });
+    await chainSetup(4); await wait(150); const c4 = await chainRead();
+    await shot(page, '04b_chain_390');
+    await chainSetup(1); await wait(150); const c1 = await chainRead();
+    await page.evaluate(() => window.__game.debug.god(false));
+    const ch = { chain4: c4.chain, best: c4.best, text: c4.text, chain1: c1.chain, big1: !!c1.text };
+    check('ドカンで2体以上倒すと「○体まきこみ！」が出る（1体では出ない）', ch.chain4 === 4 && ch.text === '4体まきこみ！' && ch.best >= 4 && ch.chain1 === 1 && !ch.big1, JSON.stringify(ch));
     await page.evaluate(() => { const p = window.__game.world().player; p.hp = p.maxHp; });
     // 一時停止
     await page.click('#b-pause');
@@ -194,7 +216,8 @@ let browser;
     const oh = await page.evaluate(() => { const e = window.__orbE; const hit = e.hp < e.maxHp; e.dead = true; return hit; });
     check('進化したオービットの玉が、広がった輪の上の敵に当たる', oh);
     // ほしくずをひろう範囲（Day 11：72→80）
-    const mr = await page.evaluate(() => window.__game.world().st.magnetR);
+    // 前の場面で引力フィールドを選んでいることがあるので、いったん0にしてから確かめる（Day 18）
+    const mr = await page.evaluate(() => { const g = window.__game.world(), m = g.passives.magnet || 0; window.__game.debug.give('magnet', 0); const r = g.st.magnetR; window.__game.debug.give('magnet', m); return r; });
     check('ほしくずをひろう範囲が 80 ある（引力フィールドなし）', Math.abs(mr - 80) < 0.01, `magnetR=${mr}`);
     // ほしくずの音階と光の尾（Day 16）：つづけて拾うほど音が上がり（2オクターブで頭打ち）、10個ごとにキラッ、吸い寄せ中は尾が出る
     const gs = await page.evaluate(() => {
@@ -224,12 +247,58 @@ let browser;
       return { full, cap1, low, cap2, left, same };
     });
     check('光の粒は上限を超えず、画質が下がると上限も下がり、時間で消える', fx.full <= fx.cap1 && fx.cap1 === 700 && fx.low <= fx.cap2 && fx.cap2 === 350 && fx.left < 20 && fx.same, `上限 ${fx.full}/${fx.cap1} → ${fx.low}/${fx.cap2}、1.5秒後 ${fx.left}、配列そのまま=${fx.same}`);
+    // 粒は色と明るさごとにまとめて塗る（Day 21：700粒でも塗る回数はひとけた〜数十回）
+    await page.evaluate(() => window.__game.debug.burst(2000));
+    await wait(80);
+    const pb = await page.evaluate(() => { const s = window.__game.state(); return { parts: s.parts, calls: s.partCalls }; });
+    await shot(page, '04e_parts_390');
+    check('光の粒は色と明るさごとにまとめて塗られる（たくさんあっても塗る回数が少ない）', pb.parts >= 400 && pb.calls >= 1 && pb.calls <= 40, `粒 ${pb.parts} 個 → 塗った回数 ${pb.calls}`);
+    await page.evaluate(() => window.__game.debug.stepFx(1.5));
     // ボス
     await page.evaluate(() => { window.__game.debug.god(true); window.__game.debug.give('nova', 3); window.__game.debug.setTime(299); });
     await page.waitForFunction(() => window.__game.state().boss !== null, null, { timeout: 5000 }).catch(() => {});
     check('5:00 でボスが出る', (await page.evaluate(() => window.__game.state())).boss !== null);
     await wait(1200);
+    // 遊んでいる最中に実績が取れると、その場で画面の上に小さく出る（Day 20）
+    const at = await page.evaluate(() => {
+      let have = {}; try { have = JSON.parse(localStorage.getItem('hs-ach') || '{}'); } catch (_) {}
+      const t = document.getElementById('achtoast'), r = t.getBoundingClientRect(), bb = document.getElementById('bossbar').getBoundingClientRect();
+      return { scene: window.__game.scene, boss: !!have.boss, on: t.classList.contains('on'), text: t.textContent, op: +getComputedStyle(t).opacity,
+        fits: r.left >= 0 && r.right <= innerWidth, below: r.top >= bb.bottom - 1, got: window.__game.world().achGot.map(a => a.id) };
+    });
+    check('遊んでいる最中に実績が取れると、その場で「実績ゲット！」が出る（結果画面を待たない）', at.scene === 'play' && at.boss && at.on && at.op > 0.5 && /実績ゲット/.test(at.text) && at.fits && at.below && at.got.includes('boss'),
+      `場面=${at.scene} 保存=${at.boss} 表示=「${at.text}」 はみ出しなし=${at.fits} ボスバーの下=${at.below} この回=${at.got.join(',')}`);
     await shot(page, '06_boss_390');
+    // ボス戦中はドカンが出ない／60秒たつとボスが弱って受けるダメージが増える（Day 17）
+    const bw = await page.evaluate(() => {
+      const g = window.__game, G = g.world();
+      G.enemies.forEach(e => { if (e.type === 'bomber') e.dead = true; });
+      const hpKeep = G.boss.hp; G.boss.hp = G.boss.maxHp = 1e6;
+      g.sim(40, () => [0, 0]);
+      const bombers = G.enemies.filter(e => e.type === 'bomber' && !e.dead).length;
+      const weak0 = G.boss.weak;
+      const barWeak0 = document.getElementById('bossbar').classList.contains('weak');
+      let before = 0; for (let i = 0; i < 20; i++) before += g.debug.hitBoss(100);
+      G.boss.born = G.t - 59.97;
+      return { bombers, weak0, barWeak0, before, hpKeep };
+    });
+    await wait(500);
+    const bw2 = await page.evaluate(() => {
+      const g = window.__game, G = g.world();
+      let after = 0; for (let i = 0; i < 20; i++) after += g.debug.hitBoss(100);
+      const bb = document.getElementById('bossbar'), tag = bb.querySelector('.bw');
+      const fillBg = getComputedStyle(document.getElementById('bossfill')).backgroundImage;
+      return { weak: G.boss.weak, after, banner: document.getElementById('banner').textContent,
+        barWeak: bb.classList.contains('weak'), tagShown: !!tag && getComputedStyle(tag).display !== 'none' && tag.getBoundingClientRect().width > 0,
+        tagText: tag ? tag.textContent : '', yellow: /255, 216, 74/.test(fillBg),
+        fits: bb.getBoundingClientRect().right <= innerWidth && (!tag || tag.getBoundingClientRect().right <= innerWidth) };
+    });
+    check('ボス戦中はドカンが出ない', bw.bombers === 0 && !bw.weak0, `40秒でドカン ${bw.bombers}体`);
+    const ratio = bw2.after / bw.before;
+    check('ボス戦が60秒続くとボスが弱り、受けるダメージが約1.6倍になる', bw2.weak && ratio > 1.4 && ratio < 1.8 && /弱った/.test(bw2.banner), `×${ratio.toFixed(2)} / ${bw2.banner}`);
+    check('ボスが弱るとHPバーが黄色に変わり「弱ってる！」の印が出る（弱る前は出ない）', !bw.barWeak0 && bw2.barWeak && bw2.tagShown && bw2.yellow && bw2.fits, `前=${bw.barWeak0} 後=${bw2.barWeak} 印=「${bw2.tagText}」 黄色=${bw2.yellow} はみ出しなし=${bw2.fits}`);
+    await shot(page, '06b_boss_weak_390');
+    await page.evaluate(() => { const B = window.__game.world().boss; B.hp = B.maxHp = 5400; });
     // ゲームオーバー → 結果 → もう1回
     await page.evaluate(() => { window.__game.debug.god(false); window.__game.debug.hurt(9999); });
     await page.waitForFunction(() => window.__game.scene === 'result', null, { timeout: 8000 }).catch(() => {});

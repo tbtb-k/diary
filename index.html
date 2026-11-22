@@ -843,9 +843,20 @@ function setTitle(it, t){
 }
 
 /* ── 追加日の取得（新着順で使う） ─────────── */
-/* 各ファイルが最初にコミットされた日を GitHub API で調べる。
+/* 各ページが追加された日は、まず dates.json（GitHub Actions が push のたびに作り直す一覧表）から読む。
+   これならページが何件あっても1回の読み込みで済む。
+   dates.json にまだ載っていない新しいページだけ、最初にコミットされた日を GitHub API で調べる。
    API は1時間60回までなので、調べた日付はブラウザに覚えておき、
    残り回数が少ないときは一覧の取得ぶんを残して打ち切る */
+const DATES_FILE = "dates.json";
+async function loadManifest(){
+  try{
+    const res = await fetch(DATES_FILE, { cache:"no-cache" });
+    if(!res.ok) return {};
+    const d = await res.json();
+    return d && typeof d === "object" && !Array.isArray(d) ? d : {};
+  }catch(_){ return {}; }
+}
 const API_RESERVE = 10;
 let apiLeft = Infinity;
 let datesJob = null;
@@ -1252,6 +1263,7 @@ async function main(){
     return;
   }
   showSkeleton();
+  const manifestJob = loadManifest();   /* 一覧の取得と並行して読んでおく */
 
   let files;
   try{
@@ -1286,18 +1298,21 @@ async function main(){
       }
     }).catch(() => $("s-upd").classList.remove("wait"));
 
+  /* 追加日：dates.json → ブラウザに覚えておいた日付 の順に使う */
+  const manifest = await manifestJob;
   files.sort((a,b) => a.name.localeCompare(b.name, "ja"));
   clearSkeleton();
 
   const cats = {};
   let totalSize = 0;
   const known = readDates();
+  const addedOf = name => [manifest[name], known[name]].find(d => typeof d === "string" && !isNaN(Date.parse(d))) || null;
   const items = files.map(f => {
     const cat = categoryOf(f.name);
     cats[cat] = (cats[cat] || 0) + 1;
     totalSize += f.size || 0;
     const title = prettyTitle(f.name);
-    return { name:f.name, url:`${DIR}/${f.name}`, cat, title, fallback:title, added:known[f.name] || null, hay:(title + " " + f.name + " " + cat).toLowerCase() };
+    return { name:f.name, url:`${DIR}/${f.name}`, cat, title, fallback:title, added:addedOf(f.name), hay:(title + " " + f.name + " " + cat).toLowerCase() };
   });
   state.items = items;
 

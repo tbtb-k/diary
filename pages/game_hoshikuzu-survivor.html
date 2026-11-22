@@ -57,6 +57,13 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 .bossbar{margin:12px auto 0;max-width:320px;text-align:center;font:900 11px/1 var(--display);letter-spacing:.28em;color:#ffb3bf}
 .bossbar div{height:9px;border-radius:5px;background:rgba(255,59,92,.15);border:1px solid rgba(255,59,92,.65);overflow:hidden;margin-top:6px}
 .bossbar i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--orange));transform-origin:0 50%}
+.bossbar .bw{display:none;margin-left:.4em;font:800 11px/1 "M PLUS Rounded 1c",system-ui,sans-serif;letter-spacing:.06em;color:#1a1030;background:var(--yellow);border-radius:4px;padding:2px 6px;vertical-align:1px}
+.bossbar.weak{color:#ffe98a}
+.bossbar.weak .bw{display:inline-block}
+.bossbar.weak div{border-color:#ffd84a;background:rgba(255,216,74,.14);animation:bwpulse .7s ease-in-out infinite alternate}
+.bossbar.weak i{background:linear-gradient(90deg,#ffd84a,#fff3b0)}
+@keyframes bwpulse{from{box-shadow:0 0 2px rgba(255,216,74,.3)}to{box-shadow:0 0 14px rgba(255,216,74,.95)}}
+@media (prefers-reduced-motion: reduce){.bossbar.weak div{animation:none;box-shadow:0 0 10px rgba(255,216,74,.8)}}
 
 #banner{position:fixed;left:0;right:0;top:30%;z-index:6;text-align:center;pointer-events:none;opacity:0;padding:0 16px}
 #banner.on{animation:ban 2s cubic-bezier(.2,.9,.2,1) forwards}
@@ -65,6 +72,14 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 #banner span{display:block;margin-top:8px;font-size:13px;color:var(--ink);text-shadow:0 0 8px #000}
 @keyframes ban{0%{opacity:0;transform:scale(1.5)}12%{opacity:1;transform:scale(1)}80%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-16px)}}
 
+/* 実績のお知らせ（遊んでいる最中に取れたとき） */
+#achtoast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 120px);z-index:6;pointer-events:none;opacity:0;transform:translate(-50%,-10px);max-width:calc(100vw - 32px);display:flex;align-items:center;gap:8px;padding:7px 14px 7px 10px;border-radius:99px;background:rgba(26,18,48,.86);border:1px solid rgba(255,216,74,.7);box-shadow:0 0 16px rgba(255,216,74,.35);white-space:nowrap}
+#achtoast.on{animation:achin 2.6s cubic-bezier(.2,1.2,.4,1) forwards}
+#achtoast .md{font-size:20px;filter:drop-shadow(0 0 6px rgba(255,216,74,.8))}
+#achtoast small{display:block;font:800 10px/1.2 var(--font);color:var(--yellow);letter-spacing:.08em}
+#achtoast b{display:block;font:800 13.5px/1.3 var(--font);color:#fff3c4;overflow:hidden;text-overflow:ellipsis}
+@keyframes achin{0%{opacity:0;transform:translate(-50%,-10px) scale(.85)}10%{opacity:1;transform:translate(-50%,0) scale(1)}85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-8px)}}
+@media (prefers-reduced-motion: reduce){#achtoast.on{animation:achfade 2.6s linear forwards}@keyframes achfade{0%,100%{opacity:0}8%,88%{opacity:1;transform:translate(-50%,0)}}}
 #hint{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 15%);z-index:5;text-align:center;pointer-events:none;font-size:14px;color:var(--ink);text-shadow:0 0 10px #000;transition:opacity .6s}
 #hint span{display:inline-block;padding:9px 16px;border-radius:99px;background:rgba(10,8,30,.6);border:1px solid var(--faint)}
 #hint.off{opacity:0}
@@ -171,9 +186,10 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
     <button id="b-pause" aria-label="一時停止"></button>
   </div>
   <div class="hudrow2"><span>LV <b id="lv">1</b></span><span>KILL <b id="kills">0</b></span></div>
-  <div class="bossbar" id="bossbar" hidden>BLACK STAR<div><i id="bossfill"></i></div></div>
+  <div class="bossbar" id="bossbar" hidden>BLACK STAR<b class="bw">弱ってる！×1.6</b><div><i id="bossfill"></i></div></div>
 </div>
 <div id="banner"></div>
+<div id="achtoast" aria-live="polite"></div>
 <div id="hint" class="off"><span>指をおいて、すべらせると動くよ　攻撃は自動！</span></div>
 
 <!-- タイトル -->
@@ -279,8 +295,23 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 16, date: '2026-11-17' };
+const GAME = { day: 21, date: '2026-11-22' };
 const PATCH_NOTES = [
+  { day: 21, date: '2026-11-22', title: '光の粒を、もっと軽くしたよ！',
+    items: ['敵をまとめて倒したときの光の粒を、色ごとにまとめて描くようにしたよ', '画面の外に飛んでいった粒は描かないから、敵だらけの後半でもカクつきにくいはず'],
+    ask: '後半の敵だらけの場面で、前よりなめらかに動くか感じてみてね！' },
+  { day: 20, date: '2026-11-21', title: '実績が、取れたその場でわかるよ！',
+    items: ['遊んでいる最中に実績が取れたら、画面の上に「🏅 実績ゲット！」って小さく出るよ（キラキラの音つき）', '終わったあとの結果画面にも、今までどおりまとめて出るよ'],
+    ask: 'まだ取ってない実績をねらって、その場で出るお知らせがじゃまにならないか教えてね！' },
+  { day: 19, date: '2026-11-20', title: 'ドカンの爆発で「○体まきこみ！」',
+    items: ['自爆する敵「ドカン」の爆発で敵を2体以上たおすと、その場に「○体まきこみ！」って出るよ', '5体以上まきこむと、文字が大きな黄色になるよ'],
+    ask: 'ドカンを敵の群れのそばで爆発させて、何体まきこめるか試してみてね！' },
+  { day: 18, date: '2026-11-19', title: '弱ったボスが、ひと目でわかるよ！',
+    items: ['ボスが弱ると、上のHPバーが黄色く光って点滅するよ', 'バーに「弱ってる！×1.6」の印も出るから、ボスが画面の外にいても今がチャンスってわかるよ'],
+    ask: 'ボス戦の後半、黄色いバーに気づけたか教えてね！' },
+  { day: 17, date: '2026-11-18', title: 'ボス戦を、決着がつきやすくしたよ！',
+    items: ['ボスが出ているあいだは、自爆する敵「ドカン」が来なくなったよ', 'ボス戦が1分つづくと、ボスが弱ってひびが入るよ。そこからは攻撃がぐっと効くよ'],
+    ask: 'ボス戦がむずかしすぎたり、長すぎたりしなかったか教えてね！' },
   { day: 16, date: '2026-11-17', title: 'ほしくずが音楽になったよ！',
     items: ['ほしくずをつづけて拾うと「ドレミソラ」の音階で音が上がっていくよ', '吸い寄せられるほしくずに、光のしっぽが付いたよ', '10個つづけて拾うたびに、キラッと光ってはじけるよ'],
     ask: '音ONで、ほしくずをまとめて吸い込んだときの気持ちよさを感じてみてね！' },
@@ -337,6 +368,7 @@ const REPO = 'tbtb-k/diary';
    ================================================================ */
 const TAU = Math.PI * 2, STEP = 1 / 60;
 const BOSS_AT = 300;      // ボスが出る時間（秒）
+const BOSS_WEAK = { at: 60, mul: 1.6 }; // ボス戦が長引いたら、ボスが弱って受けるダメージが増える（Day 17）
 const VIEW_MIN = 400;     // 画面の短い辺に映る広さ（ゲーム内の長さ）
 const MAX_EN = 260;       // 同時に出る敵の上限
 const MAX_GEMS = 350;     // ほしくずの上限（超えたら既存のほしくずに合算）
@@ -429,7 +461,7 @@ let acc = 0, lastT = 0, lastResult = null, levelOpts = [], levelOpenAt = 0;
 function newGame(seed) {
   rng = mulberry32(seed);
   G = {
-    seed, t: 0, level: 1, xp: 0, xpNeed: xpNeed(1), kills: 0, booms: 0, bonus: 0,
+    seed, t: 0, level: 1, xp: 0, xpNeed: xpNeed(1), kills: 0, booms: 0, lastChain: 0, chainBest: 0, bonus: 0,
     player: { x: 0, y: 0, r: 12, hp: 100, maxHp: 100, inv: 0, speed: 150, face: -Math.PI / 2, mvx: 0, mvy: 0 },
     weapons: { pulse: 1 }, passives: {}, st: null,
     wt: { pulse: 0.3, nova: 2, chain: 1, orbitAng: 0 },
@@ -437,6 +469,7 @@ function newGame(seed) {
     spawnAcc: 0, nextRush: 60, elites: [150, 225], boss: null,
     pendingLevels: 0, rerolls: 2, ending: 0, done: false, over: false, clear: false, slow: 0, freeze: 0,
     hitT: 0, noHit: 0, gemRR: 0, gemCombo: 0, gemComboT: 0, gemChains: 0, spawnR: spawnRadius(), fxOn: true, god: false, trailT: 0,
+    achGot: [], achT: 0, killBase: store.get('hs-killsum', 0) || 0,
   };
   calcStats();
 }
@@ -509,6 +542,8 @@ function update(dt) {
   if (g.st.regen) p.hp = Math.min(p.maxHp, p.hp + g.st.regen * dt);
   if (g.gemComboT > 0) { g.gemComboT -= dt; if (g.gemComboT <= 0) g.gemCombo = 0; }
 
+  // 実績は遊んでいる最中にも0.5秒ごとに調べ、取れたらその場で知らせる（高速シミュレーション中は調べない）
+  if (!simMode && (g.achT -= dt) <= 0) { g.achT = 0.5; checkAch(g); }
   director(dt);
   buildGrid();
   stepEnemies(dt);
@@ -536,7 +571,7 @@ function director(dt) {
 }
 function pickType(t) {
   const names = ['drifter', 'darter', 'brute', 'shooter', 'splitter', 'bomber'];
-  const w = [1, clamp((t - 35) / 90, 0, 0.7), clamp((t - 90) / 160, 0, 0.4), clamp((t - 150) / 250, 0, 0.3), clamp((t - 60) / 120, 0, 0.35), clamp((t - 100) / 140, 0, 0.3)];
+  const w = [1, clamp((t - 35) / 90, 0, 0.7), clamp((t - 90) / 160, 0, 0.4), clamp((t - 150) / 250, 0, 0.3), clamp((t - 60) / 120, 0, 0.35), G.boss ? 0 : clamp((t - 100) / 140, 0, 0.3)]; // ボス戦中はドカンを出さない（Day 17）
   let r = rng() * w.reduce((a, b) => a + b, 0);
   for (let i = 0; i < names.length; i++) { r -= w[i]; if (r <= 0) return names[i]; }
   return 'drifter';
@@ -562,6 +597,7 @@ function spawnBoss() {
   const e = spawnEnemy('boss', rng() * TAU, G.spawnR * 0.72);
   // Lv25 から、1レベルごとにボスHP+7%（とても強いビルドでボス戦が一瞬で終わらないように。Day 12）
   e.hp = e.maxHp = ET.boss.hp * (1 + Math.max(0, G.level - 24) * 0.07);
+  e.born = G.t; e.weak = false;
   e.mode = 'chase'; e.ringCd = 2.4; e.chargeCd = 6; e.ringOff = 0; e.modeT = 0; e.cx = 0; e.cy = 0;
   G.boss = e;
   banner('ボス出現！', 'ブラックスターを倒せばクリア', '#ff3b5c', true);
@@ -605,6 +641,12 @@ function stepEnemies(dt) {
 function bossAI(e, dt, dx, dy, d) {
   const g = G, enraged = e.hp < e.maxHp * 0.5, kd = Math.exp(-dt * 7);
   e.rot += e.spin * dt * (enraged ? 2 : 1);
+  if (!e.weak && g.t - e.born >= BOSS_WEAK.at && !g.ending) {
+    e.weak = true;
+    banner('ボスが弱った！', 'ひびが入ったよ。今がチャンス！', '#ffd84a', true);
+    Snd.play('big'); shake(6); vib(40);
+    if (g.fxOn) FX.rings.push({ x: e.x, y: e.y, r: e.r, max: e.r * 4, t: 0, dur: 0.6, color: '#ffd84a' });
+  }
   if (e.mode === 'chase') {
     const sp = e.spd * (d > 420 ? 2.6 : 1) * (enraged ? 1.15 : 1);
     e.x += (dx * sp + e.kx) * dt; e.y += (dy * sp + e.ky) * dt;
@@ -757,7 +799,7 @@ function jag(pts) {
 }
 function damage(e, dmg, dx, dy, kb) {
   if (e.dead) return;
-  const v = dmg * (0.9 + rng() * 0.2);
+  const v = dmg * (0.9 + rng() * 0.2) * (e.weak ? BOSS_WEAK.mul : 1);
   e.hp -= v; e.flash = 0.08;
   if (kb) { const l = Math.hypot(dx, dy) || 1; e.kx += dx / l * kb * e.kb; e.ky += dy / l * kb * e.kb; }
   if (G.fxOn && G.t - e.numT > 0.2) { e.numT = G.t; addNum(e.x, e.y - e.r, v, '#ffffff'); }
@@ -797,12 +839,18 @@ function explode(e) {
   burst(e.x, e.y, '#ff6b4a', 26, 260, 4); burst(e.x, e.y, '#ffd84a', 14, 200, 3);
   if (g.fxOn) FX.rings.push({ x: e.x, y: e.y, r: 10, max: BOMB.r, t: 0, dur: 0.3, color: '#ff6b4a' });
   shake(5); Snd.play('boom');
-  const dmg = BOMB.hit * hpScale(g.t);
+  const dmg = BOMB.hit * hpScale(g.t), k0 = g.kills;
   query(e.x, e.y, BOMB.r + 30, o => {
     if (o === e || o.dead || o.type === 'boss') return; // ボスには効かない（ボス戦が短くなりすぎないように）
     const dx = o.x - e.x, dy = o.y - e.y;
     if (dx * dx + dy * dy < (BOMB.r + o.r) * (BOMB.r + o.r)) damage(o, dmg, dx, dy, 220);
   });
+  // 2体以上まきこんだら「○体まきこみ！」（Day 19）
+  const n = g.kills - k0; g.lastChain = n;
+  if (n >= 2) {
+    g.chainBest = Math.max(g.chainBest, n); Snd.play('chain');
+    if (g.fxOn) FX.nums.push({ x: e.x, y: e.y - 40, text: n + '体まきこみ！', color: n >= 5 ? '#ffd84a' : '#ffb39e', life: 1.1, max: 1.1, big: n >= 5 ? 19 : 15 });
+  }
   const px = p.x - e.x, py = p.y - e.y;
   if (px * px + py * py < (BOMB.r + p.r) * (BOMB.r + p.r)) { p.inv = 0; hurt(BOMB.dmg); }
 }
@@ -1075,6 +1123,7 @@ const Snd = {
         case 'click': this.tone(900, 0.05, 'sine', 0.05); break;
         case 'fuse': this.tone(1500, 0.07, 'square', 0.03); this.tone(1500, 0.07, 'square', 0.03, 0, 0.3); this.tone(1500, 0.07, 'square', 0.03, 0, 0.55); break;
         case 'boom': this.noise(0.45, 0.16, 520); this.tone(120, 0.4, 'sine', 0.13, 40); break;
+        case 'ach': [1047, 1319, 1568].forEach((f, i) => this.tone(f, 0.22, 'triangle', 0.06, 0, i * 0.08)); break;
         case 'start': [392, 523, 784].forEach((f, i) => this.tone(f, 0.18, 'triangle', 0.07, 0, i * 0.06)); break;
       }
     } catch (_) { }
@@ -1098,6 +1147,31 @@ for (const ev of ['pointerup', 'touchend', 'keydown']) addEventListener(ev, () =
    演出（見た目だけ。ゲームの進行には影響しない）
    ================================================================ */
 const FX = { parts: [], nums: [], rings: [], bolts: [], shake: 0, hurt: 0, flash: 0 };
+const PART_STEPS = 8;           // 粒の明るさの段階（まとめ描きのため）
+const partBuckets = new Map();  // 色 → 段階ごとの粒の配列（使い回す）
+let partCalls = 0;              // 直前のフレームで粒を塗った回数（テスト用）
+function drawParts() {
+  const x0 = -OX / K - 8, x1 = (W * dpr - OX) / K + 8, y0 = -OY / K - 8, y1 = (H * dpr - OY) / K + 8;
+  for (const b of partBuckets.values()) for (const a of b) a.length = 0;
+  for (const q of FX.parts) {
+    if (q.x < x0 || q.x > x1 || q.y < y0 || q.y > y1) continue;
+    const k = Math.ceil(clamp(q.life / q.max, 0, 1) * PART_STEPS);
+    if (k <= 0) continue;
+    let b = partBuckets.get(q.color);
+    if (!b) { b = Array.from({ length: PART_STEPS + 1 }, () => []); partBuckets.set(q.color, b); }
+    b[k].push(q);
+  }
+  partCalls = 0;
+  for (const [color, b] of partBuckets) {
+    ctx.fillStyle = color;
+    for (let k = 1; k <= PART_STEPS; k++) {
+      const a = b[k]; if (!a.length) continue;
+      ctx.globalAlpha = k / PART_STEPS; ctx.beginPath();
+      for (const q of a) { const s = q.size; ctx.rect(q.x - s / 2, q.y - s / 2, s, s); }
+      ctx.fill(); partCalls++;
+    }
+  }
+}
 // 粒の上限。画質が自動で下がったら、粒も減らして軽くする（画質0.5で350個）
 function partMax() { return Math.round(700 * quality); }
 // 毎フレーム新しい配列を作らないよう、その場で詰める
@@ -1356,6 +1430,20 @@ function drawWorld() {
       ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.fillRect(e.x - 22, e.y - e.r - 12, 44, 4);
       ctx.fillStyle = '#ff7a3d'; ctx.fillRect(e.x - 22, e.y - e.r - 12, 44 * clamp(e.hp / e.maxHp, 0, 1), 4);
     }
+    if (e.type === 'boss' && e.weak) {
+      // 弱ったボスには、回る黄色いひび（Day 17）
+      ctx.setTransform(K, 0, 0, K, OX, OY);
+      ctx.globalAlpha = 0.6 + Math.sin(now * 10) * 0.3; ctx.strokeStyle = '#ffd84a'; ctx.lineWidth = 2.2; ctx.lineJoin = 'round';
+      ctx.beginPath();
+      for (let i = 0; i < 4; i++) {
+        const a0 = e.rot + i * TAU / 4, c = Math.cos(a0), s = Math.sin(a0), q = -s, w = c;
+        ctx.moveTo(e.x + c * e.r * 0.28, e.y + s * e.r * 0.28);
+        ctx.lineTo(e.x + c * e.r * 0.55 + q * 6, e.y + s * e.r * 0.55 + w * 6);
+        ctx.lineTo(e.x + c * e.r * 0.78 - q * 5, e.y + s * e.r * 0.78 - w * 5);
+        ctx.lineTo(e.x + c * e.r * 1.02, e.y + s * e.r * 1.02);
+      }
+      ctx.stroke(); ctx.globalAlpha = 1;
+    }
   }
   // 弾
   ctx.globalCompositeOperation = 'lighter';
@@ -1394,18 +1482,26 @@ function drawWorld() {
     ctx.globalAlpha = a * 0.45; ctx.strokeStyle = '#ffd84a'; ctx.lineWidth = 6; ctx.stroke();
     ctx.globalAlpha = a; ctx.strokeStyle = '#fffbe0'; ctx.lineWidth = 1.8; ctx.stroke();
   }
-  // 粒
-  for (const q of FX.parts) {
-    ctx.globalAlpha = clamp(q.life / q.max, 0, 1); ctx.fillStyle = q.color;
-    const s = q.size; ctx.fillRect(q.x - s / 2, q.y - s / 2, s, s);
-  }
+  // 粒（Day 21：色と明るさ8段階ごとにまとめて1回で塗る。画面の外の粒は描かない）
+  drawParts();
   ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
   // ダメージの数字
   ctx.font = '800 11px "Orbitron", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   for (const n of FX.nums) {
+    if (n.big) continue;
     ctx.globalAlpha = clamp(n.life / 0.65 * 1.6, 0, 1);
     ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillText(n.text, n.x + 1, n.y + 1);
     ctx.fillStyle = n.color; ctx.fillText(n.text, n.x, n.y);
+  }
+  // 「○体まきこみ！」（Day 19）：大きめの文字で、出た瞬間に少しふくらむ
+  for (const n of FX.nums) {
+    if (!n.big) continue;
+    const k = n.max - n.life, sc = k < 0.12 ? 0.7 + k / 0.12 * 0.45 : Math.max(1, 1.15 - (k - 0.12) * 1.5);
+    const hw = Math.max(0, W / 2 / scale - 62), x = clamp(n.x, cam.x - hw, cam.x + hw); // 画面の端で文字が切れないように
+    ctx.globalAlpha = clamp(n.life / n.max * 2.2, 0, 1);
+    ctx.font = `900 ${Math.round(n.big * sc)}px "M PLUS Rounded 1c", sans-serif`;
+    ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(20,4,10,.85)'; ctx.strokeText(n.text, x, n.y);
+    ctx.fillStyle = n.color; ctx.fillText(n.text, x, n.y);
   }
   ctx.globalAlpha = 1;
   drawArrows();
@@ -1460,6 +1556,7 @@ function updateHud() {
   setText(el.lv, g.level); setText(el.kills, g.kills);
   const showBoss = !!(g.boss && !g.boss.dead);
   if (el.bossbar.hidden === showBoss) el.bossbar.hidden = !showBoss;
+  if (showBoss) el.bossbar.classList.toggle('weak', !!g.boss.weak);
   if (showBoss) el.bossf.style.transform = `scaleX(${clamp(g.boss.hp / g.boss.maxHp, 0, 1)})`;
 }
 function show(id) { for (const s of document.querySelectorAll('.screen')) s.hidden = s.id !== id; }
@@ -1471,6 +1568,7 @@ function showHint() {
 function hideHint() { $('hint').classList.add('off'); }
 
 function startGame(seed) {
+  clearAchToast();
   newGame(seed == null ? (Date.now() ^ (Math.random() * 1e9)) >>> 0 : seed);
   FX.parts.length = FX.nums.length = FX.rings.length = FX.bolts.length = 0; FX.shake = FX.hurt = FX.flash = 0;
   cam.x = 0; cam.y = 0; acc = 0; hold = false;
@@ -1527,7 +1625,7 @@ function pauseGame() {
   show('pause');
 }
 function resumeGame() { if (scene !== 'pause') return; show(null); scene = 'play'; acc = 0; }
-function toTitle() { scene = 'title'; G = null; el.hud.hidden = true; hideHint(); refreshTitle(); show('title'); }
+function toTitle() { clearAchToast(); scene = 'title'; G = null; el.hud.hidden = true; hideHint(); refreshTitle(); show('title'); }
 function finish() {
   if (scene === 'result') return;
   const g = G, score = calcScore();
@@ -1537,9 +1635,10 @@ function finish() {
   store.set('hs-runs', (store.get('hs-runs', 0) || 0) + 1);
   if (g.clear) store.set('hs-clears', (store.get('hs-clears', 0) || 0) + 1);
   store.set('hs-killsum', (store.get('hs-killsum', 0) || 0) + g.kills);
-  const got = unlockAch(g);
+  const got = g.achGot.concat(unlockAch(g));
+  clearAchToast();
   $('res-ach').innerHTML = got.length ? `<b>🏅 実績ゲット！</b>${got.map(a => `<span>${a.icon} ${a.name}</span>`).join('')}` : '';
-  if (got.length) setTimeout(() => Snd.play('level'), 500);
+  if (got.length > g.achGot.length) setTimeout(() => Snd.play('level'), 500);
   lastResult = Object.assign({ build: buildText(), bname: buildName() }, rec);
   const t = $('res-title');
   t.textContent = g.clear ? 'CLEAR!' : 'GAME OVER';
@@ -1561,7 +1660,7 @@ function finish() {
   scene = 'result'; el.hud.hidden = true; el.bossbar.hidden = true; hideHint();
   show('result');
 }
-/* ---- 実績（1回のプレイが終わったときに調べる。記録は hs-ach に { id: 取った日の Day } で残す） ---- */
+/* ---- 実績（遊んでいる最中と、1回のプレイが終わったときに調べる。記録は hs-ach に { id: 取った日の Day } で残す） ---- */
 const ACH = [
   { id: 'min1', icon: '⏱️', name: 'はじめの1分', d: '1分生きのびる', ok: g => g.t >= 60 },
   { id: 'min3', icon: '🛡️', name: 'ねばり強さ', d: '3分生きのびる', ok: g => g.t >= 180 },
@@ -1569,7 +1668,7 @@ const ACH = [
   { id: 'clear', icon: '🏆', name: 'ほしくずの勇者', d: 'ボスを倒してクリアする', ok: g => g.clear },
   { id: 'nohit', icon: '✨', name: 'ノーダメージ1分', d: '1分間、1回もダメージを受けない', ok: g => Math.max(g.noHit, g.t - g.hitT) >= 60 },
   { id: 'kill500', icon: '💥', name: 'なぎ払い', d: '1回で500体倒す', ok: g => g.kills >= 500 },
-  { id: 'kill1000', icon: '🌌', name: 'ほしくず千体', d: 'これまでに合計1000体倒す', ok: () => (store.get('hs-killsum', 0) || 0) >= 1000 },
+  { id: 'kill1000', icon: '🌌', name: 'ほしくず千体', d: 'これまでに合計1000体倒す', ok: g => (g.killBase || 0) + g.kills >= 1000 },
   { id: 'arsenal', icon: '🧰', name: 'ぜんぶのせ', d: '武器を4つとも持つ', ok: g => Object.keys(g.weapons).length >= 4 },
   { id: 'evolve', icon: '⚡', name: 'はじめての進化', d: '武器を進化させる（パルスストーム／ギャラクシー）', ok: () => pulseEvolved() || orbitEvolved() },
   { id: 'lv30', icon: '🚀', name: 'Lv30 到達', d: '1回でレベル30になる', ok: g => g.level >= 30 },
@@ -1581,9 +1680,26 @@ function unlockAch(g) {
   if (got.length) store.set('hs-ach', have);
   return got;
 }
+function checkAch(g) {
+  const got = unlockAch(g);
+  for (const a of got) { g.achGot.push(a); achQ.push(a); }
+  if (got.length && !achBusy) nextAchToast();
+}
+// 取れた実績を、画面の上に1つずつ小さく出す（2つ以上なら順番に）
+const achQ = []; let achBusy = false, achTimer = 0;
+function nextAchToast() {
+  const a = achQ.shift(), el2 = $('achtoast');
+  if (!a || scene === 'result' || scene === 'title') { achBusy = false; el2.classList.remove('on'); return; }
+  achBusy = true;
+  el2.innerHTML = `<span class="md">${a.icon}</span><span><small>🏅 実績ゲット！</small><b>${a.name}</b></span>`;
+  el2.classList.remove('on'); void el2.offsetWidth; el2.classList.add('on');
+  Snd.play('ach');
+  achTimer = setTimeout(nextAchToast, 2700);
+}
+function clearAchToast() { achQ.length = 0; achBusy = false; clearTimeout(achTimer); $('achtoast').classList.remove('on'); }
 function renderAch() {
   const have = loadAch(), n = ACH.filter(a => have[a.id]).length;
-  $('ach-sub').textContent = `${n} / ${ACH.length} こ ゲット！ あそび終わるたびにチェックするよ`;
+  $('ach-sub').textContent = `${n} / ${ACH.length} こ ゲット！ 取れたらその場で知らせるよ`;
   $('achs').innerHTML = ACH.map(a => `<li class="${have[a.id] ? 'got' : ''}"><span class="md">${a.icon}</span><span><b>${a.name}</b>${a.d}</span></li>`).join('');
 }
 function refreshTitle() {
@@ -1701,9 +1817,9 @@ window.__game = {
   state() {
     if (!G) return { scene };
     const p = G.player;
-    return { scene, t: +G.t.toFixed(2), hp: Math.round(p.hp), maxHp: p.maxHp, x: Math.round(p.x), y: Math.round(p.y), level: G.level, kills: G.kills, booms: G.booms,
+    return { scene, t: +G.t.toFixed(2), hp: Math.round(p.hp), maxHp: p.maxHp, x: Math.round(p.x), y: Math.round(p.y), level: G.level, kills: G.kills, booms: G.booms, lastChain: G.lastChain, chainBest: G.chainBest,
       arrows: arrowCount, enemies: G.enemies.length, gems: G.gems.length, weapons: Object.assign({}, G.weapons), passives: Object.assign({}, G.passives),
-      evolved: pulseEvolved(), orbEvolved: orbitEvolved(), orbs: G.weapons.orbit ? orbitShape(G.weapons.orbit).n : 0, gemCombo: G.gemCombo, gemChains: G.gemChains, boss: G.boss ? Math.max(0, Math.round(G.boss.hp)) : null, clear: G.clear, over: G.over, done: !!G.done, score: calcScore(), fps: Math.round(fpsAvg), quality, parts: FX.parts.length, partMax: partMax() };
+      evolved: pulseEvolved(), orbEvolved: orbitEvolved(), orbs: G.weapons.orbit ? orbitShape(G.weapons.orbit).n : 0, gemCombo: G.gemCombo, gemChains: G.gemChains, boss: G.boss ? Math.max(0, Math.round(G.boss.hp)) : null, clear: G.clear, over: G.over, done: !!G.done, score: calcScore(), fps: Math.round(fpsAvg), quality, parts: FX.parts.length, partMax: partMax(), partCalls };
   },
   // 画面を描かずに高速で進める。ctrl(G) は [x, y] の移動入力を返す関数、chooser(ids, G) は選ぶ番号を返す関数
   sim(seconds, ctrl, chooser) {
@@ -1728,6 +1844,7 @@ window.__game = {
     trails() { return G.gems.filter(gm => gm.mag && gm.vx).length; },
     hurt(n) { G.player.inv = 0; hurt(n); },
     setTime(t) { G.t = t; G.nextRush = Math.ceil((t + 0.01) / 60) * 60; G.elites = G.elites.filter(x => x > t); },
+    hitBoss(n) { const b = G.boss; if (!b || b.dead) return 0; const h = b.hp; damage(b, n, 0, 0, 0); return h - b.hp; },
     killOne(type) { const e = G.enemies.find(o => o.type === type && !o.dead); if (e) kill(e); return !!e; },
     spawn(type, n = 1) { for (let i = 0; i < n; i++) spawnEnemy(type); },
     give(id, lv = 1) { if (UPG[id].kind === 'w') G.weapons[id] = lv; else G.passives[id] = lv; calcStats(); },
