@@ -190,6 +190,27 @@ let browser;
     await page.click('#b-vib2'); // ONにもどす
     check('振動ボタンでONにもどせる', /ON/.test(await page.textContent('#b-vib2')));
     await page.click('#b-resume');
+    // 進化の手がかり（Day 22）：カードに「あと何で進化するか」、選ぶと進化するカードは黄色く光る
+    const eh = await page.evaluate(() => {
+      const d = window.__game.debug, g = window.__game.world(); d.god(true);
+      d.give('pulse', 5); d.give('cool', 0);
+      const a = d.openLevel(['pulse', 'cool', 'armor']);
+      d.give('cool', 1);
+      const b = d.openLevel(['pulse', 'power', 'armor']);
+      d.give('pulse', 6); d.give('cool', 0);
+      const c = d.openLevel(['cool', 'power', 'armor']);
+      return { a, b, c };
+    });
+    await wait(500);
+    await shot(page, '04d_evohint_390');
+    const ehBox = await page.evaluate(() => { const r = document.querySelector('#choices .choice.evo-now'), e = r && r.querySelector('.evo'); if (!e) return null; const rb = r.getBoundingClientRect(), re = e.getBoundingClientRect(); return { ok: re.right <= rb.right + 0.5 && re.bottom <= rb.bottom + 0.5 && rb.right <= innerWidth }; });
+    await page.click('#choices .choice:nth-child(3)'); await wait(200);
+    check('カードに進化の手がかりが出て、選ぶと進化するカードは光る',
+      /冷却ユニット/.test(eh.a[0].t) && !eh.a[0].now && /進化に必要/.test(eh.a[1].t) && !eh.a[1].now && eh.a[2].t === '' &&
+      /これで/.test(eh.b[0].t) && eh.b[0].now && !eh.b[1].now && eh.c[0].now && /パルスストーム/.test(eh.c[0].t) &&
+      ehBox && ehBox.ok && (await page.evaluate(() => window.__game.scene)) === 'play',
+      `${eh.a[0].t} / ${eh.a[1].t} / ${eh.b[0].t} / ${eh.c[0].t}`);
+    await page.evaluate(() => { const d = window.__game.debug; d.give('cool', 0); d.give('pulse', 1); });
     // 進化：パルスLv6＋冷却ユニットで「パルスストーム」
     const ev0 = await page.evaluate(() => { const d = window.__game.debug; d.god(true); d.give('pulse', 6); return window.__game.state().evolved; });
     const ev1 = await page.evaluate(() => { const d = window.__game.debug; d.give('cool', 1); return window.__game.state().evolved; });
