@@ -1473,11 +1473,11 @@ function tempWord(v){
 }
 function atmWord(v){
   var P = Math.pow(10, (v - 50) / 25);
-  var cmp = P < 0.02 ? '火星くらい' : P > 0.75 && P < 1.35 ? '地球くらい' : P > 50 ? '金星くらい' : P < 0.3 ? 'うすめ' : P > 8 ? 'かなり濃い' : P > 1 ? '濃いめ' : 'ややうすめ';
+  var cmp = P < 0.02 ? '火星くらい' : P > 50 ? '金星くらい' : P < 0.3 ? 'うすめ' : P > 8 ? 'かなり濃い' : P > 1.35 ? '濃いめ' : P < 0.75 ? 'ややうすめ' : 'ほどほど';
   return fmtP(P) + ' 気圧<small>' + cmp + '</small>';
 }
 function waterWord(v){
-  var cmp = v === 0 ? 'からから' : v >= 65 && v <= 75 ? '地球くらい' : v >= 97 ? '陸がない' : v < 25 ? '少なめ' : v > 75 ? '多め' : 'ほどほど';
+  var cmp = v === 0 ? 'からから' : v >= 97 ? '陸がない' : v < 25 ? '少なめ' : v > 75 ? '多め' : 'ほどほど';
   return v + '%<small>' + cmp + '</small>';
 }
 var fcState = null;
@@ -1486,7 +1486,7 @@ function refreshSetup(){
   $('#o-temp').innerHTML = tempWord(params.temp);
   $('#o-atm').innerHTML = atmWord(params.atm);
   $('#o-water').innerHTML = waterWord(params.water);
-  $('#o-size').textContent = ['小さい（火星くらい）', 'ふつう（地球くらい）', '大きい'][params.size];
+  $('#o-size').textContent = ['小さい（火星くらい）', 'ふつう', '大きい'][params.size];
   $('#o-volcano').textContent = params.volcano < 20 ? 'おだやか' : params.volcano > 75 ? 'とても活発' : params.volcano > 50 ? '活発' : 'ふつう';
   $('#o-meteor').textContent = params.meteor < 15 ? 'ほとんどない' : params.meteor > 70 ? 'とても多い' : params.meteor > 40 ? '多め' : 'ふつう';
   var f = H.forecast(params);
