@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Copilot Cowork が Microsoft Edge を操作する「Cowork in Edge for Business」の仕組み、オンにしたときのリスク、Microsoft 365 管理センターと Edge ポリシーでの設定を公式情報で整理。2026-11-23 調査。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Cowork in Edge for Business：機能・リスク・管理設定</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  /* Layout: 1本の読み物カラム（最大800px）。結論 → 仕組み → 早見表 → リスク → 守りの4層 → 設定手順 → 代替案 → 注意点 → 根拠 */
+  --bg:#F4F6F5;
+  --surface:#FFFFFF;
+  --sunk:#EAEFED;
+  --ink:#16211D;
+  --muted:#56645E;
+  --line:#D6DFDB;
+  --accent:#0F6A62;
+  --accent-soft:#DDEFEC;
+  --ok:#276F43;
+  --ok-soft:#E1F1E6;
+  --warn:#8A5700;
+  --warn-soft:#FAEED6;
+  --ng:#A3291F;
+  --ng-soft:#F8E2DF;
+  --info:#46525D;
+  --info-soft:#E6EBEE;
+  --hl:#FFF5D3;
+  --l1:#DCEBF6; --l2:#E2F0E6; --l3:#F2EBDD; --l4:#F3E3E6;
+  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1513;
+    --surface:#16201D;
+    --sunk:#1C2925;
+    --ink:#E5EEEA;
+    --muted:#9BACA5;
+    --line:#2A3A35;
+    --accent:#5CC8BC;
+    --accent-soft:#12332F;
+    --ok:#74C795;
+    --ok-soft:#14301F;
+    --warn:#E5AE52;
+    --warn-soft:#382811;
+    --ng:#F19087;
+    --ng-soft:#3B1916;
+    --info:#B3C0CA;
+    --info-soft:#24313A;
+    --hl:#2C2914;
+    --l1:#142A3A; --l2:#15301F; --l3:#33291A; --l4:#361C22;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1513;
+  --surface:#16201D;
+  --sunk:#1C2925;
+  --ink:#E5EEEA;
+  --muted:#9BACA5;
+  --line:#2A3A35;
+  --accent:#5CC8BC;
+  --accent-soft:#12332F;
+  --ok:#74C795;
+  --ok-soft:#14301F;
+  --warn:#E5AE52;
+  --warn-soft:#382811;
+  --ng:#F19087;
+  --ng-soft:#3B1916;
+  --info:#B3C0CA;
+  --info-soft:#24313A;
+  --hl:#2C2914;
+  --l1:#142A3A; --l2:#15301F; --l3:#33291A; --l4:#361C22;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:16px;
+  line-height:1.8;
+  -webkit-text-size-adjust:100%;
+}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+b,strong{font-weight:700}
+code,.mono{font-family:var(--f-mono);font-size:.86em}
+
+.page{
+  max-width:800px;
+  margin:0 auto;
+  padding-block:40px 64px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid;
+  gap:56px;
+}
+.page > *{min-width:0}
+
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.4;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.55rem, 4.6vw, 2.2rem);letter-spacing:.01em}
+h2{font-size:1.42rem}
+h3{font-size:1.06rem}
+p{margin:0}
+ul,ol{margin:0;padding-left:1.3em}
+li + li{margin-top:4px}
+
+section{display:grid;gap:18px}
+section > *{min-width:0}
+.sec-lead{color:var(--muted)}
+
+/* ---------- ヘッダー ---------- */
+.hero{display:grid;gap:16px}
+.eyebrow{
+  display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;
+  font-size:.82rem;letter-spacing:.08em;color:var(--muted);font-weight:700;
+}
+.eyebrow span{font-family:var(--f-mono);font-weight:500;letter-spacing:0}
+.lead{font-size:1.02rem}
+.meta{
+  display:grid;gap:6px;margin:0;
+  font-size:.88rem;color:var(--muted);
+  border-top:1px solid var(--line);padding-top:12px;
+}
+.meta div{display:grid;grid-template-columns:4.5em 1fr;gap:8px}
+.meta dt{font-weight:700}
+.meta dd{margin:0}
+
+/* ---------- 引用番号 ---------- */
+.c{white-space:nowrap}
+.c a{
+  font-family:var(--f-mono);font-size:.72rem;font-weight:500;
+  text-decoration:none;color:var(--accent);
+  padding:0 1px;vertical-align:.2em;
+}
+.c a:hover{text-decoration:underline}
+
+/* ---------- 確度タグ ---------- */
+.tag{
+  display:inline-block;font-size:.72rem;font-weight:700;line-height:1;
+  padding:4px 7px;border-radius:999px;vertical-align:.12em;white-space:nowrap;
+}
+.tag.off{background:var(--accent-soft);color:var(--accent)}
+.tag.ana{background:var(--info-soft);color:var(--info)}
+.tag.unv{background:var(--warn-soft);color:var(--warn)}
+.tag.thr{background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
+
+/* ---------- 結論 ---------- */
+.verdict{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-left:6px solid var(--accent);
+  border-radius:14px;
+  padding:24px 24px 22px;
+  display:grid;gap:16px;
+}
+.label{font-size:.8rem;letter-spacing:.12em;color:var(--accent);font-family:var(--f-body)}
+.verdict-main{font-family:var(--f-display);font-size:clamp(1.12rem, 3.4vw, 1.36rem);line-height:1.6}
+.verdict-main em{font-style:normal;background:linear-gradient(transparent 62%, var(--accent-soft) 62%)}
+.verdict ol{display:grid;gap:8px;padding-left:1.4em}
+.verdict ol li{margin:0}
+.three{
+  display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:10px;
+}
+.three div{
+  background:var(--sunk);border-radius:10px;padding:12px 14px;
+  display:grid;gap:2px;
+}
+.three b{font-family:var(--f-display);font-size:1.02rem}
+.three span{font-size:.84rem;color:var(--muted);line-height:1.6}
+
+/* ---------- 用語 ---------- */
+.terms{display:grid;gap:0;margin:0;border-top:1px solid var(--line)}
+.terms div{display:grid;grid-template-columns:11em 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.terms dt{font-weight:700}
+.terms dd{margin:0;font-size:.94rem}
+
+/* ---------- 流れ ---------- */
+.flow{list-style:none;padding:0;margin:0;display:grid;gap:12px;counter-reset:step}
+.flow li{
+  margin:0;
+  position:relative;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px 14px 60px;
+  counter-increment:step;
+}
+.flow li::before{
+  content:counter(step);
+  position:absolute;left:16px;top:14px;
+  width:30px;height:30px;border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--accent);color:var(--surface);
+  font-family:var(--f-mono);font-weight:500;font-size:.9rem;
+}
+.flow h3{margin-bottom:4px}
+.flow p{font-size:.94rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chips span{
+  font-size:.78rem;background:var(--sunk);border:1px solid var(--line);
+  border-radius:999px;padding:2px 10px;color:var(--muted);
+}
+.note{
+  background:var(--sunk);border-radius:12px;padding:14px 16px;
+  font-size:.92rem;display:grid;gap:6px;
+}
+.note b{font-family:var(--f-display)}
+
+/* ---------- 表 ---------- */
+.table-wrap{
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+}
+table{width:100%;min-width:640px;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+thead th{background:var(--sunk);font-size:.8rem;letter-spacing:.04em;color:var(--muted);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tr.hl td{background:var(--hl)}
+td.st{white-space:nowrap;width:1%}
+.pill{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:.8rem;font-weight:700;line-height:1;
+  padding:5px 9px;border-radius:999px;white-space:nowrap;
+}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.cond{background:var(--warn-soft);color:var(--warn)}
+.pill.ng{background:var(--ng-soft);color:var(--ng)}
+.pill.na{background:var(--info-soft);color:var(--info)}
+.scroll-hint{display:none;font-size:.78rem;color:var(--muted);margin-top:-10px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:.82rem;color:var(--muted);align-items:center}
+
+/* ---------- リスク ---------- */
+.risks{display:grid;gap:14px}
+.risk{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:18px 18px 16px;display:grid;gap:12px;
+}
+.risk-head{display:flex;gap:12px;align-items:flex-start}
+.risk-no{
+  flex:none;font-family:var(--f-mono);font-weight:500;font-size:.85rem;
+  background:var(--ng-soft);color:var(--ng);border-radius:8px;padding:3px 8px;margin-top:2px;
+}
+.risk dl{margin:0;display:grid;gap:10px}
+.risk dl div{display:grid;grid-template-columns:7.5em 1fr;gap:10px}
+.risk dt{font-size:.8rem;font-weight:700;color:var(--muted);padding-top:2px}
+.risk dd{margin:0;font-size:.93rem}
+.risk dd.todo{background:var(--accent-soft);border-radius:8px;padding:8px 10px}
+
+/* ---------- 守りの4層 ---------- */
+.layers{display:grid;gap:8px}
+.layer{
+  display:grid;grid-template-columns:9.5em 1fr;gap:14px;align-items:center;
+  border-radius:12px;padding:14px 16px;border:1px solid var(--line);
+}
+.layer:nth-child(1){background:var(--l1)}
+.layer:nth-child(2){background:var(--l2);margin-inline:10px}
+.layer:nth-child(3){background:var(--l3);margin-inline:20px}
+.layer:nth-child(4){background:var(--l4);margin-inline:30px}
+.layer-name{font-family:var(--f-display);font-weight:700;line-height:1.45}
+.layer-name small{display:block;font-family:var(--f-body);font-weight:500;font-size:.76rem;color:var(--muted)}
+.layer p{font-size:.92rem}
+.layers-cap{font-size:.84rem;color:var(--muted)}
+
+/* ---------- 設定手順 ---------- */
+.steps{list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.steps > li{
+  margin:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:18px;display:grid;gap:10px;
+}
+.step-h{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.step-n{font-family:var(--f-mono);font-weight:500;font-size:.82rem;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:2px 8px}
+.path{
+  display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;
+  font-size:.86rem;background:var(--sunk);border-radius:8px;padding:8px 10px;
+}
+.path span{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:1px 8px;white-space:nowrap}
+.path i{font-style:normal;color:var(--muted)}
+.steps p,.steps li li{font-size:.93rem}
+.warnbox{
+  border-left:4px solid var(--warn);background:var(--warn-soft);border-radius:8px;
+  padding:10px 12px;font-size:.9rem;
+}
+
+/* ---------- 代替案 ---------- */
+.alts{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:12px}
+.alt{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:10px;align-content:start}
+.alt-meta{display:flex;flex-wrap:wrap;gap:6px}
+.alt p{font-size:.93rem}
+
+/* ---------- 注意点 ---------- */
+.cautions{display:grid;gap:10px;list-style:none;padding:0;margin:0}
+.cautions li{
+  margin:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px;font-size:.93rem;
+}
+.cautions b{display:block;font-family:var(--f-display);margin-bottom:2px}
+
+/* ---------- 根拠 ---------- */
+.srcs{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.srcs li{
+  margin:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;display:grid;gap:6px;scroll-margin-top:16px;
+}
+.srcs li:target{outline:2px solid var(--accent);outline-offset:2px}
+.src-top{display:flex;gap:10px;align-items:baseline}
+.src-n{font-family:var(--f-mono);font-weight:500;color:var(--accent);flex:none}
+.src-t{font-weight:700;line-height:1.5}
+.src-meta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:.8rem;color:var(--muted)}
+.src-sum{font-size:.9rem}
+.src-url{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);overflow-wrap:anywhere;word-break:break-all}
+
+/* ---------- フッター ---------- */
+.foot{
+  border-top:1px solid var(--line);padding-top:18px;
+  font-size:.84rem;color:var(--muted);display:grid;gap:8px;
+}
+.foot ul{padding-left:1.2em;display:grid;gap:2px}
+.foot li{margin:0}
+
+@media (max-width:640px){
+  .page{gap:44px;padding-block:28px 48px}
+  .verdict{padding:20px 16px}
+  .three{grid-template-columns:1fr}
+  .terms div{grid-template-columns:1fr;gap:2px}
+  .risk dl div{grid-template-columns:1fr;gap:2px}
+  .layer{grid-template-columns:1fr;gap:4px}
+  .layer:nth-child(n){margin-inline:0}
+  .alts{grid-template-columns:1fr}
+  .scroll-hint{display:block}
+  .flow li{padding-left:54px}
+  .flow li::before{left:12px}
+}
+</style>
+</head>
+<body>
+<main class="page">
+
+<!-- ================= ヘッダー ================= -->
+<header class="hero">
+  <div class="eyebrow">調査メモ <span>2026-11-23</span> Microsoft 365 Copilot / Microsoft Edge for Business</div>
+  <h1>Cowork in Edge for Business<br>何ができて、何が危なくて、どこで設定するか</h1>
+  <p class="lead">Microsoft 365 Copilot の「Cowork」が、社員のパソコンの Microsoft Edge を使って、Web サイト上の作業を代わりに進める機能です。2026年11月の Ignite で一般提供（GA）が発表されました<span class="c"><a href="#s3">[3]</a></span>。この記事では、仕組み・オンにしたときのリスク・Microsoft 365 管理センターと Edge のポリシーでの設定を、公式ドキュメントを根拠に整理します。</p>
+  <dl class="meta">
+    <div><dt>調査日</dt><dd>2026-11-23</dd></div>
+    <div><dt>対象</dt><dd>Copilot Cowork のブラウザー利用（一般の商用テナント向け。米国政府向け GCC は別扱い）</dd></div>
+    <div><dt>根拠</dt><dd>Microsoft Learn・メッセージセンター・Microsoft 公式ブログなど 15件（うち第三者 2件）</dd></div>
+  </dl>
+</header>
+
+<!-- ================= 結論 ================= -->
+<section class="verdict" aria-labelledby="h-verdict">
+  <h2 id="h-verdict" class="label">結論</h2>
+  <p class="verdict-main">社員の Edge を<em>「本人として」</em>操作できる強力な機能なので、<em>既定はオフ</em>です。オンにするなら「誰に」「どのサイトで」「いくらまで」を先に絞って、小さなグループから始めるのが安全です。</p>
+  <ol>
+    <li>Cowork は本人と同じサインイン状態・同じ権限で動きます。本人より広い範囲には届きませんが、本人ができることは基本的に全部できます<span class="c"><a href="#s1">[1]</a></span>。</li>
+    <li>サインイン・MFA・CAPTCHA・支払いは人に戻し、重要な送信は承認カードで止まる、という歯止めは公式に用意されています<span class="c"><a href="#s1">[1]</a><a href="#s6">[6]</a></span>。一方で、Web ページに仕込まれた「隠れた指示」（プロンプトインジェクション）への具体的な対策は、Cowork の公式資料には書かれていません<span class="tag unv">記載なし</span>。</li>
+    <li>設定は大きく3か所に分かれます。どこか1か所だけでは絞り切れません。</li>
+  </ol>
+  <div class="three" role="list">
+    <div role="listitem"><b>誰に</b><span>Microsoft 365 管理センター<br>支出ポリシー＋ブラウザー利用の対象グループ</span></div>
+    <div role="listitem"><b>どのサイトで</b><span>Edge のポリシー<br>操作のオン・オフ／URL の許可・ブロック</span></div>
+    <div role="listitem"><b>いくらまで</b><span>Copilot の Cost Management<br>ユーザー・グループ単位の上限</span></div>
+  </div>
+</section>
+
+<!-- ================= 用語 ================= -->
+<section aria-labelledby="h-terms">
+  <h2 id="h-terms">先に押さえておきたい言葉</h2>
+  <dl class="terms">
+    <div><dt>Cowork</dt><dd>Microsoft 365 Copilot の中で、複数ステップの仕事を自分で段取りして進める仕組みです。Microsoft は「エージェントとは別の、エージェント的なシステム」と説明しています<span class="c"><a href="#s2">[2]</a></span>。</dd></div>
+    <div><dt>ブラウザー利用<br>（Browser use）</dt><dd>Cowork が Edge を開いて、クリックや文字入力を代わりに行うことです。この記事の主役です。</dd></div>
+    <div><dt>従量課金<br>（usage-based billing）</dt><dd>使った分だけ組織に請求される仕組みです。Cowork はこれを有効にしないと使えません<span class="c"><a href="#s2">[2]</a></span>。</dd></div>
+    <div><dt>支出ポリシー<br>（spending policy）</dt><dd>「誰が Cowork を使えるか」と「いくらまで使えるか」をまとめて決める設定です。予算だけでなく、利用できる人を決める鍵にもなっています<span class="c"><a href="#s2">[2]</a></span>。</dd></div>
+    <div><dt>プロンプトインジェクション</dt><dd>Web ページやメールに紛れ込ませた「隠れた指示」で、AI を本来の目的からそらす攻撃です。</dd></div>
+    <div><dt>DLP</dt><dd>情報漏えい対策（Data Loss Prevention）のルールです。Microsoft Purview で設定します。</dd></div>
+    <div><dt>条件付きアクセス</dt><dd>「どの端末・どの場所からならサインインしてよいか」を決める Microsoft Entra ID の仕組みです。</dd></div>
+  </dl>
+</section>
+
+<!-- ================= 仕組み ================= -->
+<section aria-labelledby="h-how">
+  <h2 id="h-how">どんな機能？ 頼んでから終わるまで</h2>
+  <p class="sec-lead">Cowork は、社員のパソコンに入っている Edge の中で、見えないタブを開いて作業します。クラウド上の別のブラウザーではなく、<b>本人の Edge</b> を使うのがポイントです<span class="c"><a href="#s1">[1]</a></span>。</p>
+  <ol class="flow">
+    <li>
+      <h3>頼む</h3>
+      <p>Edge で開いた Web 版 Cowork（copilot.cloud.microsoft.com）に「Concur で経費精算を出して」「この日程の航空券を探して」のように頼みます。ブラウザーを使うかどうかは Cowork が判断するので、特別なコマンドは要りません<span class="c"><a href="#s1">[1]</a></span>。Edge のサイドペインや新しいタブページからも使えます<span class="c"><a href="#s3">[3]</a></span>。</p>
+    </li>
+    <li>
+      <h3>見えないタブで作業する</h3>
+      <p>Cowork が本人の Edge に隠しタブを開き、そこで操作します。本人はチャット画面のまま、進み具合を確認できます。「Switch to tab」を押せば、いつでもタブを開いて様子を見られます<span class="c"><a href="#s1">[1]</a></span>。</p>
+      <div class="chips" aria-label="進捗表示の例"><span>Opening Concur</span><span>Filling expense details</span><span>Submitting form</span></div>
+    </li>
+    <li>
+      <h3>大事なところで止まる・人に戻す</h3>
+      <p>住所や確認コードなどが必要なときは、チャットで質問してきます。個人情報を送るなど影響の大きい操作の前には承認カードが出て、「Approve」か「Reject」を選びます。パスワード・MFA・CAPTCHA・アカウントのロック解除・パスワードリセットが出てきたら、タブを表示して本人にバトンタッチします<span class="c"><a href="#s1">[1]</a></span>。支払いの確定も本人に戻す対象です<span class="c"><a href="#s6">[6]</a><a href="#s13">[13]</a></span>。</p>
+    </li>
+    <li>
+      <h3>結果を報告する</h3>
+      <p>終わったらチャットで結果を報告します。本人がバトンタッチされた手順を完了できなかった場合は、作業を止めて「どこまでできなかったか」を伝えます。タブを閉じる・スリープ・ネット切断で一時停止し、「continue」などと送ると再開します<span class="c"><a href="#s1">[1]</a></span>。</p>
+    </li>
+  </ol>
+  <div class="note">
+    <b>押さえておきたい3つの事実</b>
+    <ul>
+      <li>サインイン情報・Cookie・セッションは本人の Edge に残り、Cowork のサーバーには送られません<span class="c"><a href="#s1">[1]</a></span>。</li>
+      <li>初めて使うときに案内が出て、本人が「I understand」を押すとブラウザー利用が有効になります。この同意は Cowork ではなく、その端末の Edge に記録されます。断った場合、Cowork はブラウザーの手順を飛ばして、飛ばした手順を伝えます<span class="c"><a href="#s1">[1]</a></span>。</li>
+      <li>Microsoft は、プロンプト・回答・ファイルはテナントの中にとどまり、モデルの学習には使われないと説明しています（管理者が外部のモデルを有効にした場合は、その処理者の条件で処理されます）<span class="c"><a href="#s13">[13]</a><a href="#s6">[6]</a></span>。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= 早見表 ================= -->
+<section aria-labelledby="h-matrix">
+  <h2 id="h-matrix">できること・できないこと早見表</h2>
+  <div class="legend">
+    <span class="pill ok">○ できる</span>
+    <span class="pill cond">△ 条件付き</span>
+    <span class="pill ng">✕ できない</span>
+    <span class="pill na">― 記載なし／未確認</span>
+    <span>黄色の行は、導入判断で特に効く項目です</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>項目</th><th>判定</th><th>中身</th><th>根拠</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td>オンにしなくても使える？</td><td class="st"><span class="pill ng">✕ 既定オフ</span></td><td>管理者が Microsoft 365 管理センターで有効にするまで使えません。GA になっても既定はオフのままです。</td><td class="c"><a href="#s1">[1]</a><a href="#s5">[5]</a></td></tr>
+        <tr><td>Edge で開いた Web 版 Cowork からのブラウザー作業</td><td class="st"><span class="pill ok">○</span></td><td>Edge がインストールされていれば OK。既定のブラウザーでなくても構いません。推奨は 152.0.4191.53 以上。</td><td class="c"><a href="#s1">[1]</a></td></tr>
+        <tr><td>Edge のサイドペイン・新しいタブページから</td><td class="st"><span class="pill ok">○</span></td><td>Ignite 2026 の発表で明記されています。</td><td class="c"><a href="#s3">[3]</a></td></tr>
+        <tr><td>Copilot デスクトップアプリ・モバイル</td><td class="st"><span class="pill ng">✕</span></td><td>現時点では非対応。デスクトップアプリでは「Web 版で実行してください」と案内されます。</td><td class="c"><a href="#s1">[1]</a></td></tr>
+        <tr><td>Edge 以外のブラウザー（Chrome など）</td><td class="st"><span class="pill ng">✕</span></td><td>「Not yet（まだ）」。ブラウザー以外の手順だけ進め、残りはできないと伝えます。</td><td class="c"><a href="#s1">[1]</a></td></tr>
+        <tr><td>InPrivate ウィンドウ・ゲストプロファイル</td><td class="st"><span class="pill ng">✕</span></td><td>サインイン状態がないため不可。Cowork と同じ職場アカウントで Edge にサインインしている必要があります。</td><td class="c"><a href="#s1">[1]</a></td></tr>
+        <tr class="hl"><td>本人がふだん入れないサイトの操作</td><td class="st"><span class="pill ng">✕</span></td><td>本人と同じ範囲だけ。Web フィルタリング・条件付きアクセス・Edge の管理ポリシー・Purview DLP もそのまま効きます。</td><td class="c"><a href="#s1">[1]</a><a href="#s6">[6]</a></td></tr>
+        <tr class="hl"><td>個人情報の送信など、影響の大きい操作</td><td class="st"><span class="pill cond">△ 承認後</span></td><td>承認カードで本人が承認した場合だけ実行。中〜高リスクの操作にはリスク表示が付きます。</td><td class="c"><a href="#s1">[1]</a><a href="#s6">[6]</a></td></tr>
+        <tr><td>パスワード・MFA・CAPTCHA・支払いの代行</td><td class="st"><span class="pill ng">✕ 人に戻す</span></td><td>自分では入力せず、タブを表示して本人に任せます。</td><td class="c"><a href="#s1">[1]</a><a href="#s6">[6]</a></td></tr>
+        <tr><td>DLP で禁止された操作</td><td class="st"><span class="pill ng">✕</span></td><td>どの手順がブロックされたかを説明し、手作業でのやり方を提案します。</td><td class="c"><a href="#s1">[1]</a></td></tr>
+        <tr><td>監査ログへの記録</td><td class="st"><span class="pill cond">△ 一部</span></td><td>「ブラウザータスクを開始した」ことは統合監査ログに残ります。どの URL で何をしたかまで残るかは記載がありません。</td><td class="c"><a href="#s2">[2]</a><a href="#s7">[7]</a></td></tr>
+        <tr><td>プロンプトインジェクション専用の防御の説明</td><td class="st"><span class="pill na">― 記載なし</span></td><td>Cowork のブラウザー利用ページと「責任ある AI」の FAQ には見当たりませんでした。</td><td class="c"><a href="#s1">[1]</a><a href="#s6">[6]</a></td></tr>
+        <tr><td>操作を録画して Cowork のスキルにする（スキルレコーダー）</td><td class="st"><span class="pill na">― 未確認</span></td><td>2026年末までにプレビュー予定と報じられていますが、公式本文は今回確認できていません。</td><td class="c"><a href="#s15">[15]</a></td></tr>
+        <tr><td>エージェント専用の Entra ID で管理するブラウジング</td><td class="st"><span class="pill na">― 未確認</span></td><td>プレビュー・Microsoft 365 E5 が必要と報じられていますが、公式本文は今回確認できていません。</td><td class="c"><a href="#s14">[14]</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="scroll-hint">← 表は横にスクロールできます →</p>
+</section>
+
+<!-- ================= リスク ================= -->
+<section aria-labelledby="h-risk">
+  <h2 id="h-risk">オンにしたときのリスク</h2>
+  <p class="sec-lead">公式の歯止めがあっても残るリスクを6つに分けました。<span class="tag off">公式</span> は Microsoft の資料に書いてあること、<span class="tag ana">考察</span> は資料から筆者が推し量ったこと、<span class="tag unv">記載なし</span> は公式資料で確認できなかったことです。</p>
+
+  <div class="risks">
+    <article class="risk">
+      <div class="risk-head"><span class="risk-no">R1</span><h3>Web ページの「隠れた指示」に操られる（プロンプトインジェクション）</h3></div>
+      <dl>
+        <div><dt>起きうること</dt><dd><span class="tag ana">考察</span> Cowork は作業中に社外サイトの文章も読みます。そこに「この内容を別の宛先に送れ」のような指示が紛れていると、AI が目的からそれる可能性があります。ブラウザー利用では本人のサインイン状態で操作できるので、チャットだけの AI より影響が大きくなりがちです。</dd></div>
+        <div><dt>公式の歯止め</dt><dd><span class="tag off">公式</span> 影響の大きい操作は承認カードで止まり、中〜高リスクの操作はリスク表示つきで承認が必須です<span class="c"><a href="#s6">[6]</a></span>。本人の権限を超えることはありません<span class="c"><a href="#s1">[1]</a></span>。Purview の内部リスク管理には、プロンプトインジェクション攻撃を対象にした「Risky AI usage」ポリシーテンプレートがあります<span class="c"><a href="#s7">[7]</a></span>。</dd></div>
+        <div><dt>わからないこと</dt><dd><span class="tag unv">記載なし</span> Cowork のブラウザー利用ページと「責任ある AI」の FAQ には、プロンプトインジェクションへの具体的な対策の記載がありません<span class="c"><a href="#s1">[1]</a><a href="#s6">[6]</a></span>。</dd></div>
+        <div><dt>管理者の打ち手</dt><dd class="todo">URL の許可リストで行き先を業務サイトに絞る<span class="c"><a href="#s9">[9]</a></span>／承認カードの中身を読む習慣を利用者に伝える／Risky AI usage テンプレートの導入を検討する<span class="c"><a href="#s7">[7]</a></span></dd></div>
+      </dl>
+    </article>
+
+    <article class="risk">
+      <div class="risk-head"><span class="risk-no">R2</span><h3>「本人と同じ権限」＝本人ができることは全部できる</h3></div>
+      <dl>
+        <div><dt>起きうること</dt><dd><span class="tag ana">考察</span> 管理画面や経理・人事システムに強い権限を持つ人ほど、読み違いや乗っ取りが起きたときに影響が広がります。</dd></div>
+        <div><dt>公式の歯止め</dt><dd><span class="tag off">公式</span> エージェントのアクセス範囲は「本人が手で操作するときとまったく同じで、多くも少なくもない」とされています<span class="c"><a href="#s1">[1]</a></span>。シングルサインオン・条件付きアクセス・DLP などは回避しません。サイトの利用規約も回避せず、人とやり取りするときに本人になりすますこともしません<span class="c"><a href="#s6">[6]</a></span>。</dd></div>
+        <div><dt>管理者の打ち手</dt><dd class="todo">URL のブロックリストで、管理コンソールや確定・送金系の画面を外す<span class="c"><a href="#s10">[10]</a></span>／強い権限を持つアカウントは最初のパイロット対象から外す<span class="tag ana">考察</span></dd></div>
+      </dl>
+    </article>
+
+    <article class="risk">
+      <div class="risk-head"><span class="risk-no">R3</span><h3>指示の読み違い・途中で止まる</h3></div>
+      <dl>
+        <div><dt>公式の説明</dt><dd><span class="tag off">公式</span> あいまいな指示や広すぎる指示を読み違えて、意図と違う操作をすることがあります。依存関係の多い複雑な作業は、思った通りに完了しないことがあります。法務書類・医療判断・承認手続きを飛ばす金融取引のように、人の確認なしで正確さが求められる用途は想定外です<span class="c"><a href="#s6">[6]</a></span>。</dd></div>
+        <div><dt>見落としやすい点</dt><dd><span class="tag off">公式</span> 承認ダイアログには「Don't ask again」があり、押すと同じ会話の中で似た操作の確認が省略されます<span class="c"><a href="#s6">[6]</a></span>。<span class="tag ana">考察</span> 確認が続くと押したくなるボタンなので、使いどころを決めておくと安心です。</dd></div>
+        <div><dt>管理者の打ち手</dt><dd class="todo">「何を・誰に・どの形で」を具体的に書くよう利用者に伝える<span class="c"><a href="#s6">[6]</a></span>／重要な業務は最後に人が確認する／「Don't ask again」の使い方を社内ルールに入れる</dd></div>
+      </dl>
+    </article>
+
+    <article class="risk">
+      <div class="risk-head"><span class="risk-no">R4</span><h3>コストが読みにくい</h3></div>
+      <dl>
+        <div><dt>公式の説明</dt><dd><span class="tag off">公式</span> Cowork は従量課金で、モデルの回答・ツールやスキルの呼び出し・画像生成と並んで、ブラウザータスクも組織の消費量に数えられます。管理者は Microsoft 365 管理センターで利用状況を確認し、ユーザー・グループ単位で上限を設定できます<span class="c"><a href="#s2">[2]</a></span>。</dd></div>
+        <div><dt>管理者の打ち手</dt><dd class="todo">パイロットグループ用の支出ポリシーに上限を付ける／Cowork の利用状況レポートで消費を見る<span class="c"><a href="#s2">[2]</a></span></dd></div>
+      </dl>
+    </article>
+
+    <article class="risk">
+      <div class="risk-head"><span class="risk-no">R5</span><h3>端末まかせになる「設定のすき間」</h3></div>
+      <dl>
+        <div><dt>公式の説明</dt><dd><span class="tag off">公式</span> Edge のポリシー <code>CopilotCoworkToolActionsEnabled</code> を構成しないままだと、利用者が Edge の設定画面で自分でオン・オフできます。このポリシーは Edge だけでなく、Copilot デスクトップアプリに内蔵されたブラウザーでの操作にも効きます<span class="c"><a href="#s4">[4]</a></span>。URL の許可・ブロックリストは Edge 158 以降で効く新しいポリシーで、以前の URL リスト用ポリシーは 158 で効かなくなりました<span class="c"><a href="#s9">[9]</a><a href="#s11">[11]</a></span>。</dd></div>
+        <div><dt>管理者の打ち手</dt><dd class="todo">ポリシーを「未構成」のままにせず、明示的に配る／Edge を 158 以上に更新する／古い <code>BrowsingWithCopilot…</code> 系ポリシーを新しい名前に置き換える<span class="c"><a href="#s11">[11]</a><a href="#s12">[12]</a></span></dd></div>
+      </dl>
+    </article>
+
+    <article class="risk">
+      <div class="risk-head"><span class="risk-no">R6</span><h3>あとから追いにくい（記録の細かさ）</h3></div>
+      <dl>
+        <div><dt>公式の説明</dt><dd><span class="tag off">公式</span> ブラウザータスクは1件ずつ統合監査ログに記録され、「ユーザーがブラウザータスクを開始した」は代表的なイベントとして挙げられています<span class="c"><a href="#s2">[2]</a><a href="#s7">[7]</a></span>。Purview の DSPM for AI では、Cowork のやり取りは Activity explorer の「AI activities」タブに出ますが、「Apps and agents」ダッシュボードや AI observability には出ません<span class="c"><a href="#s7">[7]</a></span>。</dd></div>
+        <div><dt>わからないこと</dt><dd><span class="tag unv">記載なし</span> 監査レコードに、訪れた URL やページで行った操作の中身まで残るかは書かれていません<span class="c"><a href="#s7">[7]</a></span>。</dd></div>
+        <div><dt>管理者の打ち手</dt><dd class="todo">パイロット中に実際の監査レコードを開いて、自社で追える範囲を確かめておく<span class="tag ana">考察</span></dd></div>
+      </dl>
+    </article>
+  </div>
+</section>
+
+<!-- ================= 守りの4層 ================= -->
+<section aria-labelledby="h-layers">
+  <h2 id="h-layers">守りは4層で考える</h2>
+  <p class="sec-lead">上の層ほど「広く・前もって」、下の層ほど「その場で・個別に」効きます。どれか1つに頼らず、重ねて使う前提で設計されています。</p>
+  <div class="layers">
+    <div class="layer"><div class="layer-name">① 管理センター<small>誰が使えるか</small></div><p>支出ポリシーで Cowork を使える人と上限を決め、「Browser use in Microsoft Copilot」でブラウザー利用を許すグループを決めます<span class="c"><a href="#s2">[2]</a><a href="#s5">[5]</a></span>。</p></div>
+    <div class="layer"><div class="layer-name">② Edge ポリシー<small>どの端末・どのサイトで</small></div><p>端末やプロファイルごとに操作を許すかどうか、どの URL なら操作してよいかを決めます<span class="c"><a href="#s4">[4]</a><a href="#s9">[9]</a><a href="#s10">[10]</a></span>。</p></div>
+    <div class="layer"><div class="layer-name">③ いまある守り<small>そのまま引き継がれる</small></div><p>条件付きアクセス・Web フィルタリング・Edge の管理ポリシー・Purview DLP・監査ログ<span class="c"><a href="#s1">[1]</a><a href="#s7">[7]</a></span>。</p></div>
+    <div class="layer"><div class="layer-name">④ その場の承認<small>利用者が判断する</small></div><p>承認カード、リスク表示、サインイン・MFA・支払いのバトンタッチ<span class="c"><a href="#s1">[1]</a><a href="#s6">[6]</a></span>。</p></div>
+  </div>
+  <p class="layers-cap">④は利用者の判断に頼る層です。①〜③で「そもそも行けない・できない」範囲を広げておくほど、④の負担が減ります。</p>
+</section>
+
+<!-- ================= 設定 ================= -->
+<section aria-labelledby="h-admin">
+  <h2 id="h-admin">管理センターでの設定（設定する順）</h2>
+  <p class="sec-lead">画面の名前は英語表示のまま書いています。日本語表示では訳語が違う場合があります。</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>場所</th><th>設定</th><th>何も設定しないと</th><th>決めること</th><th>根拠</th></tr></thead>
+      <tbody>
+        <tr><td>管理センター › Copilot › Cost Management</td><td>支出ポリシー（Cowork を含める）</td><td>Cowork を使えない（従量課金の有効化が前提）</td><td>Cowork を使える人・上限</td><td class="c"><a href="#s2">[2]</a></td></tr>
+        <tr class="hl"><td>管理センター › Copilot › Settings</td><td>Browser use in Microsoft Copilot › Allow browser access</td><td>オフ</td><td>ブラウザー利用を許す人（全員／特定グループ／なし）</td><td class="c"><a href="#s1">[1]</a><a href="#s5">[5]</a><a href="#s8">[8]</a></td></tr>
+        <tr><td>Edge ポリシー</td><td><code>CopilotCoworkToolActionsEnabled</code></td><td>利用者が Edge の設定で自由に切り替えられる</td><td>端末・プロファイル単位で許すか</td><td class="c"><a href="#s4">[4]</a></td></tr>
+        <tr><td>Edge ポリシー</td><td><code>CopilotBrowserUseAllowList</code><br><code>CopilotBrowserUseBlockList</code></td><td>URL の制限なし</td><td>操作してよい URL・だめな URL</td><td class="c"><a href="#s9">[9]</a><a href="#s10">[10]</a></td></tr>
+        <tr><td>Microsoft Purview</td><td>監査・DLP・内部リスク管理・保持・電子情報開示</td><td>既存の設定がそのまま効く</td><td>記録と情報漏えい対策</td><td class="c"><a href="#s7">[7]</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="scroll-hint">← 表は横にスクロールできます →</p>
+
+  <ol class="steps">
+    <li>
+      <div class="step-h"><span class="step-n">STEP 0</span><h3>準備する</h3></div>
+      <ul>
+        <li>Edge を 152.0.4191.53 以上にします。URL の許可・ブロックリストを使うなら 158 以上が必要です（Stable 158.0.4370.33 は 2026-11-19 公開）<span class="c"><a href="#s1">[1]</a><a href="#s11">[11]</a></span>。</li>
+        <li>利用者は Cowork と同じ職場アカウントで Edge にサインインしておきます<span class="c"><a href="#s1">[1]</a></span>。</li>
+        <li>パイロット用の Microsoft Entra セキュリティグループを作ります<span class="c"><a href="#s2">[2]</a><a href="#s5">[5]</a></span>。</li>
+      </ul>
+    </li>
+    <li>
+      <div class="step-h"><span class="step-n">STEP 1</span><h3>Cowork を使える人と上限を決める</h3></div>
+      <p>従量課金を有効にしたうえで、支出ポリシーを作ります<span class="c"><a href="#s2">[2]</a></span>。</p>
+      <div class="path"><span>Copilot</span><i>›</i><span>Cost Management</span><i>›</i><span>Configuration</span><i>›</i><span>+ Add spending policy</span></div>
+      <ul>
+        <li>「Scope user and group」で <b>Specific groups</b> を選び、パイロットグループを指定</li>
+        <li>「Select agents and services」で <b>Cowork</b> を選択</li>
+      </ul>
+      <p class="warnbox">支出ポリシーは予算であると同時に「誰が使えるか」の鍵です。上限を低くしても利用自体は止まりません。使えなくするには、Cowork を含むすべての支出ポリシーから外します。また、<b>Agents › All Agents</b> にある Cowork の項目をいじっても、誰が使えるかには影響しません<span class="c"><a href="#s2">[2]</a></span>。</p>
+    </li>
+    <li>
+      <div class="step-h"><span class="step-n">STEP 2</span><h3>ブラウザー利用をオンにする</h3></div>
+      <div class="path"><span>Copilot</span><i>›</i><span>Settings</span><i>›</i><span>View All</span><i>›</i><span>Browser use in Microsoft Copilot</span></div>
+      <ul>
+        <li>「Allow browser access」で <b>Allow Cowork to use the Microsoft Edge browser to perform tasks on behalf of users</b> にチェックを入れます<span class="c"><a href="#s1">[1]</a><a href="#s5">[5]</a></span>。</li>
+        <li>対象は <b>No users／All users／Specific groups</b> から選べます。最初は Specific groups でパイロットグループだけにします<span class="c"><a href="#s5">[5]</a></span>。</li>
+        <li>既定はオフです<span class="c"><a href="#s1">[1]</a><a href="#s5">[5]</a></span>。</li>
+      </ul>
+      <p class="warnbox">このパネルは 2026年10月に「Cowork settings」から「Browser use in Microsoft Copilot」へ名前が変わりました。機能と既存の設定はそのままです<span class="c"><a href="#s8">[8]</a></span>。Microsoft Learn の本文は旧名の「Cowork settings」のままなので、画面と見比べるときは注意してください<span class="c"><a href="#s1">[1]</a></span>。</p>
+    </li>
+    <li>
+      <div class="step-h"><span class="step-n">STEP 3</span><h3>Edge のポリシーを配る</h3></div>
+      <p>グループポリシー（MSEdge.admx の「Administrative Templates/Microsoft Edge」）や Mac の構成プロファイル、Intune などの端末管理で配ります<span class="c"><a href="#s4">[4]</a><a href="#s9">[9]</a></span>。どれも Windows と macOS 向けで、Android・iOS は対象外です。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ポリシー</th><th>対応</th><th>未構成のとき</th><th>構成したとき</th><th>根拠</th></tr></thead>
+          <tbody>
+            <tr><td><code>CopilotCoworkToolActionsEnabled</code><br>Allow Copilot to take browser actions on your behalf</td><td>Edge 152 以上</td><td>利用者が設定画面でオン・オフできる</td><td>有効：操作を許可（利用者は変更不可）<br>無効：操作を禁止（利用者は変更不可）</td><td class="c"><a href="#s4">[4]</a></td></tr>
+            <tr><td><code>CopilotBrowserUseAllowList</code><br>操作してよい URL</td><td>Edge 158 以上</td><td>ブロックリストにあるもの以外はすべて可</td><td>リストに合う URL だけ可。<b>空のリストで構成するとどこも不可</b>。<code>*</code> ですべて可</td><td class="c"><a href="#s9">[9]</a></td></tr>
+            <tr><td><code>CopilotBrowserUseBlockList</code><br>操作してはだめな URL</td><td>Edge 158 以上</td><td>何もブロックしない</td><td>リストに合う URL は不可（許可リストのほうが具体的なら許可が勝つ）</td><td class="c"><a href="#s10">[10]</a></td></tr>
+            <tr><td><code>BrowsingWithCopilotAllowList</code><br><code>BrowsingWithCopilotBlockList</code>（旧）</td><td>Edge 148〜157</td><td colspan="2">158 から効かなくなりました。上の新しいポリシーへ移行します。旧方式の on/off だった <code>AllowBrowsingWithCopilot</code> も 159 から廃止です</td><td class="c"><a href="#s11">[11]</a><a href="#s12">[12]</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="scroll-hint">← 表は横にスクロールできます →</p>
+      <ul>
+        <li>許可・ブロックリストは「より具体的に書いたルール」が勝ち、同じ具体さなら許可が勝ちます。書き方は URLAllowlist／URLBlocklist と同じで、使われるのは先頭から 1,500 件までです<span class="c"><a href="#s9">[9]</a><a href="#s10">[10]</a></span>。</li>
+        <li><code>contoso.com</code> と書くとサブドメインも含み、<code>.contoso.com</code> と書くとそのホストだけになります。<code>*.contoso.com</code> の形は一致しません<span class="c"><a href="#s9">[9]</a></span>。</li>
+        <li>リストを作っただけではブラウザー利用はオンになりません。STEP 2 とセットです<span class="c"><a href="#s9">[9]</a><a href="#s10">[10]</a></span>。</li>
+        <li>Cowork の管理ページは「許可リスト・ブロックリスト・閲覧のみのポリシーを尊重する」と書いています<span class="c"><a href="#s2">[2]</a></span>。<span class="tag ana">考察</span> Edge 側でこれに当たるのが上の2つと考えられますが、ポリシーのページ自体には Cowork の名前は出てきません。「閲覧のみ」に当たるポリシー名は確認できませんでした<span class="tag unv">未確認</span>。</li>
+      </ul>
+    </li>
+    <li>
+      <div class="step-h"><span class="step-n">STEP 4</span><h3>いまある守りが効いているか確かめる</h3></div>
+      <p>条件付きアクセス・Web フィルタリング・Edge の管理ポリシー・Purview DLP は、ブラウザータスクにもそのまま引き継がれます<span class="c"><a href="#s1">[1]</a><a href="#s2">[2]</a></span>。パイロット利用者の端末で、ふだん禁止しているサイトや操作が Cowork からも止まることを確認しておくと安心です。DLP で止まったときは、Cowork がどの手順が止まったかを説明し、手作業のやり方を案内します<span class="c"><a href="#s1">[1]</a></span>。</p>
+    </li>
+    <li>
+      <div class="step-h"><span class="step-n">STEP 5</span><h3>記録とコンプライアンス（Microsoft Purview）</h3></div>
+      <ul>
+        <li><b>監査</b>：プロンプトと回答、ブラウザータスクの開始などが統合監査ログに残ります<span class="c"><a href="#s7">[7]</a></span>。</li>
+        <li><b>内部リスク管理</b>：「Risky AI usage」テンプレートでプロンプトインジェクション攻撃や保護された情報へのアクセスを検知対象にできます<span class="c"><a href="#s7">[7]</a></span>。</li>
+        <li><b>電子情報開示（eDiscovery）</b>：会話の記録、Cowork が作ったファイル、スケジュールしたプロンプト、アップロードしたファイルが対象です<span class="c"><a href="#s7">[7]</a></span>。</li>
+        <li><b>保持</b>：保持ポリシーは「Microsoft Copilot Experiences」を使います<span class="c"><a href="#s7">[7]</a></span>。</li>
+      </ul>
+    </li>
+    <li>
+      <div class="step-h"><span class="step-n">STEP 6</span><h3>小さく試して広げる</h3></div>
+      <p>メッセージセンターでも、まず小さなパイロットグループで評価してから広げることが推奨されています<span class="c"><a href="#s5">[5]</a></span>。必要なら <b>Copilot › Settings</b> で Anthropic などのモデルを無効にできます。モデルを止めても、Cowork 自体が使えなくなるわけではありません<span class="c"><a href="#s2">[2]</a></span>。</p>
+    </li>
+  </ol>
+</section>
+
+<!-- ================= 代替案 ================= -->
+<section aria-labelledby="h-alt">
+  <h2 id="h-alt">すぐ全社でオンにしない場合の現実解</h2>
+  <div class="alts">
+    <article class="alt">
+      <h3>A. 限定パイロットで始める</h3>
+      <div class="alt-meta"><span class="pill cond">難易度：中</span><span class="pill na">追加コスト：ブラウザータスク分の従量課金</span></div>
+      <p>特定グループ（STEP 1・2）＋ URL 許可リスト（STEP 3）＋ 支出上限の3点セットで、行き先と予算を絞って試します。Edge ポリシーの配布が必要な分、少し手間がかかります<span class="c"><a href="#s2">[2]</a><a href="#s5">[5]</a><a href="#s9">[9]</a></span>。</p>
+    </article>
+    <article class="alt">
+      <h3>B. ブラウザー利用はオフのまま Cowork を使う</h3>
+      <div class="alt-meta"><span class="pill ok">難易度：低</span><span class="pill na">追加コスト：Cowork 自体の従量課金のみ</span></div>
+      <p>ブラウザー利用をオンにしなくても、Cowork は Microsoft 365 の中の作業を進め、ブラウザーが必要な手順は飛ばしてその旨を伝えます。端末側で確実に止めたいなら <code>CopilotCoworkToolActionsEnabled</code> を「無効」で配ります<span class="c"><a href="#s1">[1]</a><a href="#s4">[4]</a></span>。</p>
+    </article>
+  </div>
+</section>
+
+<!-- ================= 注意点 ================= -->
+<section aria-labelledby="h-caution">
+  <h2 id="h-caution">説明するときに外せない注意点</h2>
+  <ul class="cautions">
+    <li><b>同じ機能に名前が4つあります</b>発表での名前「Cowork in Edge for Business」<span class="c"><a href="#s3">[3]</a></span>、Cowork 管理ページでの呼び名「Cowork Browsing」<span class="c"><a href="#s2">[2]</a></span>、管理センターのパネル名「Browser use in Microsoft Copilot」<span class="c"><a href="#s8">[8]</a></span>、設定項目名「Allow browser access」<span class="c"><a href="#s1">[1]</a></span>。資料を読むときに混乱しやすいところです。</li>
+    <li><b>使えるのは「Edge で開いた Web 版 Cowork」だけ</b>デスクトップアプリ・モバイル・ほかのブラウザー・InPrivate・ゲストプロファイルでは動きません<span class="c"><a href="#s1">[1]</a></span>。</li>
+    <li><b>GA でも既定はオフ</b>管理者が有効にするまで使えません。提供状況はテナントや時期で変わることがあります<span class="c"><a href="#s1">[1]</a><a href="#s5">[5]</a></span>。</li>
+    <li><b>米国政府向け（GCC）は別ルール</b>既定オフの「Local Browsing Allowed」ポリシーで管理し、すべての操作に明示的な承認が必要です<span class="c"><a href="#s1">[1]</a></span>。</li>
+    <li><b>外部のモデルを使う場合</b>管理者が Anthropic・OpenAI などのモデルを有効にすると、プロンプトはそれぞれの処理者の条件で処理されます。不要なら Copilot の設定で無効にできます<span class="c"><a href="#s6">[6]</a><a href="#s2">[2]</a></span>。</li>
+    <li><b>今回確認できなかったこと</b>Microsoft Edge 公式ブログの Ignite 2026 記事は、今回の調査環境から開けませんでした。スキルレコーダーとエージェント専用 ID の詳細は第三者報道の検索結果でしか確認できていないので、案内する前に公式発表で確かめてください<span class="c"><a href="#s14">[14]</a><a href="#s15">[15]</a></span>。</li>
+  </ul>
+</section>
+
+<!-- ================= 根拠 ================= -->
+<section aria-labelledby="h-src">
+  <h2 id="h-src">根拠</h2>
+  <ol class="srcs">
+    <li id="s1">
+      <div class="src-top"><span class="src-n">[1]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-local-browser">Use the local browser with Copilot Cowork（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-10-22 ／ 最終更新 2026-11-18</span></div>
+      <p class="src-sum">隠しタブでの作業、承認カード、サインイン・MFA・CAPTCHA のバトンタッチ、要件（Edge 152.0.4191.53 以上、同じ職場アカウント、InPrivate・ゲスト不可、Web 版のみ）、既定オフと管理センターでの有効化手順、条件付きアクセス・DLP などの引き継ぎ、GCC の別ポリシー。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-local-browser</p>
+    </li>
+    <li id="s2">
+      <div class="src-top"><span class="src-n">[2]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance">Manage Copilot Cowork for your organization（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-11-17 ／ 最終更新 2026-11-18</span></div>
+      <p class="src-sum">従量課金が前提で、ブラウザータスクも消費に数えられること。支出ポリシーがアクセス制御を兼ねること（作成手順つき）。Agents の Cowork 項目は利用可否に影響しないこと。許可・ブロック・閲覧のみのポリシーを尊重し、各ブラウザータスクを監査ログに記録すること。モデルの無効化。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance</p>
+    </li>
+    <li id="s3">
+      <div class="src-top"><span class="src-n">[3]</span><a class="src-t" href="https://techcommunity.microsoft.com/blog/microsoft-copilot-blog/whats-new-in-copilot-cowork-at-ignite-2026/4572242">What's new in Copilot Cowork at Ignite 2026（Microsoft Copilot Blog）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-11-17</span></div>
+      <p class="src-sum">「Cowork in Edge for Business」が Edge のサイドペインや新しいタブページから複数サイトにまたがる作業をこなすこと、アクセスできるサイトだけで動き、サインインや支払いは本人に戻し、重要な操作の前に承認を求めること。GA の一覧に含まれること。</p>
+      <p class="src-url">https://techcommunity.microsoft.com/blog/microsoft-copilot-blog/whats-new-in-copilot-cowork-at-ignite-2026/4572242</p>
+    </li>
+    <li id="s4">
+      <div class="src-top"><span class="src-n">[4]</span><a class="src-t" href="https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/copilotcoworktoolactionsenabled">CopilotCoworkToolActionsEnabled（Microsoft Edge ポリシー）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>最終更新 2026-11-12</span></div>
+      <p class="src-sum">Copilot が利用者の代わりにブラウザー操作をしてよいかを決めるポリシー。Edge と Copilot デスクトップアプリ内蔵ブラウザーの両方に効く。有効・無効なら利用者は変更不可、未構成なら利用者が設定画面で切り替え可。Windows／macOS の Edge 152 以上。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/copilotcoworktoolactionsenabled</p>
+    </li>
+    <li id="s5">
+      <div class="src-top"><span class="src-n">[5]</span><a class="src-t" href="https://mc.merill.net/message/MC1474461">MC1474461：Browser Use Admin Control for Copilot Cowork（メッセージセンター）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span class="tag thr">第三者サイトの転載で閲覧</span><span>公開 2026-09-19</span></div>
+      <p class="src-sum">管理センターでブラウザー利用を No users／All users／特定グループに絞れるようになったこと。既定オフ。有効化の手順。小さなパイロットグループから始める推奨。2026年9月中旬〜下旬に全世界で展開。</p>
+      <p class="src-url">https://mc.merill.net/message/MC1474461</p>
+    </li>
+    <li id="s6">
+      <div class="src-top"><span class="src-n">[6]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-365/copilot/responsible-ai/cowork-responsible-ai-faq">Responsible AI FAQ for Cowork（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-11-06 ／ 最終更新 2026-11-18</span></div>
+      <p class="src-sum">指示の読み違いや複雑な作業の未完了などの制限、想定外の用途、承認ダイアログと「Don't ask again」、ブラウザー利用でのリスク表示つき承認・MFA／CAPTCHA／支払いのバトンタッチ・利用規約を回避しないこと・監査ログ記録、外部モデルの扱い。プロンプトインジェクションの記載はなし。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-365/copilot/responsible-ai/cowork-responsible-ai-faq</p>
+    </li>
+    <li id="s7">
+      <div class="src-top"><span class="src-n">[7]</span><a class="src-t" href="https://learn.microsoft.com/en-us/purview/ai-copilot-cowork">Use Microsoft Purview to manage data security &amp; compliance for Microsoft 365 Copilot Cowork（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-11-09 ／ 最終更新 2026-11-10</span></div>
+      <p class="src-sum">Cowork で使える Purview 機能（監査、DLP、秘密度ラベル、内部リスク管理、コミュニケーションコンプライアンス、eDiscovery、保持）。監査イベント例に「ブラウザータスクの開始」。Risky AI usage テンプレートがプロンプトインジェクションを対象にすること。DSPM での表示場所。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/purview/ai-copilot-cowork</p>
+    </li>
+    <li id="s8">
+      <div class="src-top"><span class="src-n">[8]</span><a class="src-t" href="https://mc.merill.net/message/MC1515930">MC1515930：Cowork browser use setting renamed to Browser use in Microsoft Copilot（メッセージセンター）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span class="tag thr">第三者サイトの転載で閲覧</span><span>公開 2026-10-19</span></div>
+      <p class="src-sum">「Cowork settings」パネルが「Browser use in Microsoft Copilot」に改名。Copilot アプリが Edge を使って作業してよいかを決める設定で、機能と既存の構成は変わらない。管理者の対応は不要。</p>
+      <p class="src-url">https://mc.merill.net/message/MC1515930</p>
+    </li>
+    <li id="s9">
+      <div class="src-top"><span class="src-n">[9]</span><a class="src-t" href="https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/copilotbrowseruseallowlist">CopilotBrowserUseAllowList（Microsoft Edge ポリシー）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-11-04 ／ 最終更新 2026-11-05</span></div>
+      <p class="src-sum">Copilot のブラウザー利用を許す URL の一覧。未構成なら全 URL 可、空のリストならどこも不可。具体的なルールが優先、同じなら許可が勝つ。書き方、1,500 件の上限。このポリシーだけではブラウザー利用はオンにならない。Edge 158 以上。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/copilotbrowseruseallowlist</p>
+    </li>
+    <li id="s10">
+      <div class="src-top"><span class="src-n">[10]</span><a class="src-t" href="https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/copilotbrowseruseblocklist">CopilotBrowserUseBlockList（Microsoft Edge ポリシー）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-11-04 ／ 最終更新 2026-11-05</span></div>
+      <p class="src-sum">Copilot のブラウザー利用を禁止する URL の一覧。未構成なら何もブロックしない。許可リストと同じ優先ルール。Edge 158 以上。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/copilotbrowseruseblocklist</p>
+    </li>
+    <li id="s11">
+      <div class="src-top"><span class="src-n">[11]</span><a class="src-t" href="https://learn.microsoft.com/en-us/deployedge/microsoft-edge-relnote-stable-channel">Release notes for Microsoft Edge Stable Channel（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>最終更新 2026-11-19</span></div>
+      <p class="src-sum">Stable 158.0.4370.33（2026-11-19）で CopilotBrowserUseAllowList／BlockList が新規追加され、BrowsingWithCopilotAllowList／BlockList が廃止。リリース予定表（2026-11-20 更新）では 159 が 2026-12-10 の週の予定。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/deployedge/microsoft-edge-relnote-stable-channel</p>
+    </li>
+    <li id="s12">
+      <div class="src-top"><span class="src-n">[12]</span><a class="src-t" href="https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/allowbrowsingwithcopilot">AllowBrowsingWithCopilot（obsolete）（Microsoft Edge ポリシー）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>最終更新 2026-11-19</span></div>
+      <p class="src-sum">以前の「Browsing with Copilot」を制御していたポリシー。Edge 158 より後は動作しない廃止扱い。旧方式は Microsoft 365 Copilot の契約者向けで、許可リストのドメインでのみ動く仕組みだった。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/allowbrowsingwithcopilot</p>
+    </li>
+    <li id="s13">
+      <div class="src-top"><span class="src-n">[13]</span><a class="src-t" href="https://explore.microsoft.com/en-us/edge/business/ai-browsing">Safe AI at work | Microsoft Edge for Business</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>日付不明</span></div>
+      <p class="src-sum">Edge for Business の Copilot の安全の仕組み。既存のポリシー・データ保護・権限が適用されること、プロンプト・回答・ファイルがテナント内にとどまり学習に使われないこと、パスワード・支払い方法・重要な操作の承認を利用者に求めること。</p>
+      <p class="src-url">https://explore.microsoft.com/en-us/edge/business/ai-browsing</p>
+    </li>
+    <li id="s14">
+      <div class="src-top"><span class="src-n">[14]</span><a class="src-t" href="https://www.techtimes.com/articles/331003/20261117/microsoft-edge-business-agentic-browsing-goes-generally-available-agent-identity-preview.htm">Microsoft Edge for Business Agentic Browsing Goes Generally Available; Agent Identity in Preview（TechTimes）</a></div>
+      <div class="src-meta"><span class="tag thr">第三者</span><span class="tag unv">本文未確認</span><span>2026-11-17（URL 上の日付）</span></div>
+      <p class="src-sum">エージェント用の Entra ID を使った管理されたブラウジングはプレビューで Microsoft 365 E5 が必要、という趣旨（検索結果の要約のみで確認。本文はこの調査環境から開けず）。公式の裏付けは見つかっていません。</p>
+      <p class="src-url">https://www.techtimes.com/articles/331003/20261117/microsoft-edge-business-agentic-browsing-goes-generally-available-agent-identity-preview.htm</p>
+    </li>
+    <li id="s15">
+      <div class="src-top"><span class="src-n">[15]</span><a class="src-t" href="https://windowsforum.com/news/microsoft-edge-skills-recorder-for-copilot-cowork-preview-timeline-licensing-and-it-controls.453007/">Microsoft Edge Skills Recorder for Copilot Cowork: Preview Timeline, Licensing and IT Controls（WindowsForum）</a></div>
+      <div class="src-meta"><span class="tag thr">第三者</span><span class="tag unv">本文未確認</span><span>日付不明</span></div>
+      <p class="src-sum">ブラウザーでの作業を録画して Cowork の再利用できるスキルにするスキルレコーダーが、2026年末までにプレビュー予定という趣旨（検索結果の要約のみで確認。本文はこの調査環境から開けず）。公式の裏付けは見つかっていません。</p>
+      <p class="src-url">https://windowsforum.com/news/microsoft-edge-skills-recorder-for-copilot-cowork-preview-timeline-licensing-and-it-controls.453007/</p>
+    </li>
+  </ol>
+</section>
+
+<!-- ================= フッター ================= -->
+<footer class="foot">
+  <p>調査日：2026-11-23。画面名・設定名・既定値は調査日時点の公式ドキュメントに基づきます。段階的な展開のため、テナントによって表示や時期が異なる場合があります。</p>
+  <p>出典の日付一覧</p>
+  <ul>
+    <li>[1] 2026-10-22 公開／2026-11-18 更新</li>
+    <li>[2] 2026-11-17 公開／2026-11-18 更新</li>
+    <li>[3] 2026-11-17</li>
+    <li>[4] 2026-11-12</li>
+    <li>[5] 2026-09-19</li>
+    <li>[6] 2026-11-06 公開／2026-11-18 更新</li>
+    <li>[7] 2026-11-09 公開／2026-11-10 更新</li>
+    <li>[8] 2026-10-19</li>
+    <li>[9] [10] 2026-11-04 公開／2026-11-05 更新</li>
+    <li>[11] 2026-11-19</li>
+    <li>[12] 2026-11-19</li>
+    <li>[13] 日付不明</li>
+    <li>[14] 2026-11-17（本文未確認）</li>
+    <li>[15] 日付不明（本文未確認）</li>
+  </ul>
+</footer>
+
+</main>
+</body>
+</html>
