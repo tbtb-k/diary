@@ -300,8 +300,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 22, date: '2026-11-23' };
+const GAME = { day: 23, date: '2026-11-24' };
 const PATCH_NOTES = [
+  { day: 23, date: '2026-11-24', title: 'ほしくずのコンボが見えるよ！',
+    items: ['ほしくずを5個つづけて拾うと、自機の右上に「×5」みたいにコンボ数が出るよ', '拾うたびに数字がぴょこっとはねて、10・20・30…のときは黄色く大きくなるよ', '少しのあいだ拾わないと、すっと消えてコンボはおしまい'],
+    ask: '引力フィールドやMAGNETで一気に吸って、コンボをどこまでのばせるか試してみてね！' },
   { day: 22, date: '2026-11-23', title: '「進化」のヒントがカードに出るよ！',
     items: ['パルスやオービットを持っていると、強化カードに「⚡ あと何をそろえれば進化するか」が出るよ', '選ぶと進化するカードは、黄色く光ってお知らせするよ'],
     ask: '黄色く光るカードを見つけて、進化させてみてね！' },
@@ -476,7 +479,7 @@ function newGame(seed) {
     enemies: [], bullets: [], ebullets: [], gems: [], items: [],
     spawnAcc: 0, nextRush: 60, elites: [150, 225], boss: null,
     pendingLevels: 0, rerolls: 2, ending: 0, done: false, over: false, clear: false, slow: 0, freeze: 0,
-    hitT: 0, noHit: 0, gemRR: 0, gemCombo: 0, gemComboT: 0, gemChains: 0, spawnR: spawnRadius(), fxOn: true, god: false, trailT: 0,
+    hitT: 0, noHit: 0, gemRR: 0, gemCombo: 0, gemComboT: 0, gemComboAt: 0, gemChains: 0, spawnR: spawnRadius(), fxOn: true, god: false, trailT: 0,
     achGot: [], achT: 0, killBase: store.get('hs-killsum', 0) || 0,
   };
   calcStats();
@@ -929,7 +932,7 @@ function stepGems(dt) {
 function collectXp(v) {
   const g = G;
   g.xp += v;
-  g.gemCombo++; g.gemComboT = 0.6;
+  g.gemCombo++; g.gemComboT = 0.6; g.gemComboAt = g.t;
   Snd.play('gem', g.gemCombo);
   // 10個つづけて拾うごとに、キラッと鳴って自機から光がはじける
   if (g.gemCombo % 10 === 0) {
@@ -1512,7 +1515,28 @@ function drawWorld() {
     ctx.fillStyle = n.color; ctx.fillText(n.text, x, n.y);
   }
   ctx.globalAlpha = 1;
+  drawGemCombo();
   drawArrows();
+}
+// ほしくずのコンボ数（Day 23）：5個つづけて拾うと自機の右上に「×N」。拾うたびにぴょこっとふくらみ、10の倍数は黄色く大きく
+let comboShown = 0;
+function drawGemCombo() {
+  const g = G, p = g.player;
+  comboShown = 0;
+  if (g.over || !g.fxOn || g.gemCombo < 5 || g.gemComboT <= 0) return;
+  const k = g.t - g.gemComboAt, ten = g.gemCombo % 10 === 0;
+  const pop = reduceMotion ? 1 : (k < 0.08 ? 1 + (ten ? 0.55 : 0.3) * (1 - k / 0.08) : 1);
+  const size = (g.gemCombo >= 30 ? 15 : 13) * (ten ? 1.15 : 1) * pop;
+  const hw = W / 2 / scale - 28, x = clamp(p.x + 22, cam.x - hw, cam.x + hw), y = p.y - 24;
+  ctx.setTransform(K, 0, 0, K, OX, OY);
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.globalAlpha = clamp(g.gemComboT / 0.25, 0, 1);
+  ctx.font = `900 ${Math.round(size)}px "Orbitron", sans-serif`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  const t = '×' + g.gemCombo;
+  ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(4,10,24,.85)'; ctx.strokeText(t, x, y);
+  ctx.fillStyle = ten || g.gemCombo >= 30 ? '#ffd84a' : '#3ef2ff'; ctx.fillText(t, x, y);
+  ctx.globalAlpha = 1; ctx.textAlign = 'center';
+  comboShown = g.gemCombo;
 }
 // 強敵・ボスが画面の外にいるとき、来る方向を縁の矢印で知らせる
 let arrowCount = 0;
@@ -1848,7 +1872,7 @@ window.__game = {
     const p = G.player;
     return { scene, t: +G.t.toFixed(2), hp: Math.round(p.hp), maxHp: p.maxHp, x: Math.round(p.x), y: Math.round(p.y), level: G.level, kills: G.kills, booms: G.booms, lastChain: G.lastChain, chainBest: G.chainBest,
       arrows: arrowCount, enemies: G.enemies.length, gems: G.gems.length, weapons: Object.assign({}, G.weapons), passives: Object.assign({}, G.passives),
-      evolved: pulseEvolved(), orbEvolved: orbitEvolved(), orbs: G.weapons.orbit ? orbitShape(G.weapons.orbit).n : 0, gemCombo: G.gemCombo, gemChains: G.gemChains, boss: G.boss ? Math.max(0, Math.round(G.boss.hp)) : null, clear: G.clear, over: G.over, done: !!G.done, score: calcScore(), fps: Math.round(fpsAvg), quality, parts: FX.parts.length, partMax: partMax(), partCalls };
+      evolved: pulseEvolved(), orbEvolved: orbitEvolved(), orbs: G.weapons.orbit ? orbitShape(G.weapons.orbit).n : 0, gemCombo: G.gemCombo, comboShown, gemChains: G.gemChains, boss: G.boss ? Math.max(0, Math.round(G.boss.hp)) : null, clear: G.clear, over: G.over, done: !!G.done, score: calcScore(), fps: Math.round(fpsAvg), quality, parts: FX.parts.length, partMax: partMax(), partCalls };
   },
   // 画面を描かずに高速で進める。ctrl(G) は [x, y] の移動入力を返す関数、chooser(ids, G) は選ぶ番号を返す関数
   sim(seconds, ctrl, chooser) {

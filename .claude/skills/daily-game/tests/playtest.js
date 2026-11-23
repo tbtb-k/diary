@@ -256,6 +256,14 @@ let browser;
     const trails = await page.evaluate(() => window.__game.debug.trails());
     await shot(page, '04d_gemtrail_390');
     check('ほしくずをつづけて拾うと音が上がり、10個ごとにキラッ、吸い寄せ中は光の尾が出る', gs.up && gs.cap && gs.oct2 && gs.chains === 2 && trails >= 10, `${gs.lo}Hz→${gs.hi}Hz 頭打ち=${gs.cap} キラッ=${gs.chains}回 尾=${trails}本`);
+    // ほしくずのコンボ数（Day 23）：4個までは出ず、5個つづけると自機の近くに「×5」、拾わずにいると消える
+    const comboAt = (n) => page.evaluate((n) => { const g = window.__game.world(); g.gems.length = 0; g.gemCombo = n - 1; g.gemComboT = 0.6; window.__game.debug.addXp(0); }, n);
+    await comboAt(4); await wait(60); const cb4 = (await page.evaluate(() => window.__game.state())).comboShown;
+    await comboAt(5); await wait(60); const cb5 = (await page.evaluate(() => window.__game.state())).comboShown;
+    await comboAt(20); await wait(40); const cb20 = (await page.evaluate(() => window.__game.state())).comboShown;
+    await shot(page, '04e_gemcombo_390');
+    await wait(900); const cbOff = await page.evaluate(() => { const s = window.__game.state(); return { shown: s.comboShown, combo: s.gemCombo }; });
+    check('ほしくずを5個つづけて拾うと「×5」が出て、拾わずにいると消える（4個までは出ない）', cb4 === 0 && cb5 === 5 && cb20 === 20 && cbOff.shown === 0 && cbOff.combo === 0, `4個=${cb4} 5個=${cb5} 20個=${cb20} 0.9秒後=${cbOff.shown}`);
     // 粒の上限と後かたづけ（Day 14：画質が下がると上限も下がる／配列を作り直さない）
     const fx = await page.evaluate(() => {
       const d = window.__game.debug, before = d.fxArrays();
