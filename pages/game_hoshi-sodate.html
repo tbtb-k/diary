@@ -267,6 +267,7 @@ details.more[open]>summary::before{content:"－"}
 .like{display:flex;gap:14px;align-items:center}
 .like .orb{flex:none;width:58px;height:58px;border-radius:50%}
 .like b{font-size:20px}
+.like .num{display:inline-block;white-space:nowrap}
 .like p{margin:2px 0 0;color:var(--sub);font-size:13.5px}
 .album{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .album figure{margin:0;text-align:center}
@@ -1115,14 +1116,16 @@ var HoshiSim = (function(){
     { name: '金星', T: 464, P: 92, surf: 0, ice: 0, fact: '平均気温は約460℃。二酸化炭素の分厚い大気（約90気圧）が熱を閉じこめている。' },
     { name: '火星', T: -63, P: 0.006, surf: 0, ice: 0.04, fact: '平均気温は約-60℃。大気は地球の0.6%ほど。昔は水が流れていたと考えられている。' },
     { name: 'エウロパ（木星の衛星）', T: -160, P: 1e-6, surf: 1, ice: 1, fact: '表面は厚い氷。その下に海がかくれているかもしれないと言われている。' },
-    { name: '水星', T: 167, P: 1e-6, surf: 0, ice: 0, fact: '大気がほとんどなく、昼は約430℃、夜は約-180℃になる。' }
+    { name: '水星', T: 167, P: 1e-6, surf: 0, ice: 0, fact: '大気がほとんどなく、昼は約430℃、夜は約-180℃になる。' },
+    { name: 'タイタン（土星の衛星）', T: -179, P: 1.5, surf: 0.02, ice: 0.8, fact: '気温は約-180℃なのに、大気は地球より濃い約1.5気圧。メタンの雨がふり、メタンの湖や海がある。' }
   ];
+  var LIKE_P_FLOOR = 0.001;   // 気圧0.001未満は「ほぼ真空」として同じあつかい（そうしないと水星・エウロパが遠すぎて選ばれない）
   function likePlanet(s){
     var best = null, bd = 1e9;
     for (var i = 0; i < REAL.length; i++) {
       var R = REAL[i];
       var dT = Math.asinh(s.T / 40) - Math.asinh(R.T / 40);
-      var dP = (Math.log(Math.max(s.P, 1e-6)) - Math.log(R.P)) / Math.LN10 / 1.5;
+      var dP = (Math.log(Math.max(s.P, LIKE_P_FLOOR)) - Math.log(Math.max(R.P, LIKE_P_FLOOR))) / Math.LN10 / 1.5;
       var dS = (s.surf - R.surf) * 2.5, dI = (s.ice - R.ice) * 2;
       var d = Math.sqrt(dT * dT + dP * dP + dS * dS + dI * dI);
       if (d < bd) { bd = d; best = R; }
@@ -2046,7 +2049,7 @@ function showReport(fresh){
     return '<div class="part"><div class="part-h"><b>' + esc(p.label) + '</b><span class="num">' + p.pts.toFixed(p.pts % 1 ? 1 : 0) + '<small> / ' + p.max + '</small></span></div><p class="note">' + esc(p.note) + '</p><div class="bar"><i data-w="' + (p.pts / p.max * 100).toFixed(1) + '"></i></div></div>';
   }).join('') + '</div></section>';
   rp.insertAdjacentHTML('beforeend', parts);
-  var orb = { '地球': 'radial-gradient(circle at 35% 35%,#7fc4ff,#2a6fc0 55%,#123a6b)', '金星': 'radial-gradient(circle at 35% 35%,#fff0c0,#e0b060 55%,#8a5a20)', '火星': 'radial-gradient(circle at 35% 35%,#ffb080,#c0552a 55%,#5a200e)', '水星': 'radial-gradient(circle at 35% 35%,#d8d8d8,#8a8a8a 55%,#3a3a3a)' };
+  var orb = { '地球': 'radial-gradient(circle at 35% 35%,#7fc4ff,#2a6fc0 55%,#123a6b)', '金星': 'radial-gradient(circle at 35% 35%,#fff0c0,#e0b060 55%,#8a5a20)', '火星': 'radial-gradient(circle at 35% 35%,#ffb080,#c0552a 55%,#5a200e)', '水星': 'radial-gradient(circle at 35% 35%,#d8d8d8,#8a8a8a 55%,#3a3a3a)', 'タイタン（土星の衛星）': 'radial-gradient(circle at 35% 35%,#ffe0a8,#d89a48 55%,#6e4618)' };
   rp.insertAdjacentHTML('beforeend', '<section><h3>いちばん似ている実在の星</h3><div class="like"><div class="orb" style="background:' + (orb[R.like.name] || 'radial-gradient(circle at 35% 35%,#ffffff,#cfe0f0 55%,#7a8ca0)') + '"></div><div><b>' + esc(R.like.name) + '</b> <span class="num" style="color:var(--sub)">似ている度 ' + R.like.pct + '%</span><p>' + esc(R.like.fact) + '</p></div></div></section>');
   rp.insertAdjacentHTML('beforeend', '<section><h3>星のアルバム</h3><div class="album">' + SNAP_STEPS.map(function(t){
     return '<figure>' + (album[t] ? '<img alt="' + yrOf(t) + '億年の星" src="' + album[t] + '">' : '<img alt="">') + '<figcaption class="num">' + (t === 0 ? '0' : yrOf(t)) + '億年</figcaption></figure>';
