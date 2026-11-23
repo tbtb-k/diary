@@ -93,6 +93,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 .forecast[data-tone=good] .ic{background:var(--good)}
 .forecast[data-tone=warn] .ic{background:var(--warn)}
 .forecast[data-tone=bad] .ic{background:var(--bad)}
+.fc-tip{margin:6px 0 0 28px;font-size:12.5px;color:#ffe2b0;line-height:1.5}
 
 details.more{margin:12px 0;border-top:1px solid var(--line);padding-top:6px}
 details.more>summary{cursor:pointer;list-style:none;padding:10px 0;font-weight:700;color:var(--sub);display:flex;align-items:center;gap:8px}
@@ -115,6 +116,31 @@ details.more[open]>summary::before{content:"－"}
 .actions .primary{flex:1 1 100%;min-height:52px;font-size:17px}
 .actions .btn:not(.primary){flex:1}
 .how{color:var(--faint);font-size:12px;margin:12px 0 0}
+
+/* 記録・称号図鑑・おだいチャレンジ */
+.records{margin-top:14px}
+.rec-best{padding:12px 14px;border-radius:14px;background:rgba(255,211,110,.07);border:1px solid rgba(255,211,110,.28)}
+.rb-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.rec-best small{display:block;color:var(--faint);font-size:11.5px}
+.rec-best b{font-size:16px}
+.rec-best .btn{min-height:40px;font-size:13px;padding:.4em .9em}
+.rec-old{margin:6px 0 0;color:var(--faint);font-size:12px}
+.rec-note{margin:6px 0 0;color:#ffe7a8;font-size:12.5px}
+.sum-count{margin-left:auto;font-family:var(--font-num);color:var(--accent-2);font-weight:700;font-size:13px}
+.zk,.od{list-style:none;margin:2px 0 0;padding:0;display:grid;gap:6px}
+.zk{grid-template-columns:1fr 1fr}
+.zk li{padding:7px 10px;border-radius:12px;background:var(--panel-2);border:1px solid var(--line);line-height:1.35;min-width:0}
+.zk li.got{border-color:rgba(255,211,110,.45);background:rgba(255,211,110,.08)}
+.zk li b{display:block;font-size:13px}
+.zk li small{display:block;color:var(--faint);font-size:11px;margin-top:2px}
+.od li{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:12px;background:var(--panel-2);border:1px solid var(--line)}
+.od li.got{border-color:rgba(82,209,141,.5);background:rgba(82,209,141,.08)}
+.od-ic{font-size:22px;width:30px;text-align:center;flex:none}
+.od-tx{flex:1;min-width:0;line-height:1.4}
+.od-tx b{display:block;font-size:13.5px}
+.od-tx small{display:block;color:var(--sub);font-size:12px}
+.od-go{flex:none;min-height:36px;padding:4px 10px;border-radius:10px;border:1px solid var(--line-strong);background:var(--panel-2);font-size:12px;font-weight:700}
+.od-ok{flex:none;font-size:12px;color:#c9f5dc;font-weight:700}
 
 /* ───────── 遊ぶ画面（HUD） ───────── */
 #hud{position:fixed;inset:0;z-index:4;pointer-events:none;display:grid;gap:12px;
@@ -168,7 +194,8 @@ details.more[open]>summary::before{content:"－"}
 .log li.w1{color:var(--sub)}
 @keyframes logIn{from{opacity:0;transform:translateY(-6px)}}
 
-.god{grid-area:god;justify-self:center;padding:10px 12px;display:flex;align-items:center;gap:12px}
+.god{grid-area:god;justify-self:center;padding:10px 12px;display:flex;flex-direction:column;align-items:stretch;gap:8px}
+.god-row{display:flex;align-items:center;gap:12px}
 .god-head{display:flex;flex-direction:column;line-height:1.3;padding:0 4px}
 .god-head b{font-size:14px}
 .god-head span{font-size:12px;color:var(--sub)}
@@ -180,6 +207,14 @@ details.more[open]>summary::before{content:"－"}
 .god-btns button:active:not(:disabled){transform:scale(.95)}
 .god-btns button:disabled{opacity:.35;cursor:not-allowed}
 .gn-s{display:none}
+/* ピンチの予兆：神さまの一手パネルの上に出す帯と、効きそうなボタンの光 */
+.god-warn{width:0;min-width:100%;margin:0;padding:8px 12px;border-radius:12px;background:rgba(255,194,92,.12);border:1px solid rgba(255,194,92,.5);font-size:13px;line-height:1.45}
+.god-warn b{display:block;color:#ffe2b0;font-size:14px}
+.god-warn span{display:block;color:var(--sub);font-size:12.5px}
+.god-warn.ok{background:rgba(82,209,141,.12);border-color:rgba(82,209,141,.5)}
+.god-warn.ok b{color:#c9f5dc}
+.god-btns button.suggest{border-color:rgba(255,211,110,.95);background:rgba(255,211,110,.16);box-shadow:0 0 0 2px rgba(255,211,110,.4),0 0 22px -2px rgba(255,211,110,.7);animation:suggest 1.1s ease-in-out infinite alternate}
+@keyframes suggest{from{box-shadow:0 0 0 1px rgba(255,211,110,.25),0 0 10px -4px rgba(255,211,110,.5)}to{box-shadow:0 0 0 3px rgba(255,211,110,.55),0 0 26px 0 rgba(255,211,110,.85)}}
 
 /* できごとのお知らせ */
 #toasts{position:fixed;z-index:6;left:50%;top:22%;transform:translateX(-50%);width:min(440px,calc(100vw - 32px));pointer-events:none}
@@ -193,6 +228,8 @@ details.more[open]>summary::before{content:"－"}
 .toast .t-tx{font-size:17px;font-weight:900;margin-top:2px}
 .toast .t-fact{font-size:12.5px;color:var(--sub);margin-top:6px;line-height:1.55}
 .toast.is-god{border-color:rgba(255,211,110,.5)}
+.toast.is-warn{border-color:rgba(255,194,92,.7)}
+.toast.is-good{border-color:rgba(82,209,141,.6)}
 #flash{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:0;background:#fff;mix-blend-mode:screen}
 
 /* ───────── 通信簿 ───────── */
@@ -257,6 +294,10 @@ details.table th:first-child,details.table td:first-child,details.table td:last-
 .hint .ic{font-size:22px;line-height:1.2}
 .rp-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding-bottom:12px}
 .rp-actions .btn{flex:1 1 200px}
+.rp-sub{display:flex;justify-content:center;width:100%}
+.rp-actions .rp-sub .btn{flex:0 1 auto;min-height:40px;font-size:13px;padding:.4em 1em;color:var(--sub)}
+.rp-badges{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px}
+.rp-badges .rp-newbest{margin-top:0}
 
 #viewbar{position:fixed;z-index:6;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:8px;padding:8px;width:max-content;max-width:calc(100vw - 24px)}
 #viewbar .btn{white-space:nowrap;padding:.55em .9em}
@@ -276,6 +317,8 @@ details.table th:first-child,details.table td:first-child,details.table td:last-
   .time b{font-size:22px}
   .speed{padding:4px}
   .speed button{min-width:40px;min-height:40px}
+  #hud.has8 .speed button{min-width:34px}
+  .time{white-space:nowrap}
   .stagecard{padding:10px 12px}
   .sc-icon{width:36px;height:36px;font-size:24px;border-radius:12px}
   .sc-now b{font-size:15px}
@@ -288,7 +331,11 @@ details.table th:first-child,details.table td:first-child,details.table td:last-
   .stat .lb{font-size:11px}
   .stat .vl{font-size:15px;flex-basis:100%}
   .god{justify-self:stretch;padding:8px;gap:8px}
+  .god-row{gap:8px}
   .god-head{min-width:58px;padding:0}
+  .god-warn{padding:6px 10px}
+  .god-warn b{font-size:13px}
+  .god-warn span{font-size:11.5px}
   .god-head b{font-size:12px}
   .god-btns{flex:1;gap:6px}
   .god-btns button{flex:1;min-width:0;min-height:52px;font-size:10.5px;padding:4px 2px;line-height:1.25}
@@ -310,10 +357,17 @@ details.table th:first-child,details.table td:first-child,details.table td:last-
   .album{grid-template-columns:repeat(5,1fr);gap:5px}
   .album figcaption{font-size:10.5px}
   .charts{grid-template-columns:1fr}
+  #viewbar{gap:6px;padding:6px}
+  #viewbar .btn{padding:.5em .65em;font-size:13.5px}
+}
+/* とてもせまい画面で ×8 まで並ぶときは、「/ 46億年」を省いて時間の数字を折り返さない（進み具合は下のバーでわかる） */
+@media (max-width:399px){
+  #hud.has8 .time .of{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   .toast,.rank,.part .bar>i{transition:none}
   .log li{animation:none}
+  .god-btns button.suggest{animation:none}
 }
 </style>
 </head>
@@ -348,6 +402,7 @@ details.table th:first-child,details.table td:first-child,details.table td:last-
     <div class="fc-row"><span>約7億年後の予想気温</span><b class="num" id="fc-temp">--</b></div>
     <div class="fc-mini"><span id="fc-sea"></span><span id="fc-ice"></span><span id="fc-air"></span></div>
     <p class="fc-verdict"><span class="ic" id="fc-ic">✓</span><span id="fc-verdict"></span></p>
+    <p class="fc-tip" id="fc-tip" hidden></p>
   </div>
 
   <details class="more" id="more">
@@ -385,7 +440,21 @@ details.table th:first-child,details.table td:first-child,details.table td:last-
     <button type="button" class="btn" id="btn-random">🎲 おまかせ（ぜんぶくじ引き）</button>
     <button type="button" class="btn primary" id="btn-start">▶ 46億年をスタート</button>
   </div>
-  <p class="how">1ステップ＝4600万年。約5分で46億年が過ぎるよ（速さは途中で変えられる）。とちゅうで3回だけ「神さまの一手」が使える。星はドラッグで回せるよ。</p>
+  <p class="how">1ステップ＝4600万年。約5分で46億年が過ぎるよ（速さは途中で変えられる）。とちゅうで3回だけ「神さまの一手」が使える。ピンチの予兆が出たら、光っているボタンが効きそう。星はドラッグで回せるよ。</p>
+
+  <div class="records">
+    <div class="rec-best" id="rec-best" hidden></div>
+    <details class="more" id="zukan">
+      <summary>📖 称号図鑑 <span class="sum-count" id="zk-count">0/16</span></summary>
+      <ul class="zk" id="zk-list"></ul>
+    </details>
+    <details class="more" id="odai">
+      <summary>🎯 おだいチャレンジ <span class="sum-count" id="od-count">0/5</span></summary>
+      <ul class="od" id="od-list"></ul>
+      <p class="note">条件どおりに46億年をむかえると、バッジがもらえるよ。</p>
+      <p class="rec-note" id="od-note" hidden></p>
+    </details>
+  </div>
 </section>
 
 <!-- 遊ぶ画面 -->
@@ -400,6 +469,7 @@ details.table th:first-child,details.table td:first-child,details.table td:last-
       <button type="button" data-speed="1" aria-pressed="true">×1</button>
       <button type="button" data-speed="2">×2</button>
       <button type="button" data-speed="4">×4</button>
+      <button type="button" data-speed="8" id="sp8" hidden>×8</button>
     </div>
   </div>
 
@@ -427,15 +497,18 @@ details.table th:first-child,details.table td:first-child,details.table td:last-
   </div>
 
   <div class="god glass">
-    <div class="god-head"><b>神さまの一手</b><span>のこり <i id="god-left">3</i>回</span></div>
-    <div class="god-btns" id="god-btns"></div>
+    <p class="god-warn" id="god-warn" role="status" hidden></p>
+    <div class="god-row">
+      <div class="god-head"><b>神さまの一手</b><span>のこり <i id="god-left">3</i>回</span></div>
+      <div class="god-btns" id="god-btns"></div>
+    </div>
   </div>
 </div>
 
 <div id="toasts" aria-live="polite"></div>
 <div id="viewbar" class="glass" hidden>
   <button type="button" class="btn" id="vb-report">📜 通信簿</button>
-  <button type="button" class="btn" id="vb-again">🔁 もう一回</button>
+  <button type="button" class="btn" id="vb-again">🔁 ちがう運命</button>
   <button type="button" class="btn" id="vb-setup">🛠 設定</button>
 </div>
 <section id="report" hidden aria-label="星の通信簿"></section>
@@ -459,6 +532,15 @@ var HoshiSim = (function(){
       return ((t ^ t >>> 14) >>> 0) / 4294967296;
     };
   }
+  // mulberry32 と同じ乱数。ただし中身（状態）を外に持たせて、「もしも」の計算用にコピーできるようにしたもの
+  function rngOf(st){
+    return function(){
+      st.a |= 0; st.a = st.a + 0x6D2B79F5 | 0;
+      var t = Math.imul(st.a ^ st.a >>> 15, 1 | st.a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
   function clamp(x, a, b){ return x < a ? a : x > b ? b : x; }
   function smooth(e0, e1, x){ var t = clamp((x - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); }
 
@@ -477,6 +559,11 @@ var HoshiSim = (function(){
   var BIO_CAP = [0, 0.18, 0.32, 0.45, 0.62, 0.78, 0.88, 0.95];
   var DIV_CAP = [0, 0.08, 0.15, 0.40, 0.58, 0.75, 0.88, 1.00];
   var EVO_PTS = [0, 5, 10, 15, 20, 25, 30, 40];
+  var SELF_PTS = [4, 6, 8, 10];   // 自力ボーナス（神さまの一手のこり 0〜3回）
+  var THICK_AIR = 3;              // 予報で「大気が濃い」注意を出す、最初の大気の気圧
+  var HAB_SKIP = 10;              // 星の安定は、生まれたての10ステップ（約4.6億年）を数えない
+  var O2_HINT_STEPS = 20;         // 光合成の時代で酸素が足りないまま、これだけ続いて…
+  var O2_FLAT = 0.001;            // …しかも最近5ステップで酸素の割合がほとんど増えていない（0.1%未満）ときにヒント
 
   var FACTS = {
     ocean: '地球の海は、生まれてから1〜2億年ほどでできたと考えられているよ。',
@@ -565,7 +652,9 @@ var HoshiSim = (function(){
     else if (s.w.size < 0.7 && s.P < 2) { verdict = '小さい星は大気が逃げやすい。大気は濃いめが安心かも'; tone = 'warn'; }
     else if (s.surf > 0.97) { verdict = '陸がない水の星。陸の生き物は生まれにくいかも'; tone = 'warn'; }
     else { verdict = '水が液体でいられそう！いのちが生まれるかも'; tone = 'good'; }
-    return { T: s.T, P: s.P, surf: s.surf, ice: s.ice, vapor: s.vapor, verdict: verdict, tone: tone, state: s };
+    // 最初の大気が3気圧以上だと、酸素の割合が2%に届かず「光合成の時代」で止まりやすい（予報goodでも約8割）
+    var tip = tone !== 'bad' && s.w.P0 >= THICK_AIR ? '⚠ 大気が濃いと酸素の割合が上がりにくくて、光合成の時代で止まりやすいよ' : '';
+    return { T: s.T, P: s.P, surf: s.surf, ice: s.ice, vapor: s.vapor, verdict: verdict, tone: tone, tip: tip, state: s };
   }
 
   function blank(p, seed){
@@ -578,6 +667,7 @@ var HoshiSim = (function(){
       stage: 0, prog: 0, B: 0, D: 0, civ: 0, iron: 0.02, stress: 0,
       godLeft: 3, godQueue: [], godUsed: [],
       flags: {}, log: [], hist: [], extinctions: 0, maxStage: 0, block: {}, stageAt: [],
+      warn: null, watch: null, rescues: 0, o2Stall: 0,
       done: false
     };
   }
@@ -585,7 +675,7 @@ var HoshiSim = (function(){
   function create(p, seed, quiet){
     var s = blank(p, seed);
     s.quiet = !!quiet;
-    s.rng = mulberry32(seed >>> 0);
+    s.rs = { a: seed >>> 0 }; s.rng = rngOf(s.rs);
     s.T = s.w.Teq0 + 200;
     for (var i = 0; i < 6; i++) physics(s, true);
     pushHist(s);
@@ -646,6 +736,12 @@ var HoshiSim = (function(){
 
   function useGod(s, kind){
     if (s.done || s.godLeft <= 0 || !GOD[kind]) return false;
+    // 予兆が出ているときに使ったら、「使わなかったら？」を本番と同じ運で計算しておき（一手を足す前の状態で）、
+    // 本当にピンチになっていたのなら、本番でさけられるか見張る
+    if (live(s) && s.warn && !s.watch) {
+      var cf = runPeek(clone(s, 0, true), PEEK);
+      if (cf) s.watch = { kind: cf.kind, at: cf.at, from: s.t, until: s.t + PEEK, god: kind };
+    }
     s.godLeft--; s.godQueue.push(kind); s.godUsed.push({ t: s.t, kind: kind });
     return true;
   }
@@ -673,9 +769,72 @@ var HoshiSim = (function(){
     for (var g = 0; g < s.godQueue.length; g++) applyGod(s, s.godQueue[g]);
     s.godQueue = [];
     derive(s);
+    if (live(s)) s.warn = predict(s);   // 一手が効いたら、予兆がその場で消える
     var ev = s._ev; s._ev = null;
     return ev;
   }
+
+  // ── ピンチ予報 ──
+  // いまの状態をコピーして、できごと・ゆらぎなし（quiet）で数ステップ先まで計算してみる。
+  // コピーには本番とは別の乱数を使うので、本番の展開は先読みしても変わらない。
+  var PEEK = 6;   // 何ステップ先まで見るか（6ステップ＝約2.8億年）
+  var FIX_PEEK = 12;  // おすすめの一手は、使ったあと12ステップ（約5.5億年）先までピンチが起きないものだけ（光ったら信じていい）
+  var PINCH = {
+    snow:    { icon: '🧊', name: '全球凍結',   warn: 'このままだと、全球凍結になりそう…',     past: '全球凍結になっていた' },
+    hot:     { icon: '🔥', name: '暴走温室',   warn: 'このままだと、暴走温室になりそう…',     past: '暴走温室になっていた' },
+    extinct: { icon: '🥀', name: '大量絶滅',   warn: 'このままだと、大量絶滅が起きそう…',     past: '大量絶滅が起きていた' },
+    dead:    { icon: '🥀', name: '生命の絶滅', warn: 'このままだと、生命が絶えてしまいそう…', past: '生命が絶えていた' }
+  };
+  // 本番の星か（先読みのコピーでも「もしも」のコピーでもない）
+  function live(s){ return !s.quiet && !s.ghost; }
+  var FIX_KINDS = ['volcano', 'cloud', 'water'];   // 隕石は大当たりか大事故かの賭けなので、おすすめしない
+
+  // ghost=false：できごと・ゆらぎなし、別の乱数（予報用）
+  // ghost=true ：本番と同じ運（乱数の続き）で、できごとも起きる（「使わなかったら？」の答え合わせ用）
+  function clone(s, seed, ghost){
+    var c = {};
+    for (var k in s) if (Object.prototype.hasOwnProperty.call(s, k)) c[k] = s[k];
+    c.flags = {}; for (var f in s.flags) c.flags[f] = s.flags[f];
+    c.block = {}; c.log = []; c.hist = []; c.stageAt = []; c.godUsed = [];
+    c.godQueue = s.godQueue.slice();
+    c.noScore = true; c._ev = null; c.warn = null; c.watch = null;
+    c.quiet = !ghost; c.ghost = !!ghost;
+    c.rs = { a: ghost ? s.rs.a : seed >>> 0 }; c.rng = rngOf(c.rs);
+    return c;
+  }
+  // 1ステップのあいだに起きたピンチ（なければ null）
+  function pinchOf(before, s){
+    if (!before.snow && s.flags.snow) return 'snow';
+    if (!before.runaway && s.flags.runaway) return 'hot';
+    if (s.stage < before.stage) return s.stage === 0 ? 'dead' : 'extinct';
+    return null;
+  }
+  function pinchBefore(s){ return { snow: s.flags.snow, runaway: s.flags.runaway, stage: s.stage }; }
+  function runPeek(c, n){
+    for (var i = 1; i <= n && !c.done; i++) {
+      var b = pinchBefore(c);
+      step(c);
+      var k = pinchOf(b, c);
+      if (k) return { kind: k, at: i };
+    }
+    return null;
+  }
+  function peekSeed(s){ return (s.seed * 2654435761 + s.t * 40503 + 977) >>> 0; }
+  function predict(s){
+    if (s.done || s.t >= STEPS) return null;
+    var sd = peekSeed(s);
+    var base = runPeek(clone(s, sd), PEEK);
+    if (!base) return null;
+    var fix = [];
+    for (var i = 0; i < FIX_KINDS.length; i++) {
+      var c = clone(s, sd);
+      applyGod(c, FIX_KINDS[i]); derive(c);
+      if (!runPeek(c, FIX_PEEK)) fix.push(FIX_KINDS[i]);
+    }
+    var P = PINCH[base.kind];
+    return { kind: base.kind, at: base.at, icon: P.icon, name: P.name, text: P.warn, fix: fix };
+  }
+  function sameFamily(a, b){ return a === b || (a === 'extinct' && b === 'dead') || (a === 'dead' && b === 'extinct'); }
 
   function bigImpact(s, byGod){
     var r = s.rng;
@@ -696,6 +855,7 @@ var HoshiSim = (function(){
     s._ev = [];
     s.t += 1;
     var t = s.t;
+    var pb = pinchBefore(s);
 
     for (var g = 0; g < s.godQueue.length; g++) applyGod(s, s.godQueue[g]);
     s.godQueue = [];
@@ -814,8 +974,31 @@ var HoshiSim = (function(){
     if (!s.flags.thin && s.flags.hadAir && s.P < 0.03) { s.flags.thin = 1; addLog(s, 3, '💨', '大気が宇宙へ逃げて、うすくなってしまった', FACTS.thin, 'thin'); }
     if (!s.flags.lights && s.civ > 0.5) { s.flags.lights = 1; addLog(s, 3, '✨', '夜の側に、街のあかりが広がっていく', '', 'lights'); }
 
+    // 光合成の時代で、酸素が足りないまま長く止まっていたら、1回だけヒント
+    if (s.stage === 2 && s.o2s < 0.02) s.o2Stall++; else s.o2Stall = 0;
+    var h5 = s.hist[t - 5];
+    if (live(s) && !s.flags.o2hint && s.o2Stall >= O2_HINT_STEPS && h5 && h5.stage === 2 && s.o2s - h5.o2 < O2_FLAT) {
+      s.flags.o2hint = 1;
+      if (s.P >= 1.5) addLog(s, 3, '💡', 'ヒント：酸素の割合がなかなか上がらないね', '大気が濃いと、光合成で酸素がつくられても、空気の中の割合はなかなか上がらないんだ。次の星では、大気を「ほどほど」〜「うすめ」にしてみよう。', 'hint');
+      else addLog(s, 3, '💡', 'ヒント：酸素がなかなか増えないね', '光合成をする生き物が少ないと、酸素も増えにくいよ。気温が生き物にちょうどいいと、どんどん増えてくれるんだ。', 'hint');
+    }
+
     pushHist(s);
-    if (t >= STEPS) { s.done = true; s.result = score(s); }
+    if (live(s)) {
+      // 見張り中のピンチが起きてしまったら、救出ならず
+      var hit = pinchOf(pb, s);
+      if (s.watch && hit && sameFamily(hit, s.watch.kind)) s.watch = null;
+      s.warn = predict(s);
+      if (s.watch && (t >= s.watch.until || t >= STEPS)) {
+        if (!(s.warn && sameFamily(s.warn.kind, s.watch.kind))) {
+          s.rescues++;
+          addLog(s, 4, '🛟', 'ピンチ救出！神さまの一手で、' + PINCH[s.watch.kind].name + 'をふせいだ',
+            'もし使っていなかったら、約' + (s.watch.at * YEARS_PER_STEP).toFixed(1) + '億年後に' + PINCH[s.watch.kind].past + 'よ。', 'rescue');
+        }
+        s.watch = null;
+      }
+    }
+    if (t >= STEPS) { s.done = true; s.warn = null; if (!s.noScore) s.result = score(s); }
     var ev = s._ev; s._ev = null;
     return ev;
   }
@@ -846,13 +1029,18 @@ var HoshiSim = (function(){
     var lastB = 0, lastD = 0, k = 0;
     for (var i = Math.max(1, n - 4); i <= n; i++) { lastB += h[i].B; lastD += h[i].D; k++; }
     lastB /= k; lastD /= k;
-    var rich = 20 * (0.5 * Math.min(1, lastB / 0.85) + 0.5 * lastD);
-    var hab = 0, vol = 0;
+    // 量もいろいろさも「0.85以上で満点」
+    var rich = 20 * (0.5 * Math.min(1, lastB / 0.85) + 0.5 * Math.min(1, lastD / 0.85));
+    // 生まれたての10ステップ（約4.6億年）はどんな星でも熱すぎるので、住みやすさもゆれも11ステップ目から数える
+    var hab = 0, habN = 0, vol = 0;
     for (var j = 1; j <= n; j++) {
-      if (h[j].liquid > 0.02 && h[j].T > -10 && h[j].T < 50) hab++;
-      if (j > 10) vol += Math.abs(h[j].T - h[j - 1].T);
+      if (j > HAB_SKIP) {
+        habN++;
+        if (h[j].liquid > 0.02 && h[j].T > -10 && h[j].T < 50) hab++;
+        vol += Math.abs(h[j].T - h[j - 1].T);
+      }
     }
-    hab /= n; vol /= Math.max(1, n - 10);
+    hab /= Math.max(1, habN); vol /= Math.max(1, habN);
     var volPen = clamp((vol - 1.2) / 6, 0, 0.5);
     var extPen = Math.min(0.6, 0.12 * s.extinctions + (s.flags.snowEver ? 0.1 : 0));
     var stable = 20 * hab * Math.max(0, 1 - volPen - extPen);
@@ -860,19 +1048,21 @@ var HoshiSim = (function(){
     var greenS = s.stage >= 4 ? Math.min(1, s.B / 0.7) : 0;
     var iceS = s.ice < 0.02 ? 0.6 : s.ice <= 0.25 ? 1 : clamp((0.6 - s.ice) / 0.35, 0, 1);
     var bal = 10 * (0.4 * oceanS + 0.35 * greenS + 0.25 * iceS);
-    var self = s.stage >= 1 ? [0, 3, 6, 10][s.godLeft] : 0;
+    // 神さまの一手は1回使うごとに2点ずつ。100点は「使わない」ときだけ
+    var self = s.stage >= 1 ? SELF_PTS[s.godLeft] : 0;
+    var rescues = s.rescues || 0;
     var parts = [
       { key: 'evo', label: '生命の進化', pts: evo, max: 40, note: STAGES[s.stage].name + 'まで' },
-      { key: 'rich', label: '生命の豊かさ', pts: rich, max: 20, note: '生き物の量といろいろさ' },
-      { key: 'stable', label: '星の安定', pts: stable, max: 20, note: '住みやすい時間 ' + Math.round(hab * 100) + '%・大量絶滅 ' + s.extinctions + '回' },
+      { key: 'rich', label: '生命の豊かさ', pts: rich, max: 20, note: '生き物の量といろいろさ（どちらも85%で満点）' },
+      { key: 'stable', label: '星の安定', pts: stable, max: 20, note: '住みやすい時間 ' + Math.round(hab * 100) + '%（生まれて5億年後から数えるよ）・大量絶滅 ' + s.extinctions + '回' },
       { key: 'bal', label: '環境バランス', pts: bal, max: 10, note: '海・陸・緑・氷のバランス' },
-      { key: 'self', label: '自力ボーナス', pts: self, max: 10, note: s.stage >= 1 ? '神さまの一手のこり ' + s.godLeft + '回' : '生命が生まれた星だけ' }
+      { key: 'self', label: '自力ボーナス', pts: self, max: 10, note: (s.stage >= 1 ? '神さまの一手のこり ' + s.godLeft + '回' : '生命が生まれた星だけ') + (rescues ? '・ピンチ救出 ' + rescues + '回' : '') }
     ];
     var total = 0;
     for (var m = 0; m < parts.length; m++) { parts[m].pts = Math.round(parts[m].pts * 10) / 10; total += parts[m].pts; }
     total = Math.round(Math.min(100, total));
     var rank = total >= 90 ? 'S' : total >= 75 ? 'A' : total >= 60 ? 'B' : total >= 40 ? 'C' : 'D';
-    return { total: total, rank: rank, parts: parts, title: titleOf(s, total), like: likePlanet(s), hint: hintOf(s), best: highlights(s) };
+    return { total: total, rank: rank, parts: parts, rescues: rescues, title: titleOf(s, total), like: likePlanet(s), hint: hintOf(s), best: highlights(s) };
   }
 
   function titleOf(s, total){
@@ -890,6 +1080,35 @@ var HoshiSim = (function(){
     if (s.surf > 0.95) return { name: 'いのちを待つ海の星', sub: '海はあるのに、命はまだ生まれていない。' };
     return { name: 'いのちを待つ星', sub: '命が生まれる日を、静かに待っている。' };
   }
+
+  // 称号図鑑（全16種類）。hint は、まだ手に入れていないときに出す一言
+  var TITLES = [
+    { name: '第二の地球',         hint: '文明までたどりついて、90点以上' },
+    { name: '文明の夜明け',       hint: '文明の時代までたどりつく' },
+    { name: '知恵ある者たちの星', hint: '知恵をもつ生き物の時代で46億年' },
+    { name: 'けものたちの楽園',   hint: '陸の動物の時代で46億年' },
+    { name: '緑におおわれた星',   hint: '陸の植物の時代で46億年' },
+    { name: '水の惑星',           hint: '陸のない海で、海の生き物の時代' },
+    { name: '海の生き物たちの星', hint: '陸のある星で、海の生き物の時代' },
+    { name: '氷の下のいのち',     hint: 'いのちがいるのに、星が凍りついている' },
+    { name: '小さないのちの星',   hint: '微生物や光合成の時代で46億年' },
+    { name: '灼熱のふたご星',     hint: 'いのちが生まれず、とても暑い星' },
+    { name: '眠れる氷の星',       hint: 'いのちが生まれず、まるごと凍った星' },
+    { name: '赤い砂の星',         hint: '大気も水も、宇宙へ逃げてしまった星' },
+    { name: '凍てつく砂の星',     hint: '大気はうすいけど、水は氷で残った星' },
+    { name: 'からからの石の星',   hint: '水がほとんどない星' },
+    { name: 'いのちを待つ海の星', hint: '一面の海なのに、いのちが生まれない' },
+    { name: 'いのちを待つ星',     hint: 'いのちが生まれないまま46億年' }
+  ];
+
+  // おだいチャレンジ：条件つきのお題。46億年をむかえたときの星で判定する
+  var ODAI = [
+    { id: 'dry',    icon: '🏜️', name: 'かわいた大地',       goal: '海30%以下の設定で、陸の動物の時代までいく', set: { water: 25 }, check: function(s){ return s.params.water <= 30 && s.stage >= 5; } },
+    { id: 'nomoon', icon: '🌑', name: '月のない夜',         goal: '月なしで、陸の動物の時代までいく', set: { moon: false }, check: function(s){ return !s.params.moon && s.stage >= 5; } },
+    { id: 'rescue', icon: '🛟', name: 'ピンチをのりこえて', goal: 'ピンチ救出をして、陸の動物の時代までいく', check: function(s){ return (s.rescues || 0) >= 1 && s.stage >= 5; } },
+    { id: 'god3',   icon: '🙌', name: '神さまフル活用',     goal: '神さまの一手を3回ぜんぶ使って、文明までいく', check: function(s){ return s.godLeft === 0 && s.stage >= 7; } },
+    { id: 'small',  icon: '🐭', name: 'ちいさな星の大冒険', goal: '星の大きさ「小」で、知的生命の時代までいく', set: { size: 0 }, check: function(s){ return s.params.size === 0 && s.stage >= 6; } }
+  ];
 
   var REAL = [
     { name: '地球', T: 15, P: 1, surf: 0.71, ice: 0.1, fact: '平均気温は約15℃、1気圧。表面の約7割が海で、命にあふれた星。' },
@@ -942,8 +1161,10 @@ var HoshiSim = (function(){
   }
 
   function highlights(s){
-    var L = s.log.filter(function(e){ return e.w >= 2; }).slice();
-    L.sort(function(a, b){ return b.w - a.w || a.t - b.t; });
+    // ピンチ救出は名場面に必ず入るよう、少しだけ優先する（ヒントは名場面に入れない）
+    var L = s.log.filter(function(e){ return e.w >= 2 && e.kind !== 'hint'; }).slice();
+    function pri(e){ return e.kind === 'rescue' ? 4.5 : e.w; }
+    L.sort(function(a, b){ return pri(b) - pri(a) || a.t - b.t; });
     L = L.slice(0, 5);
     L.sort(function(a, b){ return a.t - b.t; });
     return L;
@@ -952,7 +1173,7 @@ var HoshiSim = (function(){
   return {
     STEPS: STEPS, YEARS_PER_STEP: YEARS_PER_STEP, STAGES: STAGES, GOD: GOD, FACTS: FACTS,
     create: create, step: step, useGod: useGod, applyNow: applyNow, forecast: forecast, requirements: requirements,
-    world: world, score: score, mulberry32: mulberry32
+    world: world, score: score, mulberry32: mulberry32, TITLES: TITLES, ODAI: ODAI, PEEK: PEEK
   };
 })();
 // ==SIM END==
@@ -972,6 +1193,8 @@ function yrOf(t){ return (t * H.YEARS_PER_STEP).toFixed(1); }
 function fmtP(P){ return P < 0.001 ? 'ほぼ0' : P < 0.1 ? P.toPrecision(2) : P < 10 ? P.toFixed(1) : P.toFixed(0); }
 function pct(x){ return Math.round(clamp(x, 0, 1) * 100) + '%'; }
 function store(k, v){ try { if (v === undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
+// 保存のキー（採点ルールが変わったので、自己ベストは v2。v1 は「旧ルールの記録」として表示だけ）
+var KEY_BEST = 'hoshisodate-best-v2', KEY_BEST_OLD = 'hoshisodate-best-v1', KEY_TITLES = 'hoshisodate-titles-v1', KEY_ODAI = 'hoshisodate-odai-v1', KEY_PLAYED = 'hoshisodate-played-v1';
 
 /* ───────── パラメーター ───────── */
 // 最初の設定は毎回くじ引き（決まった「正解の設定」から始まらないように）
@@ -1431,6 +1654,7 @@ function fx(kind){
   else if (kind === 'god-meteor-good') meteor({ color: 0xffe9a0, big: true, onHit: function(l){ flash(l, 0xffe58a, 0.7, 2); flash(l, 0x9bffc6, 0.4, 2.6); screenFlash('#fff3c0', 0.3); } });
   else if (kind === 'god-meteor-bad') meteor({ color: 0xffe0b0, big: true, onHit: function(l){ bigHit(l); } });
   else if (kind === 'stage' || kind === 'ocean' || kind === 'goe') { AU.uAtm.value += 0.25; }
+  else if (kind === 'rescue') { screenFlash('#c8ffd8', 0.22); AU.uAtm.value += 0.2; }
 }
 
 /* ───────── アルバム用の写真 ───────── */
@@ -1498,6 +1722,7 @@ function refreshSetup(){
   $('#forecast').dataset.tone = f.tone;
   $('#fc-ic').textContent = f.tone === 'good' ? '✓' : f.tone === 'warn' ? '!' : '✕';
   $('#fc-verdict').textContent = f.verdict;
+  $('#fc-tip').textContent = f.tip; $('#fc-tip').hidden = !f.tip;
   moon.visible = params.moon;
   targetsFrom(fcState);
 }
@@ -1514,6 +1739,47 @@ $('#btn-random').addEventListener('click', function(){
 });
 $('#btn-start').addEventListener('click', function(){ readParams(); startGame(); });
 
+/* ───────── 記録・称号図鑑・おだいチャレンジ ───────── */
+function renderRecords(){
+  var best = store(KEY_BEST), old = store(KEY_BEST_OLD), box = $('#rec-best'), h = '';
+  var hasBest = !!(best && best.params), hasOld = !!(old && old.total != null);
+  if (hasBest) h += '<div class="rb-row"><div><small>🏆 自己ベスト</small><b><span class="num">' + best.total + '</span>点 ' + esc(best.rank) + '「' + esc(best.title) + '」</b>' +
+    '<small>運の番号 <span class="num">' + best.seed + '</span>' + (best.god ? '・神さまの一手 ' + best.god + '回' : '・神さまの一手なし') + '</small></div>' +
+    '<button type="button" class="btn" id="btn-best">⭐ ベストの星をもう一度</button></div>';
+  if (hasOld) h += '<p class="rec-old">旧ルールの記録：' + old.total + '点「' + esc(old.title || '') + '」（採点ルールが変わる前の記録だよ）</p>';
+  h += '<p class="rec-note" id="rec-note" hidden></p>';
+  box.innerHTML = h; box.hidden = !hasBest && !hasOld;
+  if (hasBest) $('#btn-best').onclick = function(){
+    params = Object.assign({}, best.params); seed = best.seed; buildTerrain(seed); writeParams(); refreshSetup();
+    var n = $('#rec-note'); n.textContent = 'ベストの星と同じ設定・運の番号にしたよ。▶ でスタート！'; n.hidden = false;
+  };
+  var got = store(KEY_TITLES) || {}, cnt = 0;
+  $('#zk-list').innerHTML = H.TITLES.map(function(t){
+    var g = !!got[t.name]; if (g) cnt++;
+    return '<li class="' + (g ? 'got' : '') + '"><b>' + (g ? '🏅 ' + esc(t.name) : '？？？') + '</b><small>' + esc((g ? '' : 'ヒント：') + t.hint) + '</small></li>';
+  }).join('');
+  $('#zk-count').textContent = cnt + '/' + H.TITLES.length;
+  var od = store(KEY_ODAI) || {}, oc = 0;
+  $('#od-list').innerHTML = H.ODAI.map(function(o){
+    var g = !!od[o.id]; if (g) oc++;
+    return '<li class="' + (g ? 'got' : '') + '"><span class="od-ic">' + (g ? '🏅' : o.icon) + '</span><span class="od-tx"><b>' + esc(o.name) + '</b><small>' + esc(o.goal) + '</small></span>' +
+      (g ? '<span class="od-ok">達成！</span>' : o.set ? '<button type="button" class="od-go" data-id="' + o.id + '">この設定にする</button>' : '') + '</li>';
+  }).join('');
+  $('#od-count').textContent = oc + '/' + H.ODAI.length;
+}
+$('#od-list').addEventListener('click', function(e){
+  var b = e.target.closest('.od-go'); if (!b) return;
+  var o = H.ODAI.filter(function(x){ return x.id === b.dataset.id; })[0]; if (!o) return;
+  Object.assign(params, o.set); writeParams(); refreshSetup();
+  if (o.set.size != null || o.set.moon != null) $('#more').open = true;
+  var n = $('#od-note'); n.textContent = '「' + o.name + '」に合わせて設定を変えたよ。ほかのつまみも調整して、▶ でスタート！'; n.hidden = false;
+});
+function newSeed(){ var v; do { v = 1 + Math.floor(Math.random() * 99999); } while (v === lastSeed); return v; }
+// 「同じ設定で、ちがう運命」：設定はそのまま、運の番号だけ新しくする
+function againNewFate(){ params = Object.assign({}, lastParams); seed = newSeed(); startGame(); }
+// 「同じシードでもう一回」：まったく同じ星でやり直す
+function againSameSeed(){ params = Object.assign({}, lastParams); seed = lastSeed; startGame(); }
+
 /* ───────── 遊ぶ画面 ───────── */
 var godBox = $('#god-btns');
 Object.keys(H.GOD).forEach(function(k){
@@ -1528,7 +1794,7 @@ godBox.addEventListener('click', function(e){
   if (!H.useGod(sim, kind)) return;
   var evs = H.applyNow(sim);
   handleEvents(evs, true);
-  targetsFrom(sim); updateHUD();
+  targetsFrom(sim); updateHUD(); updateWarn(true);
 });
 Array.prototype.forEach.call(document.querySelectorAll('.speed button'), function(b){
   b.addEventListener('click', function(){ setSpeed(+b.dataset.speed); });
@@ -1541,6 +1807,7 @@ document.addEventListener('keydown', function(e){
   if (mode !== 'play' || e.target.closest('input')) return;
   if (e.code === 'Space') { e.preventDefault(); setSpeed(speed ? 0 : 1); }
   if (e.key === '1') setSpeed(1); if (e.key === '2') setSpeed(2); if (e.key === '3' || e.key === '4') setSpeed(4);
+  if (e.key === '8' && !$('#sp8').hidden) setSpeed(8);
 });
 $('#log-toggle').addEventListener('click', function(){
   var open = $('#log').classList.toggle('open');
@@ -1549,12 +1816,16 @@ $('#log-toggle').addEventListener('click', function(){
 });
 
 function startGame(){
+  clearTimeout(endTimer);   // 前の星の「通信簿を出す予約」が残っていたら取り消す
   lastParams = Object.assign({}, params); lastSeed = seed;
   if (sim && sim.seed !== seed) buildTerrain(seed);
   sim = H.create(params, seed);
   album = {}; acc = 0; ending = false; fxList.length = 0;
   $('#log-list').innerHTML = '';
   $('#toasts').innerHTML = ''; toastQ.length = 0; toastBusy = false;
+  // ×8 は、一度でも最後まで遊んだ人向け
+  var has8 = !!store(KEY_PLAYED); $('#sp8').hidden = !has8; $('#hud').classList.toggle('has8', has8);
+  warnFam = null; clearTimeout(warnOkTimer); $('#god-warn').hidden = true;
   setMode('play'); setSpeed(1);
   moon.visible = params.moon;
   targetsFrom(sim); snapVis();
@@ -1576,7 +1847,7 @@ function doStep(){
   var evs = H.step(sim);
   handleEvents(evs, false);
   targetsFrom(sim);
-  updateHUD();
+  updateHUD(); updateWarn(false);
   if (SNAP_STEPS.indexOf(sim.t) >= 0) capture(sim.t);
   if (sim.done) endGame();
 }
@@ -1608,7 +1879,7 @@ function pumpToast(){
   if (!e) return;
   toastBusy = true;
   var n = document.createElement('div');
-  n.className = 'toast' + ((e.kind || '').indexOf('god-') === 0 ? ' is-god' : '');
+  n.className = 'toast' + ((e.kind || '').indexOf('god-') === 0 ? ' is-god' : e.kind === 'warn' ? ' is-warn' : e.kind === 'rescue' ? ' is-good' : '');
   n.innerHTML = '<div class="t-ic">' + e.icon + '</div><div class="t-yr num">' + yrOf(e.t) + '億年</div><div class="t-tx">' + esc(e.text) + '</div>' + (e.fact ? '<div class="t-fact">' + esc(e.fact) + '</div>' : '');
   $('#toasts').appendChild(n);
   requestAnimationFrame(function(){ requestAnimationFrame(function(){ n.classList.add('in'); }); });
@@ -1644,15 +1915,53 @@ function updateHUD(){
   $('#god-left').textContent = s.godLeft;
   Array.prototype.forEach.call(godBox.children, function(b){ b.disabled = s.godLeft <= 0 || s.done; });
 }
+/* ピンチの予兆：計算エンジンが毎ステップ先読みした結果（sim.warn）を見せる */
+var warnFam = null, warnOkTimer = 0;
+function famOf(k){ return k === 'dead' ? 'extinct' : k; }
+function warnTip(w, s){
+  if (s.godLeft <= 0) return '神さまの一手はもう残っていない…。星の力を信じて見守ろう';
+  if (!w.fix.length) return 'どの一手でも、ふせぎきれないかも…';
+  if (w.fix.length > 1) return '光っている一手なら、どれでも効きそう！';
+  var k = w.fix[0];
+  if (k === 'volcano') return (w.kind === 'hot' || s.T > 45) ? '光っている「火山」が効きそう。空気が濃くなると、水が沸とうしにくくなるんだ（圧力なべと同じしくみ）' : '光っている「火山」が効きそう。二酸化炭素で星をあたためよう';
+  if (k === 'cloud') return '光っている「雲」が効きそう。日ざしをさえぎって、星を冷やそう';
+  return '光っている「水」が効きそう。海を足して、持ちこたえよう';
+}
+function updateWarn(byGod){
+  var s = sim, w = s && !s.done ? s.warn : null, box = $('#god-warn'), wasShown = !box.hidden;
+  Array.prototype.forEach.call(godBox.children, function(b){ b.classList.toggle('suggest', !!(w && s.godLeft > 0 && w.fix.indexOf(b.dataset.kind) >= 0)); });
+  if (w) {
+    clearTimeout(warnOkTimer);
+    var tip = warnTip(w, s);
+    box.className = 'god-warn';
+    box.innerHTML = '<b>⚠ ' + esc(w.text) + '</b><span>' + esc(tip) + '</span>';
+    box.hidden = false;
+    if (famOf(w.kind) !== warnFam) toast({ t: s.t, w: 4, icon: '⚠️', text: w.text, fact: tip, kind: 'warn' });
+    warnFam = famOf(w.kind);
+  } else {
+    if (byGod && warnFam) {
+      var left = s.watch ? (s.watch.until - s.t) * H.YEARS_PER_STEP : 0;
+      box.className = 'god-warn ok';
+      box.innerHTML = '<b>✨ 予兆が消えた！</b><span>' + (s.watch ? 'このまま約' + left.toFixed(1) + '億年のりきれば「ピンチ救出」だよ' : 'ひとまず安心。このまま見守ろう') + '</span>';
+      box.hidden = false;
+      clearTimeout(warnOkTimer);
+      warnOkTimer = setTimeout(function(){ if (!sim || !sim.warn) { box.hidden = true; layout(); } }, 4000);
+    } else if (!box.classList.contains('ok') || !s || s.done) box.hidden = true;
+    warnFam = null;
+  }
+  if (wasShown !== !box.hidden) setTimeout(layout, 0);
+}
 function updateTime(){
   if (!sim) return;
   var t = Math.min(H.STEPS, sim.t + (sim.done ? 0 : acc / STEP_DUR));
   $('#h-yr').textContent = (t * H.YEARS_PER_STEP).toFixed(1);
   $('#h-bar').style.width = (t / H.STEPS * 100).toFixed(2) + '%';
 }
+var endTimer = 0;
 function endGame(){
   ending = true;
-  setTimeout(function(){ if (mode === 'play') showReport(true); }, reduced ? 300 : 1800);
+  clearTimeout(endTimer);
+  endTimer = setTimeout(function(){ if (mode === 'play' && sim && sim.done) showReport(true); }, reduced ? 300 : 1800);
 }
 
 /* ───────── 通信簿 ───────── */
@@ -1700,10 +2009,29 @@ function lineChart(o){
   return { node: wrap, set: set, svg: wrap.querySelector('svg'), toIndex: function(clientX){ var r = this.svg.getBoundingClientRect(); var x = (clientX - r.left) / r.width * W; return Math.round(clamp((x - m.l) / pw, 0, 1) * n); } };
 }
 function showReport(fresh){
-  var s = sim, R = s.result;
+  var s = sim, R = s && s.result;
+  if (!R) return;
   setMode('report');
-  var best = store('hoshisodate-best-v1') || null, isNew = false;
-  if (fresh) { isNew = !best || R.total > best.total; if (isNew) store('hoshisodate-best-v1', { total: R.total, rank: R.rank, title: R.title.name }); }
+  var best = store(KEY_BEST) || null, isNew = false, newTitle = false, newOdai = [];
+  if (best && !best.params) best = null;
+  if (fresh) {
+    isNew = !best || R.total > best.total;
+    // 自己ベストは、点数といっしょに「設定と運の番号」も残す（設定画面の「ベストの星をもう一度」で呼び出せる）
+    if (isNew) store(KEY_BEST, { total: R.total, rank: R.rank, title: R.title.name, params: Object.assign({}, lastParams), seed: lastSeed, god: 3 - s.godLeft });
+    store(KEY_PLAYED, 1);
+    var got = store(KEY_TITLES) || {};
+    if (!got[R.title.name]) { got[R.title.name] = { total: R.total }; store(KEY_TITLES, got); newTitle = true; }
+    var od = store(KEY_ODAI) || {};
+    H.ODAI.forEach(function(o){ if (!od[o.id] && o.check(s)) { od[o.id] = 1; newOdai.push(o); } });
+    if (newOdai.length) store(KEY_ODAI, od);
+  }
+  var badges = [];
+  if (fresh && isNew && best) badges.push('🎉 自己ベスト更新！（前は ' + best.total + '点）');
+  else if (fresh && isNew) badges.push('⭐ 自己ベストとして記録したよ');
+  else if (best && !isNew) badges.push('自己ベスト ' + best.total + '点「' + best.title + '」');
+  if (R.rescues) badges.push('🛟 ピンチ救出 ' + R.rescues + '回');
+  if (newTitle) badges.push('📖 図鑑に新しい称号！');
+  newOdai.forEach(function(o){ badges.push('🏅 おだい達成「' + o.name + '」'); });
   var root = $('#report'); root.innerHTML = '';
   var rp = document.createElement('div'); rp.className = 'rp'; root.appendChild(rp);
   var final = album[100] || album[75] || '';
@@ -1712,7 +2040,7 @@ function showReport(fresh){
     '<div class="rp-score"><div class="n num"><span id="rp-n">0</span><small>点</small></div><div class="rank rank-' + R.rank + '" id="rp-rank">' + R.rank + '</div></div>' +
     '<p class="rp-comment">' + RANK_TEXT[R.rank] + '</p>' +
     '<div class="rp-title"><small>この星の称号</small><b>「' + esc(R.title.name) + '」</b><p>' + esc(R.title.sub) + '</p>' +
-    (fresh && isNew && best ? '<span class="rp-newbest">🎉 自己ベスト更新！（前は ' + best.total + '点）</span>' : (best && !isNew ? '<span class="rp-newbest">自己ベスト ' + best.total + '点「' + esc(best.title) + '」</span>' : '')) +
+    (badges.length ? '<div class="rp-badges">' + badges.map(function(b){ return '<span class="rp-newbest">' + esc(b) + '</span>'; }).join('') + '</div>' : '') +
     '</div></section>');
   var parts = '<section><h3>点数の内訳</h3><div class="parts">' + R.parts.map(function(p){
     return '<div class="part"><div class="part-h"><b>' + esc(p.label) + '</b><span class="num">' + p.pts.toFixed(p.pts % 1 ? 1 : 0) + '<small> / ' + p.max + '</small></span></div><p class="note">' + esc(p.note) + '</p><div class="bar"><i data-w="' + (p.pts / p.max * 100).toFixed(1) + '"></i></div></div>';
@@ -1746,8 +2074,10 @@ function showReport(fresh){
   chSec.insertAdjacentHTML('beforeend', '<details class="table"><summary>数字の表で見る</summary><table><thead><tr><th>時代</th><th>気温</th><th>酸素</th><th>生命の量</th><th>段階</th></tr></thead><tbody>' + rows + '</tbody></table></details>');
   rp.insertAdjacentHTML('beforeend', '<section><h3>名場面ベスト5</h3><ol class="best5">' + (R.best.length ? R.best.map(function(e){ return '<li><time class="num">' + yrOf(e.t) + '億年</time><span>' + e.icon + '</span><span>' + esc(e.text) + '</span></li>'; }).join('') : '<li><span></span><span></span><span>静かな46億年だった。</span></li>') + '</ol></section>');
   rp.insertAdjacentHTML('beforeend', '<section><h3>次へのヒント</h3><div class="hint"><span class="ic">💡</span><span>' + esc(R.hint) + '</span></div></section>');
-  rp.insertAdjacentHTML('beforeend', '<div class="rp-actions"><button type="button" class="btn primary" id="rp-again">🔁 同じ設定でもう一回</button><button type="button" class="btn" id="rp-setup">🛠 設定を変えて再挑戦</button><button type="button" class="btn" id="rp-view">🪐 星をながめる</button></div>');
-  $('#rp-again').onclick = function(){ params = Object.assign({}, lastParams); seed = lastSeed; startGame(); };
+  rp.insertAdjacentHTML('beforeend', '<div class="rp-actions"><button type="button" class="btn primary" id="rp-again">🔁 同じ設定で、ちがう運命</button><button type="button" class="btn" id="rp-setup">🛠 設定を変えて再挑戦</button><button type="button" class="btn" id="rp-view">🪐 星をながめる</button>' +
+    '<div class="rp-sub"><button type="button" class="btn" id="rp-same">🔂 同じシードでもう一回（運の番号 ' + lastSeed + '）</button></div></div>');
+  $('#rp-again').onclick = againNewFate;
+  $('#rp-same').onclick = againSameSeed;
   $('#rp-setup').onclick = goSetup;
   $('#rp-view').onclick = function(){ setMode('view'); };
   root.scrollTop = 0;
@@ -1761,9 +2091,9 @@ function showReport(fresh){
   })(t0);
   setTimeout(function(){ Array.prototype.forEach.call(rp.querySelectorAll('.part .bar>i'), function(i){ i.style.width = i.dataset.w + '%'; }); }, 60);
 }
-function goSetup(){ params = Object.assign({}, lastParams || params); seed = lastSeed || seed; writeParams(); refreshSetup(); setMode('setup'); }
+function goSetup(){ params = Object.assign({}, lastParams || params); seed = lastSeed || seed; writeParams(); refreshSetup(); renderRecords(); setMode('setup'); }
 $('#vb-report').onclick = function(){ showReport(false); };
-$('#vb-again').onclick = function(){ params = Object.assign({}, lastParams); seed = lastSeed; startGame(); };
+$('#vb-again').onclick = againNewFate;
 $('#vb-setup').onclick = goSetup;
 
 /* ───────── 毎フレーム ───────── */
@@ -1791,6 +2121,7 @@ function frame(now){
 buildTerrain(seed);
 writeParams();
 refreshSetup();
+renderRecords();
 snapVis();
 resize();
 requestAnimationFrame(frame);
@@ -1804,7 +2135,9 @@ window.__hoshi = {
   steps: function(n){ for (var i = 0; i < n && sim && !sim.done; i++) doStep(); updateTime(); },
   finish: function(){ while (sim && !sim.done) doStep(); updateTime(); },
   god: function(k){ var b = godBox.querySelector('[data-kind="' + k + '"]'); if (b) b.click(); },
-  report: function(){ showReport(true); }
+  report: function(){ showReport(true); },
+  again: function(){ againNewFate(); }, same: function(){ againSameSeed(); },
+  get seed(){ return seed; }
 };
 })();
 </script>
