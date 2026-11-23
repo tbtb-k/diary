@@ -1,11 +1,11 @@
 ---
 name: weekly-jirei
-description: 2日に1回、Microsoft 365 Copilot の Agent Builder・Copilot Studio・Copilot Cowork の活用事例を1本ずつ記事HTMLにまとめ、学習記録サイト（tbtb-k/diary の pages/）の main に公開する手順。「今回の事例」「定期事例」「週次事例」「weekly-jirei」と言われたとき、または定期実行から呼ばれたときに使う。
+description: 週に1回（毎週月曜）、Microsoft 365 Copilot の Agent Builder・Copilot Studio・Copilot Cowork の活用事例を1本ずつ記事HTMLにまとめ、学習記録サイト（tbtb-k/diary の pages/）の main に公開する手順。「今回の事例」「定期事例」「週次事例」「weekly-jirei」と言われたとき、または定期実行から呼ばれたときに使う。
 ---
 
 # 定期の AI 活用事例（Agent Builder / Copilot Studio / Copilot Cowork）
 
-2日に1回（日本時間の奇数日の朝 8:50）、公開されている事例から **Agent Builder 枠1本・Copilot Studio 枠1本・Copilot Cowork 枠1本** を選び、1記事1事例のHTMLにして、サイト（https://tbtb-k.github.io/diary/）に公開します。持ち主の希望は「Agent Builder と Copilot Studio で毎回2本、Copilot Cowork は事例が見つかった回に1本足す（最大3本）」です。
+週に1回（日本時間の毎週月曜の朝 8:50）、公開されている事例から **Agent Builder 枠1本・Copilot Studio 枠1本・Copilot Cowork 枠1本** を選び、1記事1事例のHTMLにして、サイト（https://tbtb-k.github.io/diary/）に公開します。持ち主の希望は「Agent Builder と Copilot Studio で毎回2本、Copilot Cowork は事例が見つかった回に1本足す（最大3本）」です。
 
 - 読み手：AI を使い始めたばかりの人。非エンジニア前提で、専門用語には必ず一言そえます。
 - 公開先：`tbtb-k/diary` リポジトリの `main` ブランチ。`pages/` に置くと、トップの一覧に自動で並びます。
