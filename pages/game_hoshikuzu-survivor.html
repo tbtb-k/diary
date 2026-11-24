@@ -300,8 +300,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 23, date: '2026-11-24' };
+const GAME = { day: 24, date: '2026-11-25' };
 const PATCH_NOTES = [
+  { day: 24, date: '2026-11-25', title: 'ボス戦の前に、ひと息つけるよ！',
+    items: ['ボスが出た瞬間、自機が緑に光ってHPが30回復するよ', 'HPがへったままボス戦に入っても、立て直しやすくなったよ'],
+    ask: 'HPが少ないままボスまでたどり着いて、回復のおかげで勝てるか試してみてね！' },
   { day: 23, date: '2026-11-24', title: 'ほしくずのコンボが見えるよ！',
     items: ['ほしくずを5個つづけて拾うと、自機の右上に「×5」みたいにコンボ数が出るよ', '拾うたびに数字がぴょこっとはねて、10・20・30…のときは黄色く大きくなるよ', '少しのあいだ拾わないと、すっと消えてコンボはおしまい'],
     ask: '引力フィールドやMAGNETで一気に吸って、コンボをどこまでのばせるか試してみてね！' },
@@ -379,6 +382,7 @@ const REPO = 'tbtb-k/diary';
    ================================================================ */
 const TAU = Math.PI * 2, STEP = 1 / 60;
 const BOSS_AT = 300;      // ボスが出る時間（秒）
+const BOSS_HEAL = 30; // ボスが出たときに回復するHP（Day 24）
 const BOSS_WEAK = { at: 60, mul: 1.6 }; // ボス戦が長引いたら、ボスが弱って受けるダメージが増える（Day 17）
 const VIEW_MIN = 400;     // 画面の短い辺に映る広さ（ゲーム内の長さ）
 const MAX_EN = 260;       // 同時に出る敵の上限
@@ -477,7 +481,7 @@ function newGame(seed) {
     weapons: { pulse: 1 }, passives: {}, st: null,
     wt: { pulse: 0.3, nova: 2, chain: 1, orbitAng: 0 },
     enemies: [], bullets: [], ebullets: [], gems: [], items: [],
-    spawnAcc: 0, nextRush: 60, elites: [150, 225], boss: null,
+    spawnAcc: 0, nextRush: 60, elites: [150, 225], boss: null, bossHeal: 0,
     pendingLevels: 0, rerolls: 2, ending: 0, done: false, over: false, clear: false, slow: 0, freeze: 0,
     hitT: 0, noHit: 0, gemRR: 0, gemCombo: 0, gemComboT: 0, gemComboAt: 0, gemChains: 0, spawnR: spawnRadius(), fxOn: true, god: false, trailT: 0,
     achGot: [], achT: 0, killBase: store.get('hs-killsum', 0) || 0,
@@ -611,6 +615,16 @@ function spawnBoss() {
   e.born = G.t; e.weak = false;
   e.mode = 'chase'; e.ringCd = 2.4; e.chargeCd = 6; e.ringOff = 0; e.modeT = 0; e.cx = 0; e.cy = 0;
   G.boss = e;
+  // ボス戦の前に、ひと息：HPを少し回復（Day 24。HPがへったままボス戦に入ると立て直せないため）
+  const p = G.player, hv = Math.min(BOSS_HEAL, p.maxHp - p.hp);
+  heal(BOSS_HEAL); G.bossHeal = hv;
+  if (hv > 0) {
+    burst(p.x, p.y, '#5dff9b', 18, 140, 3);
+    if (G.fxOn) {
+      FX.nums.push({ x: p.x, y: p.y - 34, text: 'HP+' + Math.round(hv), color: '#5dff9b', life: 1.2, max: 1.2, big: 17 });
+      FX.rings.push({ x: p.x, y: p.y, r: 10, max: 64, t: 0, dur: 0.5, color: '#5dff9b' });
+    }
+  }
   banner('ボス出現！', 'ブラックスターを倒せばクリア', '#ff3b5c', true);
   Snd.play('boss'); shake(9); vib(60);
 }
