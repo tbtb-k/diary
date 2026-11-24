@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Microsoft 365 Copilot に加わった「プラグイン」と「プロジェクト」が何をする機能か、使い方・提供時期・管理者の設定を公式情報でかんたんに整理。2026-11-24 調査。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Copilotのプラグインとプロジェクト</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  /* Layout: 1本の読み物カラム（最大800px）。結論 → 用語 → プラグイン → プロジェクト → 早見表 → 管理者の設定 → 注意点 → 根拠 */
+  --bg:#F4F6F5;
+  --surface:#FFFFFF;
+  --sunk:#EAEFED;
+  --ink:#16211D;
+  --muted:#56645E;
+  --line:#D6DFDB;
+  --accent:#0F6A62;
+  --accent-soft:#DDEFEC;
+  --ok:#276F43;
+  --ok-soft:#E1F1E6;
+  --warn:#8A5700;
+  --warn-soft:#FAEED6;
+  --ng:#A3291F;
+  --ng-soft:#F8E2DF;
+  --info:#46525D;
+  --info-soft:#E6EBEE;
+  --hl:#FFF5D3;
+  --l1:#DCEBF6; --l2:#E2F0E6; --l3:#F2EBDD; --l4:#F3E3E6;
+  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1513;
+    --surface:#16201D;
+    --sunk:#1C2925;
+    --ink:#E5EEEA;
+    --muted:#9BACA5;
+    --line:#2A3A35;
+    --accent:#5CC8BC;
+    --accent-soft:#12332F;
+    --ok:#74C795;
+    --ok-soft:#14301F;
+    --warn:#E5AE52;
+    --warn-soft:#382811;
+    --ng:#F19087;
+    --ng-soft:#3B1916;
+    --info:#B3C0CA;
+    --info-soft:#24313A;
+    --hl:#2C2914;
+    --l1:#142A3A; --l2:#15301F; --l3:#33291A; --l4:#361C22;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1513;
+  --surface:#16201D;
+  --sunk:#1C2925;
+  --ink:#E5EEEA;
+  --muted:#9BACA5;
+  --line:#2A3A35;
+  --accent:#5CC8BC;
+  --accent-soft:#12332F;
+  --ok:#74C795;
+  --ok-soft:#14301F;
+  --warn:#E5AE52;
+  --warn-soft:#382811;
+  --ng:#F19087;
+  --ng-soft:#3B1916;
+  --info:#B3C0CA;
+  --info-soft:#24313A;
+  --hl:#2C2914;
+  --l1:#142A3A; --l2:#15301F; --l3:#33291A; --l4:#361C22;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:16px;
+  line-height:1.8;
+  -webkit-text-size-adjust:100%;
+}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+b,strong{font-weight:700}
+code,.mono{font-family:var(--f-mono);font-size:.86em}
+
+.page{
+  max-width:800px;
+  margin:0 auto;
+  padding-block:40px 64px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid;
+  gap:56px;
+}
+.page > *{min-width:0}
+
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.4;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.55rem, 4.6vw, 2.2rem);letter-spacing:.01em}
+h2{font-size:1.42rem}
+h3{font-size:1.06rem}
+p{margin:0}
+ul,ol{margin:0;padding-left:1.3em}
+li + li{margin-top:4px}
+
+section{display:grid;gap:18px}
+section > *{min-width:0}
+.sec-lead{color:var(--muted)}
+
+/* ---------- ヘッダー ---------- */
+.hero{display:grid;gap:16px}
+.eyebrow{
+  display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;
+  font-size:.82rem;letter-spacing:.08em;color:var(--muted);font-weight:700;
+}
+.eyebrow span{font-family:var(--f-mono);font-weight:500;letter-spacing:0}
+.lead{font-size:1.02rem}
+.meta{
+  display:grid;gap:6px;margin:0;
+  font-size:.88rem;color:var(--muted);
+  border-top:1px solid var(--line);padding-top:12px;
+}
+.meta div{display:grid;grid-template-columns:4.5em 1fr;gap:8px}
+.meta dt{font-weight:700}
+.meta dd{margin:0}
+
+/* ---------- 引用番号 ---------- */
+.c{white-space:nowrap}
+.c a{
+  font-family:var(--f-mono);font-size:.72rem;font-weight:500;
+  text-decoration:none;color:var(--accent);
+  padding:0 1px;vertical-align:.2em;
+}
+.c a:hover{text-decoration:underline}
+
+/* ---------- 確度タグ ---------- */
+.tag{
+  display:inline-block;font-size:.72rem;font-weight:700;line-height:1;
+  padding:4px 7px;border-radius:999px;vertical-align:.12em;white-space:nowrap;
+}
+.tag.off{background:var(--accent-soft);color:var(--accent)}
+.tag.ana{background:var(--info-soft);color:var(--info)}
+.tag.unv{background:var(--warn-soft);color:var(--warn)}
+.tag.thr{background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
+
+/* ---------- 結論 ---------- */
+.verdict{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-left:6px solid var(--accent);
+  border-radius:14px;
+  padding:24px 24px 22px;
+  display:grid;gap:16px;
+}
+.label{font-size:.8rem;letter-spacing:.12em;color:var(--accent);font-family:var(--f-body)}
+.verdict-main{font-family:var(--f-display);font-size:clamp(1.12rem, 3.4vw, 1.36rem);line-height:1.6}
+.verdict-main em{font-style:normal;background:linear-gradient(transparent 62%, var(--accent-soft) 62%)}
+.verdict ol{display:grid;gap:8px;padding-left:1.4em}
+.verdict ol li{margin:0}
+.three{
+  display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:10px;
+}
+.three div{
+  background:var(--sunk);border-radius:10px;padding:12px 14px;
+  display:grid;gap:2px;
+}
+.three b{font-family:var(--f-display);font-size:1.02rem}
+.three span{font-size:.84rem;color:var(--muted);line-height:1.6}
+
+/* ---------- 用語 ---------- */
+.terms{display:grid;gap:0;margin:0;border-top:1px solid var(--line)}
+.terms div{display:grid;grid-template-columns:11em 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.terms dt{font-weight:700}
+.terms dd{margin:0;font-size:.94rem}
+
+/* ---------- 流れ ---------- */
+.flow{list-style:none;padding:0;margin:0;display:grid;gap:12px;counter-reset:step}
+.flow li{
+  margin:0;
+  position:relative;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px 14px 60px;
+  counter-increment:step;
+}
+.flow li::before{
+  content:counter(step);
+  position:absolute;left:16px;top:14px;
+  width:30px;height:30px;border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--accent);color:var(--surface);
+  font-family:var(--f-mono);font-weight:500;font-size:.9rem;
+}
+.flow h3{margin-bottom:4px}
+.flow p{font-size:.94rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chips span{
+  font-size:.78rem;background:var(--sunk);border:1px solid var(--line);
+  border-radius:999px;padding:2px 10px;color:var(--muted);
+}
+.note{
+  background:var(--sunk);border-radius:12px;padding:14px 16px;
+  font-size:.92rem;display:grid;gap:6px;
+}
+.note b{font-family:var(--f-display)}
+
+/* ---------- 表 ---------- */
+.table-wrap{
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+}
+table{width:100%;min-width:640px;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+thead th{background:var(--sunk);font-size:.8rem;letter-spacing:.04em;color:var(--muted);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tr.hl td{background:var(--hl)}
+td.st{white-space:nowrap;width:1%}
+.pill{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:.8rem;font-weight:700;line-height:1;
+  padding:5px 9px;border-radius:999px;white-space:nowrap;
+}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.cond{background:var(--warn-soft);color:var(--warn)}
+.pill.ng{background:var(--ng-soft);color:var(--ng)}
+.pill.na{background:var(--info-soft);color:var(--info)}
+.scroll-hint{display:none;font-size:.78rem;color:var(--muted);margin-top:-10px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:.82rem;color:var(--muted);align-items:center}
+
+/* ---------- リスク ---------- */
+.risks{display:grid;gap:14px}
+.risk{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:18px 18px 16px;display:grid;gap:12px;
+}
+.risk-head{display:flex;gap:12px;align-items:flex-start}
+.risk-no{
+  flex:none;font-family:var(--f-mono);font-weight:500;font-size:.85rem;
+  background:var(--ng-soft);color:var(--ng);border-radius:8px;padding:3px 8px;margin-top:2px;
+}
+.risk dl{margin:0;display:grid;gap:10px}
+.risk dl div{display:grid;grid-template-columns:7.5em 1fr;gap:10px}
+.risk dt{font-size:.8rem;font-weight:700;color:var(--muted);padding-top:2px}
+.risk dd{margin:0;font-size:.93rem}
+.risk dd.todo{background:var(--accent-soft);border-radius:8px;padding:8px 10px}
+
+/* ---------- 守りの4層 ---------- */
+.layers{display:grid;gap:8px}
+.layer{
+  display:grid;grid-template-columns:9.5em 1fr;gap:14px;align-items:center;
+  border-radius:12px;padding:14px 16px;border:1px solid var(--line);
+}
+.layer:nth-child(1){background:var(--l1)}
+.layer:nth-child(2){background:var(--l2);margin-inline:10px}
+.layer:nth-child(3){background:var(--l3);margin-inline:20px}
+.layer:nth-child(4){background:var(--l4);margin-inline:30px}
+.layer-name{font-family:var(--f-display);font-weight:700;line-height:1.45}
+.layer-name small{display:block;font-family:var(--f-body);font-weight:500;font-size:.76rem;color:var(--muted)}
+.layer p{font-size:.92rem}
+.layers-cap{font-size:.84rem;color:var(--muted)}
+
+/* ---------- 設定手順 ---------- */
+.steps{list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.steps > li{
+  margin:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:18px;display:grid;gap:10px;
+}
+.step-h{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.step-n{font-family:var(--f-mono);font-weight:500;font-size:.82rem;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:2px 8px}
+.path{
+  display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;
+  font-size:.86rem;background:var(--sunk);border-radius:8px;padding:8px 10px;
+}
+.path span{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:1px 8px;white-space:nowrap}
+.path i{font-style:normal;color:var(--muted)}
+.steps p,.steps li li{font-size:.93rem}
+.warnbox{
+  border-left:4px solid var(--warn);background:var(--warn-soft);border-radius:8px;
+  padding:10px 12px;font-size:.9rem;
+}
+
+/* ---------- 代替案 ---------- */
+.alts{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:12px}
+.alt{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:10px;align-content:start}
+.alt-meta{display:flex;flex-wrap:wrap;gap:6px}
+.alt p{font-size:.93rem}
+
+/* ---------- 注意点 ---------- */
+.cautions{display:grid;gap:10px;list-style:none;padding:0;margin:0}
+.cautions li{
+  margin:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px;font-size:.93rem;
+}
+.cautions b{display:block;font-family:var(--f-display);margin-bottom:2px}
+
+/* ---------- 根拠 ---------- */
+.srcs{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.srcs li{
+  margin:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;display:grid;gap:6px;scroll-margin-top:16px;
+}
+.srcs li:target{outline:2px solid var(--accent);outline-offset:2px}
+.src-top{display:flex;gap:10px;align-items:baseline}
+.src-n{font-family:var(--f-mono);font-weight:500;color:var(--accent);flex:none}
+.src-t{font-weight:700;line-height:1.5}
+.src-meta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:.8rem;color:var(--muted)}
+.src-sum{font-size:.9rem}
+.src-url{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);overflow-wrap:anywhere;word-break:break-all}
+
+/* ---------- フッター ---------- */
+.foot{
+  border-top:1px solid var(--line);padding-top:18px;
+  font-size:.84rem;color:var(--muted);display:grid;gap:8px;
+}
+.foot ul{padding-left:1.2em;display:grid;gap:2px}
+.foot li{margin:0}
+
+@media (max-width:640px){
+  .page{gap:44px;padding-block:28px 48px}
+  .verdict{padding:20px 16px}
+  .three{grid-template-columns:1fr}
+  .terms div{grid-template-columns:1fr;gap:2px}
+  .risk dl div{grid-template-columns:1fr;gap:2px}
+  .layer{grid-template-columns:1fr;gap:4px}
+  .layer:nth-child(n){margin-inline:0}
+  .alts{grid-template-columns:1fr}
+  .scroll-hint{display:block}
+  .flow li{padding-left:54px}
+  .flow li::before{left:12px}
+}
+
+/* ---------- 中身の図（プラグイン／プロジェクト） ---------- */
+.pkg{
+  margin:0;border:2px dashed var(--accent);border-radius:16px;
+  background:var(--surface);padding:16px;display:grid;gap:12px;
+}
+.pkg-label{font-family:var(--f-display);font-weight:700;color:var(--accent)}
+.pkg-parts{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:10px}
+.pkg-parts div{background:var(--accent-soft);border-radius:10px;padding:12px 14px;display:grid;gap:2px;align-content:start}
+.pkg-parts b{font-family:var(--f-display);font-size:1rem}
+.pkg-parts span{font-size:.86rem;color:var(--muted);line-height:1.6}
+.pkg.proj{border-color:var(--warn)}
+.pkg.proj .pkg-label{color:var(--warn)}
+.pkg.proj .pkg-parts div{background:var(--warn-soft)}
+.pkg-bar{background:var(--sunk);border-radius:10px;padding:10px 14px;font-size:.88rem}
+.pkg-bar b{font-family:var(--f-display);margin-right:.3em}
+.pkg-cap{font-size:.84rem;color:var(--muted)}
+section > h3{margin-top:12px}
+tr.grp td{background:var(--sunk);font-family:var(--f-display);font-weight:700;color:var(--accent)}
+@media (max-width:640px){
+  .pkg-parts{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<main class="page">
+
+<!-- ================= ヘッダー ================= -->
+<header class="hero">
+  <div class="eyebrow">調査メモ <span>2026-11-24</span> Microsoft 365 Copilot / Microsoft Copilot アプリ</div>
+  <h1>Copilot の「プラグイン」と「プロジェクト」<br>それぞれ何をする機能？</h1>
+  <p class="lead">2026年秋、Microsoft 365 Copilot（Microsoft Copilot アプリ）に「プラグイン」と「プロジェクト」という2つの機能が加わりました。どちらも新しい機能ですが、役割はまったく別物です。この記事では、それぞれの中身・使い方・提供時期・管理者が設定する場所を、公式ドキュメントをもとにかんたんに整理します。</p>
+  <dl class="meta">
+    <div><dt>調査日</dt><dd>2026-11-24</dd></div>
+    <div><dt>対象</dt><dd>Microsoft 365 Copilot（一般の商用テナント向け）</dd></div>
+    <div><dt>根拠</dt><dd>Microsoft Learn・メッセージセンター・Microsoft 公式ブログ 10件</dd></div>
+  </dl>
+</header>
+
+<!-- ================= 結論 ================= -->
+<section class="verdict" aria-labelledby="h-verdict">
+  <h2 id="h-verdict" class="label">結論</h2>
+  <p class="verdict-main"><em>プラグイン</em>は Copilot に「できること」を足す<em>道具箱</em>、<em>プロジェクト</em>は自分の仕事を案件ごとにまとめる<em>フォルダ</em>です。</p>
+  <ol>
+    <li>プラグインは、作業の手順書（スキル）・外部サービスとの接続（コネクタ）・エージェントを1つにまとめたパッケージです。Chat・Cowork・Word・Excel・PowerPoint・SharePoint などで同じ仕組みが使われます<span class="c"><a href="#s1">[1]</a><a href="#s3">[3]</a></span>。画面の「Agents」ボタンは、11月下旬までに「Plugins」に置き換わります<span class="c"><a href="#s4">[4]</a></span>。</li>
+    <li>プロジェクトは、ひとつの仕事に関係するチャット・Cowork のタスク・ファイル・指示をひとまとめにする場所です。回答はまずプロジェクトの中身をもとに作られます<span class="c"><a href="#s9">[9]</a><a href="#s10">[10]</a></span>。使えるのは作った本人だけです。チームで共有する場所としては、別に「ワークスペース」があります<span class="c"><a href="#s8">[8]</a><a href="#s10">[10]</a></span>。</li>
+    <li>管理者は、プラグインを Microsoft 365 管理センターの「Agents &gt; Tools」で許可・ブロック・配布します<span class="c"><a href="#s2">[2]</a><a href="#s6">[6]</a></span>。プロジェクトは管理者が有効にする操作は要りません。ただし Cowork を使えるかどうかは、支出ポリシー（従量課金の設定）で決まります<span class="c"><a href="#s9">[9]</a><a href="#s10">[10]</a></span>。</li>
+  </ol>
+  <div class="three" role="list">
+    <div role="listitem"><b>プラグイン</b><span>Copilot に足す道具箱<br>例：法務プラグインを入れると、契約書レビューの手順が使える</span></div>
+    <div role="listitem"><b>プロジェクト</b><span>自分用の案件フォルダ<br>例：「新製品発表の準備」に資料と過去のチャットを集める</span></div>
+    <div role="listitem"><b>ワークスペース</b><span>チームの共有部屋<br>旧「ノートブック」。12月から順次切り替え</span></div>
+  </div>
+</section>
+
+<!-- ================= 用語 ================= -->
+<section aria-labelledby="h-terms">
+  <h2 id="h-terms">先に押さえておきたい言葉</h2>
+  <dl class="terms">
+    <div><dt>スキル</dt><dd>「この仕事はこの手順で、この品質で進める」をまとめた手順書のようなものです。中身は SKILL.md というテキストファイルです<span class="c"><a href="#s1">[1]</a></span>。</dd></div>
+    <div><dt>コネクタ</dt><dd>Copilot が社内外のサービス（Salesforce や Slack など）のデータを読んだり、操作したりするための接続口です<span class="c"><a href="#s3">[3]</a></span>。</dd></div>
+    <div><dt>MCP サーバー</dt><dd>AI と外部サービスをつなぐ共通ルール（Model Context Protocol）に沿った窓口です。コネクタの仲間と考えて大丈夫です<span class="c"><a href="#s1">[1]</a><a href="#s4">[4]</a></span>。</dd></div>
+    <div><dt>Cowork</dt><dd>Microsoft 365 Copilot の中で、手順の多い仕事を段取りして進めてくれる機能です。従量課金（使った分だけ請求される仕組み）の設定が前提です<span class="c"><a href="#s10">[10]</a></span>。</dd></div>
+    <div><dt>Frontier</dt><dd>Microsoft の新機能を先に試せるプログラムです。一般提供より早く機能が届きます。</dd></div>
+    <div><dt>Standard／Deferred</dt><dd>Copilot アプリの更新を受け取るタイミングの設定です。Deferred（遅延）の組織には、新機能が少し遅れて届きます<span class="c"><a href="#s10">[10]</a></span>。</dd></div>
+  </dl>
+</section>
+
+<!-- ================= プラグイン ================= -->
+<section aria-labelledby="h-plugin">
+  <h2 id="h-plugin">プラグインってなに？</h2>
+  <p class="sec-lead">Copilot に、あとから専門の手順や外部サービスとの接続を足すためのパッケージです。スマホにアプリを入れる感覚に近いです。Microsoft は「Microsoft 365 Copilot などに新しい能力を足す、インストールできるパッケージ」と説明しています<span class="c"><a href="#s1">[1]</a></span>。</p>
+
+  <figure class="pkg" aria-label="プラグインの中身">
+    <figcaption class="pkg-label">プラグイン（1つのパッケージ）</figcaption>
+    <div class="pkg-parts">
+      <div><b>スキル</b><span>仕事の手順書</span></div>
+      <div><b>ツール</b><span>コネクタ・MCP サーバー<br>（外部サービスとの接続）</span></div>
+      <div><b>エージェント</b><span>決まった役割を持つ AI<br>（入っていなくても OK）</span></div>
+    </div>
+    <p class="pkg-cap">3つ全部そろっていなくても大丈夫です。スキル1つだけでもプラグインになります<span class="c"><a href="#s1">[1]</a></span>。</p>
+  </figure>
+
+  <h3>どこで使える？</h3>
+  <p>Copilot アプリの Home（Chat・Cowork）、Code、Autopilot、Word・Excel・PowerPoint、SharePoint で、同じ「プラグイン」の仕組みが使われます。今後は Copilot Studio・GitHub Copilot・Microsoft Foundry にも広げる予定です<span class="c"><a href="#s3">[3]</a><a href="#s4">[4]</a></span>。PowerPoint の Copilot では、11月中旬から Frontier 向け、11月下旬から一般向けに展開が始まり、11月末までに完了する予定です<span class="c"><a href="#s7">[7]</a></span>。</p>
+
+  <h3>どんなプラグインがある？</h3>
+  <div class="alts">
+    <div class="alt">
+      <h3>Microsoft 製（業務別）</h3>
+      <p>法務・営業・財務・サービス・資本市場・教育などの業務向けです。会計（Accounting）は Frontier 向けです<span class="c"><a href="#s5">[5]</a></span>。</p>
+    </div>
+    <div class="alt">
+      <h3>Microsoft 製（製品連携）</h3>
+      <p>Dynamics 365 の Sales・Customer Service・ERP、Planner、Viva Engage、Fabric IQ などです。Dynamics 365 の Sales と Customer Service は最初からオンになっています<span class="c"><a href="#s5">[5]</a></span>。</p>
+    </div>
+    <div class="alt">
+      <h3>パートナー製</h3>
+      <p>Asana・Box・Canva・Notion・Slack・Salesforce・GitHub などです。Microsoft によると、100以上がすでに提供されています<span class="c"><a href="#s3">[3]</a><a href="#s5">[5]</a></span>。</p>
+    </div>
+    <div class="alt">
+      <h3>自社製</h3>
+      <p>自分たちで作ったパッケージ（.zip）をアップロードして使えます。組織全体に共有するには、管理者の承認が必要です<span class="c"><a href="#s6">[6]</a></span>。</p>
+    </div>
+  </div>
+
+  <h3>使う人から見ると（Cowork の場合）</h3>
+  <ol class="flow">
+    <li>
+      <h3>探して追加する</h3>
+      <p>Cowork の左メニューにある「Plugins」から探して追加します。パートナー製のプラグインは、管理者が使える状態にしてからでないと追加できません<span class="c"><a href="#s5">[5]</a></span>。</p>
+    </li>
+    <li>
+      <h3>会社が配ったものは最初から入っている</h3>
+      <p>管理者が配ったプラグインは「Added Plugins」に自動で並び、「Managed by your organization」と表示されます。自分では削除できませんが、「Sources &amp; Skills」パネルで自分の会話でのオン・オフは切り替えられます<span class="c"><a href="#s6">[6]</a></span>。</p>
+    </li>
+    <li>
+      <h3>外部サービスには自分でサインインする</h3>
+      <p>コネクタを使うには、一人ひとりがサインインや同意をします。管理者が代わりにサインインすることはできません<span class="c"><a href="#s6">[6]</a></span>。</p>
+    </li>
+  </ol>
+  <div class="note">
+    <b>ボタンの名前が変わります</b>
+    <p>「Agents」「Agents &amp; Skills」「Customize」のボタンは、11月下旬までに「Plugins」に置き換わります。管理者側の作業は不要ですが、社内マニュアルや研修資料に古い名前が書いてあれば、書き換えが必要です<span class="c"><a href="#s4">[4]</a></span>。</p>
+  </div>
+</section>
+
+<!-- ================= プロジェクト ================= -->
+<section aria-labelledby="h-project">
+  <h2 id="h-project">プロジェクトってなに？</h2>
+  <p class="sec-lead">ひとつの仕事に関係するチャット・Cowork のタスク・ファイル・指示・成果物を、まとめて置いておく場所です<span class="c"><a href="#s9">[9]</a><a href="#s10">[10]</a></span>。Microsoft は「一度コンテキストを入れておけば、プロジェクトの中のチャットやタスクはそれを前提に動く」と説明しています。毎回「この案件はね…」と説明し直さなくて済むのが、いちばんの良さです。</p>
+
+  <figure class="pkg proj" aria-label="プロジェクトの画面構成">
+    <figcaption class="pkg-label">プロジェクト（例：新製品発表の準備）</figcaption>
+    <div class="pkg-parts">
+      <div><b>Recent（最近）</b><span>このプロジェクトのチャットと Cowork タスク</span></div>
+      <div><b>Outputs（成果物）</b><span>タスクが作ったファイル</span></div>
+      <div><b>Project context</b><span>参考資料・アップロードしたファイル・チャット内の項目</span></div>
+    </div>
+    <p class="pkg-bar"><b>プロジェクトの指示</b>　Cowork 全体やチャット全体の指示より優先されます</p>
+    <p class="pkg-cap">画面の3つの区分は Microsoft Learn の説明にもとづいています<span class="c"><a href="#s8">[8]</a></span>。</p>
+  </figure>
+
+  <h3>ここがポイント</h3>
+  <ul class="cautions">
+    <li><b>回答のもとになる情報</b>まずプロジェクトの中身、次にふだんの Microsoft 365 の仕事の情報をもとに答えます<span class="c"><a href="#s9">[9]</a><a href="#s10">[10]</a></span>。</li>
+    <li><b>ファイルの置き場所</b>プロジェクト自体は中身を保存しません。ファイルは OneDrive に置かれ、今の権限・秘密度ラベル・保持ポリシーがそのまま効きます。Copilot が作った Word・Excel・PowerPoint も本人の OneDrive に保存されます<span class="c"><a href="#s9">[9]</a></span>。</li>
+    <li><b>共有はできない</b>プロジェクトは作った本人だけのものです<span class="c"><a href="#s8">[8]</a></span>。チームで同じ情報を使いたいときは「ワークスペース」（旧ノートブック）を使います<span class="c"><a href="#s10">[10]</a></span>。</li>
+    <li><b>あとから整理できる</b>既存のチャットやタスクを追加したり、ドラッグで移動したりできます。タスクをプロジェクトから外しても会話は消えません。アーカイブと復元、名前や色の変更もできます<span class="c"><a href="#s8">[8]</a></span>。</li>
+  </ul>
+
+  <h3>いつから使える？</h3>
+  <dl class="terms">
+    <div><dt>Cowork タブ</dt><dd>2026年10月20日に全世界で提供済みです（Windows・Mac・Web）<span class="c"><a href="#s9">[9]</a></span>。</dd></div>
+    <div><dt>新しい Home<br>（Chat と Cowork）</dt><dd>Standard の組織は10月下旬から、Deferred の組織は11月下旬から順次届きます<span class="c"><a href="#s10">[10]</a></span>。</dd></div>
+    <div><dt>モバイル</dt><dd>「近日提供」とされていて、時期は書かれていません<span class="c"><a href="#s9">[9]</a><a href="#s10">[10]</a></span>。</dd></div>
+    <div><dt>対象の人</dt><dd>Microsoft 365 Copilot（Premium）で Cowork を使う人です。Frontier の人は、新しい Home が届いた時点で使えます<span class="c"><a href="#s9">[9]</a></span>。</dd></div>
+  </dl>
+</section>
+
+<!-- ================= 早見表 ================= -->
+<section aria-labelledby="h-matrix">
+  <h2 id="h-matrix">できること・できないこと早見表</h2>
+  <div class="legend">
+    <span class="pill ok">○ できる</span>
+    <span class="pill cond">△ 条件付き</span>
+    <span class="pill ng">✕ できない</span>
+    <span class="pill na">― 未提供／記載なし</span>
+    <span>黄色の行は、勘違いしやすい項目です</span>
+  </div>
+  <p class="scroll-hint">表は横にスクロールできます →</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>項目</th><th>判定</th><th>中身</th><th>根拠</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="4">プラグイン</td></tr>
+        <tr><td>Chat・Cowork で使う</td><td class="st"><span class="pill ok">○</span></td><td>Copilot アプリの Home（Chat・Cowork）が対象です。</td><td class="c"><a href="#s3">[3]</a><a href="#s4">[4]</a></td></tr>
+        <tr><td>Word・Excel・PowerPoint で使う</td><td class="st"><span class="pill ok">○</span></td><td>対象に含まれます。PowerPoint は11月末までに一般向けの展開が終わる予定です。</td><td class="c"><a href="#s3">[3]</a><a href="#s7">[7]</a></td></tr>
+        <tr class="hl"><td>他社サービス（Slack・Salesforce など）とつなぐ</td><td class="st"><span class="pill cond">△ 条件付き</span></td><td>管理者が使える状態にして、本人がサインイン・同意すれば使えます。</td><td class="c"><a href="#s5">[5]</a><a href="#s6">[6]</a></td></tr>
+        <tr><td>自社で作って配る</td><td class="st"><span class="pill ok">○</span></td><td>.zip をアップロードします。組織全体への共有には管理者の承認が必要です。</td><td class="c"><a href="#s6">[6]</a></td></tr>
+        <tr><td>特定の人だけに許可する・ブロックする</td><td class="st"><span class="pill ok">○</span></td><td>ユーザー・グループ単位で設定できます。</td><td class="c"><a href="#s2">[2]</a><a href="#s6">[6]</a></td></tr>
+        <tr><td>プラグインの中のスキルを1つだけ止める</td><td class="st"><span class="pill ng">✕</span></td><td>管理はパッケージ単位です。</td><td class="c"><a href="#s2">[2]</a></td></tr>
+        <tr><td>国・地域で利用者を絞る</td><td class="st"><span class="pill ng">✕</span></td><td>対応していません。</td><td class="c"><a href="#s6">[6]</a></td></tr>
+        <tr class="grp"><td colspan="4">プロジェクト</td></tr>
+        <tr><td>チャットと Cowork タスクを1か所にまとめる</td><td class="st"><span class="pill ok">○</span></td><td>既存のチャットやタスクもあとから追加できます。</td><td class="c"><a href="#s8">[8]</a><a href="#s9">[9]</a></td></tr>
+        <tr><td>プロジェクト専用の指示を書く</td><td class="st"><span class="pill ok">○</span></td><td>Cowork 全体やチャット全体の指示より優先されます。</td><td class="c"><a href="#s8">[8]</a></td></tr>
+        <tr class="hl"><td>ほかの人と共有する</td><td class="st"><span class="pill ng">✕</span></td><td>作った本人だけのものです。チームで使うならワークスペースを使います。</td><td class="c"><a href="#s8">[8]</a><a href="#s10">[10]</a></td></tr>
+        <tr><td>ファイルの権限・秘密度ラベルがそのまま効く</td><td class="st"><span class="pill ok">○</span></td><td>ファイルは OneDrive に置かれたままです。</td><td class="c"><a href="#s9">[9]</a></td></tr>
+        <tr class="hl"><td>管理者が有効にしないと使えない？</td><td class="st"><span class="pill ok">○ 操作は不要</span></td><td>プロジェクトの有効化は不要です。ただし Cowork は支出ポリシーの対象の人しか使えません。</td><td class="c"><a href="#s9">[9]</a><a href="#s10">[10]</a></td></tr>
+        <tr><td>成果物からファイルを外す</td><td class="st"><span class="pill ng">✕ 今はできない</span></td><td>現時点ではできないと書かれています。</td><td class="c"><a href="#s8">[8]</a></td></tr>
+        <tr><td>モバイルアプリで使う</td><td class="st"><span class="pill na">― 未提供</span></td><td>「近日提供」とされていて、時期は書かれていません。</td><td class="c"><a href="#s9">[9]</a><a href="#s10">[10]</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ================= 管理者 ================= -->
+<section aria-labelledby="h-admin">
+  <h2 id="h-admin">管理者が設定するところ</h2>
+  <p class="sec-lead">プラグインは管理センターで管理します。プロジェクトには専用の設定はありません。</p>
+  <ol class="steps">
+    <li>
+      <div class="step-h"><span class="step-n">1</span><h3>どんなプラグインがあるか見る</h3></div>
+      <div class="path"><span>Microsoft 365 管理センター</span><i>›</i><span>Agents</span><i>›</i><span>Tools</span><i>›</i><span>Registry</span></div>
+      <p>Microsoft 製・パートナー製・自社製のプラグインと、中に入っているスキル・コネクタを確認できます<span class="c"><a href="#s1">[1]</a><a href="#s2">[2]</a></span>。</p>
+    </li>
+    <li>
+      <div class="step-h"><span class="step-n">2</span><h3>使える人を決める</h3></div>
+      <div class="path"><span>Agents</span><i>›</i><span>Tools</span><i>›</i><span>Plugins</span><i>›</i><span>（プラグイン名）</span><i>›</i><span>Users</span></div>
+      <p>「全員」「特定のユーザー・グループ」「ブロック」から選びます<span class="c"><a href="#s2">[2]</a><a href="#s6">[6]</a></span>。</p>
+    </li>
+    <li>
+      <div class="step-h"><span class="step-n">3</span><h3>最初から入れておく（必要なら）</h3></div>
+      <p>「Installed for」で全員か特定のグループに配ると、利用者の画面に自動で追加されます。利用者は削除できません<span class="c"><a href="#s6">[6]</a></span>。</p>
+    </li>
+    <li>
+      <div class="step-h"><span class="step-n">4</span><h3>Cowork を使える人を確認する</h3></div>
+      <p>プロジェクトには設定は要りません。ただ、Cowork を使えるのは支出ポリシーの対象の人だけなので、対象者と従量課金の設定が意図どおりか確認しておきます<span class="c"><a href="#s10">[10]</a></span>。</p>
+    </li>
+  </ol>
+  <p class="warnbox">画面名は英語版の公式ドキュメントの表記です。日本語表示での名前は今回確認していません。</p>
+</section>
+
+<!-- ================= 注意点 ================= -->
+<section aria-labelledby="h-caution">
+  <h2 id="h-caution">説明するときの注意点</h2>
+  <ul class="cautions">
+    <li><b>届く時期は組織によって違う</b>Frontier／Standard／Deferred の設定やテナントによって、届く時期や見え方が変わります。プロジェクトの入口も「Cowork タブから」と「Home のメニューから」の2通りの説明があり、時期によって違う可能性があります<span class="c"><a href="#s8">[8]</a><a href="#s10">[10]</a></span>。</li>
+    <li><b>他社製プラグインはデータの行き先を確認する</b>パートナー製のプラグインは外部のサービスとつながります。承認する前に、発行元・必要な権限と同意・つながる外部サービスを確認するよう、Microsoft の管理者ガイドに書かれています<span class="c"><a href="#s2">[2]</a></span>。</li>
+    <li><b>ブロックしても全部は止まらないことがある</b>あるプラグインをブロックしても、ほかのプラグインと共有している MCP サーバーやコネクタは使える場合があります。また、ブロックは新しい会話から効きます<span class="c"><a href="#s2">[2]</a><a href="#s6">[6]</a></span>。</li>
+    <li><b>情報バリアを使っている組織</b>プラグインの管理は、情報バリア（部署間の情報のやりとりを制限する仕組み）に対応していません<span class="c"><a href="#s6">[6]</a></span>。</li>
+    <li><b>日本語対応</b>プロジェクトは「tier 1 の言語」で提供とされていますが、どの言語が含まれるかは今回確認していません<span class="tag unv">未確認</span><span class="c"><a href="#s9">[9]</a></span>。</li>
+  </ul>
+</section>
+
+<!-- ================= 根拠 ================= -->
+<section aria-labelledby="h-src">
+  <h2 id="h-src">根拠</h2>
+  <ol class="srcs">
+    <li id="s1">
+      <div class="src-top"><span class="src-n">[1]</span><a class="src-t" href="https://learn.microsoft.com/en-us/plugins/overview">What Is a Microsoft 365 Copilot Plugin?（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>最終更新 2026-11-16</span></div>
+      <p class="src-sum">プラグインは「新しい能力を足す、インストールできるパッケージ」で、スキル・ツール（コネクタ／リモート MCP）・エージェントを1つにまとめたもの。3つ全部は不要で、スキル1つでもプラグインになること。管理センターの Agents &gt; Tools &gt; Registry と Agent Registry は別物であること。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/plugins/overview</p>
+    </li>
+    <li id="s2">
+      <div class="src-top"><span class="src-n">[2]</span><a class="src-t" href="https://learn.microsoft.com/en-us/plugins/administrator-guide">Administer Microsoft 365 Copilot plugins（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>最終更新 2026-11-16</span></div>
+      <p class="src-sum">管理者向けの手順。Registry での確認、Plugins &gt; Users での利用者設定。パッケージ内のスキルを個別にブロックできないこと、ひとつを止めても参照先がすべて止まるわけではないこと、承認前に発行元・権限・外部サービスを確認すること。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/plugins/administrator-guide</p>
+    </li>
+    <li id="s3">
+      <div class="src-top"><span class="src-n">[3]</span><a class="src-t" href="https://techcommunity.microsoft.com/blog/microsoft-copilot-blog/introducing-the-plugin-registry---one-place-to-discover-and-govern-plugins-for-m/4559682">Introducing the plugin registry - one place to discover and govern plugins for Microsoft Copilot（Microsoft Copilot Blog）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-09-30</span></div>
+      <p class="src-sum">プラグインはスキル・コネクタ・エージェントの組み合わせ。対象は Home（Chat・Cowork）、Code、Autopilot、Word・Excel・PowerPoint、SharePoint で、今後 Copilot Studio・GitHub Copilot・Microsoft Foundry にも広がること。管理者は Agents &gt; Tools で有効化・ブロック・割り当てができること。100以上のプラグインがすでにあること。</p>
+      <p class="src-url">https://techcommunity.microsoft.com/blog/microsoft-copilot-blog/introducing-the-plugin-registry---one-place-to-discover-and-govern-plugins-for-m/4559682</p>
+    </li>
+    <li id="s4">
+      <div class="src-top"><span class="src-n">[4]</span><a class="src-t" href="https://mc.merill.net/message/MC1484008">MC1484008 - Microsoft Copilot: Introducing the Microsoft plugin registry for Microsoft Copilot experiences（メッセージセンター）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-09-30</span><span>アーカイブサイト経由で閲覧</span></div>
+      <p class="src-sum">「Agents」「Agents &amp; Skills」「Customize」のボタンが11月下旬までに「Plugins」に置き換わり、管理者の作業は不要なこと。プラグインはエージェント・スキル・コネクタ・MCP サーバーをまとめられること。登録の仕組みは9月下旬〜10月下旬、画面の変更は10月下旬〜11月下旬に展開。</p>
+      <p class="src-url">https://mc.merill.net/message/MC1484008</p>
+    </li>
+    <li id="s5">
+      <div class="src-top"><span class="src-n">[5]</span><a class="src-t" href="https://learn.microsoft.com/en-us/copilot/cowork/cowork-available-plugins">Available plugins for Copilot Cowork（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-11-13 ／ 最終更新 2026-11-18</span></div>
+      <p class="src-sum">Cowork で使える Microsoft 製プラグイン（Dynamics 365、Planner、Viva Engage、Fabric IQ など）と、業務別プラグイン（法務・営業・財務・サービス・資本市場・教育、Frontier 向けの会計）、多数のパートナー製プラグインの一覧。Dynamics 365 Sales と Customer Service が既定で有効なこと。利用者は左メニューの Plugins から使うこと。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/copilot/cowork/cowork-available-plugins</p>
+    </li>
+    <li id="s6">
+      <div class="src-top"><span class="src-n">[6]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-manage-plugins">Manage plugins for Copilot Cowork（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-11-16 ／ 最終更新 2026-11-17</span></div>
+      <p class="src-sum">管理者が配ったプラグインは Added Plugins に自動で入り、利用者は削除できないが Sources &amp; Skills で自分の会話のオン・オフはできること。Users タブでの許可・ブロック、Installed for での配布、国・地域での絞り込み不可、ブロックは新しい会話から、コネクタは本人のサインインが必要、.zip のアップロード、情報バリア非対応、Purview での監査。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-manage-plugins</p>
+    </li>
+    <li id="s7">
+      <div class="src-top"><span class="src-n">[7]</span><a class="src-t" href="https://mc.merill.net/message/MC1556104">MC1556104 - Microsoft PowerPoint: Introducing plugins for Microsoft 365 Copilot（メッセージセンター）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-11-16</span><span>アーカイブサイト経由で閲覧</span></div>
+      <p class="src-sum">PowerPoint の Copilot でスキルやコネクタを使えるプラグインが使えるようになること。Windows・Mac・Web が対象。Frontier は11月中旬〜下旬、一般提供は11月下旬〜11月末に展開。管理センターで利用可否を管理するよう推奨。</p>
+      <p class="src-url">https://mc.merill.net/message/MC1556104</p>
+    </li>
+    <li id="s8">
+      <div class="src-top"><span class="src-n">[8]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-projects">Use projects in Copilot Cowork（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-10-27 ／ 最終更新 2026-11-03</span></div>
+      <p class="src-sum">プロジェクトは関係するタスク・指示・コンテキストをまとめる場所で、Recent・Outputs・Project context の3つの区分があること。プロジェクトの指示が全体の指示より優先されること。作った本人だけのものであること。チャットやタスクの追加・移動、アーカイブ、名前と色の変更。成果物からファイルを外すことは現時点でできないこと。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-projects</p>
+    </li>
+    <li id="s9">
+      <div class="src-top"><span class="src-n">[9]</span><a class="src-t" href="https://mc.merill.net/message/MC1519856">MC1519856 - Projects in Copilot（メッセージセンター）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-10-21</span><span>アーカイブサイト経由で閲覧</span></div>
+      <p class="src-sum">プロジェクトがチャット・Cowork タスク・ファイル・指示・成果物をまとめること。回答はまずプロジェクト、次に Microsoft 365 全体の情報をもとにすること。中身は保存せずファイルは OneDrive のまま（権限・秘密度ラベル・保持ポリシーもそのまま）。Cowork タブで 2026-10-20 に全世界で提供済み、モバイルは近日、有効化の操作は不要。</p>
+      <p class="src-url">https://mc.merill.net/message/MC1519856</p>
+    </li>
+    <li id="s10">
+      <div class="src-top"><span class="src-n">[10]</span><a class="src-t" href="https://mc.merill.net/message/MC1535647">MC1535647 - Microsoft Copilot app: Updates to Home and navigation（メッセージセンター）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-11-02 ／ 最終更新 2026-11-20</span><span>アーカイブサイト経由で閲覧</span></div>
+      <p class="src-sum">Chat・Cowork・Projects・Workspaces をまとめた新しい Home。Standard は10月下旬から、Deferred は11月下旬から展開。ノートブックはワークスペースに名前が変わり、中身はそのまま移ること（Standard は12月、Deferred は2027年1月まで）。Cowork の利用はライセンスと従量課金の設定しだいで、支出ポリシーの対象者を確認するよう推奨。</p>
+      <p class="src-url">https://mc.merill.net/message/MC1535647</p>
+    </li>
+  </ol>
+</section>
+
+<!-- ================= フッター ================= -->
+<footer class="foot">
+  <p>調査日：2026-11-24。画面名・設定名・提供時期は、調査日時点の公式ドキュメントとメッセージセンターの情報にもとづきます。段階的に展開されているため、テナントによって表示や時期が違う場合があります。</p>
+  <p>出典の日付一覧</p>
+  <ul>
+    <li>[1] [2] 2026-11-16 更新</li>
+    <li>[3] [4] 2026-09-30</li>
+    <li>[5] 2026-11-13 公開／2026-11-18 更新</li>
+    <li>[6] 2026-11-16 公開／2026-11-17 更新</li>
+    <li>[7] 2026-11-16</li>
+    <li>[8] 2026-10-27 公開／2026-11-03 更新</li>
+    <li>[9] 2026-10-21</li>
+    <li>[10] 2026-11-02 公開／2026-11-20 更新</li>
+  </ul>
+</footer>
+
+</main>
+</body>
+</html>
