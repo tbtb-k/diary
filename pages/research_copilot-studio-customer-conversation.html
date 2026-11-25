@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Copilot Studio の Customer Conversation ハーネス（お客さま向けの電話・チャット窓口をAIで作る専用の型）で何ができるか、画面の流れ、活用事例、料金、日本で使うときの注意を、Microsoft の公式情報34本で確かめてまとめた調査メモ（2026年11月25日調べ）。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Customer Conversationハーネスでできること</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+1:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  /* 1本の読み物カラム（最大900px）。結論 → いつから → しくみ図 → 3つのハーネス比較 → 可否表 → 画面 → 事例 → 料金 → 日本での注意 → 根拠。
+     色は役割で固定：お客さま＝青、受付役（プライマリ）＝青緑、専門係（サブエージェント）＝琥珀、人の担当者＝紫。 */
+  --bg:#F3F4F2;
+  --surface:#FFFFFF;
+  --sunk:#E8ECE9;
+  --ink:#17201D;
+  --muted:#55635E;
+  --line:#CFD8D4;
+  --cust:#2A57A3;
+  --cust-soft:#E0E8F6;
+  --pri:#0E6B64;
+  --pri-soft:#DCEFEC;
+  --sub:#9C5410;
+  --sub-soft:#F5E7D6;
+  --human:#6B3E91;
+  --human-soft:#EDE4F4;
+  --ok:#24683F;
+  --ok-soft:#DEF0E4;
+  --cond:#855600;
+  --cond-soft:#F7ECD3;
+  --ng:#A3291F;
+  --ng-soft:#F7DFDB;
+  --na:#59615F;
+  --na-soft:#E5E9E8;
+  --hl:#FFF4CC;
+  --mock-bg:#F7F8FA;
+  --mock-bar:#E9ECF1;
+  --f-display:"M PLUS 1","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1413;
+    --surface:#161D1C;
+    --sunk:#1E2826;
+    --ink:#E4ECE9;
+    --muted:#9DABA7;
+    --line:#2D3937;
+    --cust:#93B4F1;
+    --cust-soft:#18253F;
+    --pri:#62C8BE;
+    --pri-soft:#123330;
+    --sub:#E9A660;
+    --sub-soft:#35250F;
+    --human:#C8A6EA;
+    --human-soft:#2C1F3A;
+    --ok:#7FCB9B;
+    --ok-soft:#153222;
+    --cond:#E6B65C;
+    --cond-soft:#372A11;
+    --ng:#F29389;
+    --ng-soft:#3B1A16;
+    --na:#A7B0AE;
+    --na-soft:#252D2C;
+    --hl:#332E12;
+    --mock-bg:#1A2120;
+    --mock-bar:#232C2B;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1413;
+  --surface:#161D1C;
+  --sunk:#1E2826;
+  --ink:#E4ECE9;
+  --muted:#9DABA7;
+  --line:#2D3937;
+  --cust:#93B4F1;
+  --cust-soft:#18253F;
+  --pri:#62C8BE;
+  --pri-soft:#123330;
+  --sub:#E9A660;
+  --sub-soft:#35250F;
+  --human:#C8A6EA;
+  --human-soft:#2C1F3A;
+  --ok:#7FCB9B;
+  --ok-soft:#153222;
+  --cond:#E6B65C;
+  --cond-soft:#372A11;
+  --ng:#F29389;
+  --ng-soft:#3B1A16;
+  --na:#A7B0AE;
+  --na-soft:#252D2C;
+  --hl:#332E12;
+  --mock-bg:#1A2120;
+  --mock-bar:#232C2B;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:16px;
+  line-height:1.8;
+  -webkit-text-size-adjust:100%;
+}
+a{color:var(--pri);text-underline-offset:3px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--pri);outline-offset:2px;border-radius:4px}
+p{margin:0}
+ul,ol{margin:0;padding-left:1.3em}
+li+li{margin-top:4px}
+b,strong{font-weight:700}
+code,.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+code{font-size:.86em;background:var(--sunk);border:1px solid var(--line);border-radius:5px;padding:0 5px;word-break:break-all}
+
+.page{
+  max-width:900px;
+  margin:0 auto;
+  padding-block:40px 72px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid;
+  gap:56px;
+}
+.page > *{min-width:0}
+section{display:grid;gap:18px;scroll-margin-top:16px}
+section > *{min-width:0}
+h1,h2,h3{font-family:var(--f-display);font-weight:800;line-height:1.4;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.6rem, 5.2vw, 2.4rem);letter-spacing:.01em}
+h2{font-size:clamp(1.25rem, 3.4vw, 1.5rem)}
+h3{font-size:1.05rem;font-weight:700}
+.lead{color:var(--muted);font-size:.95rem;max-width:70ch}
+.sub-block{display:grid;gap:12px}
+.ref{font-family:var(--f-mono);font-size:.74em;text-decoration:none;color:var(--muted);margin-left:2px;white-space:nowrap}
+.ref:hover{color:var(--pri);text-decoration:underline}
+
+/* 役割の色 */
+.k-cust{color:var(--cust);font-weight:700}
+.k-pri{color:var(--pri);font-weight:700}
+.k-sub{color:var(--sub);font-weight:700}
+.k-human{color:var(--human);font-weight:700}
+
+/* ---------- ヘッダー ---------- */
+.hero{display:grid;gap:16px}
+.eyebrow{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;font-size:.82rem;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:2px 12px;font-weight:500}
+.chip.cat{background:var(--pri-soft);border-color:transparent;color:var(--pri);font-weight:700}
+.toc{display:flex;flex-wrap:wrap;gap:8px}
+.toc a{font-size:.85rem;text-decoration:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:4px 10px}
+.toc a:hover{border-color:var(--pri);color:var(--pri)}
+
+/* ---------- 結論 ---------- */
+.answer{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-left:6px solid var(--pri);
+  border-radius:14px;
+  padding:22px clamp(16px,3vw,28px);
+  display:grid;gap:14px;
+}
+.answer .label{font-size:.78rem;font-weight:700;letter-spacing:.08em;color:var(--pri)}
+.answer .one{font-family:var(--f-display);font-weight:800;font-size:clamp(1.12rem,3vw,1.35rem);line-height:1.6}
+.answer ul{display:grid;gap:6px}
+.keypoints{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px}
+.kp{background:var(--sunk);border-radius:10px;padding:12px 14px;display:grid;gap:4px}
+.kp .kp-t{font-weight:700;font-size:.95rem}
+.kp .kp-d{font-size:.88rem;color:var(--muted)}
+.kp.warn{background:var(--cond-soft)}
+.kp.warn .kp-t{color:var(--cond)}
+
+/* ---------- タイムライン ---------- */
+.timeline{list-style:none;padding:0;margin:0;display:grid;gap:0;border-left:3px solid var(--line);margin-left:8px}
+.timeline li{position:relative;padding:0 0 18px 22px;margin:0}
+.timeline li::before{content:"";position:absolute;left:-9px;top:6px;width:15px;height:15px;border-radius:50%;background:var(--surface);border:3px solid var(--line)}
+.timeline li.done::before{border-color:var(--pri);background:var(--pri)}
+.timeline li.key::before{border-color:var(--ok);background:var(--ok)}
+.tl-d{font-family:var(--f-mono);font-size:.85rem;color:var(--muted)}
+.tl-t{font-weight:700}
+.tl-x{font-size:.9rem;color:var(--muted)}
+
+/* ---------- しくみ図 ---------- */
+.flow{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:18px clamp(12px,3vw,24px);display:grid;gap:14px;
+}
+.flow-row{display:grid;grid-template-columns:1fr auto 1.25fr auto 1.6fr;gap:10px;align-items:stretch}
+.node{border-radius:12px;padding:12px;display:grid;gap:6px;align-content:start;border:2px solid transparent}
+.node .n-h{font-weight:800;font-family:var(--f-display);font-size:.98rem;line-height:1.4}
+.node .n-d{font-size:.84rem;line-height:1.6}
+.node .n-h small{display:block;font-size:.78rem;font-weight:700;opacity:.85}
+.node.cust{background:var(--cust-soft);border-color:var(--cust)}
+.node.cust .n-h{color:var(--cust)}
+.node.pri{background:var(--pri-soft);border-color:var(--pri)}
+.node.pri .n-h{color:var(--pri)}
+.node.subs{background:var(--sub-soft);border-color:var(--sub)}
+.node.subs .n-h{color:var(--sub)}
+.node.human{background:var(--human-soft);border-color:var(--human)}
+.node.human .n-h{color:var(--human)}
+.sub-list{display:grid;gap:6px}
+.sub-item{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:.84rem;line-height:1.5}
+.sub-item b{color:var(--sub)}
+.arrow{display:grid;place-items:center;color:var(--muted);font-weight:800;font-size:1.3rem}
+.flow-bottom{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.flow-cap{font-size:.84rem;color:var(--muted)}
+@media (max-width:700px){
+  .flow-row{grid-template-columns:1fr}
+  .arrow{transform:rotate(90deg);height:22px}
+  .flow-bottom{grid-template-columns:1fr}
+}
+.analogy{background:var(--sunk);border-radius:12px;padding:14px 16px;display:grid;gap:6px}
+.analogy .a-h{font-weight:700;font-size:.9rem;color:var(--muted)}
+
+/* ---------- 表 ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface);-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:.9rem;line-height:1.65}
+.tbl-wrap table{min-width:640px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+thead th{background:var(--sunk);font-weight:700;font-size:.85rem;white-space:nowrap}
+tbody tr:last-child td,tbody tr:last-child th{border-bottom:0}
+tbody th{font-weight:700}
+tr.hl td,tr.hl th{background:var(--hl)}
+td.col-cc,th.col-cc{background:color-mix(in srgb, var(--pri-soft) 60%, transparent)}
+.tbl-note{font-size:.82rem;color:var(--muted)}
+.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-weight:700;font-size:.8rem;white-space:nowrap}
+.p-ok{background:var(--ok-soft);color:var(--ok)}
+.p-cond{background:var(--cond-soft);color:var(--cond)}
+.p-ng{background:var(--ng-soft);color:var(--ng)}
+.p-na{background:var(--na-soft);color:var(--na)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:.84rem;color:var(--muted);align-items:center}
+.grp th{background:var(--sunk);font-size:.82rem;color:var(--muted);letter-spacing:.04em}
+
+/* ---------- 画面の見取り図 ---------- */
+.notice{border:1px dashed var(--line);border-radius:10px;padding:10px 14px;font-size:.86rem;color:var(--muted);background:var(--surface)}
+.notice b{color:var(--ink)}
+.tabs-ui{display:grid;gap:12px}
+.tablist{display:none;flex-wrap:wrap;gap:6px}
+.js .tablist{display:flex}
+.tablist button{
+  font:inherit;font-size:.88rem;font-weight:700;cursor:pointer;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  border-radius:8px;padding:6px 12px;line-height:1.4;
+}
+.tablist button[aria-selected="true"]{background:var(--pri);border-color:var(--pri);color:var(--surface)}
+.tabpanel{display:grid;gap:12px}
+.mock{
+  border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--mock-bg);
+  font-size:.82rem;line-height:1.55;
+}
+.mock-top{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--mock-bar);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.mock-top .dots{display:flex;gap:5px}
+.mock-top .dots i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block}
+.mock-top .m-title{font-weight:700}
+.mock-top .m-badge{margin-left:auto;font-size:.72rem;border-radius:999px;padding:1px 8px;background:var(--pri-soft);color:var(--pri);font-weight:700}
+.mock-tabs{display:flex;flex-wrap:wrap;gap:2px 14px;padding:6px 12px;border-bottom:1px solid var(--line);background:var(--surface)}
+.mock-tabs span{padding:4px 0;color:var(--muted);font-weight:500}
+.mock-tabs span.on{color:var(--ink);font-weight:700;box-shadow:inset 0 -3px 0 var(--pri)}
+.mock-body{display:grid;grid-template-columns:1.1fr 1fr;gap:12px;padding:12px}
+@media (max-width:640px){ .mock-body{grid-template-columns:1fr} }
+.m-pane{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;display:grid;gap:8px;align-content:start;min-width:0}
+.m-pane .m-h{font-weight:700;font-size:.8rem;color:var(--muted)}
+.m-card{border:2px solid var(--pri);background:var(--pri-soft);border-radius:8px;padding:6px 8px}
+.m-card.sub{border-color:var(--sub);background:var(--sub-soft)}
+.m-card.conn{border-style:dashed;border-color:var(--na);background:var(--na-soft)}
+.m-card b{display:block}
+.m-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:6px}
+.m-btn{display:inline-block;border:1px solid var(--line);border-radius:6px;padding:1px 8px;background:var(--surface);font-weight:500;white-space:nowrap}
+.m-btn.pri{background:var(--pri);color:var(--surface);border-color:var(--pri)}
+.m-btns{display:flex;flex-wrap:wrap;gap:6px}
+.m-field{display:grid;gap:2px}
+.m-field .lab{font-size:.74rem;color:var(--muted);font-weight:700}
+.m-field .box{border:1px solid var(--line);border-radius:6px;padding:3px 8px;background:var(--mock-bg);min-height:1.6em}
+.m-subtabs{display:flex;gap:2px;flex-wrap:wrap}
+.m-subtabs span{border:1px solid var(--line);border-bottom:0;border-radius:6px 6px 0 0;padding:0 8px;font-size:.74rem;color:var(--muted)}
+.m-subtabs span.on{background:var(--mock-bg);color:var(--ink);font-weight:700}
+.m-sec{display:flex;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding-top:6px;flex-wrap:wrap}
+.m-sec span:first-child{font-weight:700}
+.m-chat{display:grid;gap:6px}
+.bub{max-width:88%;border-radius:10px;padding:5px 9px}
+.bub.u{justify-self:end;background:var(--cust-soft)}
+.bub.a{justify-self:start;background:var(--sunk)}
+.m-step{display:flex;gap:6px;align-items:baseline}
+.m-step .ic{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);min-width:3.5em}
+.m-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:6px}
+.m-kpi{border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--surface)}
+.m-kpi .v{font-family:var(--f-mono);font-size:1rem;font-weight:500}
+.m-kpi .l{font-size:.72rem;color:var(--muted)}
+.m-bar{display:flex;height:12px;border-radius:6px;overflow:hidden}
+.m-bar i{display:block}
+.num{display:inline-grid;place-items:center;width:1.45em;height:1.45em;border-radius:50%;background:var(--ink);color:var(--surface);font-size:.72rem;font-weight:700;font-family:var(--f-mono);margin-right:3px;vertical-align:1px}
+.callouts{display:grid;gap:8px;font-size:.9rem;list-style:none;padding:0}
+.callouts li{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start;margin:0}
+.js .tabpanel[hidden]{display:none}
+
+/* ---------- ステップ ---------- */
+.steps{list-style:none;padding:0;margin:0;display:grid;gap:10px;counter-reset:st}
+.steps li{counter-increment:st;display:grid;grid-template-columns:auto 1fr;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0}
+.steps li::before{content:counter(st);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--pri);color:var(--surface);font-weight:800;font-family:var(--f-mono)}
+.st-t{font-weight:700}
+.st-d{font-size:.9rem;color:var(--muted)}
+
+/* ---------- 事例 ---------- */
+.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}
+.case{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:8px;align-content:start}
+.case .c-type{font-size:.75rem;font-weight:700;letter-spacing:.04em}
+.case .c-type.real{color:var(--ok)}
+.case .c-type.partner{color:var(--human)}
+.case .c-type.sample{color:var(--cond)}
+.case .c-type.idea{color:var(--na)}
+.case .c-h{font-weight:700;line-height:1.5}
+.case .c-d{font-size:.9rem}
+.case .c-s{font-size:.8rem;color:var(--muted)}
+blockquote{margin:0;border-left:4px solid var(--line);padding:4px 0 4px 12px;font-size:.9rem;color:var(--muted)}
+
+/* ---------- 注意・代替 ---------- */
+.notes{display:grid;gap:10px}
+.note{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;display:grid;gap:4px}
+.note .n-t{font-weight:700}
+.note .n-d{font-size:.9rem}
+.note.big{border-left:6px solid var(--cond)}
+.alts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}
+.alt{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:8px;align-content:start}
+.alt .a-t{font-weight:700}
+.alt dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0;font-size:.86rem}
+.alt dt{color:var(--muted);font-weight:700}
+.alt dd{margin:0}
+
+/* ---------- 根拠 ---------- */
+.sources{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.src{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:4px;scroll-margin-top:16px;margin:0}
+.src:target{outline:3px solid var(--pri);outline-offset:2px}
+.src-top{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline}
+.src-n{font-family:var(--f-mono);font-weight:500;color:var(--muted)}
+.src-t{font-weight:700}
+.tag{font-size:.72rem;font-weight:700;border-radius:999px;padding:0 8px}
+.t-off{background:var(--ok-soft);color:var(--ok)}
+.t-3rd{background:var(--cond-soft);color:var(--cond)}
+.src-meta{font-size:.8rem;color:var(--muted)}
+.src-sum{font-size:.88rem}
+.src-url{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);word-break:break-all}
+.src-group{font-weight:700;font-size:.9rem;color:var(--muted);margin-top:6px}
+
+footer{border-top:1px solid var(--line);padding-top:20px;display:grid;gap:8px;font-size:.84rem;color:var(--muted)}
+footer .dates{display:flex;flex-wrap:wrap;gap:4px 14px;font-family:var(--f-mono);font-size:.74rem}
+</style>
+</head>
+<body>
+<main class="page">
+
+  <!-- ================= ヘッダー ================= -->
+  <header class="hero">
+    <div class="eyebrow">
+      <span class="chip cat">調査メモ</span>
+      <span class="chip">調査日 2026年11月25日</span>
+      <span class="chip">対象：Microsoft Copilot Studio</span>
+    </div>
+    <h1>Customer Conversation ハーネスで<br>できること</h1>
+    <p class="lead">Copilot Studio に加わった「Customer Conversation ハーネス」について、何ができるのか、作る画面はどう進むのか、実際にどう使われているのか、料金や日本で使うときの注意点まで、Microsoft の公式ドキュメントと公式ブログ（計34本）で確かめてまとめました。ハーネスとは「AIモデルを、決まった種類の仕事ができるエージェントとして動かすための土台（型）」のことです。</p>
+    <nav class="toc" aria-label="目次">
+      <a href="#conclusion">結論</a>
+      <a href="#status">いつから</a>
+      <a href="#what">しくみ</a>
+      <a href="#compare">3つのハーネス</a>
+      <a href="#matrix">できること一覧</a>
+      <a href="#screens">実際の画面</a>
+      <a href="#cases">活用事例</a>
+      <a href="#cost">料金</a>
+      <a href="#japan">日本での注意</a>
+      <a href="#sources">根拠</a>
+    </nav>
+  </header>
+
+  <!-- ================= 結論 ================= -->
+  <section id="conclusion" aria-labelledby="h-conclusion">
+    <div class="answer">
+      <span class="label" id="h-conclusion">結論</span>
+      <p class="one">お客さま向けの「電話とチャットの窓口」を、受付役と専門係のAIチームで作り、解決できないときは人に引き継ぐための専用の型です。2026年10月21日にプレビューとして登場し、11月18日に一般提供（GA）になりました。</p>
+      <p>1つのエージェントが最初から電話（音声）とチャットの両方に対応し、受付役のエージェントが用件を聞き分けて、請求・配送・技術サポートなどの専門係（サブエージェント）に振り分けます。人への引き継ぎ（Teams Phone、メール、コンタクトセンター）や、声で本人を確かめる機能が最初から用意されているのが、ほかのハーネスとの大きな違いです<a class="ref" href="#s1">[1]</a><a class="ref" href="#s3">[3]</a><a class="ref" href="#s9">[9]</a><a class="ref" href="#s31">[31]</a>。</p>
+      <div class="keypoints">
+        <div class="kp"><span class="kp-t">電話もチャットも1つで</span><span class="kp-d">チャネルを先に選ぶ必要はなく、話し方の指示だけ「Speech」「Chat」で書き分けます<a class="ref" href="#s10">[10]</a></span></div>
+        <div class="kp"><span class="kp-t">困ったら人へ</span><span class="kp-d">「Escalate」ツールで Teams Phone・メール・コンタクトセンターに会話ごと渡せます<a class="ref" href="#s9">[9]</a></span></div>
+        <div class="kp"><span class="kp-t">作る→試す→公開→見守る</span><span class="kp-d">Build・Preview・Evaluate・Deploy・Monitor のタブが1画面にそろっています<a class="ref" href="#s3">[3]</a></span></div>
+        <div class="kp warn"><span class="kp-t">日本の地域はまだ対象外</span><span class="kp-d">対応地域の一覧（11/24更新）に日本がありません。日本リージョンの環境では作れない前提で計画してください<a class="ref" href="#s23">[23]</a></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= いつから ================= -->
+  <section id="status" aria-labelledby="h-status">
+    <h2 id="h-status">いつから使える？ 提供状況の流れ</h2>
+    <p class="lead">「新しく出た」という話は本当で、まだ出て1か月ほどの機能です。プレビューから一般提供までが短いので、古い記事の「プレビュー」表記と混ざりやすい点に気をつけてください。</p>
+    <ol class="timeline">
+      <li class="done">
+        <div class="tl-d">2026-10-21</div>
+        <div class="tl-t">パブリックプレビュー開始</div>
+        <div class="tl-x">Copilot Studio ブログで発表。同じ日に、既存のコンタクトセンターにAIを足す新製品「Microsoft Contact Center Intelligence（CCI）」も発表されました<a class="ref" href="#s29">[29]</a><a class="ref" href="#s32">[32]</a>。</div>
+      </li>
+      <li class="done">
+        <div class="tl-d">2026-11-04</div>
+        <div class="tl-t">10月の新機能まとめで「プレビュー中」と紹介</div>
+        <div class="tl-x">請求・アカウント・トラブル対応などの専門係を作れること、テスト・評価・公開・監視が一体になっていることが説明されました<a class="ref" href="#s30">[30]</a><a class="ref" href="#s28">[28]</a>。</div>
+      </li>
+      <li class="done">
+        <div class="tl-d">2026-11-16〜17</div>
+        <div class="tl-t">Microsoft Learn の説明ページが一斉に更新</div>
+        <div class="tl-x">作成手順・音声設定・メモリなどの詳しいページがそろいました。検索エンジンに残る古い題名には「(preview)」が付いていますが、今のページ名からは外れています<a class="ref" href="#s3">[3]</a><a class="ref" href="#s4">[4]</a>。</div>
+      </li>
+      <li class="key">
+        <div class="tl-d">2026-11-18（Ignite 2026 期間中）</div>
+        <div class="tl-t">一般提供（GA）</div>
+        <div class="tl-x">Copilot Studio 公式ブログが「now generally available（一般提供開始）」と明記。同じ日に CCI も一般提供になりました<a class="ref" href="#s31">[31]</a><a class="ref" href="#s33">[33]</a><a class="ref" href="#s34">[34]</a>。</div>
+      </li>
+    </ol>
+    <p class="tbl-note">補足：Learn の「What's new」ページ（11/12更新）は10月のプレビューの記載までで、GA の行はまだありません<a class="ref" href="#s28">[28]</a>。また GA 後も、会話形式のテスト、カスタム指標、REST API ツールなど一部の機能はプレビューのままです<a class="ref" href="#s18">[18]</a><a class="ref" href="#s22">[22]</a><a class="ref" href="#s8">[8]</a>。</p>
+  </section>
+
+  <!-- ================= しくみ ================= -->
+  <section id="what" aria-labelledby="h-what">
+    <h2 id="h-what">ひとことで言うと：AIの「コールセンター」を1つ作る型</h2>
+    <p class="lead">このハーネスで作るエージェントは「Customer Assist Agent（カスタマー アシスト エージェント）」と呼ばれます<a class="ref" href="#s3">[3]</a>。中身は、受付役が1人と、得意分野ごとの専門係が複数いるチームです。</p>
+
+    <figure class="flow" role="group" aria-label="Customer Conversation ハーネスのしくみ図">
+      <div class="flow-row">
+        <div class="node cust">
+          <span class="n-h">お客さま</span>
+          <span class="n-d">電話をかける／Webサイトのチャットに書き込む。途中で電話からチャットに移っても、前の話を覚えています<a class="ref" href="#s14">[14]</a>。</span>
+        </div>
+        <div class="arrow" aria-hidden="true">→</div>
+        <div class="node pri">
+          <span class="n-h">受付役<small>プライマリ エージェント</small></span>
+          <span class="n-d">あいさつし、用件を聞き分けて、どの専門係に渡すか決めます。判断の手がかりは各専門係の「名前・説明・指示」です<a class="ref" href="#s4">[4]</a><a class="ref" href="#s6">[6]</a>。</span>
+        </div>
+        <div class="arrow" aria-hidden="true">→</div>
+        <div class="node subs">
+          <span class="n-h">専門係<small>サブエージェント</small></span>
+          <div class="sub-list">
+            <div class="sub-item"><b>請求係</b>：料金の確認・支払い</div>
+            <div class="sub-item"><b>配送係</b>：注文状況の確認</div>
+            <div class="sub-item"><b>技術サポート係</b>：トラブル対応</div>
+          </div>
+          <span class="n-d">それぞれが自分専用のナレッジ（参照資料）とツール（他システムの操作）を持ちます<a class="ref" href="#s6">[6]</a>。</span>
+        </div>
+      </div>
+      <div class="flow-bottom">
+        <div class="node human">
+          <span class="n-h">解決できないときは人へ（Escalate）</span>
+          <span class="n-d">Teams Phone の通話キュー、メール、コンタクトセンター（Customer Engagement）へ会話ごと引き継ぎます。専門係ごとに引き継ぎ先を分けられます<a class="ref" href="#s9">[9]</a><a class="ref" href="#s1">[1]</a>。</span>
+        </div>
+        <div class="node" style="background:var(--sunk)">
+          <span class="n-h">外部のAIも仲間に（接続エージェント）</span>
+          <span class="n-d">Microsoft Foundry で作ったエージェントを、数クリックでチームに加えられます（現時点では Foundry のエージェントのみ）<a class="ref" href="#s6">[6]</a><a class="ref" href="#s33">[33]</a>。</span>
+        </div>
+      </div>
+      <figcaption class="flow-cap">図：公式ドキュメントの説明をもとに作った概念図です。専門係の名前は例です。</figcaption>
+    </figure>
+
+    <div class="analogy">
+      <span class="a-h">たとえるなら</span>
+      <p>会社の代表電話です。受付の人（受付役）が「ご用件は？」と聞いて、経理・配送・サポートの担当部署（専門係）に回し、難しい話は上の人（人の担当者）に代わります。この「受付と部署の分け方」と「どこで人に代わるか」を、画面上で設定していくイメージです。公式も「専門係は、コンタクトセンターの部署のように互いに独立させるのがうまくいくコツ」と書いています<a class="ref" href="#s6">[6]</a>。</p>
+    </div>
+  </section>
+
+  <!-- ================= 3つのハーネス ================= -->
+  <section id="compare" aria-labelledby="h-compare">
+    <h2 id="h-compare">3つのハーネスの違い</h2>
+    <p class="lead">Copilot Studio のエージェントは、作るときに3つのハーネス（型）のどれかを選びます。AIモデルが「考える頭脳」だとすると、ハーネスは「その頭脳に道具を持たせ、仕事の進め方を決める枠組み」です<a class="ref" href="#s2">[2]</a>。</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">比べる点</th><th scope="col">標準ハーネス</th><th scope="col">Microsoft Copilot ハーネス<br><span style="font-weight:400">（旧称 GitHub Copilot ハーネス）</span></th><th scope="col" class="col-cc">Customer Conversation ハーネス</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">向いている仕事</th><td>決まったルールで動く、短くて決まった流れの仕事</td><td>考えることが多い、長くて手順の多い仕事</td><td class="col-cc">お客さまとの音声・チャットでのやりとり</td></tr>
+          <tr><th scope="row">公式の例</th><td>社内ヘルプデスク</td><td>買掛金（請求書）の処理</td><td class="col-cc">コンタクトセンター、問い合わせ窓口</td></tr>
+          <tr><th scope="row">得意なこと</th><td>作り手が会話の経路を細かく設計できる</td><td>自分で計画を立て、Word・Excel などのファイルも作る</td><td class="col-cc">決まった話題には毎回同じように答えつつ、自然な会話もできる</td></tr>
+          <tr><th scope="row">行き詰まったとき</th><td>作り手が用意した分岐で対応</td><td>自分でやり方を変えて立て直す</td><td class="col-cc">決めておいた経路で人の担当者に引き継ぐ</td></tr>
+          <tr><th scope="row">ファイル作成</th><td>—</td><td>得意</td><td class="col-cc">得意分野ではない（Not a focus）</td></tr>
+          <tr><th scope="row">課金</th><td>従来の Copilot Studio のライセンス方式</td><td>Copilot クレジットの従量課金</td><td class="col-cc">Copilot クレジットの従量課金</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tbl-note">出典：<a class="ref" href="#s1">[1]</a><a class="ref" href="#s2">[2]</a>。「標準」と「Microsoft Copilot」の選び方は比較ガイドが詳しいですが、Customer Conversation ハーネスは「お客さま向けかどうか」で選ぶ、と考えると迷いません。作成後に別のハーネスへ切り替えられるかは、Customer Conversation ハーネスについては記載が見つかりませんでした（未確認）。</p>
+  </section>
+
+  <!-- ================= 可否表 ================= -->
+  <section id="matrix" aria-labelledby="h-matrix">
+    <h2 id="h-matrix">できること一覧</h2>
+    <div class="legend" aria-label="凡例">
+      <span><span class="pill p-ok">○ できる</span></span>
+      <span><span class="pill p-cond">△ 条件付き</span></span>
+      <span><span class="pill p-ng">✕ できない・対象外</span></span>
+      <span><span class="pill p-na">― 記載なし／未確認</span></span>
+      <span>黄色の行は、日本で検討するときに特に効いてくる行です。</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th scope="col">項目</th><th scope="col">可否</th><th scope="col">中身</th><th scope="col">根拠</th></tr></thead>
+        <tbody>
+          <tr class="grp"><th colspan="4" scope="colgroup">会話の作り方</th></tr>
+          <tr><th scope="row">電話とチャットを1つで</th><td><span class="pill p-ok">○</span></td><td>すべてのエージェントが最初から音声とチャットの両方に対応。話し方の違いは指示の「Speech」「Chat」タブに書き分けます（各2万字まで）。</td><td><a class="ref" href="#s10">[10]</a><a class="ref" href="#s5">[5]</a></td></tr>
+          <tr><th scope="row">受付役＋専門係のチーム</th><td><span class="pill p-ok">○</span></td><td>受付役から専門係へ振り分け。専門係の説明は1,024字まで、指示は2万字まで。指示の中で「/専門係名」と書くと、係どうしの連携も指定できます。</td><td><a class="ref" href="#s6">[6]</a><a class="ref" href="#s4">[4]</a></td></tr>
+          <tr><th scope="row">AIの自由回答＋決まった手順の両立</th><td><span class="pill p-ok">○</span></td><td>「生成スキル」（指示を読んでAIが判断）と「トピック」（電話の自動音声案内のような決まった手順）を1つのエージェントで混ぜられます。</td><td><a class="ref" href="#s29">[29]</a><a class="ref" href="#s33">[33]</a></td></tr>
+          <tr><th scope="row">会話の節目の動き（イベント）</th><td><span class="pill p-ok">○</span></td><td>会話開始、終了、エラー、無音検知、会話リセットなど。たとえば開始時にコンタクトセンターから渡された電話番号を受け取れます。</td><td><a class="ref" href="#s15">[15]</a></td></tr>
+
+          <tr class="grp"><th colspan="4" scope="colgroup">情報と道具</th></tr>
+          <tr><th scope="row">参照できる資料（ナレッジ）</th><td><span class="pill p-cond">△</span></td><td>公開Webサイト、ファイル、Dynamics 365、SharePoint、Dataverse、Salesforce、ServiceNow。<b>ただし本人のサインインが必要な資料はチャットだけ</b>で使えます（電話ではサインインできないため）。</td><td><a class="ref" href="#s7">[7]</a><a class="ref" href="#s3">[3]</a></td></tr>
+          <tr><th scope="row">他システムの操作（ツール）</th><td><span class="pill p-ok">○</span></td><td>窓口向けのシステムツール、プロンプト、Power Platform コネクタ、MCP（AIと外部ツールをつなぐ共通ルール）、REST API（プレビュー）、ワークフロー。</td><td><a class="ref" href="#s8">[8]</a></td></tr>
+          <tr><th scope="row">お客さまが送ったファイルを読む</th><td><span class="pill p-ok">○</span></td><td>PDF・TXT・CSV・XLSX・画像（15MBまで）を会話の中で分析。ファイルは保存されません。</td><td><a class="ref" href="#s12">[12]</a></td></tr>
+          <tr><th scope="row">Word・Excel などのファイルを作る</th><td><span class="pill p-ng">✕</span></td><td>このハーネスの得意分野ではないと明記されています。資料作成が主役なら Microsoft Copilot ハーネスです。</td><td><a class="ref" href="#s1">[1]</a></td></tr>
+
+          <tr class="grp"><th colspan="4" scope="colgroup">窓口ならではの機能</th></tr>
+          <tr><th scope="row">人への引き継ぎ（Escalate）</th><td><span class="pill p-ok">○</span></td><td>引き継ぎ先は Teams Phone、メール、Customer Engagement（会話をまるごと渡し、空いている担当者を探す）の3種類。Teams Phone では外部の電話番号への直接転送も可能。</td><td><a class="ref" href="#s9">[9]</a><a class="ref" href="#s21">[21]</a></td></tr>
+          <tr><th scope="row">声による本人確認</th><td><span class="pill p-cond">△</span></td><td>話しているあいだに声紋で本人を確かめる機能。<b>Dynamics 365 アプリが有効な環境が必要</b>で、方針は CCI ポータルで管理。生体情報の扱いは各国の法令に沿う責任が利用者側にあります。</td><td><a class="ref" href="#s12">[12]</a><a class="ref" href="#s27">[27]</a></td></tr>
+          <tr><th scope="row">前回の会話を覚える（メモリ）</th><td><span class="pill p-cond">△</span></td><td>名前・未解決の用件・前回の要約を次の会話で使えます。独自の項目も5つまで。電話⇔チャットをまたぐには、共通の顧客IDの設定が必要です。</td><td><a class="ref" href="#s14">[14]</a></td></tr>
+          <tr><th scope="row">音声の細かい調整</th><td><span class="pill p-ok">○</span></td><td>声の種類・話す速さ、プッシュボタン入力（DTMF）、聞き取り感度、無音時の対応、処理待ちの「少々お待ちください」メッセージなど。</td><td><a class="ref" href="#s11">[11]</a></td></tr>
+          <tr><th scope="row">多言語</th><td><span class="pill p-ok">○</span></td><td>主言語＋追加言語を設定。リアルタイム音声モデル（GPT Realtime）は会話の途中で言語を自動で切り替えます。翻訳ファイルの書き出し・取り込みも可能。</td><td><a class="ref" href="#s13">[13]</a></td></tr>
+          <tr class="hl"><th scope="row">日本語</th><td><span class="pill p-na">―</span></td><td>Copilot Studio 全体の対応言語には日本語があります。ただ、このハーネスで日本語の音声・チャットが使えるかを明記したページは見つかりませんでした。</td><td><a class="ref" href="#s25">[25]</a><a class="ref" href="#s13">[13]</a></td></tr>
+
+          <tr class="grp"><th colspan="4" scope="colgroup">公開と運用</th></tr>
+          <tr><th scope="row">公開先（単独）</th><td><span class="pill p-ok">○</span></td><td>デモ用Webサイト（公開すると自動で作られる）、自社サイトへのWebチャット埋め込み、Teams Phone の電話番号。</td><td><a class="ref" href="#s20">[20]</a><a class="ref" href="#s19">[19]</a></td></tr>
+          <tr><th scope="row">既存のコンタクトセンターにつなぐ</th><td><span class="pill p-cond">△</span></td><td>Dynamics 365 Contact Center、Genesys、その他（持ち込み）。Cisco・Avaya・Five9 とは CCI 側で連携。<b>コンタクトセンターへの接続は CCI ポータルからのみ</b>で、担当の管理者が行います。</td><td><a class="ref" href="#s20">[20]</a><a class="ref" href="#s4">[4]</a><a class="ref" href="#s33">[33]</a></td></tr>
+          <tr><th scope="row">テスト・評価・監視</th><td><span class="pill p-ok">○</span></td><td>Webチャットと音声通話での試し打ち、テスト問題集での一括評価、公開後の解決率・引き継ぎ率・満足度・消費クレジットの確認。</td><td><a class="ref" href="#s17">[17]</a><a class="ref" href="#s18">[18]</a><a class="ref" href="#s22">[22]</a></td></tr>
+          <tr><th scope="row">管理者からの見える化</th><td><span class="pill p-ok">○</span></td><td>作った時点で Microsoft Agent 365 の一覧に載り、持ち主・チャネル・使っている道具や権限を管理者が確認できます。</td><td><a class="ref" href="#s29">[29]</a><a class="ref" href="#s33">[33]</a></td></tr>
+          <tr class="hl"><th scope="row">日本のリージョンで使う</th><td><span class="pill p-ng">✕</span></td><td>対応地域はアジア（香港）、オーストラリア、カナダ、ヨーロッパ、スイス、UAE、イギリス、アメリカのみ。公式に「ここに挙げた地域だけで使える」と書かれており、日本は入っていません（2026-11-24 時点）。</td><td><a class="ref" href="#s23">[23]</a></td></tr>
+          <tr><th scope="row">専門係ごとに別のAIモデル</th><td><span class="pill p-na">―</span></td><td>「近日対応」と予告されている段階。今はモデルのモード（コスト重視／速さ重視）を受付役で選び、全員に共通で効きます。</td><td><a class="ref" href="#s33">[33]</a><a class="ref" href="#s16">[16]</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= 実際の画面 ================= -->
+  <section id="screens" aria-labelledby="h-screens">
+    <h2 id="h-screens">実際の画面：作ってから公開するまで</h2>
+    <p class="notice"><b>この見取り図について</b>：Microsoft Learn の手順説明に出てくるタブ名・ボタン名・項目名をもとに、画面の構成を再現したものです。実際の色・配置・細部とは異なります。公式のスクリーンショットは、発表ブログ<a class="ref" href="#s29">[29]</a>に掲載されています（著作権に配慮し、このページには転載していません）。ボタン名は英語画面の表記です。</p>
+
+    <div class="sub-block">
+      <h3>画面に入るまで</h3>
+      <ol class="steps">
+        <li><div><div class="st-t">入口は2か所</div><div class="st-d">ホーム画面の「Other ways to build」にある「Customer conversation agent」タイル、またはエージェント一覧の「New agent」から「Customer Conversation」バッジ付きの「Agent」を選びます<a class="ref" href="#s4">[4]</a>。</div></div></li>
+        <li><div><div class="st-t">やりたいことを文章で説明する</div><div class="st-d">窓口の内容を書くと、名前・説明・指示・チャネル・ナレッジ・ツールの案を自動で作ってくれます。何度かやりとりして練り直すことも、「Start from scratch」で白紙から作ることもできます<a class="ref" href="#s4">[4]</a>。</div></div></li>
+        <li><div><div class="st-t">CCI ポータルからも同じものが作れる</div><div class="st-d">コンタクトセンターにつなぐ予定なら、CCI ポータルの「Customer Assist Agent」から作っても、中身の編集画面は同じです<a class="ref" href="#s26">[26]</a>。</div></div></li>
+      </ol>
+    </div>
+
+    <div class="tabs-ui" data-tabs>
+      <div class="tablist" role="tablist" aria-label="画面のタブを切り替える">
+        <button role="tab" id="tab-build" aria-controls="p-build" aria-selected="true">① Build</button>
+        <button role="tab" id="tab-preview" aria-controls="p-preview" aria-selected="false">② Preview</button>
+        <button role="tab" id="tab-eval" aria-controls="p-eval" aria-selected="false">③ Evaluate</button>
+        <button role="tab" id="tab-deploy" aria-controls="p-deploy" aria-selected="false">④ Deploy</button>
+        <button role="tab" id="tab-monitor" aria-controls="p-monitor" aria-selected="false">⑤ Monitor</button>
+      </div>
+
+      <!-- Build -->
+      <div class="tabpanel" role="tabpanel" id="p-build" aria-labelledby="tab-build">
+        <h3>① Build タブ：チームを組み立てる</h3>
+        <div class="mock" role="img" aria-label="Build タブの見取り図。左に受付役と専門係のカード、右に選んだカードの設定パネル。">
+          <div class="mock-top"><span class="dots"><i></i><i></i><i></i></span><span class="m-title">Copilot Studio ／ サンプル：配送サポート窓口</span><span class="m-badge">Customer Conversation</span></div>
+          <div class="mock-tabs"><span class="on">Build</span><span>Preview</span><span>Evaluate</span><span>Deploy</span><span>Monitor</span></div>
+          <div class="mock-body">
+            <div class="m-pane">
+              <span class="m-h"><span class="num">1</span>エージェントのカード</span>
+              <div class="m-card"><b>受付役（Primary agent）</b>あいさつ・用件の聞き分け</div>
+              <div class="m-cards">
+                <div class="m-card sub"><b>請求係</b>Sub-agent</div>
+                <div class="m-card sub"><b>配送係</b>Sub-agent</div>
+                <div class="m-card conn"><b>在庫AI</b>Connected agent</div>
+              </div>
+              <div class="m-btns"><span class="m-btn"><span class="num">2</span>Add a sub-agent</span><span class="m-btn">Connect existing agent</span></div>
+              <div class="m-sec"><span><span class="num">6</span>Shared Settings</span><span>Details ／ Security ／ Language …</span></div>
+            </div>
+            <div class="m-pane">
+              <span class="m-h"><span class="num">3</span>選んだカードの設定パネル</span>
+              <div class="m-field"><span class="lab">Name</span><span class="box">配送サポート受付</span></div>
+              <div class="m-field"><span class="lab">Description（1,024字まで）</span><span class="box">注文・配送に関する問い合わせを受け付ける…</span></div>
+              <div class="m-field"><span class="lab"><span class="num">4</span>Instructions</span>
+                <div class="m-subtabs"><span class="on">General</span><span>Speech</span><span>Chat</span></div>
+                <span class="box">丁寧に、2〜3文で答える。「/」で道具や係を呼び出せる…</span>
+              </div>
+              <div class="m-sec"><span>Skills</span><span class="m-btn">Add skill</span></div>
+              <div class="m-sec"><span>Tools</span><span class="m-btn">Add tool（Escalate など）</span></div>
+              <div class="m-sec"><span>Knowledge</span><span class="m-btn">Add knowledge</span></div>
+              <div class="m-sec"><span>Events</span><span>Conversation Start ほか</span></div>
+              <div class="m-sec"><span><span class="num">5</span>Voice</span><span class="m-btn">Voice Settings</span></div>
+            </div>
+          </div>
+        </div>
+        <ul class="callouts">
+          <li><span class="num">1</span><span>受付役と専門係が<b>カード</b>で並びます。カードを選ぶと、その係の設定が右側に開きます<a class="ref" href="#s4">[4]</a>。</span></li>
+          <li><span class="num">2</span><span>「Add a sub-agent」で専門係を追加、「Connect existing agent」で Foundry のエージェントを接続します<a class="ref" href="#s4">[4]</a>。</span></li>
+          <li><span class="num">3</span><span>設定パネルには名前・説明・指示に加え、スキル・ツール・ナレッジ・イベントの欄が並びます<a class="ref" href="#s4">[4]</a><a class="ref" href="#s5">[5]</a>。</span></li>
+          <li><span class="num">4</span><span>指示は「General（共通）」「Speech（電話向け）」「Chat（チャット向け）」の3つのタブ。電話向けには「2〜3文で短く」、チャット向けには「番号付きの手順で」のように書き分けます<a class="ref" href="#s5">[5]</a>。</span></li>
+          <li><span class="num">5</span><span>「Voice Settings」を開くと、声の種類、プッシュボタン入力、聞き取り感度、無音検知、処理待ちメッセージのタブがあります。専門係は受付役の音声設定を引き継ぎます<a class="ref" href="#s11">[11]</a>。</span></li>
+          <li><span class="num">6</span><span>「Shared Settings」はチーム全体の共通設定。Details（アイコン、Web検索の可否、ファイル受け取り）、Security（サインイン方式、声の本人確認）、Language（言語）などがあります<a class="ref" href="#s12">[12]</a><a class="ref" href="#s13">[13]</a>。</span></li>
+        </ul>
+      </div>
+
+      <!-- Preview -->
+      <div class="tabpanel" role="tabpanel" id="p-preview" aria-labelledby="tab-preview">
+        <h3>② Preview タブ：チャットと電話で試す</h3>
+        <div class="mock" role="img" aria-label="Preview タブの見取り図。Web Chat と Voice Call の切り替え、会話、Live Transcript、Activity map。">
+          <div class="mock-top"><span class="dots"><i></i><i></i><i></i></span><span class="m-title">Copilot Studio ／ サンプル：配送サポート窓口</span><span class="m-badge">Customer Conversation</span></div>
+          <div class="mock-tabs"><span>Build</span><span class="on">Preview</span><span>Evaluate</span><span>Deploy</span><span>Monitor</span></div>
+          <div class="mock-body">
+            <div class="m-pane">
+              <div class="m-btns"><span class="m-btn pri"><span class="num">1</span>Web Chat</span><span class="m-btn">Voice Call</span></div>
+              <div class="m-chat">
+                <span class="bub u">注文した荷物がまだ届きません</span>
+                <span class="bub a">ご不便をおかけしています。注文番号を教えていただけますか？</span>
+                <span class="bub u">A-1234 です</span>
+                <span class="bub a">確認しました。明日の午前に到着予定です。</span>
+              </div>
+            </div>
+            <div class="m-pane">
+              <span class="m-h"><span class="num">2</span>Activity map</span>
+              <div class="m-step"><span class="ic">routing</span><span>受付役 → <b>配送係</b></span></div>
+              <div class="m-step"><span class="ic">tool</span><span>注文状況の確認（コネクタ）✓</span></div>
+              <div class="m-step"><span class="ic">knowledge</span><span>配送ポリシー.pdf を参照</span></div>
+              <span class="m-h"><span class="num">3</span>Live Transcript</span>
+              <span class="box" style="border:1px solid var(--line);border-radius:6px;padding:3px 8px">音声通話のときは、聞き取った文字がここに流れます</span>
+            </div>
+          </div>
+        </div>
+        <ul class="callouts">
+          <li><span class="num">1</span><span>上部で「Web Chat」と「Voice Call」を切り替えます。公式のおすすめは「まずチャットで大半を試し、音声は別に必ず試す」。音声には、聞き間違い・話の割り込み・無音など、チャットでは出ない失敗があるためです<a class="ref" href="#s17">[17]</a>。</span></li>
+          <li><span class="num">2</span><span>「Activity map」で、どの専門係に回したか・どのツールを動かしたか・どの資料を見たかが分かります。公式は「ツールが一度も呼ばれていない答えは、自社のデータではなくモデルの知識で答えたもの。中の値はすべて未確認として扱う」よう注意しています<a class="ref" href="#s17">[17]</a>。</span></li>
+          <li><span class="num">3</span><span>音声で試すときは「Live Transcript」で聞き取り結果を確認します<a class="ref" href="#s17">[17]</a>。</span></li>
+        </ul>
+      </div>
+
+      <!-- Evaluate -->
+      <div class="tabpanel" role="tabpanel" id="p-eval" aria-labelledby="tab-eval">
+        <h3>③ Evaluate タブ：テスト問題集でまとめて採点</h3>
+        <div class="mock" role="img" aria-label="Evaluate タブの見取り図。テストセットの作成と採点方法の選択。">
+          <div class="mock-top"><span class="dots"><i></i><i></i><i></i></span><span class="m-title">Copilot Studio ／ サンプル：配送サポート窓口</span><span class="m-badge">Customer Conversation</span></div>
+          <div class="mock-tabs"><span>Build</span><span>Preview</span><span class="on">Evaluate</span><span>Deploy</span><span>Monitor</span></div>
+          <div class="mock-body">
+            <div class="m-pane">
+              <span class="m-h"><span class="num">1</span>Create a test set</span>
+              <div class="m-field"><span class="lab">Data type</span><span class="box">Single response ／ Conversation（preview）</span></div>
+              <div class="m-field"><span class="lab">Data source</span><span class="box">CSV をアップロード ／ 10問を自動生成 ／ 最大100問を自動生成 ／ 自分で書く</span></div>
+            </div>
+            <div class="m-pane">
+              <span class="m-h"><span class="num">2</span>Test method（最大5つ）</span>
+              <div class="m-btns"><span class="m-btn">General quality</span><span class="m-btn">Compare meaning</span><span class="m-btn">Custom</span><span class="m-btn">Keyword match</span><span class="m-btn">Text similarity</span><span class="m-btn">Exact match</span></div>
+              <div class="m-field"><span class="lab">Agent version</span><span class="box">Current draft</span></div>
+            </div>
+          </div>
+        </div>
+        <ul class="callouts">
+          <li><span class="num">1</span><span>問題集（テストセット）は CSV（5MBまで）で持ち込むか、エージェントの説明や資料から自動生成します<a class="ref" href="#s18">[18]</a>。</span></li>
+          <li><span class="num">2</span><span>採点方法は6種類から最大5つ。「意味が同じならOK」「キーワードが入っていればOK」などを選べ、下書き版と公開版のどちらを採点するかも選べます<a class="ref" href="#s18">[18]</a>。</span></li>
+        </ul>
+      </div>
+
+      <!-- Deploy -->
+      <div class="tabpanel" role="tabpanel" id="p-deploy" aria-labelledby="tab-deploy">
+        <h3>④ Deploy タブ：公開と窓口の接続を1か所で</h3>
+        <div class="mock" role="img" aria-label="Deploy タブの見取り図。デモサイト、Webチャット、Teams Phone、Dynamics 365 Contact Center の4枚のカード。">
+          <div class="mock-top"><span class="dots"><i></i><i></i><i></i></span><span class="m-title">Copilot Studio ／ サンプル：配送サポート窓口</span><span class="m-badge">Customer Conversation</span></div>
+          <div class="mock-tabs"><span>Build</span><span>Preview</span><span>Evaluate</span><span class="on">Deploy</span><span>Monitor</span></div>
+          <div class="mock-body">
+            <div class="m-pane">
+              <div class="m-card"><b><span class="num">1</span>Demo website</b>公開すると自動で作られる社内テスト用サイト<br><span class="m-btn">Configure</span></div>
+              <div class="m-card"><b><span class="num">2</span>Web chat</b>自社サイトに貼るコードをコピー<br><span class="m-btn">Copy script</span></div>
+            </div>
+            <div class="m-pane">
+              <div class="m-card sub"><b><span class="num">3</span>Teams Phone</b>電話番号でAIが応答<br><span class="m-btn">Enable</span></div>
+              <div class="m-card conn"><b><span class="num">4</span>Dynamics 365 Contact Center</b>Step 1 · Connect channels ／ Step 2 · Finish setup</div>
+            </div>
+          </div>
+        </div>
+        <ul class="callouts">
+          <li><span class="num">1</span><span>デモサイトは社内の試用・お披露目用。歓迎メッセージや「試してほしい質問」を設定してURLを共有できます。お客さまには共有しないよう注意書きがあります<a class="ref" href="#s19">[19]</a>。</span></li>
+          <li><span class="num">2</span><span>本番のWebサイト（SharePoint サイトも可）には、ブランドの色を合わせたうえでコードを貼ります<a class="ref" href="#s19">[19]</a>。</span></li>
+          <li><span class="num">3</span><span>Teams Phone は作り手が「Enable」したあと、Teams 管理者が電話番号とライセンスを割り当てます。請求・処方薬の再処方・注文状況などの電話対応が想定されています<a class="ref" href="#s19">[19]</a><a class="ref" href="#s21">[21]</a>。</span></li>
+          <li><span class="num">4</span><span>Dynamics 365 Contact Center との接続は2段階。Webチャットは自動、電話はコンタクトセンター管理者の作業（PowerShell を含む）が必要です<a class="ref" href="#s19">[19]</a>。</span></li>
+        </ul>
+      </div>
+
+      <!-- Monitor -->
+      <div class="tabpanel" role="tabpanel" id="p-monitor" aria-labelledby="tab-monitor">
+        <h3>⑤ Monitor タブ：公開後の成績表</h3>
+        <div class="mock" role="img" aria-label="Monitor タブの見取り図。会話数などの指標、会話の結果の内訳、消費クレジット。">
+          <div class="mock-top"><span class="dots"><i></i><i></i><i></i></span><span class="m-title">Copilot Studio ／ サンプル：配送サポート窓口</span><span class="m-badge">Customer Conversation</span></div>
+          <div class="mock-tabs"><span>Build</span><span>Preview</span><span>Evaluate</span><span>Deploy</span><span class="on">Monitor</span></div>
+          <div class="mock-body">
+            <div class="m-pane">
+              <span class="m-h"><span class="num">1</span>Overview（数字はダミー）</span>
+              <div class="m-kpis">
+                <div class="m-kpi"><div class="v">1,240</div><div class="l">Conversation sessions</div></div>
+                <div class="m-kpi"><div class="v">92%</div><div class="l">Successful runs</div></div>
+                <div class="m-kpi"><div class="v">3:40</div><div class="l">Average duration</div></div>
+                <div class="m-kpi"><div class="v">— cr</div><div class="l">Billing</div></div>
+              </div>
+            </div>
+            <div class="m-pane">
+              <span class="m-h"><span class="num">2</span>Conversation outcomes</span>
+              <div class="m-bar" aria-hidden="true"><i style="width:58%;background:var(--ok)"></i><i style="width:22%;background:var(--human)"></i><i style="width:12%;background:var(--cond)"></i><i style="width:8%;background:var(--na)"></i></div>
+              <span style="font-size:.74rem;color:var(--muted)">Resolved ／ Escalated ／ Abandoned ／ Unengaged</span>
+              <span class="m-h"><span class="num">3</span>そのほかのパネル</span>
+              <span>Customer satisfaction ／ Sentiment ／ 回答の質 ／ Tool use ／ Knowledge source use</span>
+            </div>
+          </div>
+        </div>
+        <ul class="callouts">
+          <li><span class="num">1</span><span>会話数、成功率、平均時間、評価ボタンの数、消費した Copilot クレジット、削減できた時間・費用の見込みが並びます<a class="ref" href="#s22">[22]</a>。</span></li>
+          <li><span class="num">2</span><span>会話の結果が「解決」「人に引き継ぎ」「途中離脱」「反応なし」に分かれて見えます。窓口の運用者が一番気にする数字です<a class="ref" href="#s22">[22]</a>。</span></li>
+          <li><span class="num">3</span><span>満足度アンケート、お客さまの感情分析、AIの答えの質（根拠が足りない等）、ツールと資料ごとの使われ方も確認でき、会話記録はダウンロードできます<a class="ref" href="#s22">[22]</a>。</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sub-block">
+      <h3>公式の画面・動画を見たいとき</h3>
+      <ul>
+        <li>発表ブログ「Introducing the customer conversation harness in Microsoft Copilot Studio」には、専門係のチーム構成、生成スキルとトピック、音声設定、Teams への引き継ぎ、コンタクトセンター接続などの画面画像が載っています<a class="ref" href="#s29">[29]</a>。（今回の調査では画像の中身そのものは取得できなかったため、上の見取り図は Learn の手順説明に基づいています。）</li>
+        <li>Ignite 2026 のセッション「Build Customer-Facing Agents in Copilot Studio, Teams, and CCI」がブログで紹介されています。オンデマンド配信の有無は Ignite のサイトで確認してください<a class="ref" href="#s31">[31]</a>。</li>
+        <li>Microsoft Learn の各手順ページ（下の根拠一覧）には、画面上のボタン名がそのまま書かれているので、実機で触るときの道案内になります。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================= 活用事例 ================= -->
+  <section id="cases" aria-labelledby="h-cases">
+    <h2 id="h-cases">活用事例</h2>
+    <p class="lead">一般提供から1週間ほどなので、公開されている導入事例はまだ少数です。「実際の導入例」「パートナーの声」「公式が挙げる想定シーン」「日本での使いどころ（筆者の考察）」を分けて載せます。</p>
+    <div class="cases">
+      <article class="case">
+        <span class="c-type real">実際の導入例（公式ブログ掲載）</span>
+        <span class="c-h">米国の大学・医療機関：人事サービスデスクの問い合わせ窓口</span>
+        <p class="c-d">Thomas Jefferson University が、人事サービスデスクに専門AIエージェントを導入。福利厚生への加入、対象かどうか、補償内容、請求などの質問に答える用途です。9月にプレビューで試し始め、6週間後には本番稼働の準備に入ったと、同大学の最高デジタル・情報責任者がコメントしています。</p>
+        <blockquote>「既存の人事サービスデスクの流れに、自分たちのペースで専門AIエージェントを組み込める」（要旨）</blockquote>
+        <span class="c-s">出典：<a class="ref" href="#s32">[32]</a>。CCI（このハーネスで作る Customer Assist Agent を使う製品）の発表ブログ内の顧客コメントです。社外向けではなく<b>社員向けの問い合わせ窓口</b>に使っている点が参考になります。</span>
+      </article>
+      <article class="case">
+        <span class="c-type partner">パートナーの声</span>
+        <span class="c-h">Avanade：会話型の自己解決へのニーズ</span>
+        <p class="c-d">Microsoft 系の大手導入パートナー Avanade の担当者が、「お客さまは、文脈を理解してくれる、より自然な会話型のセルフサービスを求めるようになっている」とコメントしています。</p>
+        <span class="c-s">出典：<a class="ref" href="#s29">[29]</a>（発表ブログ内の引用画像の代替テキスト）。具体的な導入数値はありません。</span>
+      </article>
+      <article class="case">
+        <span class="c-type sample">公式が挙げる想定シーン</span>
+        <span class="c-h">電話での請求・処方薬・注文状況の受付</span>
+        <p class="c-d">Teams Phone に置いた音声エージェントが、請求、処方薬の再処方、注文状況の確認などを受け付け、必要なら Teams の通話キューに引き継ぎます。</p>
+        <span class="c-s">出典：<a class="ref" href="#s19">[19]</a><a class="ref" href="#s21">[21]</a></span>
+      </article>
+      <article class="case">
+        <span class="c-type sample">公式が挙げる想定シーン</span>
+        <span class="c-h">請求トラブルで社内の返金ルールを参照</span>
+        <p class="c-d">請求に関する苦情の対応中に、SharePoint にある返金ポリシーや、Teams で合意された例外対応を参照して答えます（Work IQ＝Microsoft 365 の社内情報を使う仕組み）。</p>
+        <span class="c-s">出典：<a class="ref" href="#s29">[29]</a><a class="ref" href="#s33">[33]</a></span>
+      </article>
+      <article class="case">
+        <span class="c-type sample">公式が挙げる想定シーン</span>
+        <span class="c-h">銀行：残高確認係とカード支払い係の連携</span>
+        <p class="c-d">「同じ銀行の口座からカード代金を払いたい」と言われたら、受付役が残高確認係に残高を確かめさせ、続いてカード係に支払いをさせる、という係どうしの連携を指示で書けます。</p>
+        <span class="c-s">出典：<a class="ref" href="#s6">[6]</a><a class="ref" href="#s29">[29]</a></span>
+      </article>
+      <article class="case">
+        <span class="c-type sample">公式が挙げる想定シーン</span>
+        <span class="c-h">再来店のお客さまを覚えている花屋の窓口</span>
+        <p class="c-d">メモリを使い、前回の未解決の用件があれば「おかえりなさい、前回の○○の件から進めますか？」とあいさつを変える指示例が紹介されています。</p>
+        <span class="c-s">出典：<a class="ref" href="#s14">[14]</a>（架空の会社 Contoso Flowers の例）</span>
+      </article>
+      <article class="case">
+        <span class="c-type idea">日本での使いどころ（筆者の考察・推測）</span>
+        <span class="c-h">代表電話・予約受付・社内ヘルプデスク</span>
+        <p class="c-d">公式の例から考えると、企業や自治体の代表電話の一次受付、予約・変更の受付、Jefferson の例のような人事・ITの社内ヘルプデスクが向いていそうです。ただし下の「日本での注意」のとおり、地域と日本語の確認が先です。</p>
+        <span class="c-s">公式の事例ではありません。</span>
+      </article>
+    </div>
+    <p class="tbl-note">2026年11月25日時点で、日本企業の導入事例は見つかりませんでした。また、海外メディアは Ignite で航空会社などの事例も報じていますが、記事本文を確認できなかったため載せていません。</p>
+  </section>
+
+  <!-- ================= 料金 ================= -->
+  <section id="cost" aria-labelledby="h-cost">
+    <h2 id="h-cost">料金：使った分だけ Copilot クレジット</h2>
+    <div class="notes">
+      <div class="note"><span class="n-t">従量課金で、作っている途中から消費します</span><span class="n-d">このハーネスは Copilot クレジット（Copilot Studio の利用量を数える単位）の従量課金です。公開後だけでなく、作成・テスト・評価でもクレジットを使うことがあります<a class="ref" href="#s3">[3]</a><a class="ref" href="#s24">[24]</a>。</span></div>
+      <div class="note"><span class="n-t">会話の重さと「声の種類」で消費量が変わります</span><span class="n-d">消費量は、会話の複雑さ（軽い・中くらい・重い）と、やりとりの形（チャット、生成AI音声、プレミアム音声）の組み合わせで変わると説明されています。具体的な目安は公式ページの図と、Copilot Credits 見積もりツールで確認します<a class="ref" href="#s24">[24]</a>。</span></div>
+      <div class="note"><span class="n-t">使った量は Monitor と管理センターで見られます</span><span class="n-d">エージェントごとの消費は Monitor タブの Billing、環境やテナント全体は Power Platform 管理センターの「Licensing」→「Copilot Studio」で確認します<a class="ref" href="#s24">[24]</a><a class="ref" href="#s22">[22]</a>。</span></div>
+      <div class="note"><span class="n-t">別の費用がかかる場合も</span><span class="n-d">Teams Phone で使うには Copilot Studio のテナント・ユーザーライセンスと Teams Phone のライセンスが必要です。また、他社のコンタクトセンター製品につなぐ場合、その会社のAPI利用料などは CCI の料金に含まれません<a class="ref" href="#s19">[19]</a><a class="ref" href="#s32">[32]</a>。</span></div>
+    </div>
+  </section>
+
+  <!-- ================= 日本での注意 ================= -->
+  <section id="japan" aria-labelledby="h-japan">
+    <h2 id="h-japan">日本で使うときの注意点</h2>
+    <p class="lead">説明のときに外すと話がずれる前提条件です。提供状況は段階的に広がるので、テナントや時期によって変わる前提で確認してください。</p>
+    <div class="notes">
+      <div class="note big"><span class="n-t">1. 日本リージョンの環境では、今は使えない前提で</span><span class="n-d">対応地域（Dataverse のリージョン）は、アジア（香港）・オーストラリア・カナダ・ヨーロッパ・スイス・UAE・イギリス・アメリカです。公式に「Copilot Studio 自体はほかの地域でも使えるが、このハーネスはここに挙げた地域だけ」と書かれています（11/24更新）<a class="ref" href="#s23">[23]</a>。データを国内に置く必要がある案件では、今の時点では選べません。</span></div>
+      <div class="note big"><span class="n-t">2. 日本語の対応は要確認</span><span class="n-d">Copilot Studio 全体では日本語に対応していますが、このハーネスでの日本語の音声・チャットを明記したページは見つかりませんでした<a class="ref" href="#s25">[25]</a><a class="ref" href="#s13">[13]</a>。音声で使うなら、声の種類（日本語の声があるか）も実機で確かめてください。</span></div>
+      <div class="note"><span class="n-t">3. 電話ではサインインできない</span><span class="n-d">本人の権限で見る資料（SharePoint など）は、チャットでしか使えません。電話で本人確認が必要なら、声の本人確認（Dynamics 365 アプリが有効な環境が必要）や、SMS のワンタイムパスコードを使います<a class="ref" href="#s10">[10]</a><a class="ref" href="#s12">[12]</a><a class="ref" href="#s15">[15]</a>。</span></div>
+      <div class="note"><span class="n-t">4. 声の本人確認は、法令対応が前提</span><span class="n-d">声紋は生体情報です。公式も、各国の法令（米イリノイ州の生体情報保護法や EU の GDPR などを例示）に沿って、通知や同意を取る責任は利用者側にあると明記しています<a class="ref" href="#s27">[27]</a>。日本では個人情報保護法との整理が必要になります。</span></div>
+      <div class="note"><span class="n-t">5. 無音検知は最初はオフ</span><span class="n-d">何もしないと、お客さまが黙ったときにエージェントがずっと待ち続けます。無音検知（既定7秒）と、そのときの動き（聞き直す・切る・人に回す）を必ず決めておくよう公式が注意しています<a class="ref" href="#s11">[11]</a>。</span></div>
+      <div class="note"><span class="n-t">6. コンタクトセンター接続は CCI ポータルから</span><span class="n-d">Copilot Studio から作り始めてもよいですが、既存のコンタクトセンターへの接続や生体認証・品質管理の設定は CCI ポータル側で行います<a class="ref" href="#s4">[4]</a><a class="ref" href="#s26">[26]</a>。</span></div>
+      <div class="note"><span class="n-t">7. AIモデルは2つのモードから</span><span class="n-d">「Auto — optimized for cost（チャット向け）」と「Auto — optimized for latency（音声向け）」があり、受付役で選ぶと専門係にも効きます。アジア地域では、リアルタイム音声モデル（gpt-realtime-2.1）が「地域をまたいだ処理（cross-geo）」と表に書かれています<a class="ref" href="#s16">[16]</a>。</span></div>
+    </div>
+
+    <div class="sub-block">
+      <h3>日本で今すぐ試したいときの現実解</h3>
+      <div class="alts">
+        <div class="alt">
+          <span class="a-t">案1：対応地域に検証用の環境を作って触る</span>
+          <p style="font-size:.9rem">アメリカなど対応地域の Power Platform 環境を作り、架空のデータだけで画面と動きを確かめます。</p>
+          <dl><dt>難しさ</dt><dd>低〜中（管理者に環境作成を頼む）</dd><dt>追加コスト</dt><dd>試用中も Copilot クレジットを消費</dd><dt>注意</dt><dd>データは海外に置かれるので、本番データは入れない</dd></dl>
+        </div>
+        <div class="alt">
+          <span class="a-t">案2：今は標準ハーネスで作り、対応を待つ</span>
+          <p style="font-size:.9rem">これまでどおり標準ハーネスで、トピックとエージェント フローを使った問い合わせ窓口を作ります。日本リージョン対応が発表されたら作り直しを検討します。</p>
+          <dl><dt>難しさ</dt><dd>中（経路を自分で設計する）</dd><dt>追加コスト</dt><dd>従来の Copilot Studio のライセンス方式</dd><dt>注意</dt><dd>標準ハーネスでの音声・日本語対応も別途確認が必要</dd></dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 根拠 ================= -->
+  <section id="sources" aria-labelledby="h-sources">
+    <h2 id="h-sources">根拠（34本）</h2>
+    <p class="lead">すべて 2026年11月25日に本文を確認しました。日付は Microsoft Learn のページ情報（ms.date）と最終更新日、ブログは掲載日です。</p>
+
+    <p class="src-group">ハーネス全体の説明</p>
+    <ol class="sources">
+      <li class="src" id="s1"><div class="src-top"><span class="src-n">[1]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/harnesses-overview">Harnesses in Copilot Studio</a><span class="tag t-off">公式</span></div><span class="src-meta">Microsoft Learn ／ ms.date 2026-11-13・更新 2026-11-17</span><p class="src-sum">3つのハーネス（Microsoft Copilot・Customer Conversation・標準）の向き不向きと比較表。Customer Conversation は「決まった話題には予測どおりに答えつつ、音声・チャットで自然に会話」、ファイル作成は「得意分野ではない」、行き詰まったら「決めた経路で人に引き継ぐ」。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/harnesses-overview</span></li>
+      <li class="src" id="s2"><div class="src-top"><span class="src-n">[2]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/choose-harness">Compare Copilot Studio agent harnesses</a><span class="tag t-off">公式</span></div><span class="src-meta">Microsoft Learn ／ ms.date 2026-11-24・更新 2026-11-24</span><p class="src-sum">ハーネスは「モデルと設定のあいだにある実行の層。モデルが考え、ハーネスが道具を持たせて導く」と定義。標準と Microsoft Copilot ハーネスの選び方と課金の違い。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/choose-harness</span></li>
+      <li class="src" id="s3"><div class="src-top"><span class="src-n">[3]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/overview-customer-conversation">Agents powered by the Customer Conversation harness overview</a><span class="tag t-off">公式</span></div><span class="src-meta">Microsoft Learn ／ ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">Customer Assist Agent の定義、専門係ごとの引き継ぎ経路、Escalate と Biometric Authentication、Build・Preview・Evaluate・Deploy・Monitor のタブ、電話ではサインイン不可、作成・テスト・評価でもクレジット消費。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/overview-customer-conversation</span></li>
+    </ol>
+
+    <p class="src-group">作り方・設定（Microsoft Learn の Customer Conversation 各ページ）</p>
+    <ol class="sources">
+      <li class="src" id="s4"><div class="src-top"><span class="src-n">[4]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/build-new-agent-customer-conversation">Create a new agent (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">入口（Other ways to build のタイル／New agent のバッジ）、説明文から案を自動生成、カードと設定パネル、Add a sub-agent／Connect existing agent。コンタクトセンターへの接続は CCI ポータルからのみ（Omnichannel Admin）。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/build-new-agent-customer-conversation</span></li>
+      <li class="src" id="s5"><div class="src-top"><span class="src-n">[5]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/authoring-instructions-customer-conversation">Configure agent details and instructions (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">指示の General・Speech・Chat タブ（各2万字）、説明は1,024字、スキルは約3,000字・専門係あたり10個までが目安。「/」で道具や係を参照。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/authoring-instructions-customer-conversation</span></li>
+      <li class="src" id="s6"><div class="src-top"><span class="src-n">[6]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/sub-agents-overview-customer-conversation">Sub-agents overview (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">専門係と接続エージェントの違い（接続は現在 Azure AI Foundry のみ）、振り分けのしくみ、「コンタクトセンターの部署のように独立させる」コツ、残高確認係とカード係の連携例。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/sub-agents-overview-customer-conversation</span></li>
+      <li class="src" id="s7"><div class="src-top"><span class="src-n">[7]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/knowledge-sources-overview-customer-conversation">Available knowledge sources for agents (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">公開Web、ファイル、Dynamics 365、SharePoint、Dataverse、Salesforce、ServiceNow。本人の資格情報を使う資料はチャットのみ。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/knowledge-sources-overview-customer-conversation</span></li>
+      <li class="src" id="s8"><div class="src-top"><span class="src-n">[8]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/tools-available-customer-conversation">Available tools for agents (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">システムツール、プロンプト、コネクタ、MCP サーバー、REST API（プレビュー）、ワークフローの6種類と使い分け。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/tools-available-customer-conversation</span></li>
+      <li class="src" id="s9"><div class="src-top"><span class="src-n">[9]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/tools-prebuilt-customer-conversation">Prebuilt contact center tools (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-20・更新 2026-11-20</span><p class="src-sum">Escalate（Teams Phone／Email／Customer Engagement）と Biometric Authentication（声で本人確認、Voice capabilities から有効化）。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/tools-prebuilt-customer-conversation</span></li>
+      <li class="src" id="s10"><div class="src-top"><span class="src-n">[10]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/speech-chat-overview-customer-conversation">Speech and chat settings overview (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-20・更新 2026-11-20</span><p class="src-sum">すべてのエージェントが音声とチャットの両方に既定で対応し、作成時に選ばない。電話ではサインイン不可、カードや画像はチャット向け。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/speech-chat-overview-customer-conversation</span></li>
+      <li class="src" id="s11"><div class="src-top"><span class="src-n">[11]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/speech-chat-configure-customer-conversation">Configure voice settings (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">Voice Settings ダイアログ：声の種類・速さ・高さ、DTMF、聞き取り感度（VAD）、無音検知（既定オフ、7秒）、処理待ちメッセージ。専門係は受付役の設定を継承。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/speech-chat-configure-customer-conversation</span></li>
+      <li class="src" id="s12"><div class="src-top"><span class="src-n">[12]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/settings-details-security-customer-conversation">Configure agent details and security (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">Shared Settings の Details（Web検索、ファイル受け取り15MBまで）と Security（サインイン方式、声の本人確認。Dynamics 365 アプリが有効な環境が必要）。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/settings-details-security-customer-conversation</span></li>
+      <li class="src" id="s13"><div class="src-top"><span class="src-n">[13]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/settings-language-customer-conversation">Configure language settings (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">主言語と追加言語、GPT Realtime は会話中に自動で言語を切り替え、翻訳ファイルの書き出し・取り込み。対応言語の一覧は全体ページを参照する形。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/settings-language-customer-conversation</span></li>
+      <li class="src" id="s14"><div class="src-top"><span class="src-n">[14]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/memory-overview-customer-conversation">Memory (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-23</span><p class="src-sum">顧客プロフィールと会話履歴（未解決の用件・要約）を記憶、独自項目は5つまで、共通の顧客IDで電話とチャットをまたいで引き継ぎ。Contoso Flowers の指示例。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/memory-overview-customer-conversation</span></li>
+      <li class="src" id="s15"><div class="src-top"><span class="src-n">[15]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/events-overview-customer-conversation">Events overview (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">会話開始・終了・エラー・サインイン促し・リセット・無音検知。声の本人確認を有効にすると SMS ワンタイムパスコードなど3つのイベントが追加。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/events-overview-customer-conversation</span></li>
+      <li class="src" id="s16"><div class="src-top"><span class="src-n">[16]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/authoring-select-agent-model-customer-conversation">Select a model for an agent (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">モデルのモード（コスト重視／速さ重視）は受付役で選び全員に適用。提供中のモデルと地域ごとの提供状況の表。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/authoring-select-agent-model-customer-conversation</span></li>
+      <li class="src" id="s17"><div class="src-top"><span class="src-n">[17]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/preview-test-customer-conversation">Preview and test an agent (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">Web Chat と Voice Call の切り替え、Live Transcript、Activity map、5つの層のテスト、音声特有の確認ポイント、公開前チェックリスト。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/preview-test-customer-conversation</span></li>
+      <li class="src" id="s18"><div class="src-top"><span class="src-n">[18]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/analytics-agent-evaluation-customer-conversation">Evaluate an agent (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">テストセットの作成（CSV、10問／100問の自動生成、手入力）、会話形式はプレビュー、6種類の採点方法から最大5つ。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/analytics-agent-evaluation-customer-conversation</span></li>
+      <li class="src" id="s19"><div class="src-top"><span class="src-n">[19]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/publication-deploy-customer-conversation">Deploy an agent (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-23・更新 2026-11-24</span><p class="src-sum">デモサイトの自動作成、Webチャットのコード、Teams Phone（請求・処方薬・注文状況などの想定）、Dynamics 365 Contact Center への2段階の接続と管理者作業、必要ライセンス。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/publication-deploy-customer-conversation</span></li>
+      <li class="src" id="s20"><div class="src-top"><span class="src-n">[20]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/publication-channels-overview-customer-conversation">Available channels (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">単独：デモサイト、Webチャット、Teams Phone。コンタクトセンター：Dynamics 365 Contact Center、Genesys、持ち込み。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/publication-channels-overview-customer-conversation</span></li>
+      <li class="src" id="s21"><div class="src-top"><span class="src-n">[21]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/voice-teams-phone-agent-customer-conversation">Integrate voice agents with Teams Phone Agent (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-23・更新 2026-11-25</span><p class="src-sum">Teams Phone Agent の通話フローへの組み込み、タグを使った Teams 通話キューへの引き継ぎ、外部番号・SIP への直接転送、前提ライセンスと環境設定。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/voice-teams-phone-agent-customer-conversation</span></li>
+      <li class="src" id="s22"><div class="src-top"><span class="src-n">[22]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/analytics-overview-customer-conversation">Monitor an agent (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">Overview の指標、AI要約、Billing、Savings、カスタム指標（プレビュー）、会話の結果（解決・引き継ぎ・離脱・反応なし）、満足度、感情、回答の質、ツールと資料の利用状況、会話記録のダウンロード。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/analytics-overview-customer-conversation</span></li>
+      <li class="src" id="s23"><div class="src-top"><span class="src-n">[23]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/data-location-customer-conversation">Data locations (Customer Conversation)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-24・更新 2026-11-24</span><p class="src-sum">対応する Dataverse リージョンの一覧（アジア＝香港、オーストラリア、カナダ、ヨーロッパ、スイス、UAE、イギリス、アメリカ）。「このハーネスはここに挙げた地域でのみ利用可能」。日本は記載なし。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/data-location-customer-conversation</span></li>
+      <li class="src" id="s24"><div class="src-top"><span class="src-n">[24]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/billing-credit-overview">Overview of usage-based billing</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-10-06・更新 2026-11-12</span><p class="src-sum">Copilot クレジットの従量課金。お客さまとの会話は複雑さ（軽・中・重）とモダリティ（チャット・生成AI音声・プレミアム音声）で消費が変わる。見積もりツール、Monitor と管理センターでの確認方法。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/billing-credit-overview</span></li>
+      <li class="src" id="s25"><div class="src-top"><span class="src-n">[25]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/authoring-language-support">Language support (Copilot Studio)</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-06-29</span><p class="src-sum">Copilot Studio 全体の対応言語の一覧に日本語（ja-JP）がある。Customer Conversation ハーネス固有の記載はない。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/authoring-language-support</span></li>
+      <li class="src" id="s26"><div class="src-top"><span class="src-n">[26]</span><a class="src-t" href="https://learn.microsoft.com/en-us/contact-center-intelligence/administer/create-customer-assist-agent">Create Customer Assist Agent（Contact Center Intelligence）</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-16・更新 2026-11-17</span><p class="src-sum">CCI ポータルからも同じ編集画面でエージェントを作れること。他社コンタクトセンターへの引き継ぎや生体認証を最初から使うならポータルから。</p><span class="src-url">https://learn.microsoft.com/en-us/contact-center-intelligence/administer/create-customer-assist-agent</span></li>
+      <li class="src" id="s27"><div class="src-top"><span class="src-n">[27]</span><a class="src-t" href="https://learn.microsoft.com/en-us/contact-center-intelligence/administer/enable-biometric-authentication">Enable biometric authentication in Contact Center Intelligence</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-20・更新 2026-11-20</span><p class="src-sum">声紋による本人確認の有効化手順。法令（BIPA、GDPR など）に沿った通知・同意の責任は利用者側にあるという重要事項。</p><span class="src-url">https://learn.microsoft.com/en-us/contact-center-intelligence/administer/enable-biometric-authentication</span></li>
+      <li class="src" id="s28"><div class="src-top"><span class="src-n">[28]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/whats-new">What's new in Copilot Studio</a><span class="tag t-off">公式</span></div><span class="src-meta">ms.date 2026-11-04・更新 2026-11-12</span><p class="src-sum">2026年10月の項に「(Preview) Customer Conversation ハーネス」。Copilot Studio と CCI ポータルのどちらからでも作れるが、ライブのコンタクトセンター接続はポータルのみ。GA の行はまだない。</p><span class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/whats-new</span></li>
+    </ol>
+
+    <p class="src-group">発表・ブログ</p>
+    <ol class="sources">
+      <li class="src" id="s29"><div class="src-top"><span class="src-n">[29]</span><a class="src-t" href="https://techcommunity.microsoft.com/blog/copilot-studio-blog/introducing-the-customer-conversation-harness-in-microsoft-copilot-studio/4563954">Introducing the customer conversation harness in Microsoft Copilot Studio</a><span class="tag t-off">公式</span></div><span class="src-meta">Microsoft Tech Community（Copilot Studio Blog）／ Omar Aftab ／ 2026-10-21</span><p class="src-sum">パブリックプレビューの発表。音声とチャットを1つで、専門係のチーム、Microsoft IQ での根拠付け、生成スキルとトピック、音声設定、声紋認証、Teams への引き継ぎ、CCI 連携、Agent 365 での管理。画面画像あり。Avanade の引用。</p><span class="src-url">https://techcommunity.microsoft.com/blog/copilot-studio-blog/introducing-the-customer-conversation-harness-in-microsoft-copilot-studio/4563954</span></li>
+      <li class="src" id="s30"><div class="src-top"><span class="src-n">[30]</span><a class="src-t" href="https://www.microsoft.com/en-us/copilot/blog/copilot-studio/new-and-improved-agents-that-are-persistent-agents-for-customer-conversations-and-improved-maker-experience-in-microsoft-copilot-studio/">New and improved: Agents that are persistent, agents for customer conversations, and improved maker experience in Microsoft Copilot Studio</a><span class="tag t-off">公式</span></div><span class="src-meta">Microsoft Copilot Blog ／ Jason Moore ／ 2026-11-04</span><p class="src-sum">10月の新機能まとめ。「now in preview」として、請求・アカウント・トラブル対応などの専門係と人への引き継ぎ、テストから監視までの一体化を紹介。</p><span class="src-url">https://www.microsoft.com/en-us/copilot/blog/copilot-studio/new-and-improved-agents-that-are-persistent-agents-for-customer-conversations-and-improved-maker-experience-in-microsoft-copilot-studio/</span></li>
+      <li class="src" id="s31"><div class="src-top"><span class="src-n">[31]</span><a class="src-t" href="https://www.microsoft.com/en-us/copilot/blog/copilot-studio/build-and-manage-business-processes-with-microsoft-copilot-studio/">Build and manage business processes with Microsoft Copilot Studio</a><span class="tag t-off">公式</span></div><span class="src-meta">Microsoft Copilot Blog ／ Jason Moore ／ 2026-11-18</span><p class="src-sum">Ignite の発表。「The customer conversation harness, now generally available」と一般提供を明記。Ignite セッション「Build Customer-Facing Agents in Copilot Studio, Teams, and CCI」の案内。</p><span class="src-url">https://www.microsoft.com/en-us/copilot/blog/copilot-studio/build-and-manage-business-processes-with-microsoft-copilot-studio/</span></li>
+      <li class="src" id="s32"><div class="src-top"><span class="src-n">[32]</span><a class="src-t" href="https://www.microsoft.com/en-us/dynamics-365/blog/business-leader/2026/10/21/microsoft-contact-center-intelligence-transforming-customer-experience-at-agentic-speed/">Introducing Microsoft Contact Center Intelligence</a><span class="tag t-off">公式</span></div><span class="src-meta">Microsoft Dynamics 365 Blog ／ 2026-10-21（更新 2026-11-18）</span><p class="src-sum">CCI の発表。新しい customer conversation harness でセルフサービスのエージェントを作れること、決まった手順・生成AI・その組み合わせ、人への引き継ぎ。Thomas Jefferson University のコメント。他社製品の利用料は別との注記。</p><span class="src-url">https://www.microsoft.com/en-us/dynamics-365/blog/business-leader/2026/10/21/microsoft-contact-center-intelligence-transforming-customer-experience-at-agentic-speed/</span></li>
+      <li class="src" id="s33"><div class="src-top"><span class="src-n">[33]</span><a class="src-t" href="https://www.microsoft.com/en-us/dynamics-365/blog/it-professional/2026/11/18/microsoft-contact-center-intelligence-now-generally-available-transform-customer-interactions/">Microsoft Contact Center Intelligence now generally available: Transform customer interactions</a><span class="tag t-off">公式</span></div><span class="src-meta">Microsoft Dynamics 365 Blog ／ Omar Aftab ／ 2026-11-18</span><p class="src-sum">CCI の一般提供。Avaya・Cisco・Five9 との提携、専門係のチーム、Foundry のエージェントの追加、生成スキルとトピック、専門係ごとのモデル選択は「近日」、音声設定、Work IQ の例、声紋認証、Agent 365 での管理。</p><span class="src-url">https://www.microsoft.com/en-us/dynamics-365/blog/it-professional/2026/11/18/microsoft-contact-center-intelligence-now-generally-available-transform-customer-interactions/</span></li>
+      <li class="src" id="s34"><div class="src-top"><span class="src-n">[34]</span><a class="src-t" href="https://www.microsoft.com/en-us/dynamics-365/blog/business-leader/2026/11/17/microsoft-ignite-2026-introducing-dynamics-365-in-copilot/">Microsoft Ignite 2026: Introducing Dynamics 365 in Copilot</a><span class="tag t-off">公式</span></div><span class="src-meta">Microsoft Dynamics 365 Blog ／ Jeff Teper ／ 2026-11-17（更新 2026-11-18）</span><p class="src-sum">Ignite 全体の発表。Contact Center Intelligence の一般提供と、Microsoft Copilot ハーネスの一般提供。</p><span class="src-url">https://www.microsoft.com/en-us/dynamics-365/blog/business-leader/2026/11/17/microsoft-ignite-2026-introducing-dynamics-365-in-copilot/</span></li>
+    </ol>
+  </section>
+
+  <footer>
+    <p>調査日：2026年11月25日。Microsoft Learn とブログの本文を直接確認しました。第三者の記事は本文を確認できなかったため、根拠には使っていません。提供状況・対応地域・画面はテナントや時期によって変わることがあります。</p>
+    <div class="dates" aria-label="出典の日付一覧">
+      <span>[1] 11-13/11-17</span><span>[2] 11-24</span><span>[3] 11-16/11-17</span><span>[4] 11-16</span><span>[5] 11-16</span><span>[6] 11-16</span><span>[7] 11-16</span><span>[8] 11-16</span><span>[9] 11-20</span><span>[10] 11-20</span><span>[11] 11-16</span><span>[12] 11-16</span><span>[13] 11-16</span><span>[14] 11-16/11-23</span><span>[15] 11-16</span><span>[16] 11-16</span><span>[17] 11-16</span><span>[18] 11-16</span><span>[19] 11-23</span><span>[20] 11-16</span><span>[21] 11-23/11-25</span><span>[22] 11-16</span><span>[23] 11-24</span><span>[24] 10-06/11-12</span><span>[25] 06-29</span><span>[26] 11-16</span><span>[27] 11-20</span><span>[28] 11-04/11-12</span><span>[29] 10-21</span><span>[30] 11-04</span><span>[31] 11-18</span><span>[32] 10-21</span><span>[33] 11-18</span><span>[34] 11-17</span>
+    </div>
+  </footer>
+</main>
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  document.querySelectorAll('[data-tabs]').forEach(function(wrap){
+    var tabs=[].slice.call(wrap.querySelectorAll('[role="tab"]'));
+    var panels=[].slice.call(wrap.querySelectorAll('[role="tabpanel"]'));
+    function select(i,focus){
+      tabs.forEach(function(t,j){
+        var on=j===i;
+        t.setAttribute('aria-selected',on?'true':'false');
+        t.tabIndex=on?0:-1;
+      });
+      panels.forEach(function(p,j){p.hidden=j!==i;});
+      if(focus){tabs[i].focus();}
+    }
+    tabs.forEach(function(t,i){
+      t.addEventListener('click',function(){select(i,false);});
+      t.addEventListener('keydown',function(e){
+        if(e.key==='ArrowRight'){e.preventDefault();select((i+1)%tabs.length,true);}
+        if(e.key==='ArrowLeft'){e.preventDefault();select((i-1+tabs.length)%tabs.length,true);}
+        if(e.key==='Home'){e.preventDefault();select(0,true);}
+        if(e.key==='End'){e.preventDefault();select(tabs.length-1,true);}
+      });
+    });
+    select(0,false);
+  });
+})();
+</script>
+</body>
+</html>
