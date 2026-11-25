@@ -300,8 +300,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 24, date: '2026-11-25' };
+const GAME = { day: 25, date: '2026-11-26' };
 const PATCH_NOTES = [
+  { day: 25, date: '2026-11-26', title: '大ダメージは、数字も大きく！',
+    items: ['敵に当てたダメージの数字が、威力で3段階に変わるよ', '15以上はうす黄色で少し大きく、30以上は黄色で大きく、ぽんとはねるよ'],
+    ask: 'ノヴァを育てたり、弱ったボスをたたいたりして、黄色い大きな数字を出してみてね！' },
   { day: 24, date: '2026-11-25', title: 'ボス戦の前に、ひと息つけるよ！',
     items: ['ボスが出た瞬間、自機が緑に光ってHPが30回復するよ', 'HPがへったままボス戦に入っても、立て直しやすくなったよ'],
     ask: 'HPが少ないままボスまでたどり着いて、回復のおかげで勝てるか試してみてね！' },
@@ -1209,9 +1212,14 @@ function burst(x, y, color, n, spd, size) {
     FX.parts.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life, max: life, size: size * (0.6 + Math.random() * 0.8), color });
   }
 }
+// ダメージ数字の段（Day 25）：敵へのダメージは威力で3段。15以上はうす黄色で少し大きく、30以上は黄色で大きく、ぽんとはねる
+const NUM_TIER = [{ at: 0, sz: 11, color: '#ffffff' }, { at: 15, sz: 13, color: '#fff0a0' }, { at: 30, sz: 16, color: '#ffd84a' }];
 function addNum(x, y, v, color, pre) {
   if (!G || !G.fxOn || FX.nums.length > 45) return;
-  FX.nums.push({ x: x + (Math.random() - 0.5) * 10, y, text: (pre || '') + Math.max(1, Math.round(v)), color, life: 0.65 });
+  let tier = 0;
+  if (color === '#ffffff') { tier = v >= NUM_TIER[2].at ? 2 : v >= NUM_TIER[1].at ? 1 : 0; color = NUM_TIER[tier].color; }
+  const life = tier === 2 ? 0.8 : 0.65;
+  FX.nums.push({ x: x + (Math.random() - 0.5) * 10, y, text: (pre || '') + Math.max(1, Math.round(v)), color, life, max: life, tier, sz: NUM_TIER[tier].sz });
 }
 function shake(a) { if (G && G.fxOn) FX.shake = Math.max(FX.shake, a * motion); }
 function stepFx(dt) {
@@ -1511,12 +1519,20 @@ function drawWorld() {
   drawParts();
   ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
   // ダメージの数字
-  ctx.font = '800 11px "Orbitron", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  for (const n of FX.nums) {
-    if (n.big) continue;
-    ctx.globalAlpha = clamp(n.life / 0.65 * 1.6, 0, 1);
-    ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillText(n.text, n.x + 1, n.y + 1);
-    ctx.fillStyle = n.color; ctx.fillText(n.text, n.x, n.y);
+  // （Day 25：威力の段ごとに字の大きさを変える。段ごとにまとめて描くので、字体の切りかえは3回まで）
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (let t = 0; t < 3; t++) {
+    let set = false;
+    for (const n of FX.nums) {
+      if (n.big || (n.tier || 0) !== t) continue;
+      let sz = NUM_TIER[t].sz;
+      if (t === 2 && motion === 1) { const k = n.max - n.life; sz *= k < 0.08 ? 0.8 + k / 0.08 * 0.55 : Math.max(1, 1.35 - (k - 0.08) * 3); }
+      if (t === 2 || !set) { ctx.font = `800 ${Math.round(sz)}px "Orbitron", sans-serif`; set = true; }
+      ctx.globalAlpha = clamp(n.life / 0.65 * 1.6, 0, 1);
+      const o = t === 2 ? 1.5 : 1;
+      ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillText(n.text, n.x + o, n.y + o);
+      ctx.fillStyle = n.color; ctx.fillText(n.text, n.x, n.y);
+    }
   }
   // 「○体まきこみ！」（Day 19）：大きめの文字で、出た瞬間に少しふくらむ
   for (const n of FX.nums) {
@@ -1911,6 +1927,7 @@ window.__game = {
     trails() { return G.gems.filter(gm => gm.mag && gm.vx).length; },
     hurt(n) { G.player.inv = 0; hurt(n); },
     setTime(t) { G.t = t; G.nextRush = Math.ceil((t + 0.01) / 60) * 60; G.elites = G.elites.filter(x => x > t); },
+    hitOne(n) { spawnEnemy('brute'); const e = G.enemies[G.enemies.length - 1]; e.x = G.player.x + 60; e.y = G.player.y - 40; e.spd = 0; e.hp = 1e6; damage(e, n, 0, 0, 0); return FX.nums[FX.nums.length - 1] || null; },
     hitBoss(n) { const b = G.boss; if (!b || b.dead) return 0; const h = b.hp; damage(b, n, 0, 0, 0); return h - b.hp; },
     killOne(type) { const e = G.enemies.find(o => o.type === type && !o.dead); if (e) kill(e); return !!e; },
     spawn(type, n = 1) { for (let i = 0; i < n; i++) spawnEnemy(type); },

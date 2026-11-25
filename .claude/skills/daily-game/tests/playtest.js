@@ -264,6 +264,20 @@ let browser;
     await shot(page, '04e_gemcombo_390');
     await wait(900); const cbOff = await page.evaluate(() => { const s = window.__game.state(); return { shown: s.comboShown, combo: s.gemCombo }; });
     check('ほしくずを5個つづけて拾うと「×5」が出て、拾わずにいると消える（4個までは出ない）', cb4 === 0 && cb5 === 5 && cb20 === 20 && cbOff.shown === 0 && cbOff.combo === 0, `4個=${cb4} 5個=${cb5} 20個=${cb20} 0.9秒後=${cbOff.shown}`);
+    // ダメージ数字の段（Day 25）：小さいダメージは白11px、15以上はうす黄色13px、30以上は黄色16px。自機が受けるダメージ（ピンク）は変わらない
+    const nt = await page.evaluate(() => {
+      const d = window.__game.debug; d.god(false); d.fxArrays()[1].length = 0;
+      d.hurt(5); const own = d.fxArrays()[1][d.fxArrays()[1].length - 1];
+      d.god(true);
+      const lo = d.hitOne(8), mid = d.hitOne(20), hi = d.hitOne(45);
+      const pick = n => n ? { c: n.color, sz: n.sz, t: n.tier } : null;
+      return { lo: pick(lo), mid: pick(mid), hi: pick(hi), own: own ? { c: own.color, t: own.tier, text: own.text } : null };
+    });
+    await wait(50); await shot(page, '04f_dmgnum_390');
+    await page.evaluate(() => { const d = window.__game.debug, g = window.__game.world(); d.god(false); g.player.hp = g.player.maxHp; g.enemies.forEach(e => { if (e.hp > 1e5) e.dead = true; }); });
+    check('ダメージの数字が威力で3段に変わる（大きいほど黄色く大きい。自機のダメージはピンクのまま）',
+      nt.lo && nt.mid && nt.hi && nt.own && nt.lo.c === '#ffffff' && nt.mid.c === '#fff0a0' && nt.hi.c === '#ffd84a' && nt.lo.sz < nt.mid.sz && nt.mid.sz < nt.hi.sz && nt.own.c === '#ff4fb0' && !nt.own.t,
+      JSON.stringify(nt));
     // 粒の上限と後かたづけ（Day 14：画質が下がると上限も下がる／配列を作り直さない）
     const fx = await page.evaluate(() => {
       const d = window.__game.debug, before = d.fxArrays();
