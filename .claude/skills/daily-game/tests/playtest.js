@@ -368,6 +368,27 @@ let browser;
     await ctx.close();
   }
 
+  // ---- 1b. ボスが出たときの回復（Day 24。ほかのチェックの流れを乱さないよう別のページで） ----
+  {
+    const { ctx, page } = await open({ width: 390, height: 844 }, { mobile: true, tag: 'bossheal', seenHow: true });
+    // ボスが出ると、HPが30回復する（満タンなら回復なし・最大HPは超えない）（Day 24）
+    const bh = await page.evaluate(() => {
+      const G = window.__game, out = {};
+      G.start(5, true); G.debug.setTime(299.5); G.world().player.hp = 40;
+      let s = G.sim(1.0, () => [0, 0]); out.low = s.hp; out.boss = s.boss !== null; out.healed = G.world().bossHeal;
+      G.start(5, true); G.debug.setTime(299.5);
+      s = G.sim(1.0, () => [0, 0]); out.full = s.hp; out.max = s.maxHp; out.fullHealed = G.world().bossHeal;
+      return out;
+    });
+    check('ボスが出ると、HPが30回復する（満タンのときは最大HPを超えない）', bh.boss && bh.healed === 30 && bh.low >= 68 && bh.low <= 70 && bh.full <= bh.max && bh.fullHealed === 0,
+      `HP40 → ${bh.low}（回復 ${bh.healed}）／満タン → ${bh.full}/${bh.max}（回復 ${bh.fullHealed}）`);
+    // 演出のスクリーンショット（ふつうの時間の流れで）
+    await page.evaluate(() => { window.__game.start(7, false); window.__game.debug.give('nova', 3); window.__game.debug.setTime(299.85); window.__game.world().player.hp = 35; });
+    await wait(450);
+    await shot(page, '06a_bossheal_390');
+    await ctx.close();
+  }
+
   // ---- 2. 小さいスマホ（360×640）とパソコン（1280×720）の見た目 ----
   for (const vp of [{ width: 360, height: 640, mobile: true, tag: '360' }, { width: 1280, height: 720, mobile: false, tag: '1280', dpr: 1 }]) {
     const { ctx, page } = await open({ width: vp.width, height: vp.height }, { mobile: vp.mobile, tag: vp.tag, dpr: vp.dpr, seenHow: true });

@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Copilot Studio でいま使えるハーネス（エージェントを動かすしくみ）はどれか。Microsoft Copilot ハーネス・カスタマー会話ハーネス・標準ハーネスの3つを、名前の移り変わり・動き方・お金のかかり方・選び方まで図解で整理。2026-11-25 調査。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>いまのCopilot Studioのハーネスはどれ？</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  /* Layout: 1本の読み物カラム（最大840px）。結論 → 早見表 → ハーネスとは → 移り変わり → 動き方 → 比較表 → 機能差 → お金 → 数字 → 入口と乗り換え → 選び方 → 注意点 → 根拠 */
+  --bg:#F5F6F8;
+  --surface:#FFFFFF;
+  --sunk:#ECEFF3;
+  --ink:#171C24;
+  --muted:#59626F;
+  --line:#D7DCE3;
+  --accent:#1F5FAE;
+  --accent-soft:#E2ECF8;
+  --ok:#276F43;   --ok-soft:#E1F1E6;
+  --warn:#8A5700; --warn-soft:#FAEED6;
+  --ng:#A3291F;   --ng-soft:#F8E2DF;
+  --info:#46525D; --info-soft:#E6EBEE;
+  --hl:#FFF5D3;
+  /* ハーネスごとの色（色覚の違いでも見分けられることを検証済み） */
+  --h-mch:#257de0; --h-mch-soft:#E3EFFC;
+  --h-std:#f47230; --h-std-soft:#FDEBDF;
+  --h-cc:#00b894;  --h-cc-soft:#DDF5EE;
+  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1318; --surface:#171C23; --sunk:#1E252E;
+    --ink:#E6EAF0; --muted:#9DA7B4; --line:#2C3541;
+    --accent:#7DB2F0; --accent-soft:#16283D;
+    --ok:#74C795; --ok-soft:#14301F;
+    --warn:#E5AE52; --warn-soft:#382811;
+    --ng:#F19087; --ng-soft:#3B1916;
+    --info:#B3C0CA; --info-soft:#24313A;
+    --hl:#2C2914;
+    --h-mch:#338ced; --h-mch-soft:#13263C;
+    --h-std:#e76624; --h-std-soft:#3A2216;
+    --h-cc:#00a888;  --h-cc-soft:#0F2E27;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1318; --surface:#171C23; --sunk:#1E252E;
+  --ink:#E6EAF0; --muted:#9DA7B4; --line:#2C3541;
+  --accent:#7DB2F0; --accent-soft:#16283D;
+  --ok:#74C795; --ok-soft:#14301F;
+  --warn:#E5AE52; --warn-soft:#382811;
+  --ng:#F19087; --ng-soft:#3B1916;
+  --info:#B3C0CA; --info-soft:#24313A;
+  --hl:#2C2914;
+  --h-mch:#338ced; --h-mch-soft:#13263C;
+  --h-std:#e76624; --h-std-soft:#3A2216;
+  --h-cc:#00a888;  --h-cc-soft:#0F2E27;
+}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.8;-webkit-text-size-adjust:100%}
+.wrap{max-width:840px;margin:0 auto;padding:0 16px 64px}
+a{color:var(--accent)}
+h1,h2,h3{font-family:var(--f-display);line-height:1.4;margin:0}
+p{margin:0 0 .8em}
+code{font-family:var(--f-mono);font-size:.88em;background:var(--sunk);padding:1px 5px;border-radius:4px}
+small,.note{color:var(--muted)}
+
+/* ヘッダー */
+.hero{padding:40px 0 22px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;color:var(--muted);margin-bottom:10px}
+.hero h1{font-size:clamp(26px,5.4vw,38px)}
+.hero .lead{margin:14px 0 0;color:var(--muted);font-size:15.5px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:16px;font-size:13px;color:var(--muted)}
+.meta b{color:var(--ink);font-weight:700}
+
+/* セクション */
+section{margin-top:44px}
+section > h2{font-size:clamp(20px,3.6vw,24px);padding-bottom:8px;border-bottom:2px solid var(--line);margin-bottom:16px;display:flex;gap:10px;align-items:baseline}
+section > h2 .sn{font-family:var(--f-mono);font-size:13px;color:var(--accent);flex:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+
+/* 結論 */
+.verdict{margin-top:8px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px 22px 18px;box-shadow:0 1px 0 var(--line)}
+.verdict .label{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;color:var(--accent);margin-bottom:6px;font-weight:500;border:0;padding:0}
+.verdict .big{font-family:var(--f-display);font-size:clamp(21px,4.4vw,28px);line-height:1.5;margin:0 0 14px}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 14px}
+.hcard{border-radius:12px;padding:12px 14px;border:1px solid var(--line);border-top:5px solid var(--c);background:var(--soft)}
+.hcard .nm{font-family:var(--f-display);font-size:17px;line-height:1.35}
+.hcard .en{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:block;margin:2px 0 6px}
+.hcard p{font-size:14px;margin:0 0 8px;line-height:1.6}
+.hcard .st{font-size:12px;color:var(--muted)}
+.mch{--c:var(--h-mch);--soft:var(--h-mch-soft)}
+.std{--c:var(--h-std);--soft:var(--h-std-soft)}
+.cc{--c:var(--h-cc);--soft:var(--h-cc-soft)}
+.verdict .why{font-size:15px;margin:0}
+.verdict .why + .why{margin-top:8px}
+.ghost{border:1.5px dashed var(--line);border-radius:12px;padding:10px 14px;font-size:14px;color:var(--muted);line-height:1.6}
+.ghost b{color:var(--ink)}
+
+/* 図の目次 */
+.figtoc{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.figtoc a{font-size:12.5px;text-decoration:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:3px 10px;border-radius:999px}
+.figtoc a:hover{border-color:var(--accent)}
+
+/* ピル */
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.na{background:var(--info-soft);color:var(--info)}
+.pill.guess{background:var(--sunk);color:var(--muted);font-weight:500}
+.ref{font-family:var(--f-mono);font-size:11.5px;color:var(--accent);text-decoration:none;white-space:nowrap}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);vertical-align:baseline;margin-right:5px;flex:none}
+
+/* 表 */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.6}
+.tbl table{min-width:640px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+thead th{background:var(--sunk);font-size:13px;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+tr.ask td{background:var(--hl)}
+tr.ask td:first-child{box-shadow:inset 4px 0 0 var(--accent)}
+td.q{font-weight:700;min-width:170px}
+.th-h{display:flex;align-items:center;gap:6px}
+.th-h::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
+
+/* 図の共通 */
+figure{margin:18px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 16px 14px}
+figure .ftitle{font-family:var(--f-display);font-size:15px;margin:0 0 12px;display:flex;gap:8px;align-items:baseline}
+figure .ftitle .fn{font-family:var(--f-mono);font-size:11.5px;color:var(--accent);font-weight:500}
+figcaption{font-size:13.5px;color:var(--muted);margin-top:12px;line-height:1.7}
+svg.dg{display:block;width:100%;height:auto;color:var(--ink);font-family:var(--f-body)}
+svg .bx{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+svg .bx-mch{fill:var(--h-mch-soft);stroke:var(--h-mch);stroke-width:1.5}
+svg .bx-std{fill:var(--h-std-soft);stroke:var(--h-std);stroke-width:1.5}
+svg .bx-cc{fill:var(--h-cc-soft);stroke:var(--h-cc);stroke-width:1.5}
+svg .bx-sunk{fill:var(--sunk);stroke:none}
+svg .dash{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4}
+svg .ln{fill:none;stroke:currentColor;stroke-width:1.6}
+svg .ln-mute{fill:none;stroke:var(--muted);stroke-width:1.5}
+svg .t{fill:currentColor;font-size:13px}
+svg .t-b{fill:currentColor;font-size:13px;font-weight:700}
+svg .t-s{fill:var(--muted);font-size:11.5px}
+svg .grid{stroke:var(--line);stroke-width:1}
+
+/* 図1：ハーネス＝段取り役 */
+.eq{display:grid;grid-template-columns:1fr auto 1.35fr auto 1fr;gap:10px;align-items:stretch}
+.eq .blk{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.eq .blk h3{font-size:16px;margin-bottom:4px}
+.eq .blk .sub{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+.eq .blk p{font-size:13.5px;line-height:1.6;margin:0}
+.eq .blk.harness{background:var(--accent-soft);border:2px solid var(--accent)}
+.eq .blk ul{margin:4px 0 0;padding-left:1.1em;font-size:13.5px;line-height:1.65}
+.eq .op{align-self:center;font-family:var(--f-mono);font-size:22px;color:var(--muted);text-align:center}
+
+/* 図2：顔ぶれの変化 */
+.lineup{display:grid;grid-template-columns:1fr 92px 1fr;gap:8px 0;align-items:center}
+.lineup .hd{font-family:var(--f-mono);font-size:12px;color:var(--muted);text-align:center;padding-bottom:4px;border-bottom:1px solid var(--line)}
+.lineup .hd.mid{border:0}
+.chip{border-radius:10px;padding:9px 12px;font-size:14px;line-height:1.45;border:1px solid var(--line);background:var(--surface)}
+.chip b{display:block;font-family:var(--f-display);font-size:15px}
+.chip small{font-size:11.5px}
+.chip.c-mch{border-left:5px solid var(--h-mch);background:var(--h-mch-soft)}
+.chip.c-std{border-left:5px solid var(--h-std);background:var(--h-std-soft)}
+.chip.c-cc{border-left:5px solid var(--h-cc);background:var(--h-cc-soft)}
+.chip.c-old{border-left:5px solid var(--muted);background:var(--sunk)}
+.chip.c-none{border:1.5px dashed var(--line);background:transparent;color:var(--muted);text-align:center}
+.chip.c-q{border:1.5px dashed var(--muted);background:transparent;color:var(--muted)}
+.arr{position:relative;text-align:center;font-size:11.5px;color:var(--muted);line-height:1.3;padding:0 4px}
+.arr::after{content:"";display:block;height:2px;background:currentColor;margin:6px 6px 0 2px;position:relative}
+.arr::before{content:"";position:absolute;right:2px;bottom:-4px;border-left:8px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent}
+.arr.strong{color:var(--accent);font-weight:700}
+.arr.faint{opacity:.75}
+.arr.faint::after{background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 9px)}
+
+/* 図3：共通の土台 */
+.tree{display:flex;flex-direction:column;align-items:center;gap:0}
+.tree .root{border:2px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:10px 16px;text-align:center;font-size:14px;max-width:460px}
+.tree .root b{font-family:var(--f-display);font-size:16px;display:block}
+.tree .stem{width:2px;height:18px;background:var(--muted)}
+.tree .branch{width:100%;max-width:700px}
+.tree .bar{height:2px;background:var(--muted);width:calc(66.667% + 6.667px);margin:0 auto}
+.tree .kids{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.tree .kid{position:relative;padding-top:18px}
+.tree .kid::before{content:"";position:absolute;top:0;left:50%;width:2px;height:18px;background:var(--muted)}
+.tree .kid .chip{text-align:center;height:100%}
+
+/* 図4：タイムライン */
+.tl{list-style:none;margin:0;padding:0;position:relative}
+.tl::before{content:"";position:absolute;left:96px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.tl li{display:grid;grid-template-columns:84px 1fr;gap:26px;position:relative;padding:6px 0 10px}
+.tl li::before{content:"";position:absolute;left:90px;top:13px;width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--c,var(--muted))}
+.tl .d{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);text-align:right;padding-top:2px}
+.tl .e{font-size:14.5px;line-height:1.65}
+.tl .e b{font-family:var(--f-display);font-weight:700}
+.tl li.future .e{color:var(--muted)}
+.tl li.future::before{border-style:dashed}
+
+/* 図5：動き方 */
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.how .p{border:1px solid var(--line);border-top:5px solid var(--c);border-radius:12px;padding:12px 10px 10px;background:var(--surface)}
+.how .p h3{font-size:15.5px;margin:0 0 2px;padding:0 4px}
+.how .p .k{font-size:12.5px;color:var(--muted);padding:0 4px;display:block;margin-bottom:8px;line-height:1.5}
+.how .p .pt{font-size:13px;line-height:1.6;margin:8px 4px 0;padding-top:8px;border-top:1px dashed var(--line)}
+
+/* 図6：置き換わり */
+.map{display:grid;grid-template-columns:1fr 34px 1fr;gap:8px 4px;align-items:center}
+.map .hd{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;padding-bottom:4px}
+.map .hd::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c)}
+.map .cell{border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:14px;line-height:1.5;background:var(--surface)}
+.map .cell small{display:block;font-size:12px}
+.map .cell.s{border-left:4px solid var(--h-std)}
+.map .cell.m{border-left:4px solid var(--h-mch)}
+.map .to{text-align:center;color:var(--muted);font-size:18px}
+.bins{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.bin{border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.55}
+.bin h4{font-size:13px;margin:0 0 6px;font-family:var(--f-body)}
+.bin ul{margin:0;padding-left:1.1em}
+.bin.only{background:var(--h-mch-soft);border:1px solid var(--h-mch)}
+.bin.not{background:var(--ng-soft);border:1px solid var(--line)}
+.bin.not h4{color:var(--ng)}
+.bin.plan{background:var(--sunk);border:1.5px dashed var(--line)}
+
+/* 図7：お金のかかり方 */
+.life{display:grid;grid-template-columns:128px repeat(4,1fr);gap:6px 4px;align-items:center}
+.life .col{font-size:12.5px;color:var(--muted);text-align:center;border-bottom:1px solid var(--line);padding-bottom:4px}
+.life .row{font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:6px;line-height:1.35}
+.life .row::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
+.life .free{grid-column:span 1;border:1.5px dashed var(--line);border-radius:8px;font-size:12px;color:var(--muted);text-align:center;padding:8px 4px;line-height:1.4}
+.life .paid{border-radius:8px;background:var(--soft);border:1px solid var(--c);border-left:6px solid var(--c);font-size:12.5px;padding:8px 10px;line-height:1.45}
+.life .paid b{font-weight:700}
+.life .s2{grid-column:span 2}.life .s4{grid-column:span 4}
+.life .gap{height:6px;grid-column:1/-1}
+.life .lic{grid-column:2/-1;font-size:12.5px;background:var(--ok-soft);color:var(--ink);border-radius:8px;padding:8px 10px;line-height:1.55;border:1px solid var(--line)}
+.life .lic b{color:var(--ok)}
+
+/* 図8：数字 */
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;margin:0 0 6px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:50%;background:var(--c);display:inline-block}
+svg.chart{max-width:480px;margin:0 auto}
+svg .pt-std{fill:var(--h-std);stroke:var(--surface);stroke-width:2}
+svg .pt-mch{fill:var(--h-mch);stroke:var(--surface);stroke-width:2}
+svg .conn{stroke:var(--muted);stroke-width:2.5;stroke-linecap:round;opacity:.55}
+svg g.hov:hover circle{stroke:var(--ink)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.stat .n{font-family:var(--f-mono);font-size:22px;line-height:1.2}
+.stat .n small{font-size:13px;color:var(--muted)}
+.stat .l{font-size:13px;line-height:1.55;margin-top:4px}
+details.data{margin-top:12px;font-size:13.5px}
+details.data summary{cursor:pointer;color:var(--accent)}
+details.data table{margin-top:8px;font-size:13px}
+
+/* 図9：入口 */
+.entry{display:grid;grid-template-columns:200px 1fr;gap:10px 16px;align-items:start}
+.entry .home{grid-row:span 4;border:2px solid var(--accent);border-radius:12px;padding:12px;background:var(--accent-soft);font-size:13.5px;line-height:1.55;position:sticky;top:8px}
+.entry .home b{font-family:var(--f-display);font-size:16px;display:block;margin-bottom:4px}
+.entry .home .ui{margin-top:8px;border-radius:8px;background:var(--surface);border:1px solid var(--line);padding:8px;font-size:12px}
+.entry .home .ui span{display:block;padding:3px 6px;border-radius:5px;margin:2px 0}
+.entry .home .ui .hit{background:var(--hl);font-weight:700}
+.route{display:grid;grid-template-columns:1fr 26px 1fr;gap:8px;align-items:center}
+.route .how2{font-size:13.5px;line-height:1.5;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface)}
+.route .how2 code{font-size:12px}
+.route .go{text-align:center;color:var(--muted);font-size:18px}
+
+/* 図10：一方通行 */
+.oneway{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:8px;align-items:center}
+.oneway .end{text-align:center}
+.oneway .ar{font-size:12.5px;line-height:1.45;text-align:center;color:var(--muted)}
+.oneway .ar .line{height:2px;background:var(--ok);margin:6px 0;position:relative}
+.oneway .ar .line::after{content:"";position:absolute;right:-1px;top:-5px;border-left:9px solid var(--ok);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.oneway .ar.back .line{background:var(--ng)}
+.oneway .ar.back .line::after{right:auto;left:-1px;border-left:0;border-right:9px solid var(--ng)}
+.oneway .ar.back .line::before{content:"✕";position:absolute;left:50%;top:-12px;transform:translateX(-50%);background:var(--surface);color:var(--ng);font-weight:700;padding:0 6px;font-size:14px}
+.oneway .ar.ok{color:var(--ok)}
+.oneway .ar.back{color:var(--ng)}
+
+/* 図11：選び方 */
+.flow{display:flex;flex-direction:column;gap:0}
+.qrow{display:grid;grid-template-columns:1fr 150px 1fr;gap:10px;align-items:center}
+.qbox{border:1.5px solid var(--ink);border-radius:12px;padding:10px 14px;font-size:14.5px;line-height:1.55;background:var(--surface)}
+.qbox .qn{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);display:block}
+.yes{font-size:12.5px;font-weight:700;color:var(--ok);text-align:center;position:relative}
+.yes .line{height:2px;background:var(--ok);margin-top:4px;position:relative}
+.yes .line::after{content:"";position:absolute;right:-1px;top:-5px;border-left:9px solid var(--ok);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.ans{border-radius:12px;padding:10px 14px;font-size:14px;line-height:1.5;border:1px solid var(--c);border-left:6px solid var(--c);background:var(--soft)}
+.ans b{font-family:var(--f-display);font-size:15.5px;display:block}
+.no{display:grid;grid-template-columns:1fr 150px 1fr;}
+.no .v{justify-self:start;margin-left:28px;border-left:2px solid var(--muted);height:30px;position:relative;font-size:12.5px;color:var(--muted);font-weight:700}
+.no .v span{position:absolute;left:8px;top:5px;white-space:nowrap}
+.no .v::after{content:"";position:absolute;left:-6px;bottom:-1px;border-top:9px solid var(--muted);border-left:5px solid transparent;border-right:5px solid transparent}
+
+/* 注意・根拠 */
+.cautions{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.cautions li{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:10px;padding:10px 14px;font-size:14.5px;line-height:1.7}
+.cautions li b{font-family:var(--f-display)}
+.srcs{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.srcs li{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.src-top{display:flex;gap:8px;align-items:baseline}
+.src-n{font-family:var(--f-mono);font-size:12.5px;color:var(--accent);flex:none}
+.src-t{font-weight:700;font-size:14.5px;line-height:1.5;word-break:break-word}
+.src-meta{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--muted);margin:6px 0 4px}
+.tag{font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:999px}
+.tag.off{background:var(--accent-soft);color:var(--accent)}
+.src-sum{font-size:13.5px;margin:0;line-height:1.65}
+.src-url{font-family:var(--f-mono);font-size:11px;color:var(--muted);margin:6px 0 0;word-break:break-all}
+.related{display:flex;flex-wrap:wrap;gap:8px}
+.related a{font-size:13.5px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 12px;text-decoration:none;color:var(--ink)}
+.related a:hover{border-color:var(--accent)}
+footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);line-height:1.8}
+
+/* スマホ */
+@media (max-width:720px){
+  .trio,.how,.bins,.stats{grid-template-columns:1fr}
+  .eq{grid-template-columns:1fr}
+  .eq .op{transform:rotate(90deg);line-height:1}
+  .tree .kids{grid-template-columns:1fr;gap:8px}
+  .tree .bar{display:none}
+  .tree .kid{padding-top:0}
+  .tree .kid::before{display:none}
+  .entry{grid-template-columns:1fr}
+  .entry .home{grid-row:auto;position:static}
+  .qrow{grid-template-columns:1fr;gap:6px}
+  .yes{text-align:left;padding-left:40px}
+  .ans{margin-left:40px}
+  .yes .line{width:2px;height:16px;margin:4px 0 0}
+  .yes .line::after{right:auto;left:-5px;top:auto;bottom:-6px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:9px solid var(--ok)}
+  .no{grid-template-columns:1fr}
+  .no .v{margin-left:12px}
+}
+@media (max-width:520px){
+  .lineup{grid-template-columns:1fr 64px 1fr}
+  .arr{font-size:10.5px}
+  .route{grid-template-columns:1fr;padding-bottom:12px;border-bottom:1px dashed var(--line)}
+  .route:last-child{border-bottom:0;padding-bottom:0}
+  .route .go{transform:rotate(90deg);line-height:1}
+  .oneway .ar{font-size:11px}
+  .oneway .chip b{font-size:13px}
+  .life{grid-template-columns:76px repeat(4,1fr)}
+  .life .row{font-size:12px}
+  .life .paid,.life .free{font-size:11.5px;padding:6px 6px}
+  .map{grid-template-columns:1fr 22px 1fr}
+  .map .cell{font-size:13px;padding:7px 9px}
+  .tl::before{left:70px}
+  .tl li{grid-template-columns:60px 1fr;gap:24px}
+  .tl li::before{left:64px}
+  .tl .d{font-size:11.5px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">RESEARCH NOTE ／ COPILOT STUDIO</div>
+  <h1>いまのCopilot Studioのハーネスはどれ？</h1>
+  <p class="lead">Copilot Studio でエージェントを作るとき、最初に決める「ハーネス（エージェントを動かすしくみ）」。8月から名前も顔ぶれも変わったので、2026年11月25日時点の公式情報で整理し直しました。</p>
+  <div class="meta">
+    <span><b>調査日</b> 2026-11-25</span>
+    <span><b>対象</b> Microsoft Copilot Studio のハーネス</span>
+    <span><b>主な根拠</b> Microsoft Learn（11/13〜11/24 更新）と Microsoft 公式ブログ</span>
+  </div>
+</header>
+
+<section class="verdict" aria-labelledby="h-verdict">
+  <h2 id="h-verdict" class="label">結論</h2>
+  <p class="big">いま公式に並んでいるハーネスは <strong>3つ</strong>。その中心は、旧「GitHub Copilot ハーネス」から名前が変わった <strong>Microsoft Copilot ハーネス</strong>です。</p>
+  <div class="trio">
+    <div class="hcard mch">
+      <div class="nm">Microsoft Copilot ハーネス</div>
+      <span class="en">Microsoft Copilot harness</span>
+      <p>目標を渡すと、自分で段取りを考えて長い仕事をやり切る。ファイルも作れる。</p>
+      <div class="st"><span class="pill ok">一般提供</span> 2026-08 から（旧名）</div>
+    </div>
+    <div class="hcard cc">
+      <div class="nm">カスタマー会話ハーネス</div>
+      <span class="en">Customer Conversation harness</span>
+      <p>お客さまの電話・Web チャットの窓口用。困ったら人の担当者へ引き継ぐ。</p>
+      <div class="st"><span class="pill warn">一般提供と発表</span> 11/18（Learn は記載なし）</div>
+    </div>
+    <div class="hcard std">
+      <div class="nm">標準ハーネス</div>
+      <span class="en">Standard harness</span>
+      <p>作った人が決めた「トピック（会話の台本）」どおりに、速く・安定して動く。</p>
+      <div class="st"><span class="pill ok">提供中</span> サポート継続と明言</div>
+    </div>
+  </div>
+  <p class="why">ハーネスは<b>作ったあとに切り替えられない</b>ので、作り始める前に選びます（標準のエージェントを元に Microsoft Copilot 版を作り直すことはできます。図10）<a class="ref" href="#s5">[5]</a>。Microsoft Learn の一覧ページ（11/13 更新）は、この3つを並べています<a class="ref" href="#s1">[1]</a><a class="ref" href="#s3">[3]</a>。</p>
+  <div class="ghost" style="margin-top:12px"><b>8月にはあった「Copilot チャット ハーネス」は？</b> 一覧ページからは消えましたが、別の公式ページにはまだ名前が残っています。廃止のお知らせは見つからなかったので、<b>「いまは位置づけがはっきりしない」</b>と扱うのが安全です<a class="ref" href="#s1">[1]</a><a class="ref" href="#s8">[8]</a><a class="ref" href="#s11">[11]</a>。</div>
+  <nav class="figtoc" aria-label="このページの図">
+    <a href="#f1">図1 ハーネスとは</a><a href="#f2">図2 顔ぶれの変化</a><a href="#f3">図3 名前が変わった理由</a><a href="#f4">図4 年表</a><a href="#f5">図5 動き方</a><a href="#f6">図6 機能の置き換わり</a><a href="#f7">図7 お金のかかり方</a><a href="#f8">図8 社内評価の数字</a><a href="#f9">図9 画面の入口</a><a href="#f10">図10 乗り換え</a><a href="#f11">図11 選び方</a>
+  </nav>
+</section>
+
+<section aria-labelledby="h-matrix">
+  <h2 id="h-matrix"><span class="sn">00</span>よく聞かれることの早見表</h2>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>質問</th><th>答え</th><th>確かさ</th><th>根拠</th></tr></thead>
+      <tbody>
+        <tr class="ask"><td class="q">いまのハーネスはどれ？</td><td>Microsoft Copilot・カスタマー会話・標準の<b>3つ</b>。</td><td><span class="pill ok">○ 確認済み</span></td><td><a class="ref" href="#s1">[1]</a><a class="ref" href="#s2">[2]</a><a class="ref" href="#s3">[3]</a></td></tr>
+        <tr><td class="q">「GitHub Copilot ハーネス」はどうなった？</td><td>10/28 に「Microsoft Copilot ハーネス」へ改名。中身も課金も変わらず、作ったエージェントはそのまま動きます。</td><td><span class="pill ok">○ 確認済み</span></td><td><a class="ref" href="#s12">[12]</a><a class="ref" href="#s11">[11]</a></td></tr>
+        <tr><td class="q">Microsoft Copilot ハーネスは正式版？</td><td>2026-08-03 に（旧名で）一般提供。ただしメモリ・トリガーなど一部の機能はプレビュー（お試し版）です。</td><td><span class="pill ok">○ 確認済み</span></td><td><a class="ref" href="#s11">[11]</a><a class="ref" href="#s5">[5]</a></td></tr>
+        <tr><td class="q">カスタマー会話ハーネスは正式版？</td><td>10/21 にプレビュー開始。11/18 の公式ブログでは「一般提供」と紹介。Learn のページには状態の記載がありません。</td><td><span class="pill warn">△ 情報が食い違う</span></td><td><a class="ref" href="#s13">[13]</a><a class="ref" href="#s15">[15]</a><a class="ref" href="#s6">[6]</a></td></tr>
+        <tr><td class="q">標準ハーネスはなくなる？</td><td>なくなりません。既存のエージェントも、新しく作るのもサポート継続と明言されています。</td><td><span class="pill ok">○ 確認済み</span></td><td><a class="ref" href="#s11">[11]</a><a class="ref" href="#s14">[14]</a><a class="ref" href="#s4">[4]</a></td></tr>
+        <tr><td class="q">Copilot チャット ハーネスは？</td><td>一覧ページから外れたが、別ページに名前が残る。廃止の告知は見つからず。</td><td><span class="pill na">？ 未確認</span></td><td><a class="ref" href="#s1">[1]</a><a class="ref" href="#s8">[8]</a><a class="ref" href="#s11">[11]</a></td></tr>
+        <tr><td class="q">作ったあとにハーネスを変えられる？</td><td>Microsoft Copilot → 標準は不可。標準 → Microsoft Copilot は、元のエージェントから新しく作り直す形でなら可能（プレビュー）。</td><td><span class="pill warn">△ 条件つき</span></td><td><a class="ref" href="#s5">[5]</a><a class="ref" href="#s4">[4]</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="h-what">
+  <h2 id="h-what"><span class="sn">01</span>そもそも「ハーネス」ってなに？</h2>
+  <p>ハーネスは英語で「馬具」のこと。力の強い馬（AI モデル）も、手綱や鞍（ハーネス）がないと荷車を引けません。Copilot Studio では、<b>AI モデルに「どう段取りして、どの道具を使い、いつ止まるか」を決める土台</b>のことをハーネスと呼んでいます<a class="ref" href="#s14">[14]</a>。同じモデルでも、どのハーネスに乗せるかで得意な仕事も、お金のかかり方も変わります<a class="ref" href="#s3">[3]</a>。</p>
+  <figure id="f1">
+    <div class="ftitle"><span class="fn">図1</span>モデル ＋ ハーネス ＝ エージェントの働き方</div>
+    <div class="eq" role="img" aria-label="AIモデル（考える頭脳）とハーネス（段取り役）を組み合わせると、エージェントとして仕事ができる">
+      <div class="blk"><h3>AI モデル</h3><span class="sub">＝考える頭脳</span><p>GPT や Claude など。文章を読んで考え、答えを作る部分。</p></div>
+      <div class="op" aria-hidden="true">＋</div>
+      <div class="blk harness"><h3>ハーネス</h3><span class="sub">＝段取り役・馬具</span>
+        <ul><li>次に何をするか決める</li><li>ツールやナレッジを呼ぶ</li><li>結果を確かめてやり直す</li><li>記憶・ファイル・安全な作業場</li><li>どこで止まるかを決める</li></ul></div>
+      <div class="op" aria-hidden="true">→</div>
+      <div class="blk"><h3>エージェント</h3><span class="sub">＝仕事をする担当者</span><p>Teams や Web サイトで、質問に答えたり、手続きを進めたりする。</p></div>
+    </div>
+    <figcaption>ハーネスは「モデルの外側」の仕組み。Microsoft は「エージェントがどう計画し、ツールを使い、返事をするかを決めるエンジン」と説明しています<a class="ref" href="#s14">[14]</a>。</figcaption>
+  </figure>
+</section>
+
+<section aria-labelledby="h-change">
+  <h2 id="h-change"><span class="sn">02</span>8月からの移り変わり</h2>
+  <p>8月に新しいハーネスが登場したとき、Copilot Studio のハーネスは「Copilot チャット」「標準」「GitHub Copilot」の3つでした<a class="ref" href="#s11">[11]</a>。そこから3か月で、1つが改名し、1つが加わり、1つが一覧から外れています。</p>
+  <figure id="f2">
+    <div class="ftitle"><span class="fn">図2</span>ハーネスの顔ぶれ：2026年8月 → 11月</div>
+    <div class="lineup" role="img" aria-label="8月のGitHub Copilotハーネスは11月にMicrosoft Copilotハーネスへ改名。標準ハーネスはそのまま。カスタマー会話ハーネスが新しく加わり、Copilotチャットハーネスは一覧から外れた">
+      <div class="hd">2026年8月</div><div class="hd mid"></div><div class="hd">2026年11月（いま）</div>
+
+      <div class="chip c-old"><b>GitHub Copilot ハーネス</b><small>8/3 一般提供</small></div>
+      <div class="arr strong">改名<br>10/28</div>
+      <div class="chip c-mch"><b>Microsoft Copilot ハーネス</b><small>中身・課金は同じ</small></div>
+
+      <div class="chip c-std"><b>標準ハーネス</b><small>従来からの土台</small></div>
+      <div class="arr">そのまま</div>
+      <div class="chip c-std"><b>標準ハーネス</b><small>サポート継続</small></div>
+
+      <div class="chip c-none">（まだない）</div>
+      <div class="arr">新登場<br>10/21</div>
+      <div class="chip c-cc"><b>カスタマー会話ハーネス</b><small>お客さま窓口用</small></div>
+
+      <div class="chip c-old"><b>Copilot チャット ハーネス</b><small>Copilot Chat の拡張用</small></div>
+      <div class="arr faint">一覧から<br>外れた</div>
+      <div class="chip c-q"><b>？</b><small>廃止の告知は見つからず</small></div>
+    </div>
+    <figcaption>色つきの3つが、いま Learn の一覧に載っているハーネスです<a class="ref" href="#s1">[1]</a>。Copilot チャット ハーネスは、8月の発表で「Microsoft 365 Copilot Chat と同じハーネスで、Copilot Chat の体験をカスタマイズする用」と紹介されていました<a class="ref" href="#s11">[11]</a>。</figcaption>
+  </figure>
+
+  <figure id="f3">
+    <div class="ftitle"><span class="fn">図3</span>なぜ「GitHub」が「Microsoft」に変わったの？</div>
+    <div class="tree" role="img" aria-label="MicrosoftとGitHubの製品で共通に使われるハーネス技術が土台になり、Copilot Studio、Copilot SDK 2.0、各Copilotの体験に広がっている">
+      <div class="root"><b>共通のハーネス技術</b>Microsoft と GitHub の製品で本番稼働している同じしくみ</div>
+      <div class="stem"></div>
+      <div class="branch"><div class="bar"></div>
+      <div class="kids">
+        <div class="kid"><div class="chip c-mch"><b>Copilot Studio</b><small>Microsoft Copilot ハーネス</small></div></div>
+        <div class="kid"><div class="chip"><b>Copilot SDK 2.0</b><small>開発者が自分のアプリに組み込む部品（11/17 一般提供）</small></div></div>
+        <div class="kid"><div class="chip"><b>ほかの Copilot の体験</b><small>共通の土台として広げていく方針</small></div></div>
+      </div></div>
+    </div>
+    <figcaption>Microsoft は「Copilot の各体験に共通の土台となるハーネスを広げていく」ため名前を変えた、と説明しています<a class="ref" href="#s12">[12]</a>。Ignite 2026 では、Copilot SDK 2.0 が「Microsoft と GitHub で本番稼働しているのと同じハーネス技術」を使うと発表されました<a class="ref" href="#s16">[16]</a>。</figcaption>
+  </figure>
+
+  <figure id="f4">
+    <div class="ftitle"><span class="fn">図4</span>年表：ハーネスまわりの動き</div>
+    <ol class="tl">
+      <li style="--c:var(--h-mch)"><span class="d">2026-08-03</span><span class="e"><b>GitHub Copilot ハーネスが一般提供。</b>このときの顔ぶれは Copilot チャット・標準・GitHub Copilot の3つ<a class="ref" href="#s11">[11]</a></span></li>
+      <li style="--c:var(--h-cc)"><span class="d">2026-10-21</span><span class="e"><b>カスタマー会話ハーネスがプレビュー開始。</b>電話と Web チャットのお客さま対応用<a class="ref" href="#s13">[13]</a></span></li>
+      <li style="--c:var(--h-mch)"><span class="d">2026-10-28</span><span class="e"><b>「Microsoft Copilot ハーネス」に改名。</b>画面の表記は数週間かけて切り替え<a class="ref" href="#s12">[12]</a></span></li>
+      <li style="--c:var(--h-mch)"><span class="d">2026-11-09</span><span class="e">標準ハーネスと比べた社内評価の結果を公開（図8）<a class="ref" href="#s14">[14]</a></span></li>
+      <li style="--c:var(--accent)"><span class="d">2026-11-13</span><span class="e"><b>Learn の一覧が「3つ」に。</b>Microsoft Copilot・カスタマー会話・標準。Copilot チャットは載らず<a class="ref" href="#s1">[1]</a></span></li>
+      <li style="--c:var(--accent)"><span class="d">2026-11-17</span><span class="e">Ignite 2026。Copilot SDK 2.0 が共通のハーネス技術を使うと発表<a class="ref" href="#s16">[16]</a></span></li>
+      <li style="--c:var(--h-cc)"><span class="d">2026-11-18</span><span class="e">Copilot Studio の公式ブログで、カスタマー会話ハーネスを「一般提供」と紹介<a class="ref" href="#s15">[15]</a></span></li>
+      <li style="--c:var(--h-std)"><span class="d">2026-11-24</span><span class="e">Learn に「標準ハーネスの概要」と「ハーネスの選び方」が更新<a class="ref" href="#s7">[7]</a><a class="ref" href="#s4">[4]</a></span></li>
+      <li class="future"><span class="d">2026-12<br>（予定）</span><span class="e">Microsoft Copilot ハーネスで画面操作（Windows 365 for Agents）がプレビュー<a class="ref" href="#s16">[16]</a>。エージェント専用アカウントもプレビュー予定<a class="ref" href="#s15">[15]</a></span></li>
+    </ol>
+  </figure>
+</section>
+
+<section aria-labelledby="h-how">
+  <h2 id="h-how"><span class="sn">03</span>3つのハーネスは、どう動く？</h2>
+  <p>いちばん大きな違いは「誰が道筋を決めるか」です。標準は作った人が決め、Microsoft Copilot はエージェントが自分で考え、カスタマー会話は担当を分けて人につなぐ前提で動きます。</p>
+  <figure id="f5">
+    <div class="ftitle"><span class="fn">図5</span>仕事の進め方をくらべる</div>
+    <div class="how">
+      <div class="p std">
+        <h3>標準ハーネス</h3><span class="k">決めた道をたどる</span>
+        <svg class="dg" viewBox="0 0 320 210" role="img" aria-label="標準ハーネスでは、質問に合うトピックを選び、トピックの中は作った人が決めた順に進む。想定外の質問は予備の対応に回る">
+          <defs><marker id="ah-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>
+          <rect class="bx" x="100" y="6" width="120" height="28" rx="14"/>
+          <text class="t" x="160" y="25" text-anchor="middle">ユーザーの質問</text>
+          <line class="ln" x1="160" y1="34" x2="160" y2="54" marker-end="url(#ah-s)"/>
+          <rect class="bx-std" x="40" y="56" width="140" height="34" rx="8"/>
+          <text class="t-b" x="110" y="78" text-anchor="middle">合うトピックを選ぶ</text>
+          <line class="dash" x1="180" y1="73" x2="204" y2="73" marker-end="url(#ah-s)"/>
+          <rect class="dash" x="206" y="56" width="106" height="34" rx="8"/>
+          <text class="t-s" x="259" y="70" text-anchor="middle">想定外の質問</text>
+          <text class="t-s" x="259" y="84" text-anchor="middle">→ 予備の対応</text>
+          <path class="ln" d="M110 90 V104 H54 V118" marker-end="url(#ah-s)"/>
+          <rect class="bx" x="10" y="120" width="88" height="34" rx="8"/>
+          <text class="t" x="54" y="142" text-anchor="middle">質問する</text>
+          <line class="ln" x1="98" y1="137" x2="114" y2="137" marker-end="url(#ah-s)"/>
+          <rect class="bx" x="116" y="120" width="88" height="34" rx="8"/>
+          <text class="t" x="160" y="142" text-anchor="middle">ツールを呼ぶ</text>
+          <line class="ln" x1="204" y1="137" x2="220" y2="137" marker-end="url(#ah-s)"/>
+          <rect class="bx" x="222" y="120" width="88" height="34" rx="8"/>
+          <text class="t" x="266" y="142" text-anchor="middle">回答する</text>
+          <rect class="bx-sunk" x="10" y="166" width="300" height="34" rx="8"/>
+          <text class="t-s" x="160" y="188" text-anchor="middle">トピックの中は、作った人が決めた順番</text>
+        </svg>
+        <p class="pt">予測しやすく、返事が速い。そのぶん想定外の質問には、作る側が逃げ道を用意します<a class="ref" href="#s7">[7]</a>。</p>
+      </div>
+      <div class="p mch">
+        <h3>Microsoft Copilot ハーネス</h3><span class="k">自分で段取りを考える</span>
+        <svg class="dg" viewBox="0 0 320 250" role="img" aria-label="Microsoft Copilotハーネスでは、目標を受け取ると、安全な作業場の中で、次の一手を決める・実行する・結果を確かめるをくり返し、終わるか上限に達したら成果物を出す">
+          <defs><marker id="ah-m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>
+          <rect class="bx" x="110" y="4" width="100" height="26" rx="13"/>
+          <text class="t" x="160" y="22" text-anchor="middle">目標を渡す</text>
+          <rect class="dash" x="6" y="40" width="308" height="160" rx="12"/>
+          <text class="t-s" x="304" y="192" text-anchor="end">安全な作業場（サンドボックス）</text>
+          <line class="ln" x1="160" y1="30" x2="160" y2="66" marker-end="url(#ah-m)"/>
+          <rect class="bx-mch" x="98" y="68" width="124" height="30" rx="8"/>
+          <text class="t-b" x="160" y="88" text-anchor="middle">次の一手を決める</text>
+          <path class="ln" d="M222 86 Q262 96 262 128" marker-end="url(#ah-m)"/>
+          <rect class="bx-mch" x="208" y="130" width="100" height="30" rx="8"/>
+          <text class="t-b" x="258" y="150" text-anchor="middle">実行する</text>
+          <text class="t-s" x="258" y="176" text-anchor="middle">ツール・ファイル</text>
+          <line class="ln" x1="208" y1="145" x2="114" y2="145" marker-end="url(#ah-m)"/>
+          <rect class="bx-mch" x="12" y="130" width="100" height="30" rx="8"/>
+          <text class="t-b" x="62" y="150" text-anchor="middle">結果を確かめる</text>
+          <path class="ln" d="M58 130 Q58 92 96 86" marker-end="url(#ah-m)"/>
+          <text class="t-s" x="160" y="122" text-anchor="middle">くり返す</text>
+          <line class="ln" x1="62" y1="160" x2="62" y2="218" marker-end="url(#ah-m)"/>
+          <rect class="bx" x="12" y="220" width="138" height="26" rx="8"/>
+          <text class="t" x="81" y="238" text-anchor="middle">成果物（文書など）</text>
+          <text class="t-s" x="160" y="231">終わったら／時間・手順の</text>
+          <text class="t-s" x="160" y="245">上限に来たら止まる</text>
+        </svg>
+        <p class="pt">失敗しても別の道を探して続けます。パスワードはエージェントに渡さず、Copilot Studio 側が持ちます<a class="ref" href="#s14">[14]</a>。</p>
+      </div>
+      <div class="p cc">
+        <h3>カスタマー会話ハーネス</h3><span class="k">担当を分けて、人につなぐ</span>
+        <svg class="dg" viewBox="-6 0 326 250" role="img" aria-label="カスタマー会話ハーネスでは、お客さまの電話やチャットを受付エージェントが受け、用件ごとのサブエージェントに振り分け、解決できないときは人の担当者へ引き継ぐ">
+          <defs><marker id="ah-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>
+          <circle cx="34" cy="96" r="10" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M16 126 Q16 108 34 108 Q52 108 52 126" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <text class="t-b" x="34" y="146" text-anchor="middle">お客さま</text>
+          <text class="t-s" x="34" y="162" text-anchor="middle">電話・チャット</text>
+          <line class="ln" x1="56" y1="112" x2="74" y2="112" marker-end="url(#ah-c)"/>
+          <rect class="bx-cc" x="76" y="94" width="92" height="36" rx="8"/>
+          <text class="t-b" x="122" y="111" text-anchor="middle">受付</text>
+          <text class="t-s" x="122" y="125" text-anchor="middle">エージェント</text>
+          <text class="t-s" x="242" y="28" text-anchor="middle">用件ごとのサブエージェント</text>
+          <line class="ln" x1="168" y1="104" x2="194" y2="56" marker-end="url(#ah-c)"/>
+          <line class="ln" x1="168" y1="112" x2="194" y2="112" marker-end="url(#ah-c)"/>
+          <line class="ln" x1="168" y1="120" x2="194" y2="168" marker-end="url(#ah-c)"/>
+          <rect class="bx" x="196" y="38" width="86" height="30" rx="8"/>
+          <text class="t" x="239" y="58" text-anchor="middle">予約の変更</text>
+          <rect class="bx" x="196" y="97" width="86" height="30" rx="8"/>
+          <text class="t" x="239" y="117" text-anchor="middle">支払い</text>
+          <rect class="bx" x="196" y="154" width="86" height="30" rx="8"/>
+          <text class="t" x="239" y="174" text-anchor="middle">本人確認</text>
+          <path class="dash" d="M282 53 H302 M282 112 H302 M282 169 H302 M302 53 V206" />
+          <line class="dash" x1="302" y1="206" x2="302" y2="210" marker-end="url(#ah-c)"/>
+          <rect class="bx" x="150" y="212" width="164" height="34" rx="8"/>
+          <text class="t-b" x="232" y="228" text-anchor="middle">人の担当者へ</text>
+          <text class="t-s" x="232" y="241" text-anchor="middle">解決できないとき</text>
+        </svg>
+        <p class="pt">サブエージェントごとに、人へ引き継ぐ道を持てます。決まったトピックと生成 AI のスキルを混ぜて使えます<a class="ref" href="#s6">[6]</a><a class="ref" href="#s13">[13]</a>。</p>
+      </div>
+    </div>
+    <figcaption>サブエージェントの用件名（予約の変更など）は説明のための例です。Microsoft Copilot ハーネスの「くり返し」は、仕事が終わるか、時間・手順・トークン（AI が読み書きする文字量）の上限に達するまで続きます<a class="ref" href="#s14">[14]</a>。</figcaption>
+  </figure>
+</section>
+
+<section aria-labelledby="h-table">
+  <h2 id="h-table"><span class="sn">04</span>公式の比較表を、かみくだくと</h2>
+  <p>Microsoft Learn の比較表<a class="ref" href="#s1">[1]</a>を、日本語でわかりやすく言い直したものです。</p>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>くらべる点</th><th><span class="th-h mch">Microsoft Copilot</span></th><th><span class="th-h cc">カスタマー会話</span></th><th><span class="th-h std">標準</span></th></tr></thead>
+      <tbody>
+        <tr><td class="q">向いている仕事</td><td>手順の多い、複雑な業務</td><td>電話・チャットのお客さま対応（コンタクトセンター）</td><td>ルールの決まった対応、決まった流れの会話</td></tr>
+        <tr><td class="q">動き方</td><td>ゴールに向けて自分で一歩ずつ考える</td><td>複数のエージェントで分担し、人へ引き継げる</td><td>作った人が決めたトピックとルールに従う</td></tr>
+        <tr><td class="q">うまくいかないとき</td><td>やり直したり、別の道を自動で探す</td><td>決めておいた道で人の担当者へ</td><td>作っておいた道をたどる</td></tr>
+        <tr><td class="q">ファイル</td><td>Word・Excel・PowerPoint・PDF を作る・直す・読み解く</td><td>主な用途ではない</td><td>主な用途ではない</td></tr>
+        <tr><td class="q">スキルと記憶</td><td>あり</td><td>あり</td><td>主な用途ではない</td></tr>
+        <tr><td class="q">公開先</td><td>社内の人にも、社外のお客さまにも</td><td>Web サイトのチャット、電話番号</td><td>社内の人にも、社外のお客さまにも</td></tr>
+        <tr><td class="q">お金</td><td>Copilot クレジット（使った分）</td><td>Copilot クレジット（使った分）</td><td>これまでの Copilot Studio のライセンスの考え方</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note" style="margin-top:8px;font-size:13px">「スキル」＝手順書や知識をまとめて渡せる部品。「記憶（メモリ）」＝やりとりの中身を覚えておく機能です。</p>
+</section>
+
+<section aria-labelledby="h-diff">
+  <h2 id="h-diff"><span class="sn">05</span>標準 → Microsoft Copilot で、何が置き換わる？</h2>
+  <p>標準ハーネスに慣れた人がつまずきやすいのは、「同じ役割の部品が、別の名前・別のしくみになっている」ところです<a class="ref" href="#s5">[5]</a>。</p>
+  <figure id="f6">
+    <div class="ftitle"><span class="fn">図6</span>部品の置き換わりと、まだ使えないもの</div>
+    <div class="map" role="img" aria-label="標準ハーネスのプロンプトはスキルに、トピックのきっかけはフックに、言語の追加設定は指示での言語指定に、コード実行のオプトインは最初から有効に、自律実行はトリガーやワークフローのエージェントノードに置き換わる">
+      <div class="hd std">標準ハーネス</div><div></div><div class="hd mch">Microsoft Copilot ハーネス</div>
+      <div class="cell s">プロンプト<small>決まった指示文を部品として呼ぶ</small></div><div class="to">→</div><div class="cell m">スキル<small>手順や知識をまとめた部品</small></div>
+      <div class="cell s">トピックのきっかけ<small>「こう聞かれたら」「メッセージが来たら」</small></div><div class="to">→</div><div class="cell m">フック<small>開始時・ツール実行前などにワークフローを自動実行</small></div>
+      <div class="cell s">言語を追加して有効化</div><div class="to">→</div><div class="cell m">最初から多言語<small>返事の言語は指示で決める</small></div>
+      <div class="cell s">コード実行は設定でオン</div><div class="to">→</div><div class="cell m">コード実行は最初から</div>
+      <div class="cell s">自律的に動かす</div><div class="to">→</div><div class="cell m">トリガー（プレビュー）<small>またはワークフローのエージェントノード</small></div>
+    </div>
+    <div class="bins">
+      <div class="bin only"><h4>Microsoft Copilot ハーネスだけ</h4><ul><li>スキル</li><li>メモリ（記憶）</li><li>Office・PDF ファイルの作成と編集</li></ul></div>
+      <div class="bin not"><h4>Microsoft Copilot ハーネスでは使えない</h4><ul><li>公開先：SharePoint・WhatsApp・Dynamics 365 Contact Center</li><li>ナレッジ：Azure AI Search</li><li>手動（独自）の認証</li><li>カスタムエンティティ</li></ul></div>
+      <div class="bin plan"><h4>予定</h4><ul><li>画面操作（コンピューター操作）…12月にプレビュー予定<a class="ref" href="#s16">[16]</a></li></ul></div>
+    </div>
+    <figcaption>コネクタ・MCP・ワークフロー・SharePoint や Web サイトのナレッジ・他のエージェントとの連携・評価・Teams と Web サイトへの公開・Entra ID の認証・DLP は、どちらのハーネスでも使えます<a class="ref" href="#s5">[5]</a>。また、Teams 用 Dataverse の環境では Microsoft Copilot ハーネスは使えません<a class="ref" href="#s5">[5]</a>。</figcaption>
+  </figure>
+</section>
+
+<section aria-labelledby="h-cost">
+  <h2 id="h-cost"><span class="sn">06</span>お金のかかり方は、ハーネスで別物</h2>
+  <p>見落としやすいのが「いつからお金がかかるか」です。Microsoft Copilot ハーネスは<b>作り始めた瞬間から</b>、Microsoft 365 Copilot ライセンスのあるなしに関係なく、Copilot クレジット（使った量で払う仕組み）を使います<a class="ref" href="#s9">[9]</a><a class="ref" href="#s11">[11]</a>。</p>
+  <figure id="f7">
+    <div class="ftitle"><span class="fn">図7</span>クレジットがかかり始めるタイミング</div>
+    <div class="life" role="img" aria-label="Microsoft Copilotハーネスとカスタマー会話ハーネスは作る段階からクレジットがかかる。標準ハーネスは公開後の利用から課金され、Microsoft 365 Copilotライセンスを持つ人が本人として使う一部の回答は課金されない">
+      <div></div><div class="col">作る</div><div class="col">試す・評価</div><div class="col">公開</div><div class="col">使う</div>
+
+      <div class="row mch">Microsoft Copilot</div>
+      <div class="paid mch s4"><b>ずっとクレジット</b>：AI モデルの利用量・ツール（ナレッジや MCP も）・ハーネスそのもの<a class="ref" href="#s9">[9]</a></div>
+
+      <div class="row cc">カスタマー会話</div>
+      <div class="paid cc s4"><b>作る・試す・評価・使う</b>でクレジットを使うことがある（使った分）<a class="ref" href="#s6">[6]</a></div>
+
+      <div class="row std">標準</div>
+      <div class="free s2">ここは課金の対象外</div>
+      <div class="paid std s2"><b>公開後の利用から</b>課金<a class="ref" href="#s9">[9]</a></div>
+      <div class="lic"><b>✓ 課金されない利用</b>：Microsoft 365 Copilot ライセンスを持つ人が、本人として Copilot Chat・Teams・SharePoint でエージェントを使い、ナレッジから答えるような使い方<a class="ref" href="#s10">[10]</a></div>
+    </div>
+    <figcaption>標準ハーネスの「課金されない利用」には細かい条件があります。くわしくは同じサイトの<a href="./research_copilot-studio-credit.html">「Copilot Studio のクレジット」</a>のページへ。なお Microsoft Copilot ハーネスの画面を使うのに、Copilot Studio のユーザーライセンスを個人に割り当てる必要はありません<a class="ref" href="#s5">[5]</a>。</figcaption>
+  </figure>
+</section>
+
+<section aria-labelledby="h-num">
+  <h2 id="h-num"><span class="sn">07</span>Microsoft が出した「くらべた結果」</h2>
+  <p>Microsoft は、同じ課題を標準ハーネスと Microsoft Copilot ハーネスで解かせた社内評価を公開しています<a class="ref" href="#s15">[15]</a><a class="ref" href="#s14">[14]</a><a class="ref" href="#s12">[12]</a>。あくまでメーカー自身の評価なので、「この方向に強い」という目安として見てください。</p>
+  <figure id="f8">
+    <div class="ftitle"><span class="fn">図8</span>課題の合格率：標準 → Microsoft Copilot ハーネス</div>
+    <div class="legend"><span style="--c:var(--h-std)"><i></i>標準ハーネス</span><span style="--c:var(--h-mch)"><i></i>Microsoft Copilot ハーネス</span></div>
+    <svg class="dg chart" viewBox="0 0 380 176" role="img" aria-label="課題の合格率。OpenAIのモデルでは標準67.2%からMicrosoft Copilotハーネス78.0%へ、Anthropicのモデルでは67.0%から89.1%へ上がった">
+      <g class="t-s" text-anchor="middle">
+        <line class="grid" x1="100" y1="20" x2="100" y2="146"/><text x="100" y="164">50%</text>
+        <line class="grid" x1="152" y1="20" x2="152" y2="146"/><text x="152" y="164">60%</text>
+        <line class="grid" x1="204" y1="20" x2="204" y2="146"/><text x="204" y="164">70%</text>
+        <line class="grid" x1="256" y1="20" x2="256" y2="146"/><text x="256" y="164">80%</text>
+        <line class="grid" x1="308" y1="20" x2="308" y2="146"/><text x="308" y="164">90%</text>
+        <line class="grid" x1="360" y1="20" x2="360" y2="146"/><text x="360" y="164">100%</text>
+      </g>
+      <text class="t-b" x="4" y="58">OpenAI</text><text class="t-s" x="4" y="74">のモデル</text>
+      <line class="conn" x1="189.4" y1="62" x2="245.6" y2="62"/>
+      <text class="t-s" x="217.5" y="48" text-anchor="middle">+10.8pt</text>
+      <g class="hov"><title>標準ハーネス・OpenAI のモデル：67.2%</title><circle class="pt-std" cx="189.4" cy="62" r="7"/></g>
+      <g class="hov"><title>Microsoft Copilot ハーネス・OpenAI のモデル：78.0%</title><circle class="pt-mch" cx="245.6" cy="62" r="7"/></g>
+      <text class="t" x="179" y="88" text-anchor="middle">67.2%</text>
+      <text class="t-b" x="256" y="88" text-anchor="middle">78.0%</text>
+
+      <text class="t-b" x="4" y="116">Anthropic</text><text class="t-s" x="4" y="132">のモデル</text>
+      <line class="conn" x1="188.4" y1="120" x2="303.3" y2="120"/>
+      <text class="t-s" x="245.9" y="106" text-anchor="middle">+22.1pt</text>
+      <g class="hov"><title>標準ハーネス・Anthropic のモデル：67.0%</title><circle class="pt-std" cx="188.4" cy="120" r="7"/></g>
+      <g class="hov"><title>Microsoft Copilot ハーネス・Anthropic のモデル：89.1%</title><circle class="pt-mch" cx="303.3" cy="120" r="7"/></g>
+      <text class="t" x="178" y="146" text-anchor="middle">67.0%</text>
+      <text class="t-b" x="314" y="146" text-anchor="middle">89.1%</text>
+    </svg>
+    <div class="stats">
+      <div class="stat"><div class="n">84〜91<small>%</small></div><div class="l">ツールが失敗したあとも作業を続けた割合。標準ハーネスは <b>7%未満</b><a class="ref" href="#s12">[12]</a></div></div>
+      <div class="stat"><div class="n">15〜21<small>% 減</small></div><div class="l">AI に読ませる入力のコスト（AI の呼び出し回数はほぼ2倍だが、使い回しで節約）<a class="ref" href="#s12">[12]</a><a class="ref" href="#s14">[14]</a></div></div>
+      <div class="stat"><div class="n">85.6→96.3<small>%</small></div><div class="l">Excel Online のコネクタ（つなぎ役）の成功率。設定は変えずに改善（7〜8月の実利用データ）<a class="ref" href="#s14">[14]</a></div></div>
+    </div>
+    <details class="data"><summary>図8の数字を表で見る</summary>
+      <table><thead><tr><th>モデル</th><th>標準ハーネス</th><th>Microsoft Copilot ハーネス</th><th>差</th></tr></thead>
+      <tbody><tr><td>OpenAI のモデル</td><td>67.2%</td><td>78.0%</td><td>+10.8 ポイント</td></tr><tr><td>Anthropic のモデル</td><td>67.0%</td><td>89.1%</td><td>+22.1 ポイント</td></tr></tbody></table>
+    </details>
+    <figcaption>出典は 11/18 の公式ブログのグラフと、10/28・11/9 の公式ブログ。評価に使ったモデル名や課題の詳細はブログに書かれていません。一方で、単純な仕事に使うと考えすぎて遅くなり、クレジットも余計にかかりがち、とも書かれています<a class="ref" href="#s4">[4]</a>。</figcaption>
+  </figure>
+</section>
+
+<section aria-labelledby="h-ui">
+  <h2 id="h-ui"><span class="sn">08</span>画面のどこから作る？ 乗り換えはできる？</h2>
+  <figure id="f9">
+    <div class="ftitle"><span class="fn">図9</span>Copilot Studio のホームからの入口</div>
+    <div class="entry">
+      <div class="home"><b>Copilot Studio のホーム</b>いまのホームは新しい体験（Microsoft Copilot ハーネス側）<span class="pill guess" style="margin-left:4px">読み取り</span>
+        <div class="ui" aria-hidden="true"><span>＋ 作りたいことを入力…</span><span class="hit">その他のビルド方法</span><span>エージェント／ワークフロー</span><span class="hit">… → Open classic experience</span></div>
+      </div>
+      <div class="route"><div class="how2">ホームでそのまま作る</div><div class="go">→</div><div class="chip c-mch"><b>Microsoft Copilot</b><small>自然な文章で作る（一部プレビュー）</small></div></div>
+      <div class="route"><div class="how2">「<b>その他のビルド方法</b>」を選ぶ</div><div class="go">→</div><div class="chip c-std"><b>標準</b><small>新しいエージェント・エージェントフロー</small></div></div>
+      <div class="route"><div class="how2">サイドバー下の「…」→「<b>Open classic experience</b>」</div><div class="go">→</div><div class="chip c-std"><b>標準（クラシック画面）</b><small>いまのセッションだけ有効</small></div></div>
+      <div class="route"><div class="how2">カスタマー会話・Copilot チャット</div><div class="go">→</div><div class="chip"><b>別の作成ルート</b><small>この切り替えには含まれない</small></div></div>
+    </div>
+    <figcaption>入口の名前と動きは Learn の手順ページによります<a class="ref" href="#s8">[8]</a>。クラシック画面を<b>組織全体の既定にする設定はありません</b>。作成済みの標準エージェントは「エージェント」「ワークフロー」の一覧から開けます。「ホームが新しい体験」という部分は、標準を作るのに専用の入口が要ることからの読み取りで、公式に明記された文言ではありません。</figcaption>
+  </figure>
+
+  <figure id="f10">
+    <div class="ftitle"><span class="fn">図10</span>乗り換えは一方通行</div>
+    <div class="oneway" role="img" aria-label="標準ハーネスのエージェントからMicrosoft Copilotハーネスのエージェントを作ることはできるが、Microsoft Copilotハーネスから標準ハーネスへは移せない">
+      <div class="end"><div class="chip c-std"><b>標準ハーネスのエージェント</b></div></div>
+      <div>
+        <div class="ar ok">元にして新しく作れる（プレビュー）<div class="line"></div>部品の変換ではなく「作り直し」に近い</div>
+        <div class="ar back" style="margin-top:18px"><div class="line"></div>逆向きには移せない</div>
+      </div>
+      <div class="end"><div class="chip c-mch"><b>Microsoft Copilot ハーネスのエージェント</b></div></div>
+    </div>
+    <figcaption>Learn には「Microsoft Copilot ハーネスで作ったエージェントは標準ハーネスへ移せない。ただし標準のエージェントから Microsoft Copilot ハーネスのエージェントを作ることはできる」とあります<a class="ref" href="#s5">[5]</a>。選び方のページは、移行は「はっきりした利点があるときだけ」「作り直しと考えて」と勧めています<a class="ref" href="#s4">[4]</a>。</figcaption>
+  </figure>
+</section>
+
+<section aria-labelledby="h-choose">
+  <h2 id="h-choose"><span class="sn">09</span>どれを選ぶ？</h2>
+  <figure id="f11">
+    <div class="ftitle"><span class="fn">図11</span>上から順に、2つの質問で決める</div>
+    <div class="flow">
+      <div class="qrow">
+        <div class="qbox"><span class="qn">Q1</span>お客さまと<b>電話や Web チャット</b>でやりとりする窓口？</div>
+        <div class="yes">はい<div class="line"></div></div>
+        <div class="ans cc"><b>カスタマー会話ハーネス</b>受付と担当を分け、人への引き継ぎまで</div>
+      </div>
+      <div class="no"><div class="v"><span>いいえ</span></div></div>
+      <div class="qrow">
+        <div class="qbox"><span class="qn">Q2</span><b>長い仕事・手順が多い・ファイルを作る</b>・状況に合わせて段取りを変える必要がある？</div>
+        <div class="yes">はい<div class="line"></div></div>
+        <div class="ans mch"><b>Microsoft Copilot ハーネス</b>例：会議の準備、請求書の処理、監査のチェック</div>
+      </div>
+      <div class="no"><div class="v"><span>いいえ</span></div></div>
+      <div class="qrow">
+        <div class="qbox" style="border-style:dashed"><span class="qn">それ以外</span>短いやりとり・決まった流れ・すぐ返したい・利用者が多い</div>
+        <div class="yes">なら<div class="line"></div></div>
+        <div class="ans std"><b>標準ハーネス</b>例：人事の受付、社内ヘルプデスク、定型の問い合わせ</div>
+      </div>
+    </div>
+    <figcaption>例は Learn の選び方ページからの抜粋です<a class="ref" href="#s4">[4]</a>。Q2 が「はい」でも、SharePoint・WhatsApp・Dynamics 365 Contact Center に出したい、Azure AI Search を使いたい場合は、いまは標準ハーネスしか選べません<a class="ref" href="#s5">[5]</a>。迷ったら、Microsoft Copilot ハーネスで小さく作って、クレジットの使い方を見てから広げるのが安全です。</figcaption>
+  </figure>
+</section>
+
+<section aria-labelledby="h-caution">
+  <h2 id="h-caution"><span class="sn">10</span>説明するときの注意点</h2>
+  <ul class="cautions">
+    <li><b>旧名があちこちに残っています。</b>「GitHub Copilot ハーネス」と書かれた資料・ブログ・URL・比較表の注記（GH agents only）は、いまの「Microsoft Copilot ハーネス」と同じものです<a class="ref" href="#s5">[5]</a><a class="ref" href="#s12">[12]</a>。画面の表記は数週間かけて切り替わるので、テナントによっては旧名のまま見えることもあります。</li>
+    <li><b>日本語の呼び名がそろっていません。</b>日本語版 Learn でも「カスタマー会話ハーネス」「Customer Conversation harness」「カスタマー・カンバセーション・ハーネス」が混在しています<a class="ref" href="#s2">[2]</a>。同じものを指しています。</li>
+    <li><b>ハーネスは選び直せません。</b>作り始める前に決めること。特に Microsoft Copilot ハーネスから標準には戻せません<a class="ref" href="#s5">[5]</a>。</li>
+    <li><b>プレビューの機能が混ざっています。</b>メモリ、トリガー、自然な文章での作成、標準からの作り直しはプレビューです<a class="ref" href="#s5">[5]</a>。本番で使う前に、提供状況を確認してください。</li>
+    <li><b>提供状況は時期やテナントで変わります。</b>カスタマー会話ハーネスの「プレビュー → 一般提供」のように、公式の情報同士で表記がずれていることがあります<a class="ref" href="#s13">[13]</a><a class="ref" href="#s15">[15]</a>。地域ごとの提供や日本語の対応範囲は、今回見た公式ページには書かれていませんでした。</li>
+    <li><b>評価の数字はメーカー自身の社内評価です。</b>自分たちの業務で同じ結果になるとは限りません。クレジットの消費とセットで試すのがおすすめです<a class="ref" href="#s4">[4]</a>。</li>
+  </ul>
+</section>
+
+<section aria-labelledby="h-src">
+  <h2 id="h-src"><span class="sn">11</span>根拠</h2>
+  <ol class="srcs">
+    <li id="s1">
+      <div class="src-top"><span class="src-n">[1]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/harnesses-overview">Harnesses in Copilot Studio（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>ms.date 2026-11-13 ／ 最終更新 2026-11-17</span></div>
+      <p class="src-sum">ハーネスは Microsoft Copilot・Customer Conversation・standard の3つ。各ハーネスの向く仕事、動き方、ファイル、スキルと記憶、公開先、課金をくらべる表。Copilot チャット ハーネスは載っていない。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/harnesses-overview</p>
+    </li>
+    <li id="s2">
+      <div class="src-top"><span class="src-n">[2]</span><a class="src-t" href="https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/harnesses-overview">Copilot Studio のハーネス（Microsoft Learn 日本語版）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>ms.date 2026-11-13 ／ 最終更新 2026-11-17</span></div>
+      <p class="src-sum">日本語の表記は「Microsoft Copilot ハーネス」「標準ハーネス」。カスタマー向けは「Customer Conversation harness」「カスタマー会話ハーネス」などページ内で表記が揺れている。3つのハーネスを扱うと明記。</p>
+      <p class="src-url">https://learn.microsoft.com/ja-jp/microsoft-copilot-studio/harnesses-overview</p>
+    </li>
+    <li id="s3">
+      <div class="src-top"><span class="src-n">[3]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-overview">Agents overview（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>ms.date 2026-11-13 ／ 最終更新 2026-11-17</span></div>
+      <p class="src-sum">エージェントは3つのハーネスのどれかで作る、と説明。ハーネスで課金・機能・できることが変わること。Microsoft Copilot とカスタマー会話は Copilot クレジット、標準は Copilot Studio の容量の考え方で課金。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-overview</p>
+    </li>
+    <li id="s4">
+      <div class="src-top"><span class="src-n">[4]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/choose-harness">Choose a harness（Microsoft Learn ガイダンス）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>ms.date 2026-11-24 ／ 最終更新 2026-11-24</span></div>
+      <p class="src-sum">標準と Microsoft Copilot のくらべ方。単純な仕事に Microsoft Copilot を使うと推論・待ち時間・クレジットが余計に増えうること、移行ははっきりした利点があるときに「作り直し」として行うこと、標準は従来のライセンスの考え方のままであること、向く業務の例。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/choose-harness</p>
+    </li>
+    <li id="s5">
+      <div class="src-top"><span class="src-n">[5]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/overview">About agents powered by the Microsoft Copilot harness（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>ms.date 2026-11-17 ／ 最終更新 2026-11-18</span></div>
+      <p class="src-sum">Microsoft Copilot ハーネスの全体像と、標準ハーネスとの機能比較表（プロンプト→スキル、トピック→フック、使えない公開先や認証など）。作ったエージェントは標準へ移せないが、標準から作ることはできる。Copilot Studio のユーザーライセンスの個別割り当ては不要。Teams 用 Dataverse の環境は対象外。メモリやトリガーなどはプレビュー。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/overview</p>
+    </li>
+    <li id="s6">
+      <div class="src-top"><span class="src-n">[6]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/overview-customer-conversation">Agents powered by the Customer Conversation harness overview（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>ms.date 2026-11-16 ／ 最終更新 2026-11-17</span></div>
+      <p class="src-sum">お客さまの音声・チャット対応用。サブエージェントごとに人への引き継ぎ経路を持つ構成。Escalate ツールで Teams Phone・メール・有人対応へ。使用量ベースの課金で、作る・試す・評価でもクレジットを使うことがある。提供状態（プレビューか一般提供か）の記載はない。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/overview-customer-conversation</p>
+    </li>
+    <li id="s7">
+      <div class="src-top"><span class="src-n">[7]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/standard-harness-overview">Standard harness overview（Microsoft Learn ガイダンス）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>ms.date 2026-11-24 ／ 最終更新 2026-11-24</span></div>
+      <p class="src-sum">標準ハーネスはトピック・トリガー・ノードで組み立てる実行環境。トピックの中は作る人が道筋を決め、生成オーケストレーションがトピックやツールを選んでつなぐ。そのぶん想定外の質問には予備の対応が必要。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/standard-harness-overview</p>
+    </li>
+    <li id="s8">
+      <div class="src-top"><span class="src-n">[8]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/switch-experiences">Access standard harness agents and agent flows（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>ms.date 2026-11-06 ／ 最終更新 2026-11-12（日本語版 2026-11-21）</span></div>
+      <p class="src-sum">標準ハーネスで新しく作るには「その他のビルド方法」、クラシック画面は「…」→「Open classic experience」（いまのセッションだけ。組織全体の既定にする設定はない）。「Copilot チャットとカスタマー会話のハーネスは別の作成ルートで、この切り替えには含まれない」とあり、Copilot チャット ハーネスの名前が残っている。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/switch-experiences</p>
+    </li>
+    <li id="s9">
+      <div class="src-top"><span class="src-n">[9]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/billing-credit-overview">Overview of usage-based billing（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>ms.date 2026-10-06 ／ 最終更新 2026-11-12</span></div>
+      <p class="src-sum">Microsoft Copilot ハーネスは AI モデルのトークン・ツール（ナレッジや MCP を含む）・ハーネスそのものにクレジットがかかる。公開後に課金する標準ハーネスと違い、作り始めた時点から課金（自然な文章での作成、プレビューでのテスト、評価も対象）。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/billing-credit-overview</p>
+    </li>
+    <li id="s10">
+      <div class="src-top"><span class="src-n">[10]</span><a class="src-t" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/billing-licensing">Standard harness licensing（Microsoft Learn）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>ms.date 2026-11-04 ／ 最終更新 2026-11-17</span></div>
+      <p class="src-sum">Microsoft 365 Copilot ライセンスがあれば、本人の ID で動くエージェントを Copilot Chat・Teams・SharePoint で使うとき、従来型の回答・生成回答・Microsoft Graph を使った回答は課金されない（使用量レポートには課金なしとして出ることがある）。</p>
+      <p class="src-url">https://learn.microsoft.com/en-us/microsoft-copilot-studio/billing-licensing</p>
+    </li>
+    <li id="s11">
+      <div class="src-top"><span class="src-n">[11]</span><a class="src-t" href="https://techcommunity.microsoft.com/blog/copilot-studio-blog/more-powerful-agents-and-workflows-for-autonomous-business-processes-introducing/4542969">More powerful agents and workflows for autonomous business processes: Introducing a new harness for Copilot Studio（Copilot Studio Blog）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-08-03 ／ 改名の編集注記あり</span></div>
+      <p class="src-sum">GitHub Copilot ハーネスの一般提供を発表。当時のハーネスは Copilot チャット・標準・GitHub Copilot の3つ。Copilot チャットと標準は既存・新規ともサポートを続けると明言。GitHub Copilot ハーネスは Microsoft 365 Copilot ライセンスに関係なく、作成・テスト・評価を含め使用量ベースで課金。冒頭に「GitHub Copilot ハーネスは Microsoft Copilot ハーネスになった」との編集注記。</p>
+      <p class="src-url">https://techcommunity.microsoft.com/blog/copilot-studio-blog/more-powerful-agents-and-workflows-for-autonomous-business-processes-introducing/4542969</p>
+    </li>
+    <li id="s12">
+      <div class="src-top"><span class="src-n">[12]</span><a class="src-t" href="https://www.microsoft.com/en-us/copilot/blog/copilot-studio/the-github-copilot-harness-in-copilot-studio-is-now-the-microsoft-copilot-harness/">The GitHub Copilot harness in Copilot Studio is now the Microsoft Copilot harness（Microsoft Copilot Blog）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-10-28</span></div>
+      <p class="src-sum">Copilot の各体験に共通の土台ハーネスを広げるため改名。既存のエージェントは機能も課金も変わらず、製品内の表記は数週間かけて更新。社内評価では、ツール失敗後も作業を続けた割合が 84〜91%（標準は 7% 未満）、入力処理のコストが 15〜21% 減。</p>
+      <p class="src-url">https://www.microsoft.com/en-us/copilot/blog/copilot-studio/the-github-copilot-harness-in-copilot-studio-is-now-the-microsoft-copilot-harness/</p>
+    </li>
+    <li id="s13">
+      <div class="src-top"><span class="src-n">[13]</span><a class="src-t" href="https://techcommunity.microsoft.com/blog/copilot-studio-blog/introducing-the-customer-conversation-harness-in-microsoft-copilot-studio/4563954">Introducing the customer conversation harness in Microsoft Copilot Studio（Copilot Studio Blog）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-10-21</span></div>
+      <p class="src-sum">カスタマー会話ハーネスのパブリックプレビューを発表。チャットと音声を1つのエージェントで扱い、電話番号に配置できる。複数エージェントのチーム、生成スキルと決まったトピックの組み合わせ。Copilot クレジットで使用量ベースの課金。</p>
+      <p class="src-url">https://techcommunity.microsoft.com/blog/copilot-studio-blog/introducing-the-customer-conversation-harness-in-microsoft-copilot-studio/4563954</p>
+    </li>
+    <li id="s14">
+      <div class="src-top"><span class="src-n">[14]</span><a class="src-t" href="https://www.microsoft.com/en-us/copilot/blog/copilot-studio/how-the-microsoft-copilot-harness-in-copilot-studio-helps-agents-finish-the-job/">How the Microsoft Copilot harness in Copilot Studio helps agents finish the job（Microsoft Copilot Blog）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-11-09</span></div>
+      <p class="src-sum">ハーネスは「エージェントがどう計画し、ツールを使い、返事をするかを決めるエンジン」。一手決める→実行→結果を確認、を終わるか上限まで続ける。コマンドライン・コード実行・ファイルのある安全なコンテナで動き、認証情報は Copilot Studio 側が持つ。Excel Online コネクタの成功率 85.6%→96.3%。標準ハーネスは「数秒で返す会話型エージェントに引き続き最適」。</p>
+      <p class="src-url">https://www.microsoft.com/en-us/copilot/blog/copilot-studio/how-the-microsoft-copilot-harness-in-copilot-studio-helps-agents-finish-the-job/</p>
+    </li>
+    <li id="s15">
+      <div class="src-top"><span class="src-n">[15]</span><a class="src-t" href="https://www.microsoft.com/en-us/copilot/blog/copilot-studio/build-and-manage-business-processes-with-microsoft-copilot-studio/">Build and manage business processes with Microsoft Copilot Studio（Microsoft Copilot Blog）</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開 2026-11-18（Ignite 2026）</span></div>
+      <p class="src-sum">カスタマー会話ハーネスを「一般提供」と紹介。標準と比べた合格率のグラフ（OpenAI のモデル 67.2%→78.0%、Anthropic のモデル 67.0%→89.1%）。エージェント専用アカウントは 2026年12月にパブリックプレビュー。</p>
+      <p class="src-url">https://www.microsoft.com/en-us/copilot/blog/copilot-studio/build-and-manage-business-processes-with-microsoft-copilot-studio/</p>
+    </li>
+    <li id="s16">
+      <div class="src-top"><span class="src-n">[16]</span><a class="src-t" href="https://news.microsoft.com/events/ignite/2026/book-of-news/">Microsoft Ignite 2026 Book of News</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>公開日の表示なし（イベント 2026-11-17〜20）</span></div>
+      <p class="src-sum">Windows 365 for Agents は標準ハーネスで画面操作ツールとして使え、Microsoft Copilot ハーネスでは12月にプレビュー。Microsoft Copilot SDK 2.0 が一般提供になり、「Microsoft と GitHub で本番稼働している同じハーネス技術」を使う。</p>
+      <p class="src-url">https://news.microsoft.com/events/ignite/2026/book-of-news/</p>
+    </li>
+  </ol>
+</section>
+
+<section aria-labelledby="h-rel">
+  <h2 id="h-rel"><span class="sn">12</span>このサイトの関連ページ</h2>
+  <div class="related">
+    <a href="./research_copilot-studio-credit.html">Copilot Studio のクレジット</a>
+    <a href="./research_copilot-studio-glossary.html">Copilot Studio 用語集</a>
+    <a href="./CopilotStudio_task-agent-guide.html">標準ハーネスのハンズオン手順書</a>
+    <a href="./event_ignite-2026.html">Ignite 2026 まとめ</a>
+  </div>
+  <p class="note" style="margin-top:8px;font-size:13px">関連ページの一部は改名前に書いたもので、「GitHub Copilot ハーネス」と書かれています。いまの Microsoft Copilot ハーネスと同じものです。</p>
+</section>
+
+<footer>
+  調査日：2026-11-25。Microsoft の公式ドキュメントと公式ブログをもとに整理しました。提供状況は地域・テナント・時期で変わることがあります。<br>
+  出典の日付：[1][2][3] 2026-11-17 更新 ／ [4][7] 2026-11-24 更新 ／ [5] 2026-11-18 更新 ／ [6] 2026-11-17 更新 ／ [8] 2026-11-12 更新 ／ [9] 2026-11-12 更新 ／ [10] 2026-11-17 更新 ／ [11] 2026-08-03 公開 ／ [12] 2026-10-28 公開 ／ [13] 2026-10-21 公開 ／ [14] 2026-11-09 公開 ／ [15] 2026-11-18 公開 ／ [16] 2026-11-17〜20（イベント期間）
+</footer>
+
+</div>
+</body>
+</html>

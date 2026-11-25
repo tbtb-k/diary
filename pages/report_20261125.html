@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Weekly 2026/11/25号</title>
+<style>
+body{margin:0}
+/* layout: 760px single column newsletter; category color labels; dark-orange accent */
+:root{
+  --bg:#FBFAF9;
+  --surface:#FFFFFF;
+  --ink:#1C1917;
+  --ink-2:#57534E;
+  --ink-3:#857C75;
+  --line:#E7E2DE;
+  --accent:#C2410C;
+  --accent-ink:#9A3412;
+  --accent-soft:#FFF1E8;
+  --cat-copilot:#C2410C;
+  --cat-ms:#2F5D8C;
+  --cat-ind:#2E7560;
+  --cat-jp:#8C3B6A;
+  --ok:#1F7A45; --ok-bg:#E6F4EB;
+  --roll:#2563A8; --roll-bg:#E6EFFA;
+  --pre:#8A5A00; --pre-bg:#FBF0D9;
+  --dev:#5B5550; --dev-bg:#EFECEA;
+  --f-body:"BIZ UDPGothic","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic","Meiryo",sans-serif;
+  --f-head:"Hiragino Sans","Yu Gothic UI","Yu Gothic","BIZ UDPGothic","Meiryo",sans-serif;
+  --f-mark:"Segoe UI Variable Display","Segoe UI","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"Cascadia Mono","Consolas","SFMono-Regular","Menlo",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#141211; --surface:#1C1917; --ink:#F2EEEA; --ink-2:#C4BCB5; --ink-3:#958B84; --line:#302B28;
+    --accent:#F07A3A; --accent-ink:#F59A63; --accent-soft:#2A1A10;
+    --cat-copilot:#F07A3A; --cat-ms:#7FA7D6; --cat-ind:#6CC1A5; --cat-jp:#D98BB8;
+    --ok:#6FD39A; --ok-bg:#12291C; --roll:#7EB2EE; --roll-bg:#122033;
+    --pre:#E8B85A; --pre-bg:#2B2210; --dev:#B8B0A9; --dev-bg:#262220;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#141211; --surface:#1C1917; --ink:#F2EEEA; --ink-2:#C4BCB5; --ink-3:#958B84; --line:#302B28;
+  --accent:#F07A3A; --accent-ink:#F59A63; --accent-soft:#2A1A10;
+  --cat-copilot:#F07A3A; --cat-ms:#7FA7D6; --cat-ind:#6CC1A5; --cat-jp:#D98BB8;
+  --ok:#6FD39A; --ok-bg:#12291C; --roll:#7EB2EE; --roll-bg:#122033;
+  --pre:#E8B85A; --pre-bg:#2B2210; --dev:#B8B0A9; --dev-bg:#262220;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:16px; line-height:1.85;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:0 64px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px; margin-inline:auto}
+a{color:var(--accent-ink); text-underline-offset:3px}
+a:hover{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:2px}
+.mono{font-family:var(--f-mono); font-variant-numeric:tabular-nums}
+
+.mast{padding-block:40px 20px; border-bottom:5px solid var(--accent); position:relative}
+.mast::after{content:""; position:absolute; left:0; right:0; bottom:-11px; border-bottom:1px solid var(--accent)}
+.mast-top{display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; font-size:12px; letter-spacing:.08em; color:var(--ink-3)}
+.wordmark{font-family:var(--f-mark); font-weight:800; font-size:clamp(2.8rem,11vw,4.6rem); line-height:1; letter-spacing:-.035em; margin:18px 0 6px}
+.wordmark b{color:var(--accent); font-weight:800}
+.issue-row{display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 18px}
+.issue{font-family:var(--f-head); font-weight:700; font-size:1.25rem; margin:0}
+.period{font-size:13px; color:var(--ink-2); margin:0}
+.lede{margin:10px 0 0; color:var(--ink-2); font-size:15px}
+
+.summary{margin-top:40px}
+.label{font-family:var(--f-head); font-size:12px; font-weight:700; letter-spacing:.14em; color:var(--accent-ink); margin:0 0 10px}
+.summary ul{list-style:none; margin:0; padding:0; display:grid; gap:10px}
+.summary li{display:grid; grid-template-columns:22px 1fr; gap:8px; font-size:1.02rem; line-height:1.75; text-wrap:pretty}
+.summary li::before{content:""; width:10px; height:10px; margin-top:.62em; background:var(--accent); border-radius:1px; transform:rotate(45deg)}
+
+.toc{margin-top:36px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding-block:14px}
+.toc ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px 24px}
+.toc a{display:flex; align-items:center; gap:10px; padding:5px 0; color:var(--ink); text-decoration:none; font-size:15px}
+.toc a:hover{color:var(--accent)}
+.toc .dot{width:9px; height:9px; border-radius:50%; background:var(--c, var(--ink-3)); flex:none}
+.toc .n{margin-left:auto; font-size:12px; color:var(--ink-3)}
+@media (max-width:560px){.toc ol{grid-template-columns:1fr}}
+
+.sec{margin-top:56px; scroll-margin-top:16px}
+.sec-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px; padding-bottom:10px; border-bottom:2px solid var(--cat)}
+.sec-tag{font-family:var(--f-mono); font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--surface); background:var(--cat); padding:2px 8px; border-radius:3px}
+.sec-head h2{font-family:var(--f-head); font-size:1.35rem; line-height:1.4; margin:0; text-wrap:balance}
+.sec-head .count{margin-left:auto; font-size:12px; color:var(--ink-3)}
+.sec-note{font-size:14px; color:var(--ink-2); margin:12px 0 0}
+
+.item{padding-block:26px; border-bottom:1px solid var(--line)}
+.item:last-of-type{border-bottom:0}
+.meta{display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; font-size:12px}
+.date{font-family:var(--f-mono); color:var(--ink-2); font-variant-numeric:tabular-nums}
+.st{display:inline-flex; align-items:center; gap:6px; padding:1px 9px; border-radius:999px; font-weight:700; font-size:11.5px; letter-spacing:.03em}
+.st::before{content:""; width:6px; height:6px; border-radius:50%; background:currentColor}
+.st-ok{color:var(--ok); background:var(--ok-bg)}
+.st-roll{color:var(--roll); background:var(--roll-bg)}
+.st-pre{color:var(--pre); background:var(--pre-bg)}
+.st-dev{color:var(--dev); background:var(--dev-bg)}
+.st-note{color:var(--ink-2); background:transparent; border:1px solid var(--line)}
+.id{font-family:var(--f-mono); font-size:11px; color:var(--ink-3); border:1px solid var(--line); padding:0 6px; border-radius:3px}
+.item h3{font-family:var(--f-head); font-size:1.13rem; line-height:1.55; margin:8px 0 12px; text-wrap:balance}
+.rows{margin:0; display:grid; gap:10px}
+.rows > div{display:grid; grid-template-columns:9.6em minmax(0,1fr); gap:2px 16px}
+.rows dt{font-family:var(--f-head); font-size:12.5px; font-weight:700; color:var(--ink-3); padding-top:.2em; letter-spacing:.02em}
+.rows dd{margin:0; text-wrap:pretty; min-width:0}
+.rows dd ul{margin:0; padding-left:1.2em}
+.rows dd li{margin-block:3px}
+.rows .field{background:var(--accent-soft); border-radius:6px; padding:10px 12px; margin-top:2px}
+.rows .field dt{color:var(--accent-ink)}
+.src{margin:12px 0 0; font-size:12.5px; color:var(--ink-3); line-height:1.7}
+.src a{word-break:break-word}
+@media (max-width:560px){.rows > div{grid-template-columns:1fr}}
+
+.aside{margin-top:56px; border:1px dashed var(--ink-3); border-radius:8px; padding:18px 18px 8px; scroll-margin-top:16px}
+.aside h2{font-family:var(--f-head); font-size:1.1rem; margin:0 0 4px}
+.aside p.sec-note{margin:0 0 6px}
+.aside ul{list-style:none; margin:0; padding:0}
+.aside li{display:grid; grid-template-columns:4.2em minmax(0,1fr); gap:12px; padding-block:12px; border-top:1px solid var(--line); font-size:15px}
+.aside li:first-child{border-top:0}
+.aside .date{padding-top:.15em}
+.aside .src{margin-top:4px}
+
+.term{margin-top:56px; background:var(--surface); border:1px solid var(--line); border-top:4px solid var(--accent); border-radius:4px; padding:22px 22px 18px; scroll-margin-top:16px}
+.term .word{font-family:var(--f-head); font-size:1.5rem; font-weight:700; margin:0; line-height:1.4}
+.term .yomi{font-size:13px; color:var(--ink-3); margin:0 0 14px}
+.term h3{font-family:var(--f-head); font-size:13px; letter-spacing:.06em; color:var(--accent-ink); margin:16px 0 4px}
+.term p{margin:0}
+.term ul{margin:0; padding-left:1.2em}
+.term li{margin-block:4px}
+.say{margin-top:14px; padding:12px 14px; border-left:3px solid var(--accent); background:var(--accent-soft); border-radius:0 6px 6px 0}
+
+.sched{list-style:none; margin:14px 0 0; padding:0}
+.sched li{display:grid; grid-template-columns:9.5em minmax(0,1fr); gap:4px 16px; padding-block:12px; border-bottom:1px solid var(--line)}
+.sched .when{font-family:var(--f-mono); font-size:13.5px; color:var(--accent-ink); font-weight:600; font-variant-numeric:tabular-nums}
+.sched .what b{font-family:var(--f-head)}
+.sched .what small{display:block; color:var(--ink-3); font-size:12.5px}
+@media (max-width:560px){.sched li{grid-template-columns:1fr}}
+
+.sources ol{margin:14px 0 0; padding-left:1.8em; font-size:13.5px; line-height:1.7; color:var(--ink-2)}
+.sources li{margin-block:8px; padding-left:4px}
+.sources li::marker{font-family:var(--f-mono); color:var(--ink-3)}
+.sources .pub{color:var(--ink-3)}
+.sources a{word-break:break-word}
+
+.back{display:inline-block; margin-top:14px; font-size:12.5px; color:var(--ink-3); text-decoration:none}
+.back:hover{color:var(--accent)}
+.foot{margin-top:56px; padding-top:16px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-3); line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast" id="top">
+  <div class="mast-top mono"><span>No.09</span><span>READ ≈ 10 MIN</span></div>
+  <h1 class="wordmark"><b>AI</b> Weekly</h1>
+  <div class="issue-row">
+    <p class="issue">2026/11/25号</p>
+    <p class="period mono">対象期間 2026/11/18（水）– 11/24（火）</p>
+  </div>
+  <p class="lede">Copilotを中心に、AIの1週間を10分で。今週はIgnite後半のCopilot Studioの発表と、年末にかけての提供予定がたくさん出た週です。</p>
+</header>
+
+<section class="summary" aria-labelledby="sum-h">
+  <p class="label" id="sum-h">今週の3行まとめ</p>
+  <ul>
+    <li>Copilot Studioの責任者がIgniteでの発表をまとめました。アプリ作成とエージェントの共同編集がGAになり、エージェントに専用のアカウントを持たせる「エージェントアカウント」は12月にパブリックプレビューになります。</li>
+    <li>Copilot Studioのワークフローに、Pythonのコードを動かす手順（12/1 GA）と、エージェントが作ったWordやPDFを次の手順に渡す機能（12/3 GA）が加わります。</li>
+    <li>M365 CopilotのWord・Excel・PowerPoint・Chatで、GPT-6.2 Solがライセンスの範囲内で使えるようになりつつあります。業界ではAnthropicが上場し、Googleは中位モデル「Gemini 4 Neon」を発表しました。</li>
+  </ul>
+</section>
+
+<nav class="toc" aria-label="目次">
+  <ol>
+    <li><a href="#copilot" style="--c:var(--cat-copilot)"><span class="dot"></span>Copilot<span class="n mono">6件</span></a></li>
+    <li><a href="#ms" style="--c:var(--cat-ms)"><span class="dot"></span>Microsoft・GitHub<span class="n mono">2件</span></a></li>
+    <li><a href="#industry" style="--c:var(--cat-ind)"><span class="dot"></span>AI業界<span class="n mono">3件</span></a></li>
+    <li><a href="#japan" style="--c:var(--cat-jp)"><span class="dot"></span>国内<span class="n mono">2件</span></a></li>
+    <li><a href="#before"><span class="dot"></span>期間直前の発表（参考）<span class="n mono">1件</span></a></li>
+    <li><a href="#term"><span class="dot"></span>今週のかみ砕き用語</a></li>
+    <li><a href="#next"><span class="dot"></span>来週以降の注目予定</a></li>
+    <li><a href="#sources"><span class="dot"></span>出典一覧</a></li>
+  </ol>
+</nav>
+
+<!-- ============ COPILOT ============ -->
+<section class="sec" id="copilot" style="--cat:var(--cat-copilot)">
+  <header class="sec-head"><span class="sec-tag">Copilot</span><h2>M365 Copilot／Copilot Studio</h2><span class="count mono">6件</span></header>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-11-18">2026/11/18</time><span class="st st-note">発表（機能ごとに状態が異なる）</span></div>
+    <h3>Copilot StudioのIgnite発表まとめ：アプリ作成と共同編集がGA、エージェント専用のアカウントは12月にプレビュー</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>Copilot Studioの責任者（製品担当VP）が、Igniteでの発表を公式ブログにまとめました。<ul>
+        <li><b>アプリ（GA）</b>：Copilot Studioで、必要な情報と操作をまとめた業務用の画面（アプリ）を作れます。今月中に順次届きます。</li>
+        <li><b>エージェントの共同編集（GA）</b>：複数の作成者が、同じエージェントを一緒に作り込めます。</li>
+        <li><b>CoworkやCodeからエージェントを作る（プレビュー）</b>：開発者でない人が言葉で頼んで作ったエージェントやワークフローを、あとからCopilot Studioで育てられます。</li>
+        <li><b>コマンドラインツールとCopilot Studio MCP（プレビュー）</b>：開発者は使い慣れたツールで手元で作り、GitHubのリポジトリで管理できます。</li>
+        <li><b>エージェントアカウント（12月にプレビュー）</b>：エージェントが専用の資格情報を持ち、@メンションで仕事を受けたり、何をしたかを人が確認したりできます。</li>
+      </ul></dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>費用の管理では、M365管理センターとPower Platform管理センターから組織全体の支出ポリシーを設定でき、クレジットの残りや上限に近い人を見られる画面も紹介されました。Microsoftの社内評価では、新しい「Microsoft Copilotハーネス」を使うと、標準のハーネスより合格率が上がった（Anthropicのモデルで67.0％→89.1％）としています。日本語対応の記載はありません。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>「現場がCoworkで作ったものを、IT部門がCopilot Studioで引き取って育てる」流れが公式に示されました。客先の役割分担の説明にそのまま使えます。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://www.microsoft.com/en-us/copilot/blog/copilot-studio/build-and-manage-business-processes-with-microsoft-copilot-studio/" target="_blank" rel="noopener">Microsoft Copilot Blog「Build and manage business processes with Microsoft Copilot Studio」（11/18）</a></p>
+  </article>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-11-19">2026/11/19–11/20</time><span class="st st-dev">GA予定（11/19〜12/8）</span><span class="id">MC1561862</span><span class="id">MC1561859</span><span class="id">MC1560402</span><span class="id">MC1560996</span></div>
+    <h3>Copilot Studioのワークフローに「Pythonの手順」と「エージェントが作った文書を渡す」機能。12月上旬にGA</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>Copilot Studioのワークフロー（決まった手順を自動で進める仕組み）に、新しい部品が続けて告知されました。<ul>
+        <li><b>Pythonのコードを手順として実行（12/1 GA）</b>：式やコネクタでは難しいデータの変換や、PDF・CSVなどの読み取りに使えます。コードは言葉で頼んでAIに書かせることも、手で書くこともできます（MC1561862）。</li>
+        <li><b>エージェントが作った文書を次の手順へ（12/3 GA）</b>：エージェントのノードが作ったPDF・Word・Excel・PowerPoint・CSVを受け取り、メール送信やSharePointへの保存に回せます（MC1561859）。</li>
+        <li><b>分類ノードで判断特化モデルを選べる（11/19 GA）</b>：大量の振り分けを、速く・安く処理できます（下の用語解説、MC1560402）。</li>
+        <li><b>Entraのエージェントアカウントで、Dataverseの「エージェントユーザー」を作成（12/8 GA）</b>：エージェントに必要最小限のセキュリティロールだけを与え、操作を記録できます（MC1560996）。</li>
+      </ul></dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>Pythonの手順はMicrosoftが管理する隔離された環境で動き、Copilot Creditsを消費します。手順の中から外部のAPIを呼ぶことはできません。既存の分類ノードは自動では切りかわらず、今のモデルのまま動きます。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>「AIが報告書を作って、そのままSharePointに保存してTeamsで知らせる」が1本のワークフローで組めます。ハンズオンの題材に向いています。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://mc.merill.net/message/MC1561862" target="_blank" rel="noopener">MC1561862</a>／<a href="https://mc.merill.net/message/MC1561859" target="_blank" rel="noopener">MC1561859</a>／<a href="https://mc.merill.net/message/MC1560402" target="_blank" rel="noopener">MC1560402</a>／<a href="https://mc.merill.net/message/MC1560996" target="_blank" rel="noopener">MC1560996</a>（いずれもMessage Center Archive）</p>
+  </article>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-11-19">2026/11/19</time><span class="st st-roll">展開中（GA／一部Frontier）</span><span class="id">MC1560916</span></div>
+    <h3>GPT-6.2 SolがWord・Excel・PowerPoint・Chatでライセンスの範囲内に。上位のAstraは従量課金で</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>OpenAIの新モデルGPT-6.2の2種類が、Microsoft Copilotに順次届いています。<ul>
+        <li><b>GPT-6.2 Sol</b>：Word・Excel・PowerPoint・Chatでは、M365 Copilotのライセンスに含まれる形でGAです。CoworkとCopilot Studioでは従量課金（Copilot Credits）でGAです。</li>
+        <li><b>GPT-6.2 Astra</b>：CoworkとCopilot Studioでは従量課金でGA、Word・Excel・PowerPoint・ChatではFrontier（先行プログラム）で始まりました。</li>
+      </ul></dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>Solには利用の上限がありますが、ほとんどの人は届かない設計とされています。Astraを使うには、OpenAIを「サブプロセッサー」（データの処理を任せる委託先）として許可する設定が必要です。Azure OpenAIで動くモデルは、この設定に関係なく使えます。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>「どのモデルが追加の費用なしで使えるのか」はよく聞かれます。「Solはライセンス内、Astraは従量課金＋設定が必要」と1行で説明できるようにしておきましょう。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://mc.merill.net/message/MC1560916" target="_blank" rel="noopener">Message Center Archive「MC1560916」</a></p>
+  </article>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-11-19">2026/11/19</time><span class="st st-dev">開発中（12月から順次）</span><span class="id">MC1532253</span><span class="id">MC1562277</span></div>
+    <h3>Teams会議のCopilotの設定が2つのポリシーに分かれます。チャネル全体を読むCopilotもプレビューへ</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>Teams会議のCopilotを管理するポリシーが、「MeetingAI」と「TranscriptionWithMeetingAI」の2つに置きかわります。AIを使うかどうかと、文字起こしと組み合わせるかどうかを分けて管理しやすくするためです。会議のオプションでも、AIの使い方を細かく選べるようになります。あわせて、チャネルの投稿と返信をまとめて要約したり質問したりできる「チャネルのCopilot」も告知されました。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>会議のポリシーは、今の設定が自動で新しいポリシーに引きつがれるため、管理者の作業は不要です。展開時期は延びていて、先行リリースは12月上旬から、全体は2027年1月上旬からです（MC1532253、11/19更新）。チャネルのCopilotは12月にパブリックプレビューが始まり、回答には出典が付きます（MC1562277）。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>会議のAIを部署ごとに制限している客先では、切りかわったあとに設定が意図どおりかを一緒に確かめましょう。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://mc.merill.net/message/MC1532253" target="_blank" rel="noopener">MC1532253</a>／<a href="https://mc.merill.net/message/MC1562277" target="_blank" rel="noopener">MC1562277</a>（いずれもMessage Center Archive）</p>
+  </article>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-11-18">2026/11/18</time><span class="st st-pre">Frontier／プレビュー（GAは12月〜）</span><span class="id">MC1559638</span><span class="id">MC1559632</span><span class="id">MC1559641</span><span class="id">MC1559633</span></div>
+    <h3>Workspacesにチームで使う機能と「記憶」。OneNoteのCopilotが新しくなり、SharePointのページにエージェントを置ける部品も</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd><ul>
+        <li><b>Workspaces（旧Notebooks）</b>：だれが何をしたかがわかるアクティビティの表示、いまだれが見ているかの表示、グループでの所有が加わります。Frontierでは11月から始まり、全体へのGAは12月からです（MC1559638）。</li>
+        <li><b>Workspacesの記憶</b>：ワークスペースの中での会話の流れを覚え、毎回同じ説明をしなくても話がつながるようになります。GAは12月から2027年初めにかけてです（MC1559632）。</li>
+        <li><b>OneNoteの新しいCopilot</b>：ノート・手書き・ファイルをまたいで読み、まとめ直せるようになります。Frontierで開始し、WindowsとiPadへのGAは2027年1月からです（MC1559641）。</li>
+        <li><b>SharePointの「Agent Chat」Webパーツ</b>：サイトのページにCopilotのエージェントを埋めこめます。パブリックプレビューは1月下旬までに届き、GAは2027年1〜3月です（MC1559633）。</li>
+      </ul></dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>どれも管理者の作業は不要です。Webパーツでエージェントを置いても、見る人の権限はエージェント側とは別に管理されます。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>「作ったエージェントを使ってもらえない」悩みには、よく見られるポータルのページに置くAgent Chat Webパーツが効きそうです。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://mc.merill.net/message/MC1559638" target="_blank" rel="noopener">MC1559638</a>／<a href="https://mc.merill.net/message/MC1559632" target="_blank" rel="noopener">MC1559632</a>／<a href="https://mc.merill.net/message/MC1559641" target="_blank" rel="noopener">MC1559641</a>／<a href="https://mc.merill.net/message/MC1559633" target="_blank" rel="noopener">MC1559633</a>（いずれもMessage Center Archive）</p>
+  </article>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-11-18">2026/11/18–11/24</time><span class="st st-note">小さな変更まとめ</span></div>
+    <h3>デスクトップアプリの「アプリ内ブラウズ」が既定でオンに、Copilotのライセンスがない人の検索画面が新しく、ほか</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd><ul>
+        <li><b>アプリ内ブラウズが既定でオン（2027年1月）</b>：WindowsとMacのCopilotデスクトップアプリで、チャットに出たWebサイトがアプリの中で横に開くようになります。止めたい組織は、端末管理でBrowsingEnabledポリシーをオフにします。「重要な変更」扱いで、対応期限は2027/1/3です（MC1560922）。</li>
+        <li><b>ライセンスがない人向けの新しい検索（11月下旬〜）</b>：M365 Copilotアプリで、Copilotのライセンスを持たない人の検索画面が新しくなります。元の画面にも切りかえられます（MC1562275）。</li>
+        <li><b>CopilotデスクトップアプリとEdgeの同期（12月中旬〜）</b>：パスワードや閲覧履歴などを、本人が選んだ場合に同期できます（MC1562269）。</li>
+        <li><b>Agent BuilderでDataverseのデータを知識に（11/17 GA）</b>：Power AppsやDynamics 365のデータを、宣言型エージェントの知識として選べます（MC1558817）。</li>
+        <li><b>PowerPointに営業向けスキル（11月下旬までに展開）</b>：営業用プラグインから、提案資料づくりや営業データの扱いを手伝うスキルを使えます（MC1558023、11/24更新）。</li>
+      </ul></dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://mc.merill.net/message/MC1560922" target="_blank" rel="noopener">MC1560922</a>／<a href="https://mc.merill.net/message/MC1562275" target="_blank" rel="noopener">MC1562275</a>／<a href="https://mc.merill.net/message/MC1562269" target="_blank" rel="noopener">MC1562269</a>／<a href="https://mc.merill.net/message/MC1558817" target="_blank" rel="noopener">MC1558817</a>／<a href="https://mc.merill.net/message/MC1558023" target="_blank" rel="noopener">MC1558023</a>（いずれもMessage Center Archive）</p>
+  </article>
+  <a class="back" href="#top">↑ 目次へ</a>
+</section>
+
+<!-- ============ MICROSOFT / GITHUB ============ -->
+<section class="sec" id="ms" style="--cat:var(--cat-ms)">
+  <header class="sec-head"><span class="sec-tag">MS · GitHub</span><h2>その他のMicrosoft AI／GitHub Copilot</h2><span class="count mono">2件</span></header>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-11-19">2026/11/19</time><span class="st st-note">発表（モデルごとに状態が異なる）</span></div>
+    <h3>Microsoft AIが自社開発の新モデル7つ。Office向けの「MAI Work Flash」や、選ぶだけの判断モデルも</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>Ignite（11/17、米国時間）で発表された、Microsoftの自社開発モデルの詳細が国内でも報じられました。テーマは、エージェントを24時間動かせるだけの「値段に対する性能」です。<ul>
+        <li><b>MAI Work Flash</b>：M365向けに調整されたモデルで、Microsoftの社内評価ではExcel・PowerPointの操作で他社の上位モデルと同じくらいの精度だったとしています。</li>
+        <li><b>Decision 1.1（GA）</b>：文章を書かずに、用意した選択肢から答えを選ぶ判断特化モデルです。</li>
+        <li>ほかに、コーディング向けのMAI Code 2／2 Flash、セキュリティ向け、画像生成、リアルタイム音声のモデルがあります。</li>
+      </ul></dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>性能の数値はMicrosoft自身の評価です。モデルごとにGA・プレビュー・限定プレビューと状態が分かれています。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>Copilot Studioの分類ノードで選べる判断モデル（上のワークフローの項目）は、この流れの一つです。「Copilotの中身は1つのAIではない」と説明する材料になります。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://forest.watch.impress.co.jp/docs/news/2157844.html" target="_blank" rel="noopener">窓の杜（2026/11/19）</a>／<a href="https://forest.watch.impress.co.jp/docs/news/2157310.html" target="_blank" rel="noopener">窓の杜（Ignite基調講演まとめ、2026/11/18）</a></p>
+  </article>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-11-18">2026/11/18</time><span class="st st-ok">GA／一部プレビュー</span></div>
+    <h3>GitHub Copilot：チームでプラグインをそろえられるように。Gemini 4 Neonと8つの接続先も追加</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd><ul>
+        <li><b>チーム単位のカスタマイズ（GA）</b>：チームの管理者が、承認済みのプラグインを「チームの既定」に選べます。メンバー全員が同じ準備をくり返す必要がなくなります。Copilot BusinessとEnterpriseが対象です。</li>
+        <li><b>Gemini 4 Neon（GA）</b>：GoogleのGemini 4 Neonがモデル選択に加わりました（下のAI業界の項目）。料金は提供元の定価に沿った従量課金です。</li>
+        <li><b>接続先が8つ増加（プレビュー）</b>：Box、Supabase、Calendly、ClickUpなどを、GitHubが確認したMCPサーバー（コネクタ）でつなげます。</li>
+      </ul></dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>組織や企業のポリシーは、チームの選択より優先されます。新しいモデルは、管理者が止めていなければ自動で有効になる設定です。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>「個人・チーム・組織の3段で設定を重ねる」考え方は、Copilot Studioの環境やポリシーの説明にも通じます。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://github.blog/changelog/2026-11-18-customize-github-copilot-for-your-team" target="_blank" rel="noopener">GitHub Changelog（チームのカスタマイズ）</a>／<a href="https://github.blog/changelog/2026-11-18-gemini-4-neon-in-github-copilot" target="_blank" rel="noopener">GitHub Changelog（Gemini 4 Neon）</a>／<a href="https://github.blog/changelog/2026-11-18-connect-supabase-box-calendly-and-more-to-copilot" target="_blank" rel="noopener">GitHub Changelog（コネクタ）</a></p>
+  </article>
+  <a class="back" href="#top">↑ 目次へ</a>
+</section>
+
+<!-- ============ INDUSTRY ============ -->
+<section class="sec" id="industry" style="--cat:var(--cat-ind)">
+  <header class="sec-head"><span class="sec-tag">Industry</span><h2>主要AI企業・モデルの動き</h2><span class="count mono">3件</span></header>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-11-19">2026/11/19</time><span class="st st-note">上場</span></div>
+    <h3>Anthropicが株式を上場。初日の取引で公開価格を34％上回る</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>Claudeを開発するAnthropicが、11/19（米国時間）に株式を上場しました。公開価格は83ドルで、最初の取引では111.50ドルまで上がり、会社の価値はおよそ2兆ドルと報じられています。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>報道では、計算資源（AIを動かすためのサーバーなど）への約束が9,000億ドル規模にのぼることが、今後の利益の不安材料として挙げられています。CEOは、こうした投資は報われると説明しました。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>ClaudeのモデルはCopilot StudioやCoworkでも選べます。「選べるモデルの会社がどこか」も、社内説明で聞かれることがあります。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://www.theregister.com/ai-and-ml/2026/11/19/anthropic-throws-open-doors-at-2t-valuation-as-shares-pop-34-in-initial-trading/5311143" target="_blank" rel="noopener">The Register（2026/11/19）</a></p>
+  </article>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-11-18">2026/11/18</time><span class="st st-ok">提供開始</span></div>
+    <h3>Google、上位と高速モデルの間に入る「Gemini 4 Neon」を発表</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>難しいソフトウェア開発や知的な作業、科学向けのモデルです。最上位のGemini 4 Carbonと、速さ重視のGemini 4 Hydrogen（前号）の中間に位置します。Gemini API、Gemini for business、Geminiアプリ（有料プラン）などで使えます。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>API料金は100万トークンあたり入力3ドル、出力15ドルで、一度読んだ入力の再利用（キャッシュ）は95％引きです。各種の評価で上位とされていますが、数値はGoogleの発表によるものです。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/" target="_blank" rel="noopener">Google「Introducing Gemini 4 Neon」（11/18、11/23更新）</a></p>
+  </article>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-11-20">2026/11/20</time><span class="st st-ok">提供開始</span></div>
+    <h3>OpenAI、営業の仕事に特化したプラグイン「ChatGPT for Sales」</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>ChatGPTに、営業向けのプラグインが加わりました。アプローチ先の選定から商談の準備、フォローアップの下書きまでの流れを用意し、CRMや会話の記録に散らばった顧客情報をまとめて使えます。常に動き続けるエージェントに、商談の状況を追いかけさせることもできます。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>提供範囲や料金は記事に書かれていません。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>MicrosoftもPowerPointに営業向けスキルを出しています（上の小さな変更まとめ）。「業務別のプラグイン」で売り込む流れは各社共通です。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://ai.watch.impress.co.jp/docs/news/2158202.html" target="_blank" rel="noopener">AI Watch（2026/11/20）</a></p>
+  </article>
+
+  <a class="back" href="#top">↑ 目次へ</a>
+</section>
+
+<!-- ============ JAPAN ============ -->
+<section class="sec" id="japan" style="--cat:var(--cat-jp)">
+  <header class="sec-head"><span class="sec-tag">Japan</span><h2>国内の導入事例・制度・イベント</h2><span class="count mono">2件</span></header>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-11-20">2026/11/20</time><span class="st st-note">発表（事前登録受付中）</span></div>
+    <h3>DeNA、部署に「配属」するAIエージェント「AI社員」を外部に提供へ。TeamsやSlackで仕事を依頼</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>AI社員は、個人にひもづかない専用のアカウントとメールアドレスを持ち、部署に配属されます。社員がSlackやTeamsで頼むと、複数の業務ツールを使って作業を進めます。DeNA社内ではすでに30人のAI社員が働いていて、ある開発チームでは8営業日で52.6時間分の作業を担ったとしています。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>権限は業務に必要な範囲に絞り、操作は固有のIDでログに残ります。権限を超える作業では人に承認を求め、契約の最終承認などは人が行います。トークンの使用量を「勤務時間」、上限を「残業上限」として管理するのも特徴です。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>Copilot Studioの「エージェントアカウント」と同じ考え方の国内事例です。「AIに社員証を持たせる」ときに何を決めるべきかの参考になります。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://ai.watch.impress.co.jp/docs/news/2158218.html" target="_blank" rel="noopener">AI Watch（2026/11/20）</a></p>
+  </article>
+
+  <article class="item">
+    <div class="meta"><time class="date" datetime="2026-11-24">2026/11/24</time><span class="st st-note">制度（認証取得）</span></div>
+    <h3>SB OAI Japan、JDLAのAIガバナンス認証「C認証」を取得</h3>
+    <dl class="rows">
+      <div><dt>何があった？</dt><dd>日本ディープラーニング協会（JDLA）の「C認証」は、組織がAIを安全に管理・利用する体制を、第三者が審査する制度です。「使っているAIの把握」「リスクに対応する組織」「リスクの評価」「リスクへの対応」の4つを見て、会社や自治体の単位で認証します。</dd></div>
+      <div><dt>嬉しい・注意点</dt><dd>国内でも、AIの利用ルールを外から確かめてもらう仕組みが使われ始めています。</dd></div>
+      <div class="field"><dt>支援現場でのひとこと</dt><dd>客先で「AI利用のガイドライン」を作るとき、4つの観点はチェックリストの骨組みとして使えます。</dd></div>
+    </dl>
+    <p class="src">出典：<a href="https://ai.watch.impress.co.jp/docs/news/2158646.html" target="_blank" rel="noopener">AI Watch（2026/11/24）</a></p>
+  </article>
+
+  <a class="back" href="#top">↑ 目次へ</a>
+</section>
+
+<!-- ============ BEFORE PERIOD ============ -->
+<aside class="aside" id="before" aria-labelledby="before-h">
+  <h2 id="before-h">期間直前の発表（参考）</h2>
+  <p class="sec-note">対象期間の少し前に出て、今週の話題につながっているものです。</p>
+  <ul>
+    <li><time class="date">11/17</time><div>Igniteの基調講演で、Salesforceとの提携「Copilotforce」が発表されました。SalesforceをCopilot・Teams・Fabricとつなぎ、SalesforceのデータをCopilotで扱えるようにするものです。サードパーティのIQコネクタが350以上用意されていることも紹介されました。
+      <p class="src"><a href="https://forest.watch.impress.co.jp/docs/news/2157310.html" target="_blank" rel="noopener">窓の杜（Ignite 2026速報、2026/11/18）</a></p></div></li>
+  </ul>
+</aside>
+
+<!-- ============ TERM ============ -->
+<section class="term" id="term" aria-labelledby="term-h">
+  <p class="label">今週のかみ砕き用語</p>
+  <p class="word" id="term-h">判断特化モデル（decision model）</p>
+  <p class="yomi">はんだんとっか モデル。Copilot Studioの分類ノードやMicrosoftの「Decision 1.1」で出てきた言葉です</p>
+
+  <h3>ひとことで</h3>
+  <p>文章を書かずに、決められた選択肢の中から「どれに当てはまるか」だけを答えるAIです。</p>
+
+  <h3>たとえるなら</h3>
+  <p>郵便物の仕分け係です。手紙の返事は書きませんが、「経理あて」「人事あて」「その他」と箱に振り分けるのは速くて正確です。</p>
+
+  <h3>押さえておきたいこと</h3>
+  <ul>
+    <li>文章を作らないぶん、速く・安く動きます。問い合わせの振り分けや、申請の種類分けなど、数が多い仕事に向いています。</li>
+    <li>選択肢ごとの「当てはまりやすさ」を返すので、どこで分岐させるかを決めやすくなります。</li>
+    <li>説明や要約が必要な場面では、ふつうの言語モデルを使います。「振り分けは判断モデル、そのあとの返事は言語モデル」と組み合わせるのが基本です。</li>
+  </ul>
+
+  <div class="say"><b>勉強会での言い方：</b>「判断特化モデルは、仕分け専門のAIです。返事は書きませんが、大量の振り分けを速く安くこなします。」</div>
+</section>
+
+<!-- ============ NEXT ============ -->
+<section class="sec" id="next" style="--cat:var(--accent)">
+  <header class="sec-head"><span class="sec-tag">Upcoming</span><h2>来週以降の注目予定</h2></header>
+  <ol class="sched">
+    <li><span class="when">11月下旬</span><span class="what"><b>ライセンスがない人向けの新しい検索画面、PowerPointの営業向けスキル</b><small>MC1562275（〜12月中旬）／MC1558023。</small></span></li>
+    <li><span class="when">11/30（月）</span><span class="what"><b>Power Automateデザイナー内Copilotのサポート終了</b><small>MC1540258。新しいスケジュール実行の全体展開もこの日から（〜12/31、MC1550533）。</small></span></li>
+    <li><span class="when">12/01（火）</span><span class="what"><b>Copilot StudioワークフローのPython手順がGA</b><small>MC1561862。12/03には文書を渡す機能もGA（MC1561859）。</small></span></li>
+    <li><span class="when">12/02（水）</span><span class="what"><b>Power Platformプロンプトのモデル移行・Claude／Grok退役</b><small>MC1536101。</small></span></li>
+    <li><span class="when">12月上旬</span><span class="what"><b>利用上限のあとにCreditsでモデルを使い続ける機能のGA、Teams会議AIポリシーの先行リリース</b><small>MC1557754／MC1532253。従量課金モデルのGA（MC1519122）は12月上旬〜中旬。</small></span></li>
+    <li><span class="when">12/08（火）</span><span class="what"><b>Power BIでM365 Copilotが既定で有効に、Dataverseのエージェントユーザー作成がGA</b><small>MC1546429／MC1560996。</small></span></li>
+    <li><span class="when">12月</span><span class="what"><b>エージェントアカウントのパブリックプレビュー、チャネルのCopilotのプレビュー、WorkspacesのGA</b><small>Copilot Studioブログ／MC1562277／MC1559638。</small></span></li>
+    <li><span class="when">12/14（月）</span><span class="what"><b>GitHub Copilotで一部の旧モデルが提供終了</b><small>Claude Fable 5、Gemini 3.8 Flashなど。</small></span></li>
+    <li><span class="when">12/17（木）まで</span><span class="what"><b>Copilot Studioワークフローのサービスプリンシパル認証GA</b><small>MC1557509。</small></span></li>
+    <li><span class="when">12/31（木）</span><span class="what"><b>Power Platform版のスケジュールされたプロンプトが終了</b><small>MC1550533。</small></span></li>
+    <li><span class="when">2027年1月</span><span class="what"><b>デスクトップアプリのアプリ内ブラウズが既定でオン、Teams会議AIポリシーの全体展開、OneNoteの新しいCopilotのGA</b><small>MC1560922（対応期限1/3）／MC1532253／MC1559641。</small></span></li>
+  </ol>
+</section>
+
+<!-- ============ SOURCES ============ -->
+<section class="sec sources" id="sources" style="--cat:var(--ink-3)">
+  <header class="sec-head"><span class="sec-tag">Sources</span><h2>出典一覧</h2></header>
+  <ol>
+    <li><a href="https://www.microsoft.com/en-us/copilot/blog/copilot-studio/build-and-manage-business-processes-with-microsoft-copilot-studio/" target="_blank" rel="noopener">Build and manage business processes with Microsoft Copilot Studio</a> <span class="pub">— Microsoft Copilot Blog, 2026/11/18</span></li>
+    <li><a href="https://mc.merill.net/message/MC1561862" target="_blank" rel="noopener">MC1561862 Run Python code as a workflow step</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/11/20</span></li>
+    <li><a href="https://mc.merill.net/message/MC1561859" target="_blank" rel="noopener">MC1561859 Generate documents from the Agent node in workflows</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/11/20</span></li>
+    <li><a href="https://mc.merill.net/message/MC1560402" target="_blank" rel="noopener">MC1560402 Copilot Studio – Use the Decision model in the Classify node in Workflows</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/11/19</span></li>
+    <li><a href="https://mc.merill.net/message/MC1560996" target="_blank" rel="noopener">MC1560996 Copilot Studio - Create Dataverse agent users with Microsoft Entra agent's user account</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/11/20</span></li>
+    <li><a href="https://mc.merill.net/message/MC1560916" target="_blank" rel="noopener">MC1560916 Microsoft Copilot: GPT-6.2 Sol and Astra rolling out</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/11/19</span></li>
+    <li><a href="https://mc.merill.net/message/MC1532253" target="_blank" rel="noopener">MC1532253 Enhanced Copilot and AI controls for meetings</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/10/30（11/19更新）</span></li>
+    <li><a href="https://mc.merill.net/message/MC1562277" target="_blank" rel="noopener">MC1562277 Microsoft Teams: Copilot in channels provides channel-wide context</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/11/20</span></li>
+    <li><a href="https://mc.merill.net/message/MC1559638" target="_blank" rel="noopener">MC1559638 New capabilities in Copilot Workspaces</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/11/18</span></li>
+    <li><a href="https://mc.merill.net/message/MC1559632" target="_blank" rel="noopener">MC1559632 Copilot Workspaces: Updated workspace memory</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/11/18</span></li>
+    <li><a href="https://mc.merill.net/message/MC1559641" target="_blank" rel="noopener">MC1559641 New Copilot experience in OneNote</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/11/18</span></li>
+    <li><a href="https://mc.merill.net/message/MC1559633" target="_blank" rel="noopener">MC1559633 Microsoft SharePoint: Agent Chat web part to bring Copilot agents into SharePoint pages</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/11/18</span></li>
+    <li><a href="https://mc.merill.net/message/MC1560922" target="_blank" rel="noopener">MC1560922 Microsoft Copilot: In-app browsing will be enabled by default in the desktop app</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/11/20</span></li>
+    <li><a href="https://mc.merill.net/message/MC1562275" target="_blank" rel="noopener">MC1562275 Microsoft 365 Copilot app: New search experience for Microsoft 365 users without a Microsoft 365 Copilot license</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/11/20</span></li>
+    <li><a href="https://mc.merill.net/message/MC1562269" target="_blank" rel="noopener">MC1562269 Sync between Copilot desktop app and Microsoft Edge</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/11/20</span></li>
+    <li><a href="https://mc.merill.net/message/MC1558817" target="_blank" rel="noopener">MC1558817 Dataverse - Dataverse Data Available in Agent Builder Declarative Agents</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/11/18</span></li>
+    <li><a href="https://mc.merill.net/message/MC1558023" target="_blank" rel="noopener">MC1558023 Microsoft Copilot in PowerPoint: Introducing new sales-focused skills</a> <span class="pub">— Microsoft 365 Message Center Archive, 2026/11/17（11/24更新）</span></li>
+    <li><a href="https://forest.watch.impress.co.jp/docs/news/2157844.html" target="_blank" rel="noopener">Microsoft AI、「MAI Code 2」など新モデル7つを一挙投入【Ignite 2026】</a> <span class="pub">— 窓の杜, 2026/11/19</span></li>
+    <li><a href="https://forest.watch.impress.co.jp/docs/news/2157310.html" target="_blank" rel="noopener">MicrosoftがAI戦略を大幅アップデート、Copilotは「仕事の新しいOS」へ【Ignite 2026速報】</a> <span class="pub">— 窓の杜, 2026/11/18</span></li>
+    <li><a href="https://github.blog/changelog/2026-11-18-customize-github-copilot-for-your-team" target="_blank" rel="noopener">Customize GitHub Copilot for your team</a> <span class="pub">— GitHub Changelog, 2026/11/18</span></li>
+    <li><a href="https://github.blog/changelog/2026-11-18-gemini-4-neon-in-github-copilot" target="_blank" rel="noopener">Gemini 4 Neon in GitHub Copilot</a> <span class="pub">— GitHub Changelog, 2026/11/18</span></li>
+    <li><a href="https://github.blog/changelog/2026-11-18-connect-supabase-box-calendly-and-more-to-copilot" target="_blank" rel="noopener">Connect Supabase, Box, Calendly, and more to Copilot</a> <span class="pub">— GitHub Changelog, 2026/11/18</span></li>
+    <li><a href="https://www.theregister.com/ai-and-ml/2026/11/19/anthropic-throws-open-doors-at-2t-valuation-as-shares-pop-34-in-initial-trading/5311143" target="_blank" rel="noopener">Anthropic throws open doors at $2T valuation as shares pop 34% in initial trading</a> <span class="pub">— The Register, 2026/11/19</span></li>
+    <li><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/" target="_blank" rel="noopener">Introducing Gemini 4 Neon</a> <span class="pub">— Google, 2026/11/18（11/23更新）</span></li>
+    <li><a href="https://ai.watch.impress.co.jp/docs/news/2158202.html" target="_blank" rel="noopener">OpenAI、営業の作業をサポートするプラグイン「ChatGPT for Sales」をリリース</a> <span class="pub">— AI Watch, 2026/11/20</span></li>
+    <li><a href="https://ai.watch.impress.co.jp/docs/news/2158218.html" target="_blank" rel="noopener">DeNA、「AI社員」を外部企業向けに提供へ　SlackやTeamsで業務を依頼</a> <span class="pub">— AI Watch, 2026/11/20</span></li>
+    <li><a href="https://ai.watch.impress.co.jp/docs/news/2158646.html" target="_blank" rel="noopener">SB OAI Japan、JDLAのAIガバナンス評価「C認証」取得</a> <span class="pub">— AI Watch, 2026/11/24</span></li>
+  </ol>
+  <a class="back" href="#top">↑ 目次へ</a>
+</section>
+
+<footer class="foot">
+  AI Weekly No.09｜公開情報をもとに要約しています。機能の提供時期や内容は変わることがあるため、使う前に出典を確認してください。
+</footer>
+
+</div>
+</body>
+</html>
