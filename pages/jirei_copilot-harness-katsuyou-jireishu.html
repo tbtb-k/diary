@@ -164,8 +164,10 @@ small{font-size:inherit}
 .cover-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--f-label);font-size:11px;
   font-weight:800;letter-spacing:.22em;color:var(--sub)}
 .cover h1{margin-top:20mm;display:flex;flex-direction:column;gap:6px}
-.cover h1 .l1{font-family:var(--f-label);font-weight:800;font-size:clamp(26px,5vw,40px);letter-spacing:-.01em;line-height:1.1}
-.cover h1 .l1 em{font-style:normal;font-family:var(--f-display);font-weight:400;letter-spacing:.04em}
+/* 表紙タイトルは形が変わらない Dela Gothic One でそろえる（可変フォントは PDF で字形がくずれるため） */
+.cover h1 .l1{font-family:var(--f-display);font-weight:400;font-size:clamp(22px,4.4vw,34px);letter-spacing:.01em;line-height:1.25}
+.cover h1 .l1 .nw{white-space:nowrap}
+.cover h1 .l1 em{font-style:normal;letter-spacing:.04em}
 .cover h1 .l2{font-family:var(--f-display);font-weight:400;font-size:clamp(46px,11vw,84px);line-height:1.12;letter-spacing:.03em}
 .cover-sub{margin-top:14px;font-size:16px;line-height:1.75;color:var(--sub)}
 .cover-sub b{color:var(--ink);background:linear-gradient(transparent 62%,var(--accent-soft) 62%)}
@@ -846,7 +848,7 @@ small{font-size:inherit}
 <!-- ============ p.01 表紙 ============ -->
 <section class="sheet cover" id="cover" aria-label="表紙">
   <div class="cover-top"><span>COPILOT STUDIO CASEBOOK — HARNESS EDITION</span><span>2026.11 EDITION</span></div>
-  <h1><span class="l1">Microsoft Copilot <em>ハーネス</em></span><span class="l2">活用事例集</span></h1>
+  <h1><span class="l1"><span class="nw">Microsoft Copilot</span> <em>ハーネス</em></span><span class="l2">活用事例集</span></h1>
   <p class="cover-sub">スタンダードでは作れない<b>5つの仕事</b>で、<br>新しいハーネスの強みが見えてきます。</p>
   <p class="cover-old">旧名：GitHub Copilot ハーネス。Copilot Studio でエージェントを作るときに選ぶ「土台」のひとつです。</p>
   <div class="cover-mid">
