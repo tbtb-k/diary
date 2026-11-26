@@ -173,6 +173,34 @@ let browser;
     const ch = { chain4: c4.chain, best: c4.best, text: c4.text, chain1: c1.chain, big1: !!c1.text };
     check('ドカンで2体以上倒すと「○体まきこみ！」が出る（1体では出ない）', ch.chain4 === 4 && ch.text === '4体まきこみ！' && ch.best >= 4 && ch.chain1 === 1 && !ch.big1, JSON.stringify(ch));
     await page.evaluate(() => { const p = window.__game.world().player; p.hp = p.maxHp; });
+    // ドカンの誘爆（Day 26）：爆発の輪の中のドカンは少しおくれて爆発し、つながった爆発で自機に当たるのは1回だけ
+    const lk = await page.evaluate(() => {
+      const d = window.__game.debug, g = window.__game.world(), p = g.player;
+      d.give('regen', 0); d.god(false); p.hp = p.maxHp;
+      g.enemies.forEach(e => { e.dead = true; }); g.enemies.length = 0;
+      const put = (type, x, y, hp) => { d.spawn(type, 1); const e = g.enemies[g.enemies.length - 1]; e.x = p.x + x; e.y = p.y + y; e.spd = 0; e.kb = 0; if (hp) e.hp = hp; return e; };
+      const b1 = put('bomber', 50, 0, 1e6), b2 = put('bomber', 50, 62, 1e6), b3 = put('bomber', 105, 120, 1e6); // b1・b2 は自機に届く、b3 は届かない
+      const lone = put('bomber', -400, 0, 1e6); // 遠くのドカンは誘爆しない
+      const hp0 = p.hp, b0 = g.booms; p.inv = 0;
+      b1.fuse = 0.001;
+      window.__game.sim(0.05, () => [0, 0]);
+      const lit = b2.fuse != null && b2.fuse <= 0.17 && !b2.dead; // 1つ目のすぐあとは、まだ爆発していない（少しおくれる）
+      window.__game.sim(0.6, () => [0, 0]);
+      const r = { lit, booms: g.booms - b0, all: b1.dead && b2.dead && b3.dead, lone: !lone.dead && lone.fuse == null, hurt: Math.round(hp0 - p.hp), links: g.linkBest, chain: g.lastChain };
+      p.hp = p.maxHp; lone.dead = true;
+      return r;
+    });
+    check('ドカンが爆発に巻きこまれると少しおくれて誘爆し、自機に当たるのは1回だけ', lk.lit && lk.booms === 3 && lk.all && lk.lone && lk.hurt === 18 && lk.links >= 3 && lk.chain >= 2, JSON.stringify(lk));
+    // 誘爆の見た目（演出つき）をスクリーンショットで残す
+    await page.evaluate(() => {
+      const d = window.__game.debug, g = window.__game.world(), p = g.player;
+      d.god(true); g.enemies.forEach(e => { e.dead = true; }); g.enemies.length = 0; d.fxArrays()[1].length = 0;
+      const put = (type, x, y) => { d.spawn(type, 1); const e = g.enemies[g.enemies.length - 1]; e.x = p.x + x; e.y = p.y + y; e.spd = 0; e.hp = type === 'bomber' ? 1e6 : 1; return e; };
+      put('bomber', 0, -90).fuse = 0.001; put('bomber', 60, -140); put('bomber', 120, -190);
+      for (let i = 0; i < 4; i++) put('drifter', 150 + i * 8, -230 + i * 10);
+    });
+    await wait(450); await shot(page, '04c_link_390');
+    await page.evaluate(() => { window.__game.debug.god(false); const p = window.__game.world().player; p.hp = p.maxHp; });
     // 一時停止
     await page.click('#b-pause');
     check('一時停止できる', await visible(page, 'pause'));

@@ -300,8 +300,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 25, date: '2026-11-26' };
+const GAME = { day: 26, date: '2026-11-27' };
 const PATCH_NOTES = [
+  { day: 26, date: '2026-11-27', title: 'ドカンが「誘爆」するよ！',
+    items: ['ドカンの爆発に、ほかのドカンが巻きこまれると、少しおくれてそっちも爆発するよ', 'つながった爆発で倒した数は、まとめて「○体まきこみ！」に出るよ', '自機に当たるのは、つながった爆発のうち1回だけだから安心してね'],
+    ask: 'ドカンが何体か集まったところで1つ爆発させて、連鎖をつなげてみてね！' },
   { day: 25, date: '2026-11-26', title: '大ダメージは、数字も大きく！',
     items: ['敵に当てたダメージの数字が、威力で3段階に変わるよ', '15以上はうす黄色で少し大きく、30以上は黄色で大きく、ぽんとはねるよ'],
     ask: 'ノヴァを育てたり、弱ったボスをたたいたりして、黄色い大きな数字を出してみてね！' },
@@ -462,7 +465,7 @@ const ET = {
   boss: { shape: 'boss', color: '#ff3b5c', r: 46, hp: 5400, spd: 44, dmg: 24, xp: 0, kb: 0.03, spin: 0.6 },
 };
 // 自爆する敵「ドカン」：近づくとチカチカして、少したってから爆発する
-const BOMB = { near: 72, fuse: 0.9, r: 80, dmg: 18, hit: 45 };
+const BOMB = { near: 72, fuse: 0.9, r: 80, dmg: 18, hit: 45, chainFuse: 0.16 }; // chainFuse：誘爆までの間（Day 26）
 const hpScale = t => 1 + t / 180 + (t / 330) * (t / 330);
 const xpNeed = L => Math.floor((5 + L * 2.5 + L * L * 0.1) * (L <= 2 ? 0.8 : 1)); // 序盤(Lv1〜2)は早めに最初の強化がもらえる
 
@@ -479,7 +482,7 @@ let acc = 0, lastT = 0, lastResult = null, levelOpts = [], levelOpenAt = 0;
 function newGame(seed) {
   rng = mulberry32(seed);
   G = {
-    seed, t: 0, level: 1, xp: 0, xpNeed: xpNeed(1), kills: 0, booms: 0, lastChain: 0, chainBest: 0, bonus: 0,
+    seed, t: 0, level: 1, xp: 0, xpNeed: xpNeed(1), kills: 0, booms: 0, lastChain: 0, chainBest: 0, linkBest: 0, bonus: 0,
     player: { x: 0, y: 0, r: 12, hp: 100, maxHp: 100, inv: 0, speed: 150, face: -Math.PI / 2, mvx: 0, mvy: 0 },
     weapons: { pulse: 1 }, passives: {}, st: null,
     wt: { pulse: 0.3, nova: 2, chain: 1, orbitAng: 0 },
@@ -861,26 +864,37 @@ function kill(e) {
   else if (G.t > 60 && r > 0.996) dropItem(e.x, e.y, 'magnet');
 }
 // ドカンの爆発：輪の中の自機と敵（ボス以外）にダメージ（自爆なので撃破数には入れない）
+// 輪の中のほかのドカンは、少しおくれて誘爆する（Day 26）。誘爆のつながりは1つの「組」として数える
 function explode(e) {
-  const g = G, p = g.player;
+  const g = G, p = g.player, grp = e.grp || { n: 0, hitP: false, links: 0 };
   e.dead = true; g.booms++;
   burst(e.x, e.y, '#ff6b4a', 26, 260, 4); burst(e.x, e.y, '#ffd84a', 14, 200, 3);
   if (g.fxOn) FX.rings.push({ x: e.x, y: e.y, r: 10, max: BOMB.r, t: 0, dur: 0.3, color: '#ff6b4a' });
-  shake(5); Snd.play('boom');
+  shake(e.grp ? 6 : 5); Snd.play('boom');
   const dmg = BOMB.hit * hpScale(g.t), k0 = g.kills;
+  let lit = 0;
   query(e.x, e.y, BOMB.r + 30, o => {
     if (o === e || o.dead || o.type === 'boss') return; // ボスには効かない（ボス戦が短くなりすぎないように）
     const dx = o.x - e.x, dy = o.y - e.y;
-    if (dx * dx + dy * dy < (BOMB.r + o.r) * (BOMB.r + o.r)) damage(o, dmg, dx, dy, 220);
+    if (dx * dx + dy * dy >= (BOMB.r + o.r) * (BOMB.r + o.r)) return;
+    if (o.type === 'bomber') { // 誘爆：倒さずに導火線を短くする（すでに組に入っていれば何もしない）
+      if (!o.grp) { o.grp = grp; o.fuse = Math.min(o.fuse == null ? BOMB.chainFuse : o.fuse, BOMB.chainFuse); grp.links++; lit++; }
+      return;
+    }
+    damage(o, dmg, dx, dy, 220);
   });
-  // 2体以上まきこんだら「○体まきこみ！」（Day 19）
-  const n = g.kills - k0; g.lastChain = n;
+  // 2体以上まきこんだら「○体まきこみ！」（Day 19）。誘爆したぶんは組の合計で出す（Day 26）
+  grp.n += g.kills - k0 + lit;
+  const n = grp.n; g.lastChain = n;
+  if (grp.links > 0) g.linkBest = Math.max(g.linkBest || 0, grp.links + 1);
   if (n >= 2) {
     g.chainBest = Math.max(g.chainBest, n); Snd.play('chain');
     if (g.fxOn) FX.nums.push({ x: e.x, y: e.y - 40, text: n + '体まきこみ！', color: n >= 5 ? '#ffd84a' : '#ffb39e', life: 1.1, max: 1.1, big: n >= 5 ? 19 : 15 });
   }
+  if (e.grp && g.fxOn) FX.nums.push({ x: e.x, y: e.y + 22, text: '誘爆！', color: '#ffd84a', life: 0.7, max: 0.7, big: 12 });
+  // 自機に当たるのは、ひとつの組で1回だけ（連鎖で何回も当たって急に倒されないように）
   const px = p.x - e.x, py = p.y - e.y;
-  if (px * px + py * py < (BOMB.r + p.r) * (BOMB.r + p.r)) { p.inv = 0; hurt(BOMB.dmg); }
+  if (!grp.hitP && px * px + py * py < (BOMB.r + p.r) * (BOMB.r + p.r)) { grp.hitP = true; p.inv = 0; hurt(BOMB.dmg); }
 }
 function bossDown(e) {
   const g = G;
@@ -1900,7 +1914,7 @@ window.__game = {
   state() {
     if (!G) return { scene };
     const p = G.player;
-    return { scene, t: +G.t.toFixed(2), hp: Math.round(p.hp), maxHp: p.maxHp, x: Math.round(p.x), y: Math.round(p.y), level: G.level, kills: G.kills, booms: G.booms, lastChain: G.lastChain, chainBest: G.chainBest,
+    return { scene, t: +G.t.toFixed(2), hp: Math.round(p.hp), maxHp: p.maxHp, x: Math.round(p.x), y: Math.round(p.y), level: G.level, kills: G.kills, booms: G.booms, lastChain: G.lastChain, chainBest: G.chainBest, linkBest: G.linkBest,
       arrows: arrowCount, enemies: G.enemies.length, gems: G.gems.length, weapons: Object.assign({}, G.weapons), passives: Object.assign({}, G.passives),
       evolved: pulseEvolved(), orbEvolved: orbitEvolved(), orbs: G.weapons.orbit ? orbitShape(G.weapons.orbit).n : 0, gemCombo: G.gemCombo, comboShown, gemChains: G.gemChains, boss: G.boss ? Math.max(0, Math.round(G.boss.hp)) : null, clear: G.clear, over: G.over, done: !!G.done, score: calcScore(), fps: Math.round(fpsAvg), quality, parts: FX.parts.length, partMax: partMax(), partCalls };
   },
