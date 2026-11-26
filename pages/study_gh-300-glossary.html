@@ -1,0 +1,1132 @@
+<!doctype html>
+<html lang="ja" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="GitHub の認定試験 GH-300（GitHub Copilot）の概要（受験料・試験時間・合格点・配点・有効期間）と、出題範囲に出てくる用語 156 語を6分野＋基礎に分けてかみ砕いて解説した用語集。新旧の名前の対応表、まぎらわしい組み合わせ、検索・分野の絞り込み・テストモード・覚えたチェックつき。Microsoft Learn と GitHub Docs の出典を掲載。2026-11-26 時点。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>GH-300 用語集</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<script>
+  /* 一覧ページ（Learning Shelf）で選んだライト／ダークを引き継ぐ */
+  try{ const t = localStorage.getItem("ls-theme"); if(t === "light" || t === "dark") document.documentElement.dataset.theme = t; }catch(_){}
+</script>
+<style>
+:root{
+  /* Layout: 受験票ふうヘッダー → 試験の概要（料金・時間・配点・準備リソース） → 使い方と目次 → 検索バー → 分野ごとの用語カード → まぎらわしいペア → 名前が変わった用語 → 注意点・出典。AB-100 用語集と同じ部品で、アクセントだけ紫 */
+  --bg:#EEF1F5;
+  --surface:#FFFFFF;
+  --sunk:#E4E9F0;
+  --ink:#142030;
+  --sub:#4E5C6E;
+  --faint:#7F8B9B;
+  --line:#D3DAE3;
+  --accent:#6B3FC4;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#EEE8FB;
+  --hl:#FFDB66;
+  --ok:#1C7A52;
+  --ok-soft:#DFF2E8;
+  --warn:#A44E14;
+  --warn-soft:#FBEBDD;
+  --bar-bg:rgba(238,241,245,.88);
+
+  --f-display:"Bricolage Grotesque","Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  --radius:14px;
+  --shadow:0 1px 2px rgba(20,32,48,.05),0 12px 32px -18px rgba(20,32,48,.28);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D131B;
+    --surface:#151E2A;
+    --sunk:#1C2735;
+    --ink:#E5ECF5;
+    --sub:#A3B0C1;
+    --faint:#728093;
+    --line:#2A3646;
+    --accent:#B69CFF;
+    --accent-ink:#0D131B;
+    --accent-soft:#2A2147;
+    --hl:rgba(240,188,60,.42);
+    --ok:#5FC79B;
+    --ok-soft:#173327;
+    --warn:#F0A26E;
+    --warn-soft:#3A2416;
+    --bar-bg:rgba(13,19,27,.86);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 34px -18px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D131B;
+  --surface:#151E2A;
+  --sunk:#1C2735;
+  --ink:#E5ECF5;
+  --sub:#A3B0C1;
+  --faint:#728093;
+  --line:#2A3646;
+  --accent:#B69CFF;
+  --accent-ink:#0D131B;
+  --accent-soft:#2A2147;
+  --hl:rgba(240,188,60,.42);
+  --ok:#5FC79B;
+  --ok-soft:#173327;
+  --warn:#F0A26E;
+  --warn-soft:#3A2416;
+  --bar-bg:rgba(13,19,27,.86);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 34px -18px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:1rem;
+  line-height:1.85;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:clamp(20px, 5vw, 48px) 56px;
+}
+.wrap{max-width:64rem; margin:0 auto; display:grid; gap:clamp(36px, 6vw, 56px)}
+.narrow{max-width:48rem}
+a{color:var(--accent); text-underline-offset:3px; text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px}
+h1,h2,h3,h4{margin:0; text-wrap:balance; line-height:1.4; word-break:auto-phrase}
+p{margin:0}
+ul,ol{margin:0; padding:0}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.hl{background:linear-gradient(transparent 60%, var(--hl) 60%); padding-inline:.1em}
+
+/* ── section heads ── */
+.sec{display:grid; gap:20px; min-width:0}
+.sec-head{display:grid; gap:6px}
+.eyebrow{font-family:var(--f-mono); font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:500}
+.sec-head h2{font-size:clamp(1.35rem, 3.6vw, 1.65rem); font-weight:900; letter-spacing:.01em}
+.sec-head p{color:var(--sub); max-width:44rem}
+
+/* ── ticket header ── */
+.ticket{
+  display:grid; grid-template-columns:minmax(0,1fr) auto;
+  background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow);
+  position:relative; overflow:hidden;
+}
+.ticket-main{padding:clamp(22px, 4.5vw, 36px); display:grid; gap:14px; min-width:0}
+.ticket .eyebrow{color:var(--sub)}
+.ticket h1{font-family:var(--f-display); font-weight:800; font-size:clamp(2rem, 6.4vw, 3.1rem); letter-spacing:-.01em; line-height:1.15}
+.ticket h1 .code{color:var(--accent)}
+.lead{font-size:1.05rem; max-width:38rem}
+.lead .en{font-family:var(--f-display); font-weight:600}
+.meta{font-family:var(--f-mono); font-size:.75rem; color:var(--faint); display:flex; flex-wrap:wrap; gap:4px 14px; align-items:center}
+.meta a{font-family:var(--f-body); font-size:.85rem; font-weight:700}
+.ticket-stub{
+  position:relative; padding:clamp(22px, 4.5vw, 32px) clamp(20px, 4vw, 30px);
+  border-left:2px dashed var(--line); background:var(--accent-soft);
+  display:grid; align-content:center; min-width:12.5rem;
+}
+.ticket-stub::before,.ticket-stub::after{content:""; position:absolute; left:-12px; width:22px; height:22px; border-radius:50%; background:var(--bg)}
+.ticket-stub::before{top:-11px}
+.ticket-stub::after{bottom:-11px}
+.stub-list{display:grid; gap:12px; margin:0}
+.stub-list div{display:grid; gap:0}
+.stub-list dt{font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--sub)}
+.stub-list dd{margin:0; font-family:var(--f-display); font-weight:700; font-size:1.3rem; line-height:1.25; font-variant-numeric:tabular-nums}
+.stub-list dd small{font-family:var(--f-body); font-weight:500; font-size:.8rem; color:var(--sub); margin-left:4px}
+@media (max-width:640px){
+  .ticket{grid-template-columns:1fr}
+  .ticket-stub{border-left:0; border-top:2px dashed var(--line); min-width:0}
+  .ticket-stub::before,.ticket-stub::after{top:-12px; bottom:auto}
+  .ticket-stub::before{left:-11px}
+  .ticket-stub::after{left:auto; right:-11px}
+  .stub-list{grid-template-columns:repeat(2, minmax(0,1fr))}
+}
+
+/* ── how to use + toc ── */
+.howto{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; list-style:none}
+.howto li{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px; display:grid; gap:4px; align-content:start}
+.howto b{font-size:1rem; line-height:1.6}
+.howto p{color:var(--sub); font-size:.88rem; line-height:1.75}
+.howto .k{font-family:var(--f-display); font-weight:800; color:var(--accent); font-size:1.15rem; line-height:1.2}
+.toc{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; list-style:none}
+.toc a{
+  display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:2px 12px;
+  padding:12px 14px; border-radius:12px; background:var(--surface); border:1px solid var(--line);
+  color:var(--ink); text-decoration:none; height:100%;
+}
+.toc a:hover{border-color:var(--accent)}
+.toc .no{grid-row:span 2; width:2.1rem; height:2.1rem; border-radius:50%; display:grid; place-items:center; border:2px solid var(--accent); color:var(--accent); font-family:var(--f-display); font-weight:800; font-size:.85rem}
+.toc .base .no{border-color:var(--faint); color:var(--sub)}
+.toc b{font-size:.95rem; line-height:1.45}
+.toc small{grid-column:2; font-family:var(--f-mono); font-size:.7rem; color:var(--faint)}
+.toc .n{grid-row:1 / span 2; grid-column:3; font-family:var(--f-mono); font-size:.8rem; color:var(--sub); font-variant-numeric:tabular-nums; white-space:nowrap}
+@media (max-width:820px){ .howto,.toc{grid-template-columns:repeat(2, minmax(0,1fr))} }
+@media (max-width:520px){ .howto,.toc{grid-template-columns:1fr} }
+
+/* ── toolbar ── */
+.no-js .toolbar{display:none}
+.toolbar{
+  display:grid; gap:10px; padding:14px 16px; border-radius:var(--radius);
+  background:var(--bar-bg); border:1px solid var(--line); box-shadow:var(--shadow);
+  -webkit-backdrop-filter:saturate(1.4) blur(10px); backdrop-filter:saturate(1.4) blur(10px);
+  min-width:0;
+}
+@media (min-width:721px){ .toolbar{position:sticky; top:10px; z-index:5} }
+.search{display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:0 12px; min-width:0}
+.search:focus-within{border-color:var(--accent)}
+.search svg{width:18px; height:18px; color:var(--faint); flex:none}
+.search input{flex:1; min-width:0; font:inherit; font-size:1rem; color:var(--ink); background:transparent; border:0; outline:0; padding:9px 0}
+.search kbd{font-family:var(--f-mono); font-size:.7rem; color:var(--faint); border:1px solid var(--line); border-radius:6px; padding:0 6px}
+@media (hover:none){ .search kbd{display:none} }
+.bar-row{display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; justify-content:space-between; min-width:0}
+.chips,.toggles{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; min-width:0; padding-block:2px}
+.chips::-webkit-scrollbar,.toggles::-webkit-scrollbar{display:none}
+.chip,.tg{
+  font:inherit; font-size:.8rem; line-height:1.4; white-space:nowrap; cursor:pointer;
+  padding:5px 12px; border-radius:99px; border:1px solid var(--line); background:var(--surface); color:var(--sub);
+}
+.chip:hover,.tg:hover{color:var(--ink); border-color:var(--faint)}
+.chip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:700}
+.tg[aria-pressed="true"]{background:var(--accent-soft); border-color:var(--accent); color:var(--accent); font-weight:700}
+.status{font-size:.8rem; color:var(--sub); font-variant-numeric:tabular-nums}
+.status b{font-family:var(--f-mono); color:var(--ink)}
+.empty{background:var(--surface); border:1px dashed var(--line); border-radius:var(--radius); padding:28px 20px; text-align:center; color:var(--sub)}
+.empty b{display:block; color:var(--ink); font-size:1.05rem}
+
+/* ── domains ── */
+.domains{display:grid; gap:clamp(36px, 6vw, 52px)}
+.dom{display:grid; gap:18px; min-width:0; scroll-margin-top:12rem}
+.dom-head{display:grid; grid-template-columns:auto minmax(0,1fr); gap:4px 16px; align-items:start}
+.dom-no{
+  grid-row:span 3; width:3rem; height:3rem; border-radius:50%; display:grid; place-items:center;
+  background:var(--accent); color:var(--accent-ink); font-family:var(--f-display); font-weight:800; font-size:1.1rem;
+}
+.dom[data-dom="base"] .dom-no{background:var(--sub); color:var(--surface)}
+.dom-head h2{font-size:clamp(1.3rem, 3.4vw, 1.6rem); font-weight:900}
+.dom-head p{color:var(--sub); font-size:.93rem; max-width:44rem}
+.dom-head .eyebrow b{font-weight:600}
+.sub{display:grid; gap:12px; min-width:0}
+.sub h3{font-size:.95rem; font-weight:700; color:var(--sub); display:flex; align-items:center; gap:12px}
+.sub h3::after{content:""; flex:1; height:1px; background:var(--line)}
+.terms{display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap:12px}
+
+/* ── term card ── */
+.term{
+  display:flex; flex-direction:column; gap:8px; min-width:0; scroll-margin-top:12rem;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px 12px;
+  transition:border-color .2s;
+}
+.term:target{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft)}
+.t-name{font-size:1.05rem; font-weight:900; line-height:1.5; display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 8px}
+.t-name small{flex-basis:100%; font-family:var(--f-mono); font-weight:400; font-size:.72rem; color:var(--faint); line-height:1.5; overflow-wrap:anywhere}
+.star{font-family:var(--f-mono); font-size:.66rem; font-weight:600; color:var(--accent); background:var(--accent-soft); border-radius:99px; padding:1px 8px; letter-spacing:.04em; white-space:nowrap; transform:translateY(-2px)}
+.def{font-size:.93rem; line-height:1.8}
+.tip{font-size:.85rem; line-height:1.75; color:var(--ink); background:var(--sunk); border-radius:10px; padding:9px 12px}
+.tip b{font-size:.75rem; font-weight:700; color:var(--accent); letter-spacing:.06em; margin-right:6px}
+.t-foot{display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:auto; padding-top:4px}
+.refs{font-family:var(--f-mono); font-size:.7rem; color:var(--faint); margin-right:auto; display:flex; flex-wrap:wrap; gap:0 4px}
+.refs a{color:var(--faint); text-decoration:none}
+.refs a:hover{color:var(--accent)}
+.got,.peek{font:inherit; font-size:.75rem; line-height:1.4; cursor:pointer; padding:3px 10px; border-radius:99px; border:1px solid var(--line); background:transparent; color:var(--sub); white-space:nowrap}
+.got:hover,.peek:hover{color:var(--ink); border-color:var(--faint)}
+.got[aria-pressed="true"]{background:var(--ok); border-color:var(--ok); color:var(--surface); font-weight:700}
+.term.is-got{border-color:color-mix(in srgb, var(--ok) 45%, var(--line))}
+.peek{display:none}
+.quiz .peek{display:inline-block}
+.quiz .term:not(.open) .def,.quiz .term:not(.open) .tip{filter:blur(6px); user-select:none; -webkit-user-select:none}
+.def,.tip{transition:filter .25s}
+
+/* ── pairs ── */
+.pairs{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px}
+.pair{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; display:flex; flex-direction:column; gap:10px; min-width:0}
+.pair h3{font-size:1.02rem; font-weight:900; line-height:1.5}
+.pair h3 i{font-style:normal; font-family:var(--f-mono); font-weight:500; font-size:.75rem; color:var(--faint); margin-inline:6px}
+.pair dl{margin:0; display:grid; gap:6px}
+.pair dl div{display:grid; grid-template-columns:minmax(0, 7.5rem) minmax(0,1fr); gap:10px; font-size:.88rem; line-height:1.7}
+.pair dt{font-weight:700}
+.pair dd{margin:0; color:var(--sub)}
+.rule{font-size:.86rem; background:var(--accent-soft); border-radius:10px; padding:9px 12px; line-height:1.7}
+.rule b{color:var(--accent); font-size:.75rem; letter-spacing:.06em; margin-right:6px}
+.pair .refs{margin:auto 0 0}
+@media (max-width:720px){ .pairs{grid-template-columns:1fr} }
+@media (max-width:420px){ .pair dl div{grid-template-columns:1fr; gap:0} }
+
+/* ── renames table ── */
+.table-wrap{overflow-x:auto; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius)}
+table{width:100%; min-width:40rem; border-collapse:collapse; font-size:.88rem; line-height:1.65}
+th,td{text-align:left; vertical-align:top; padding:12px 16px; border-top:1px solid var(--line)}
+thead th{border-top:0; font-size:.75rem; font-family:var(--f-mono); letter-spacing:.06em; color:var(--sub); font-weight:500; background:var(--sunk)}
+td.old{color:var(--sub)}
+td.new{font-weight:700}
+td.note{color:var(--sub)}
+td.r{font-family:var(--f-mono); font-size:.72rem; white-space:nowrap}
+td.r a{color:var(--faint); text-decoration:none}
+
+/* ── notes, sources ── */
+.notes{list-style:none; display:grid; gap:0; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden}
+.notes li{display:grid; grid-template-columns:auto minmax(0,1fr); gap:14px; padding:16px 20px; border-top:1px solid var(--line)}
+.notes li:first-child{border-top:0}
+.notes .x{font-family:var(--f-mono); font-weight:600; font-size:.72rem; color:var(--warn); background:var(--warn-soft); border-radius:6px; padding:2px 8px; height:max-content; margin-top:3px; white-space:nowrap}
+.notes b{display:block; font-size:.98rem; line-height:1.6}
+.notes p{color:var(--sub); font-size:.88rem}
+.sources{list-style:none; display:grid; gap:0; counter-reset:src}
+.sources li{display:grid; grid-template-columns:2.6rem minmax(0,1fr); gap:2px 12px; padding:12px 0; border-top:1px solid var(--line); scroll-margin-top:12rem}
+.sources li::before{counter-increment:src; content:"[" counter(src) "]"; font-family:var(--f-mono); font-size:.8rem; color:var(--faint); padding-top:2px; grid-row:span 3}
+.sources li:target{background:var(--accent-soft); border-radius:8px}
+.src-title{font-weight:700; font-size:.93rem; line-height:1.55}
+.src-meta{display:flex; flex-wrap:wrap; gap:4px 10px; font-size:.78rem; color:var(--sub); align-items:center}
+.tag{font-family:var(--f-mono); font-size:.68rem; padding:1px 8px; border-radius:99px; background:var(--ok-soft); color:var(--ok); font-weight:600}
+.src-note{font-size:.85rem; color:var(--sub); line-height:1.7}
+.src-cols{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:0 32px}
+@media (max-width:820px){ .src-cols{grid-template-columns:1fr} }
+footer{font-size:.8rem; color:var(--faint); border-top:1px solid var(--line); padding-top:20px; display:grid; gap:4px}
+
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important; scroll-behavior:auto!important}
+}
+
+/* ── overview（試験の概要） ── */
+.facts{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:12px; margin:0}
+.fact{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px; display:grid; gap:2px; align-content:start; min-width:0}
+.fact dt{font-size:.8rem; font-weight:700; color:var(--sub)}
+.fact dd{margin:0; display:grid; gap:4px}
+.fact .v{font-family:var(--f-display); font-weight:800; font-size:1.5rem; line-height:1.25; font-variant-numeric:tabular-nums; color:var(--ink)}
+.fact .v small{font-family:var(--f-body); font-weight:500; font-size:.8rem; color:var(--sub); margin-left:4px}
+.fact .n{font-size:.8rem; color:var(--sub); line-height:1.65}
+@media (max-width:820px){ .facts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+@media (max-width:520px){ .fact{padding:12px 14px} .fact .v{font-size:1.15rem} }
+@media (max-width:360px){ .facts{grid-template-columns:1fr} }
+.ov-grid{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:14px}
+@media (max-width:820px){ .ov-grid{grid-template-columns:1fr} }
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; display:grid; gap:12px; align-content:start; min-width:0}
+.panel h3{font-size:1.02rem; font-weight:900; line-height:1.5}
+.panel > p{font-size:.88rem; color:var(--sub); line-height:1.75}
+.what{font-size:.95rem; line-height:1.85}
+.weights{list-style:none; display:grid; gap:14px}
+.weights li{display:grid; gap:6px}
+.w-top{display:flex; justify-content:space-between; align-items:baseline; gap:12px; font-size:.9rem; line-height:1.5}
+.w-top b{font-weight:700}
+.w-top span{font-family:var(--f-mono); font-size:.85rem; color:var(--ink); white-space:nowrap; font-weight:600; font-variant-numeric:tabular-nums}
+.w-bar{position:relative; height:10px; border-radius:99px; background:var(--accent-soft)}
+.w-bar i{position:absolute; top:0; bottom:0; left:0; border-radius:99px}
+.w-bar .lo{background:var(--accent)}
+.w-bar .hi{background:color-mix(in srgb, var(--accent) 40%, var(--accent-soft))}
+.w-scale{display:flex; justify-content:space-between; font-family:var(--f-mono); font-size:.68rem; color:var(--faint)}
+.w-key{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:.75rem; color:var(--sub)}
+.w-key i{display:inline-block; width:18px; height:8px; border-radius:99px; margin-right:6px; vertical-align:middle}
+.prereq{display:flex; flex-wrap:wrap; gap:6px; list-style:none}
+.prereq li{font-size:.78rem; line-height:1.5; border:1px solid var(--line); border-radius:8px; padding:3px 9px; background:var(--sunk)}
+.prereq b{font-family:var(--f-mono); font-weight:600; margin-right:6px; color:var(--accent)}
+.res{list-style:none; display:grid; gap:10px}
+.res li{display:grid; gap:2px; font-size:.88rem; line-height:1.7}
+.res li span{color:var(--sub); font-size:.82rem}
+.toc{grid-template-columns:repeat(4, minmax(0,1fr))}
+@media (max-width:820px){ .toc{grid-template-columns:repeat(2, minmax(0,1fr))} }
+@media (max-width:520px){ .toc{grid-template-columns:1fr} }
+/* GH-300: 分野ボタンが8個あるので、狭い画面では折り返して全部見えるようにする */
+.toolbar{grid-template-columns:minmax(0,1fr)}
+.chips{flex-wrap:wrap}
+/* ファイル名やコマンド（copilot-instructions.md、--allow-all-tools など）の長い英数字で横にはみ出さないようにする */
+.src-note,.src-title,.pair h3,.pair dt,.pair dd,.rule,.def,.tip,.t-name,.notes p,td{overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 受験票ふうヘッダー -->
+  <header class="ticket">
+    <div class="ticket-main">
+      <p class="eyebrow">GitHub 認定資格 · 中級 · Glossary</p>
+      <h1><span class="code">GH-300</span> 用語集</h1>
+      <p class="lead"><span class="en">GitHub Copilot</span> 認定試験の出題範囲に出てくる言葉を、分野ごとにかみ砕いて解説します。試験で「どれを選ぶか」の判断に効くポイントと、最近変わった名前の読み替えも添えました。</p>
+      <p class="meta"><span>調査日 2026-11-26</span><span>出題範囲 2026-08-07 版</span><span>Microsoft Learn・GitHub Docs で確認</span><a href="#overview">→ まず試験の概要を見る</a></p>
+    </div>
+    <div class="ticket-stub">
+      <dl class="stub-list">
+        <div><dt>収録</dt><dd><span data-total>156</span><small>語</small></dd></div>
+        <div><dt>★ 重要</dt><dd><span data-stars>101</span><small>語</small></dd></div>
+        <div><dt>分野</dt><dd>6<small>＋基礎</small></dd></div>
+        <div><dt>出典</dt><dd>59<small>ページ</small></dd></div>
+      </dl>
+    </div>
+  </header>
+
+  <!-- 試験の概要 -->
+  <section class="sec" id="overview" aria-labelledby="h-overview">
+    <div class="sec-head">
+      <p class="eyebrow">Overview</p>
+      <h2 id="h-overview">GH-300 ってどんな試験？</h2>
+      <p>料金・時間・合格点などの基本情報と、何が問われるかをまとめました。数字は 2026-11-26 に公式ページで確認したものです。</p>
+    </div>
+
+    <div class="panel">
+      <h3>ひとことで言うと「GitHub Copilot を安全に、上手に使いこなせるか」を確かめる試験です</h3>
+      <p class="what">GH-300 は、GitHub の認定資格「GitHub Copilot」を取るための試験です。受験者像は、Copilot を使って<b>ソフトウェア開発の生産性・品質・セキュリティを上げられる人</b>。責任ある AI の使い方、プロンプトの工夫、プランごとの機能、プライバシーを守る設定が範囲に入ります。GitHub の基本に慣れていて、何かのプログラミング言語の経験があることが前提です。最近の版では、<b>Copilot CLI、エージェントモード、サブエージェント、MCP、組織のポリシーや監査ログ</b>といった項目が加わっています。<a href="#src-1">[1]</a><a href="#src-2">[2]</a></p>
+    </div>
+
+    <dl class="facts">
+      <div class="fact"><dt>受験料（日本）</dt><dd><span class="v">¥12,180</span><span class="n">米国は $99。受ける国で決まります。キャンペーンや割引は含みません。<a href="#src-2">[2]</a></span></dd></div>
+      <div class="fact"><dt>試験時間</dt><dd><span class="v">100<small>分</small></span><span class="n">監視つき（proctored）の試験です。操作を伴う問題が出ることもあります。<a href="#src-2">[2]</a></span></dd></div>
+      <div class="fact"><dt>合格点</dt><dd><span class="v">700<small>／1000</small></span><span class="n">試験の採点報告で確認できます。<a href="#src-1">[1]</a></span></dd></div>
+      <div class="fact"><dt>レベル</dt><dd><span class="v">中級</span><span class="n">Intermediate。前提の資格はなく、この試験1つで認定されます。<a href="#src-2">[2]</a></span></dd></div>
+      <div class="fact"><dt>言語</dt><dd><span class="v">日本語あり</span><span class="n">英語・スペイン語・ポルトガル語（ブラジル）・韓国語・日本語。希望の言語がなければ30分の延長を申請できます。<a href="#src-2">[2]</a><a href="#src-1">[1]</a></span></dd></div>
+      <div class="fact"><dt>受け方</dt><dd><span class="v">Pearson VUE</span><span class="n">予約は Pearson VUE から。登録は個人の Microsoft アカウントが強くすすめられています。<a href="#src-2">[2]</a></span></dd></div>
+      <div class="fact"><dt>有効期間</dt><dd><span class="v">2<small>年</small></span><span class="n">GitHub の資格は2年。Microsoft の更新方式へ移行中で、移行前に切れるものは6か月延長されます。<a href="#src-2">[2]</a></span></dd></div>
+      <div class="fact"><dt>再受験</dt><dd><span class="v">24<small>時間後</small></span><span class="n">不合格でも、1回目のあとは24時間後から再受験できます。2回目以降は間隔が変わります。<a href="#src-2">[2]</a></span></dd></div>
+    </dl>
+
+    <div class="ov-grid">
+      <div class="panel">
+        <h3>出題範囲と配点（2026-08-07 版）</h3>
+        <ul class="weights">
+          <li><div class="w-top"><b>1 責任ある利用（Responsible use）</b><span>15–20%</span></div><div class="w-bar" role="img" aria-label="1 責任ある利用（Responsible use） 15〜20%" title="1 責任ある利用（Responsible use）：15〜20%"><i class="hi" style="width:50%"></i><i class="lo" style="width:37.5%"></i></div></li>
+          <li><div class="w-top"><b>2 機能（Features）</b><span>25–30%</span></div><div class="w-bar" role="img" aria-label="2 機能（Features） 25〜30%" title="2 機能（Features）：25〜30%"><i class="hi" style="width:75%"></i><i class="lo" style="width:62.5%"></i></div></li>
+          <li><div class="w-top"><b>3 データとアーキテクチャ</b><span>10–15%</span></div><div class="w-bar" role="img" aria-label="3 データとアーキテクチャ 10〜15%" title="3 データとアーキテクチャ：10〜15%"><i class="hi" style="width:37.5%"></i><i class="lo" style="width:25%"></i></div></li>
+          <li><div class="w-top"><b>4 プロンプトとコンテキスト</b><span>10–15%</span></div><div class="w-bar" role="img" aria-label="4 プロンプトとコンテキスト 10〜15%" title="4 プロンプトとコンテキスト：10〜15%"><i class="hi" style="width:37.5%"></i><i class="lo" style="width:25%"></i></div></li>
+          <li><div class="w-top"><b>5 生産性（Productivity）</b><span>10–15%</span></div><div class="w-bar" role="img" aria-label="5 生産性（Productivity） 10〜15%" title="5 生産性（Productivity）：10〜15%"><i class="hi" style="width:37.5%"></i><i class="lo" style="width:25%"></i></div></li>
+          <li><div class="w-top"><b>6 プライバシーと保護</b><span>10–15%</span></div><div class="w-bar" role="img" aria-label="6 プライバシーと保護 10〜15%" title="6 プライバシーと保護：10〜15%"><i class="hi" style="width:37.5%"></i><i class="lo" style="width:25%"></i></div></li>
+        </ul>
+        <div class="w-scale" aria-hidden="true"><span>0%</span><span>20%</span><span>40%</span></div>
+        <p class="w-key"><span><i style="background:var(--accent)"></i>配点の下限</span><span><i style="background:color-mix(in srgb, var(--accent) 40%, var(--accent-soft))"></i>上限までの幅</span></p>
+        <p>いちばん大きいのは「2 機能」で、全体の4分の1以上です。2026-08-07 の更新では、IDE での使い方、機能と使いどころ、保護とトラブル対応の3か所に小さな変更がありました（いずれも「軽微」）。<a href="#src-1">[1]</a></p>
+        <p><b>日本語で受ける人へ：</b>翻訳版は英語版の約8週間後に更新されます。2026-11-26 の時点では日本語版の study guide も 2026-08-07 版になっていました。受ける前に「〇年〇月〇日時点のスキル」の日付を確認してください。<a href="#src-1">[1]</a></p>
+      </div>
+      <div class="panel">
+        <h3>公式の準備リソース</h3>
+        <ul class="res">
+          <li><b>ラーニングパス「GitHub Copilot Fundamentals Part 1 of 2」</b><span>責任ある AI、プロンプト、開発での使いどころ、テスト、管理とカスタマイズ、Spaces など9モジュール。<a href="#src-3">[3]</a><a href="#src-1">[1]</a></span></li>
+          <li><b>ラーニングパス「GitHub Copilot Fundamentals Part 2 of 2」</b><span>コードレビュー、エージェントモード、cloud agent、MCP サーバーなど6モジュール。<a href="#src-4">[4]</a><a href="#src-1">[1]</a></span></li>
+          <li><b>練習評価（無料）</b><span>資格ページから受けられます。問題の形式・言い回し・難しさをつかめます。<a href="#src-2">[2]</a></span></li>
+          <li><b>試験サンドボックス</b><span>本番と同じ画面と問題形式を事前に試せます。<a href="#src-2">[2]</a><a href="#src-1">[1]</a></span></li>
+        </ul>
+        <h3>あわせて知っておくと便利</h3>
+        <p>GH-300 は、AI-103・AB-100 と並んで「Frontier Engineer バッジ」に必要な3つの試験の1つです。くわしくは <a href="research_frontier-engineer-badge.html">Frontier Engineer バッジ（FTB）の取り方</a> を見てください。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 使い方と目次 -->
+  <section class="sec" aria-labelledby="h-howto">
+    <div class="sec-head">
+      <p class="eyebrow">How to use</p>
+      <h2 id="h-howto">まずは「★」だけで一周するのがおすすめです</h2>
+      <p>★は、公式の出題範囲（study guide）に名指しで出てくる言葉や、選択肢を選ぶ判断に直結する言葉です。<a href="#src-1">[1]</a></p>
+    </div>
+    <ul class="howto">
+      <li><span class="k">1. さがす</span><b>検索と分野で絞り込む</b><p>「除外」「MCP」「28日」のように、気になる言葉をそのまま入れると見つかります。キーボードの / で検索欄に移動します。</p></li>
+      <li><span class="k">2. ためす</span><b>テストモードで暗記チェック</b><p>説明がぼかされます。言葉を見て意味を言えるか試し、「意味を見る」で答え合わせします。</p></li>
+      <li><span class="k">3. つぶす</span><b>「覚えた」で印をつける</b><p>覚えた語は「未習得だけ」で隠せます。印はこのブラウザにだけ保存されます。</p></li>
+    </ul>
+    <nav aria-label="分野の目次">
+      <ol class="toc">
+        <li class="base"><a href="#d-base"><span class="no">0</span><b>基礎（全分野共通）</b><small>プランとお金・モデル</small><span class="n" data-dcount="base">—</span></a></li>
+        <li><a href="#d-resp"><span class="no">1</span><b>責任ある利用</b><small>配点 15–20%</small><span class="n" data-dcount="resp">—</span></a></li>
+        <li><a href="#d-feat"><span class="no">2</span><b>Copilot の機能</b><small>配点 25–30%</small><span class="n" data-dcount="feat">—</span></a></li>
+        <li><a href="#d-data"><span class="no">3</span><b>データとアーキテクチャ</b><small>配点 10–15%</small><span class="n" data-dcount="data">—</span></a></li>
+        <li><a href="#d-prompt"><span class="no">4</span><b>プロンプトとコンテキスト</b><small>配点 10–15%</small><span class="n" data-dcount="prompt">—</span></a></li>
+        <li><a href="#d-prod"><span class="no">5</span><b>開発の生産性</b><small>配点 10–15%</small><span class="n" data-dcount="prod">—</span></a></li>
+        <li><a href="#d-priv"><span class="no">6</span><b>プライバシーと保護</b><small>配点 10–15%</small><span class="n" data-dcount="priv">—</span></a></li>
+      </ol>
+    </nav>
+  </section>
+
+  <!-- 用語本体 -->
+  <section class="sec" aria-labelledby="h-terms">
+    <div class="sec-head">
+      <p class="eyebrow">Glossary</p>
+      <h2 id="h-terms">分野別の用語</h2>
+      <p>各カードの [番号] は、下の「根拠にした情報」の番号です。「ツボ」は試験で選択肢を選ぶときの手がかりです。</p>
+    </div>
+
+    <div class="toolbar" id="toolbar">
+      <label class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+        <input type="search" id="q" placeholder="用語をさがす（例：除外、MCP、フューショット）" autocomplete="off" aria-label="用語をさがす">
+        <kbd>/</kbd>
+      </label>
+      <div class="bar-row">
+        <div class="chips" role="group" aria-label="分野で絞り込み">
+          <button type="button" class="chip" data-dom="all" aria-pressed="true">すべて</button>
+          <button type="button" class="chip" data-dom="base" aria-pressed="false">基礎</button>
+          <button type="button" class="chip" data-dom="resp" aria-pressed="false">1 責任</button>
+          <button type="button" class="chip" data-dom="feat" aria-pressed="false">2 機能</button>
+          <button type="button" class="chip" data-dom="data" aria-pressed="false">3 データ</button>
+          <button type="button" class="chip" data-dom="prompt" aria-pressed="false">4 プロンプト</button>
+          <button type="button" class="chip" data-dom="prod" aria-pressed="false">5 生産性</button>
+          <button type="button" class="chip" data-dom="priv" aria-pressed="false">6 プライバシー</button>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="toggles" role="group" aria-label="表示の切り替え">
+          <button type="button" class="tg" data-toggle="star" aria-pressed="false">★ だけ</button>
+          <button type="button" class="tg" data-toggle="todo" aria-pressed="false">未習得だけ</button>
+          <button type="button" class="tg" data-toggle="quiz" aria-pressed="false">テストモード</button>
+        </div>
+        <p class="status" aria-live="polite"><b id="shown">—</b> 語を表示 ・ 覚えた <b id="gotn">0</b> / <span data-total>156</span></p>
+      </div>
+    </div>
+
+    <p class="empty" id="empty" hidden><b>該当する用語がありません</b>言葉を短くするか、分野や「★ だけ」「未習得だけ」の絞り込みを外してみてください。</p>
+
+    <div class="domains">
+
+    <!-- ───────── 0 基礎（全分野共通） ───────── -->
+    <section class="dom" id="d-base" data-dom="base" aria-labelledby="h-base">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">0</span>
+        <p class="eyebrow">Basics · 全分野共通</p>
+        <h2 id="h-base">基礎（全分野共通）</h2>
+        <p>どの分野にも出てくる、Copilot とお金・モデルの土台になる言葉です。プランと課金の仕組みは 2026 年に大きく変わったので、新旧の言葉をセットで押さえましょう。</p>
+      </div>
+      <div class="sub">
+        <h3>Copilot と生成 AI の基本</h3>
+        <div class="terms">
+          <article class="term" id="t-copilot" data-star><h4 class="t-name">GitHub Copilot<span class="star">★ 重要</span><small>GitHub Copilot</small></h4><p class="def">GitHub の AI コーディング支援です。エディター（IDE）、GitHub.com、GitHub Mobile、ターミナル（Copilot CLI）、デスクトップの Copilot アプリで使えます。コードの候補を出す、質問に答える、作業を任されて変更まで進める、PR をレビューする、と役割が広がっています。</p><p class="tip"><b>ツボ</b>受験者像は「Copilot で開発の生産性・品質・セキュリティを上げられる人」。責任ある使い方、プロンプト、プランごとの機能、プライバシーの守り方まで問われます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-22">[22]</a></span></div></article>
+          <article class="term" id="t-genai" data-star><h4 class="t-name">生成 AI<span class="star">★ 重要</span><small>Generative AI</small></h4><p class="def">学習したパターンをもとに、文章やコードを新しく作り出す AI です。確率で次の言葉を選ぶので、同じ質問でも答えが変わったり、もっともらしい間違いを出したりします。</p><p class="tip"><b>ツボ</b>分野1の出発点です。「便利だが間違えることがある」から「人が確かめる」につながります。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-57">[57]</a></span></div></article>
+          <article class="term" id="t-llm" data-star><h4 class="t-name">大規模言語モデル（LLM）<span class="star">★ 重要</span><small>Large language model</small></h4><p class="def">大量のテキストで学習したモデルで、Copilot の頭脳にあたります。今のファイルだけでなく、開いている他のファイルやタブも手がかりにして候補を作ります。</p><div class="t-foot"><span class="refs"><a href="#src-9">[9]</a></span></div></article>
+          <article class="term" id="t-prompt" data-star><h4 class="t-name">プロンプト<span class="star">★ 重要</span><small>Prompt</small></h4><p class="def">Copilot への指示です。チャットに打つ文章だけでなく、コードの中の自然言語のコメントや、書きかけのコードそのものもプロンプトになります。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-context" data-star><h4 class="t-name">コンテキスト（文脈）<span class="star">★ 重要</span><small>Context</small></h4><p class="def">答えを作るときに Copilot が参考にする周りの情報です。カーソルの前後のコード、ファイル名と種類、開いているタブ、プロジェクトの構成などが含まれます。</p><p class="tip"><b>ツボ</b>「提案がずれる」→ まず文脈が足りているかを疑うのが定石です。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a></span></div></article>
+          <article class="term" id="t-token"><h4 class="t-name">トークン<small>Token</small></h4><p class="def">モデルが文字を扱う単位です。いまの課金は、入力・出力・キャッシュのトークン量と使ったモデルで決まります。</p><div class="t-foot"><span class="refs"><a href="#src-20">[20]</a></span></div></article>
+          <article class="term" id="t-context-window" data-star><h4 class="t-name">コンテキストウィンドウ<span class="star">★ 重要</span><small>Context window</small></h4><p class="def">モデルが一度に読める量の上限です。長い会話や大きなファイルは入りきらず、古い部分から外れていきます。Copilot CLI は上限の95%に近づくと会話を自動で要約（圧縮）します。</p><p class="tip"><b>ツボ</b>大きな課題は小さく分けて頼む、が対策の答えになりやすいです。</p><div class="t-foot"><span class="refs"><a href="#src-8">[8]</a><a href="#src-24">[24]</a></span></div></article>
+          <article class="term" id="t-hallucination" data-star><h4 class="t-name">ハルシネーション<span class="star">★ 重要</span><small>Hallucination</small></h4><p class="def">もっともらしいのに事実と違う出力です。存在しない関数やライブラリ、間違った説明をそれらしく出すことがあります。</p><div class="t-foot"><span class="refs"><a href="#src-57">[57]</a><a href="#src-14">[14]</a></span></div></article>
+          <article class="term" id="t-agent" data-star><h4 class="t-name">エージェント<span class="star">★ 重要</span><small>Agent</small></h4><p class="def">目標を渡すと、計画を立て、ツールで実行し、結果を見て直すところまで進める AI です。答えを返すだけのチャットや、決まったきっかけで動くオートメーションとは区別されます。</p><p class="tip"><b>ツボ</b>どれだけ任せても、目標と制約を決めて結果を確かめる責任は人にあります。</p><div class="t-foot"><span class="refs"><a href="#src-22">[22]</a></span></div></article>
+          <article class="term" id="t-ide"><h4 class="t-name">IDE（統合開発環境）<small>Integrated development environment</small></h4><p class="def">コードを書くためのアプリです。Copilot は Visual Studio Code、Visual Studio、JetBrains 製品、Xcode、Eclipse、Vim／Neovim などで使えます。機能の対応は IDE ごとに少しずつ違います。</p><div class="t-foot"><span class="refs"><a href="#src-27">[27]</a><a href="#src-48">[48]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>プランとお金</h3>
+        <div class="terms">
+          <article class="term" id="t-plans" data-star><h4 class="t-name">Copilot のプラン<span class="star">★ 重要</span><small>Copilot plans</small></h4><p class="def">個人向けは Free・Student（無料）、Pro（月 $10）、Pro+（月 $39）、Max（月 $100）。組織向けは Business（1席 月 $19）と Enterprise（1席 月 $39）、対象企業向けの Copilot access があります。</p><p class="tip"><b>ツボ</b>「組織で一括管理・ポリシー・コンテンツ除外」と出たら Business／Enterprise です。個人プランではコンテンツ除外は使えません。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-free"><h4 class="t-name">Copilot Free<small>Copilot Free</small></h4><p class="def">無料プランです。補完は月2,000回まで、モデルは自動選択だけ。組織やエンタープライズから Copilot をもらっている人は使えません。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a><a href="#src-20">[20]</a></span></div></article>
+          <article class="term" id="t-business" data-star><h4 class="t-name">Copilot Business<span class="star">★ 重要</span><small>Copilot Business</small></h4><p class="def">組織向けのプランです。1席 月 $19 で、1人あたり月 1,900 AI クレジットが組織の共有プールに入ります。ポリシー管理、コンテンツ除外、組織のカスタム指示が使えます。</p><p class="tip"><b>ツボ</b>IP 補償や「データを学習に使わない」約束の対象にもなります。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a><a href="#src-10">[10]</a><a href="#src-51">[51]</a></span></div></article>
+          <article class="term" id="t-enterprise" data-star><h4 class="t-name">Copilot Enterprise<span class="star">★ 重要</span><small>Copilot Enterprise</small></h4><p class="def">GitHub Enterprise Cloud を使う企業向けのプランです。1席 月 $39 で、Business の機能すべてに加え、より多い AI クレジットと新しいモデル・機能の優先利用がつきます。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-ai-credits" data-star><h4 class="t-name">GitHub AI Credits（AI クレジット）<span class="star">★ 重要</span><small>GitHub AI Credits</small></h4><p class="def">2026年6月1日に始まった、使った分だけ数える課金の単位です。1 クレジット＝$0.01。使ったモデルとトークン量で消費量が決まります。毎月1日（UTC）にリセットされ、余りは繰り越せません。</p><p class="tip"><b>ツボ</b>インライン提案（補完）と次の編集候補はクレジットを消費せず、有料プランでは無制限です。</p><div class="t-foot"><span class="refs"><a href="#src-20">[20]</a><a href="#src-21">[21]</a></span></div></article>
+          <article class="term" id="t-premium-requests" data-star><h4 class="t-name">プレミアムリクエスト（旧方式）<span class="star">★ 重要</span><small>Premium requests (PRU)</small></h4><p class="def">2026年5月までの課金の単位です。1回のやり取りを1リクエストと数え、強いモデルほど大きい「倍率」をかけていました。今は、以前からの年額プランを続けている個人だけがこの方式です。</p><p class="tip"><b>ツボ</b>古い教材や問題文に出ることがあります。いまの「AI クレジット」と同じ役割の言葉だと読み替えれば迷いません。</p><div class="t-foot"><span class="refs"><a href="#src-21">[21]</a></span></div></article>
+          <article class="term" id="t-seat"><h4 class="t-name">シート（席・ライセンス）<small>Seat</small></h4><p class="def">組織が個人に割り当てる Copilot の利用権です。Business／Enterprise は割り当てた席の数で課金されます。割り当ては画面のほか REST API でも管理できます。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a><a href="#src-56">[56]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>モデル</h3>
+        <div class="terms">
+          <article class="term" id="t-model-choice"><h4 class="t-name">モデルの選択<small>Model selection</small></h4><p class="def">チャットやエージェントで使うモデルを選べます。難しい推論が得意なモデルほど高く、軽いモデルは安くて速いです。使えるモデルはプランと管理者のポリシーで決まります。</p><p class="tip"><b>ツボ</b>クレジットを節約したいとき → 軽いモデルに切り替える、が公式の説明です。</p><div class="t-foot"><span class="refs"><a href="#src-20">[20]</a><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-auto-model"><h4 class="t-name">自動モデル選択<small>Auto model selection</small></h4><p class="def">Copilot が場面に合うモデルを選んでくれる仕組みです。Free と Student のプランでは、モデルはこの自動選択だけになります。</p><div class="t-foot"><span class="refs"><a href="#src-43">[43]</a><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-finetune"><h4 class="t-name">ファインチューニング<small>Fine-tuning</small></h4><p class="def">学習済みのモデルを、特定の用途の少ないデータで追加学習させて、その用途に合わせることです。</p><div class="t-foot"><span class="refs"><a href="#src-9">[9]</a></span></div></article>
+          <article class="term" id="t-lora"><h4 class="t-name">LoRA（低ランク適応）<small>Low-Rank Adaptation</small></h4><p class="def">モデル全体を学習し直す代わりに、小さな学習用の部品だけを足して調整する方法です。元のモデルはそのままなので、時間と計算資源を節約できます。Learn の教材では GitHub が使っている方法として紹介されています。</p><div class="t-foot"><span class="refs"><a href="#src-9">[9]</a></span></div></article>
+          <article class="term" id="t-ga"><h4 class="t-name">GA とプレビュー<small>General availability / Preview</small></h4><p class="def">GA は正式提供、プレビューはお試し提供です。試験はおもに GA の機能から出ますが、よく使われているプレビュー機能が出ることもあります。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+    <!-- ───────── 1 GitHub Copilot を責任を持って使う ───────── -->
+    <section class="dom" id="d-resp" data-dom="resp" aria-labelledby="h-resp">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">1</span>
+        <p class="eyebrow">Domain 1 · <b>15–20%</b></p>
+        <h2 id="h-resp">GitHub Copilot を責任を持って使う</h2>
+        <p>生成 AI のリスクと限界、責任ある AI の原則、AI の出力を確かめる必要性を問う分野です。答えはたいてい「人が確認する」「仕組みで守る」のどちらかに行き着きます。</p>
+      </div>
+      <div class="sub">
+        <h3>責任ある AI の6原則</h3>
+        <div class="terms">
+          <article class="term" id="t-rai" data-star><h4 class="t-name">責任ある AI<span class="star">★ 重要</span><small>Responsible AI</small></h4><p class="def">AI を安全に、信頼でき、倫理的なやり方で作って使うための考え方です。Microsoft と GitHub は6つの原則を掲げていて、GitHub の Copilot の説明書（Application Card）もこの原則にそっています。</p><p class="tip"><b>ツボ</b>6原則の名前と中身の組み合わせがそのまま出やすいです。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a><a href="#src-57">[57]</a></span></div></article>
+          <article class="term" id="t-fairness" data-star><h4 class="t-name">公平性<span class="star">★ 重要</span><small>Fairness</small></h4><p class="def">AI はすべての人を公平に扱うべき、という原則です。偏ったデータで学習すると、偏った結果が出ます。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a></span></div></article>
+          <article class="term" id="t-reliability" data-star><h4 class="t-name">信頼性と安全性<span class="star">★ 重要</span><small>Reliability and safety</small></h4><p class="def">AI は想定どおりに、安全に動くべき、という原則です。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a></span></div></article>
+          <article class="term" id="t-privacy-security" data-star><h4 class="t-name">プライバシーとセキュリティ<span class="star">★ 重要</span><small>Privacy and security</small></h4><p class="def">AI は安全で、プライバシーを尊重すべき、という原則です。必要なデータだけを集め、同意を取り、個人情報は匿名化するといった対策が挙げられています。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a></span></div></article>
+          <article class="term" id="t-inclusiveness" data-star><h4 class="t-name">包括性（インクルーシブネス）<span class="star">★ 重要</span><small>Inclusiveness</small></h4><p class="def">AI はすべての人に力を与え、参加できるようにすべき、という原則です。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a></span></div></article>
+          <article class="term" id="t-transparency" data-star><h4 class="t-name">透明性<span class="star">★ 重要</span><small>Transparency</small></h4><p class="def">AI の仕組みや限界が、使う人に理解できるようにすべき、という原則です。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a><a href="#src-57">[57]</a></span></div></article>
+          <article class="term" id="t-accountability" data-star><h4 class="t-name">アカウンタビリティ（説明責任）<span class="star">★ 重要</span><small>Accountability</small></h4><p class="def">AI システムには人が責任を持つべき、という原則です。</p><p class="tip"><b>ツボ</b>「Copilot が書いたコードの責任はだれに？」→ 採用した人（開発者・組織）です。AI に責任は移りません。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a><a href="#src-22">[22]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>リスクと対策</h3>
+        <div class="terms">
+          <article class="term" id="t-risks" data-star><h4 class="t-name">生成 AI のリスクと限界<span class="star">★ 重要</span><small>Risks and limitations of generative AI</small></h4><p class="def">判断の理由が見えにくい、意図しない有害な結果を出す、間違える、偏る、といったリスクがあります。対策として、ガバナンス（ルールと監督）、透明性、人による監督が挙げられています。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-bias" data-star><h4 class="t-name">バイアス（偏り）<span class="star">★ 重要</span><small>Bias</small></h4><p class="def">学習データの偏りや誤りが提案に表れることです。特定の言語や書き方に寄ったり、古いやり方を出したりします。</p><div class="t-foot"><span class="refs"><a href="#src-57">[57]</a><a href="#src-14">[14]</a></span></div></article>
+          <article class="term" id="t-insecure-code" data-star><h4 class="t-name">安全でないコード<span class="star">★ 重要</span><small>Insecure code</small></h4><p class="def">動きそうに見えても、脆弱性を含むコードが提案されることがあります。認証や入力の処理など、セキュリティに関わるコードは特に念入りに確認します。</p><div class="t-foot"><span class="refs"><a href="#src-57">[57]</a><a href="#src-14">[14]</a></span></div></article>
+          <article class="term" id="t-inaccurate"><h4 class="t-name">不正確なコード<small>Inaccurate code</small></h4><p class="def">文法的にも意味的にも正しそうに見えて、実は間違っている、または意図と違うコードのことです。レビューとテストで確かめます。</p><div class="t-foot"><span class="refs"><a href="#src-57">[57]</a></span></div></article>
+          <article class="term" id="t-human-oversight" data-star><h4 class="t-name">人による確認（ヒューマン・イン・ザ・ループ）<span class="star">★ 重要</span><small>Human oversight / Human in the loop</small></h4><p class="def">AI の出力をそのまま使わず、人が見て判断する仕組みです。インライン提案は、人が受け入れない限りコードに入りません。エージェントの変更も人がレビューしてから取り込みます。</p><p class="tip"><b>ツボ</b>責任ある使い方の問題では、ほぼ必ず正解の側に入る考え方です。</p><div class="t-foot"><span class="refs"><a href="#src-57">[57]</a><a href="#src-22">[22]</a><a href="#src-5">[5]</a></span></div></article>
+          <article class="term" id="t-validate" data-star><h4 class="t-name">AI の出力を検証する<span class="star">★ 重要</span><small>Validate AI output</small></h4><p class="def">提案をそのまま信じず、読んで理解し、テストし、セキュリティやライセンスを確かめることです。もっともらしく見えても間違っていることがあるためです。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-57">[57]</a></span></div></article>
+          <article class="term" id="t-harms"><h4 class="t-name">潜在的な害と軽減策<small>Potential harms and mitigation strategies</small></h4><p class="def">誤ったコード、偏り、脆弱性、公開コードとの一致、個人情報の混入などが「害」の例です。軽減策は、人による確認、フィルター、ポリシーでの制御、テストなどです。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-57">[57]</a><a href="#src-7">[7]</a></span></div></article>
+          <article class="term" id="t-app-card"><h4 class="t-name">Application Card（アプリケーションカード）<small>Application card</small></h4><p class="def">GitHub が Copilot の機能ごとに公開している説明書です。用途、限界、評価の方法、安全策、使い方のコツがまとまっています。</p><div class="t-foot"><span class="refs"><a href="#src-57">[57]</a></span></div></article>
+          <article class="term" id="t-governance"><h4 class="t-name">ガバナンス<small>Governance</small></h4><p class="def">ルール、権限、監督の仕組みで AI のリスクを管理することです。Copilot では、ポリシー、監査ログ、コンテンツ除外などが道具になります。</p><div class="t-foot"><span class="refs"><a href="#src-5">[5]</a><a href="#src-52">[52]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+    <!-- ───────── 2 GitHub Copilot の機能を使う ───────── -->
+    <section class="dom" id="d-feat" data-dom="feat" aria-labelledby="h-feat">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">2</span>
+        <p class="eyebrow">Domain 2 · <b>25–30%</b></p>
+        <h2 id="h-feat">GitHub Copilot の機能を使う</h2>
+        <p>いちばん配点が大きい分野です。IDE、Copilot CLI、GitHub.com のエージェント、カスタマイズ、組織の管理まで範囲が広いので、「どの機能がどこで何をするか」を整理して覚えましょう。</p>
+      </div>
+      <div class="sub">
+        <h3>IDE で使う</h3>
+        <div class="terms">
+          <article class="term" id="t-enable-ide" data-star><h4 class="t-name">IDE で Copilot を有効にする<span class="star">★ 重要</span><small>Enable Copilot in the IDE</small></h4><p class="def">IDE に Copilot の拡張機能（プラグイン）を入れ、GitHub アカウントでサインインすると使えます。IDE の設定やステータスのアイコンから、全体または言語ごとに有効・無効を切り替えられます。</p><div class="t-foot"><span class="refs"><a href="#src-29">[29]</a><a href="#src-27">[27]</a></span></div></article>
+          <article class="term" id="t-inline" data-star><h4 class="t-name">インライン提案（ゴーストテキスト）<span class="star">★ 重要</span><small>Inline suggestions / Ghost text</small></h4><p class="def">入力中に灰色の文字で出るコードの候補です。Tab で確定、Esc で却下、Alt＋]／Alt＋[（Mac は Option）で別の候補を見られます。</p><p class="tip"><b>ツボ</b>課金やプランの説明では「コード補完（completions）」とも呼ばれます。</p><div class="t-foot"><span class="refs"><a href="#src-28">[28]</a><a href="#src-15">[15]</a></span></div></article>
+          <article class="term" id="t-nes" data-star><h4 class="t-name">次の編集候補（NES）<span class="star">★ 重要</span><small>Next edit suggestions</small></h4><p class="def">いまの編集の流れから、次に直しそうな場所と内容を予測して出す機能です。Tab で候補の場所に移動し、もう一度 Tab で確定します。</p><p class="tip"><b>ツボ</b>インライン提案と同じく、AI クレジットを消費しません。</p><div class="t-foot"><span class="refs"><a href="#src-28">[28]</a><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-chat" data-star><h4 class="t-name">Copilot Chat<span class="star">★ 重要</span><small>Copilot Chat</small></h4><p class="def">会話で質問したり、説明や修正を頼んだりする機能です。IDE、GitHub.com、GitHub Mobile、Windows Terminal で使えます。</p><div class="t-foot"><span class="refs"><a href="#src-19">[19]</a><a href="#src-33">[33]</a></span></div></article>
+          <article class="term" id="t-inline-chat"><h4 class="t-name">インラインチャット<small>Inline chat</small></h4><p class="def">エディターの中、コードのすぐそばで開く小さなチャットです。チャット画面に切り替えずに、その場で直しを頼めます。</p><div class="t-foot"><span class="refs"><a href="#src-16">[16]</a><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-slash" data-star><h4 class="t-name">スラッシュコマンド<span class="star">★ 重要</span><small>Slash commands</small></h4><p class="def">/ で始まる短い命令です。/explain（説明）、/fix（修正案）、/tests（テスト生成）、/doc（ドキュメント）、/new（新規プロジェクト）、/clear（新しい会話）などがあります。使えるコマンドは IDE ごとに違います。</p><p class="tip"><b>ツボ</b>「長いプロンプトを書かずに定番の作業を頼む」ための仕組み、と覚えます。</p><div class="t-foot"><span class="refs"><a href="#src-33">[33]</a></span></div></article>
+          <article class="term" id="t-participants" data-star><h4 class="t-name">チャット参加者（@）<span class="star">★ 重要</span><small>Chat participants</small></h4><p class="def">@ で呼ぶ、得意分野を持つ相手です。VS Code では @github（GitHub の情報）、@terminal（ターミナル）、@vscode（VS Code の操作）、@azure（プレビュー）が代表例です。</p><div class="t-foot"><span class="refs"><a href="#src-33">[33]</a></span></div></article>
+          <article class="term" id="t-chat-vars" data-star><h4 class="t-name">チャット変数（#）<span class="star">★ 重要</span><small>Chat variables</small></h4><p class="def"># で文脈を指定する書き方です。#file（ファイル）、#selection（選択範囲）、#function（関数）などのほか、#codebase でワークスペース全体から関係する部分を探させられます。</p><div class="t-foot"><span class="refs"><a href="#src-33">[33]</a><a href="#src-15">[15]</a></span></div></article>
+          <article class="term" id="t-modes" data-star><h4 class="t-name">Ask・Agent・Plan<span class="star">★ 重要</span><small>Ask / Agent / Plan</small></h4><p class="def">チャットで選ぶ動き方です。Ask はコードを変えずに理解する、Agent は変更して検証まで進める、Plan は計画だけを作って承認を待つ、という使い分けです。</p><div class="t-foot"><span class="refs"><a href="#src-16">[16]</a><a href="#src-31">[31]</a><a href="#src-30">[30]</a></span></div></article>
+          <article class="term" id="t-agent-mode" data-star><h4 class="t-name">エージェントモード<span class="star">★ 重要</span><small>Agent mode</small></h4><p class="def">大まかな作業を渡すと、関係するファイルを特定し、編集し、ビルドやテストのコマンドを実行して、うまくいくまで繰り返すモードです。コマンドは既定で実行前に承認を求めます。</p><div class="t-foot"><span class="refs"><a href="#src-30">[30]</a><a href="#src-17">[17]</a></span></div></article>
+          <article class="term" id="t-edits"><h4 class="t-name">Copilot Edits<small>Copilot Edits</small></h4><p class="def">複数のファイルにまたがる変更を、目的に合わせてまとめて適用する機能です。Learn の教材ではエージェントモードと並べて紹介されています。</p><p class="tip"><b>ツボ</b>出題範囲に名前があります。いまの GitHub Docs には単独の解説ページが見当たりません（下の「名前が変わった用語」参照）。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-17">[17]</a></span></div></article>
+          <article class="term" id="t-plan-mode" data-star><h4 class="t-name">プランモード（Plan エージェント）<span class="star">★ 重要</span><small>Plan mode</small></h4><p class="def">読み取り専用で調べて、手順と不明点をまとめた計画を作るモードです。承認するまでコードは変更されません。Copilot CLI では Shift＋Tab で切り替えます。</p><div class="t-foot"><span class="refs"><a href="#src-31">[31]</a><a href="#src-24">[24]</a><a href="#src-15">[15]</a></span></div></article>
+          <article class="term" id="t-subagent" data-star><h4 class="t-name">サブエージェント<span class="star">★ 重要</span><small>Subagent</small></h4><p class="def">メインの会話から切り出した作業を、自分専用のコンテキストウィンドウで独立して進め、結果だけを返す別のエージェントです。メインの文脈を汚さずに、調査や大量の資料の処理を任せられます。</p><p class="tip"><b>ツボ</b>出題範囲の「コンテキストの使い方を最適化するためにサブエージェントに任せる」はこれです。サブエージェントはさらにサブエージェントを作れません。</p><div class="t-foot"><span class="refs"><a href="#src-32">[32]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-agent-session" data-star><h4 class="t-name">エージェントセッション<span class="star">★ 重要</span><small>Agent session</small></h4><p class="def">エージェントとのやり取りと作業のまとまりです。プロンプト、応答、使ったツール、ファイルの変更などが記録され、あとから再開・確認・共有できます。</p><div class="t-foot"><span class="refs"><a href="#src-55">[55]</a><a href="#src-23">[23]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>Copilot CLI</h3>
+        <div class="terms">
+          <article class="term" id="t-cli" data-star><h4 class="t-name">GitHub Copilot CLI<span class="star">★ 重要</span><small>GitHub Copilot CLI</small></h4><p class="def">ターミナルで動く Copilot のエージェントです。質問に答える、コードを直す、コマンドを実行する、GitHub で PR を作る、といった作業をターミナルから離れずに頼めます。Linux、macOS、Windows（PowerShell と WSL）で使えます。</p><div class="t-foot"><span class="refs"><a href="#src-24">[24]</a></span></div></article>
+          <article class="term" id="t-cli-install" data-star><h4 class="t-name">Copilot CLI のインストール<span class="star">★ 重要</span><small>Installing Copilot CLI</small></h4><p class="def">npm（npm install -g @github/copilot、Node.js 22 以上）、WinGet（winget install GitHub.Copilot）、Homebrew（brew install --cask copilot-cli）、インストールスクリプトで入れられます。有効な Copilot のサブスクリプションが必要です。</p><p class="tip"><b>ツボ</b>組織や企業の管理者が Copilot CLI を無効にしていると使えません。</p><div class="t-foot"><span class="refs"><a href="#src-25">[25]</a></span></div></article>
+          <article class="term" id="t-cli-modes" data-star><h4 class="t-name">対話モードとプログラムモード<span class="star">★ 重要</span><small>Interactive / Programmatic</small></h4><p class="def">copilot と打つと対話モードで会話しながら進めます。copilot -p "指示" のように1回分の指示を渡すと、作業して終了するプログラムモードになり、スクリプトに組み込めます。</p><div class="t-foot"><span class="refs"><a href="#src-24">[24]</a></span></div></article>
+          <article class="term" id="t-cli-approval" data-star><h4 class="t-name">ツールの承認<span class="star">★ 重要</span><small>Tool approval</small></h4><p class="def">ファイルの変更やコマンド実行の前に許可を求める仕組みです。「今回だけ許可」「このセッション中は許可」「やめて別の方法を指示」から選びます。--allow-tool で特定のツールを、--allow-all-tools ですべてを事前に許可し、--deny-tool で禁止します。</p><p class="tip"><b>ツボ</b>--deny-tool は --allow-tool や --allow-all-tools より優先されます。--allow-all-tools は自分と同じ権限で何でも実行されるので要注意です。</p><div class="t-foot"><span class="refs"><a href="#src-24">[24]</a></span></div></article>
+          <article class="term" id="t-trusted-dir"><h4 class="t-name">信頼済みディレクトリ<small>Trusted directories</small></h4><p class="def">Copilot CLI がファイルを読み書き・実行してよい場所です。起動したフォルダーとその下を信頼するか、最初に確認されます。範囲の判定は経験則で、外側が必ず守られるとは限りません。</p><div class="t-foot"><span class="refs"><a href="#src-24">[24]</a></span></div></article>
+          <article class="term" id="t-cli-slash"><h4 class="t-name">CLI のスラッシュコマンド<small>CLI slash commands</small></h4><p class="def">/model（モデルの選択）、/mcp（MCP サーバーの管理）、/plan（計画を作る）、/review（コードレビュー）、/resume（別のセッションに切り替え）、/init（カスタム指示の準備）、/login などがあります。</p><div class="t-foot"><span class="refs"><a href="#src-26">[26]</a></span></div></article>
+          <article class="term" id="t-delegate"><h4 class="t-name">/delegate<small>/delegate</small></h4><p class="def">Copilot CLI から、作業をリモートのリポジトリでクラウドのエージェントに任せ、AI が作る PR で受け取るコマンドです。</p><div class="t-foot"><span class="refs"><a href="#src-26">[26]</a></span></div></article>
+          <article class="term" id="t-compact"><h4 class="t-name">/compact と自動圧縮<small>/compact and auto-compaction</small></h4><p class="def">会話の履歴を要約して、コンテキストウィンドウの空きを作ります。上限の95%に近づくと自動でも行われます。/context で使用量を確認できます。</p><div class="t-foot"><span class="refs"><a href="#src-24">[24]</a><a href="#src-26">[26]</a></span></div></article>
+          <article class="term" id="t-gh-copilot"><h4 class="t-name">gh copilot（旧 CLI 拡張）<small>GitHub Copilot in the CLI</small></h4><p class="def">GitHub CLI の拡張機能として提供されていた、以前の CLI 版 Copilot です。非推奨となり、2026年1月からは gh copilot と打つと新しい Copilot CLI のインストールと起動に案内されます。</p><p class="tip"><b>ツボ</b>古い教材の「gh copilot suggest／explain」は、いまは Copilot CLI に置き換わったと読み替えます。</p><div class="t-foot"><span class="refs"><a href="#src-59">[59]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>GitHub.com のエージェントとレビュー</h3>
+        <div class="terms">
+          <article class="term" id="t-cloud-agent" data-star><h4 class="t-name">Copilot cloud agent（旧 Copilot coding agent）<span class="star">★ 重要</span><small>Copilot cloud agent</small></h4><p class="def">GitHub 上で作業を任せると、クラウドの環境で調べて、コードを変更し、PR で返してくれるエージェントです。Issue を Copilot に割り当てるなどして依頼します。任せたあとは別の作業をしていられる「非同期」の使い方です。</p><p class="tip"><b>ツボ</b>IDE のエージェントモードは「目の前で一緒に」、cloud agent は「任せてあとで PR を確認」と区別します。</p><div class="t-foot"><span class="refs"><a href="#src-23">[23]</a><a href="#src-18">[18]</a><a href="#src-22">[22]</a></span></div></article>
+          <article class="term" id="t-cloud-agent-guard" data-star><h4 class="t-name">cloud agent の安全策<span class="star">★ 重要</span><small>Cloud agent guardrails</small></h4><p class="def">copilot/ で始まるブランチにしか push できず、ブランチ保護や必須チェックはそのまま適用されます。インターネットはファイアウォールで制限され、PR の GitHub Actions は書き込み権限のある人が承認するまで動きません。依頼した本人はその PR を承認できず、コミットは依頼者との共著になります。</p><div class="t-foot"><span class="refs"><a href="#src-18">[18]</a></span></div></article>
+          <article class="term" id="t-in-the-cloud"><h4 class="t-name">Copilot in the cloud<small>Copilot in the cloud</small></h4><p class="def">2026年10月28日から有料プランで使える、GitHub.com と GitHub Mobile の新しい体験です。Copilot Chat と cloud agent が一つになり、始めた作業を Copilot アプリ、IDE、CLI、Mobile のあいだで引き継げます。Free プランは従来の Copilot Chat のままです。</p><div class="t-foot"><span class="refs"><a href="#src-23">[23]</a></span></div></article>
+          <article class="term" id="t-sandbox"><h4 class="t-name">クラウドサンドボックス<small>Cloud sandbox</small></h4><p class="def">GitHub がホストする、隔離された作業環境です。GitHub Actions を使う環境と比べて、セッションを別のクライアントで再開でき、複数のリポジトリにまたがれます。チャットのデータは、Actions 型は28日、サンドボックスはアカウントがある限り保持されます。</p><div class="t-foot"><span class="refs"><a href="#src-23">[23]</a></span></div></article>
+          <article class="term" id="t-code-review" data-star><h4 class="t-name">Copilot code review<span class="star">★ 重要</span><small>Copilot code review</small></h4><p class="def">PR のコードを Copilot がレビューし、指摘と修正案を出す機能です。GitHub.com、GitHub CLI、GitHub Mobile、VS Code、Visual Studio、Xcode、JetBrains、Azure DevOps で使えます。修正案は数クリックで取り込めます。</p><p class="tip"><b>ツボ</b>組織から Copilot をもらっている場合、GitHub.com と Mobile でのレビューには、組織のポリシーで「Copilot code review」を有効にする必要があります。</p><div class="t-foot"><span class="refs"><a href="#src-44">[44]</a></span></div></article>
+          <article class="term" id="t-review-comment" data-star><h4 class="t-name">「Comment」のレビュー<span class="star">★ 重要</span><small>Comment review</small></h4><p class="def">Copilot は既定で「Approve（承認）」や「Request changes（修正依頼）」ではなく「Comment」のレビューを残します。そのため、必須の承認数には数えられません（設定すれば Approve も可能）。</p><p class="tip"><b>ツボ</b>「Copilot のレビューだけでマージ条件を満たせる？」→ 既定ではできません。push 後の自動の再レビューも、設定（Review new pushes）しない限り行われません。</p><div class="t-foot"><span class="refs"><a href="#src-45">[45]</a></span></div></article>
+          <article class="term" id="t-auto-review"><h4 class="t-name">自動コードレビュー<small>Automatic code review</small></h4><p class="def">PR が作られたら自動で Copilot にレビューさせる設定です。ユーザーが自分の PR に設定する方法と、リポジトリや組織の ruleset で設定する方法があり、どちらか一方が有効なら実行されます。</p><div class="t-foot"><span class="refs"><a href="#src-44">[44]</a><a href="#src-45">[45]</a></span></div></article>
+          <article class="term" id="t-review-standards" data-star><h4 class="t-name">レビュー基準のカスタマイズ<span class="star">★ 重要</span><small>Customizable review standards</small></h4><p class="def">カスタム指示のファイル（copilot-instructions.md や *.instructions.md）に、チームのレビュー基準やコーディング規約を書いておくと、Copilot のレビューに反映されます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-34">[34]</a><a href="#src-44">[44]</a></span></div></article>
+          <article class="term" id="t-pr-summary" data-star><h4 class="t-name">PR の要約<span class="star">★ 重要</span><small>Pull request summaries</small></h4><p class="def">PR の説明欄やコメントに、変更内容の要約を Copilot に書かせる機能です。既存の説明文は考慮されないので、空の状態から作るのがおすすめです。</p><p class="tip"><b>ツボ</b>プラン表では Copilot Free には含まれません。</p><div class="t-foot"><span class="refs"><a href="#src-46">[46]</a><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-spaces" data-star><h4 class="t-name">Copilot Spaces<span class="star">★ 重要</span><small>Copilot Spaces</small></h4><p class="def">リポジトリ、コード、PR、Issue、メモ、画像、ファイルをひとまとめにして、Copilot の回答の土台にする場所です。GitHub 上の情報は自動で最新に保たれ、チームで共有できます（組織の Space は admin／editor／viewer の権限）。</p><p class="tip"><b>ツボ</b>Free を含むすべての Copilot ライセンスで作れます。「チームの暗黙知をまとめて、新人の質問に答えさせる」が典型例です。</p><div class="t-foot"><span class="refs"><a href="#src-47">[47]</a></span></div></article>
+          <article class="term" id="t-spark"><h4 class="t-name">GitHub Spark<small>GitHub Spark</small></h4><p class="def">自然言語でアプリを作り、そのまま公開できたサービスです。2026年8月4日に新規の利用を止め、8月31日に提供を終えました。公開済みのアプリは動き続けます。</p><p class="tip"><b>ツボ</b>出題範囲（2026-08-07 版）には名前が残っています。「アイデアから動くアプリをすばやく作る」ためのもの、とだけ押さえておけば十分です。</p><div class="t-foot"><span class="refs"><a href="#src-58">[58]</a><a href="#src-1">[1]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>カスタマイズ</h3>
+        <div class="terms">
+          <article class="term" id="t-custom-instructions" data-star><h4 class="t-name">カスタム指示<span class="star">★ 重要</span><small>Custom instructions</small></h4><p class="def">毎回プロンプトに書いている前提（使う言語、規約、ビルドやテストの方法など）を、自動で Copilot に渡すための指示です。個人・リポジトリ・組織の3つのレベルがあります。</p><p class="tip"><b>ツボ</b>AI は確率で動くので、指示が毎回まったく同じように守られるとは限りません。</p><div class="t-foot"><span class="refs"><a href="#src-34">[34]</a></span></div></article>
+          <article class="term" id="t-copilot-instructions" data-star><h4 class="t-name">.github/copilot-instructions.md<span class="star">★ 重要</span><small>Repository-wide custom instructions</small></h4><p class="def">リポジトリ全体に効くカスタム指示のファイルです。リポジトリの .github フォルダーに置きます。</p><div class="t-foot"><span class="refs"><a href="#src-34">[34]</a></span></div></article>
+          <article class="term" id="t-path-instructions" data-star><h4 class="t-name">パス別の指示（*.instructions.md）<span class="star">★ 重要</span><small>Path-specific custom instructions</small></h4><p class="def">特定のファイルやフォルダーにだけ効く指示です。.github/instructions の下に NAME.instructions.md を置き、先頭の applyTo に対象のパス（例：**/*.py）を書きます。</p><p class="tip"><b>ツボ</b>全体の指示に「特定の種類のファイルだけの話」を詰め込まないための仕組みです。</p><div class="t-foot"><span class="refs"><a href="#src-34">[34]</a></span></div></article>
+          <article class="term" id="t-agents-md"><h4 class="t-name">AGENTS.md<small>Agent instructions</small></h4><p class="def">AI エージェント向けの指示ファイルです（CLAUDE.md や GEMINI.md も認識されます）。リポジトリ全体の指示に似ていますが、まだすべての機能が対応しているわけではありません。</p><p class="tip"><b>ツボ</b>.github/agents に置く「カスタムエージェントの定義ファイル」とは別物です。</p><div class="t-foot"><span class="refs"><a href="#src-34">[34]</a></span></div></article>
+          <article class="term" id="t-org-instructions"><h4 class="t-name">組織のカスタム指示<small>Organization custom instructions</small></h4><p class="def">組織のオーナーが、メンバー全員向けに設定する指示です（回答の言語、セキュリティやコンプライアンスの方針など）。Business／Enterprise の組織で使え、GitHub 上のセッションとコードレビューで有効です。</p><div class="t-foot"><span class="refs"><a href="#src-34">[34]</a></span></div></article>
+          <article class="term" id="t-instr-precedence"><h4 class="t-name">指示の優先順位<small>Precedence of custom instructions</small></h4><p class="def">GitHub.com の Copilot Chat では、個人 → リポジトリ（パス別 → 全体 → AGENTS.md）→ 組織の順に優先されます。CLI、VS Code、Visual Studio などは、当てはまる指示をまとめて使い、決まった優先順位はありません。</p><p class="tip"><b>ツボ</b>矛盾する指示はなるべく作らない、が公式のおすすめです。</p><div class="t-foot"><span class="refs"><a href="#src-34">[34]</a></span></div></article>
+          <article class="term" id="t-prompt-files" data-star><h4 class="t-name">プロンプトファイル（.prompt.md）<span class="star">★ 重要</span><small>Prompt files</small></h4><p class="def">繰り返し使うプロンプトを Markdown のテンプレートとして保存したものです。リポジトリでは .github/prompts/ に置き、チャットから呼び出して使います。VS Code、Visual Studio、JetBrains、Xcode で使えます。</p><p class="tip"><b>ツボ</b>カスタム指示は「範囲内で自動で効く」、プロンプトファイルは「自分で呼んだときだけ効く」。出題範囲の「一貫した応答のためのプロンプトファイルの再利用」はこれです。</p><div class="t-foot"><span class="refs"><a href="#src-35">[35]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-custom-agents"><h4 class="t-name">カスタムエージェント<small>Custom agents</small></h4><p class="def">役割、指示、使えるツールを決めておく専用のエージェントです。たとえば「書き方の規約を守るドキュメント係」や「読むだけで編集はしないレビュー係」。YAML の設定つきの Markdown ファイル（例：.github/agents/NAME.agent.md）で定義します。</p><div class="t-foot"><span class="refs"><a href="#src-36">[36]</a></span></div></article>
+          <article class="term" id="t-skills"><h4 class="t-name">エージェントスキル<small>Agent skills</small></h4><p class="def">指示、スクリプト、資料をひとまとめにしたフォルダー（中心は SKILL.md）です。関係する作業のときだけ読み込まれるので、毎回すべてを会話に入れずに済みます。複数の AI で使えるオープンな仕様です。</p><div class="t-foot"><span class="refs"><a href="#src-37">[37]</a></span></div></article>
+          <article class="term" id="t-hooks"><h4 class="t-name">フック<small>Hooks</small></h4><p class="def">セッションの開始・終了、プロンプトの入力、ツールの呼び出しなどのタイミングで、決めたシェルコマンドを自動で実行する仕組みです。ツールの実行を許可・拒否したり、監査用の記録を取ったりできます。</p><div class="t-foot"><span class="refs"><a href="#src-38">[38]</a></span></div></article>
+          <article class="term" id="t-memory"><h4 class="t-name">Copilot Memory<small>Copilot Memory</small></h4><p class="def">Copilot が作業中に気づいたことを覚えておく仕組みです。リポジトリについての事実（共同作業者と共有）と、自分の好み（リポジトリをまたいでついてくる）の2種類があります。</p><div class="t-foot"><span class="refs"><a href="#src-41">[41]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>MCP</h3>
+        <div class="terms">
+          <article class="term" id="t-mcp" data-star><h4 class="t-name">MCP（Model Context Protocol）<span class="star">★ 重要</span><small>Model Context Protocol</small></h4><p class="def">AI モデルと、外部のデータやツールをつなぐためのオープンな標準です。課題管理ツールなどをつなぐと、Copilot が自分で情報を調べながら作業できます。IDE、Copilot CLI、Copilot アプリ、GitHub.com のエージェントで使えます。</p><div class="t-foot"><span class="refs"><a href="#src-39">[39]</a></span></div></article>
+          <article class="term" id="t-github-mcp" data-star><h4 class="t-name">GitHub MCP サーバー<span class="star">★ 重要</span><small>GitHub MCP server</small></h4><p class="def">GitHub が提供・保守している MCP サーバーです。Issue や PR など GitHub の情報と操作をエージェントから使えるようにします。すべての GitHub ユーザーが使えますが、各ツールには元の機能と同じ権限やライセンスが必要です。</p><div class="t-foot"><span class="refs"><a href="#src-40">[40]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>組織の設定と管理</h3>
+        <div class="terms">
+          <article class="term" id="t-policies" data-star><h4 class="t-name">Copilot のポリシー<span class="star">★ 重要</span><small>Copilot policies</small></h4><p class="def">Copilot の機能、エージェント、モデルを使えるかどうかを、組織やエンタープライズで決める設定です。エンタープライズで先に決め、多くのポリシーは「組織に任せる」こともできます。IDE、GitHub.com、Copilot CLI などに適用されますが、すべての場所に効くわけではありません。</p><div class="t-foot"><span class="refs"><a href="#src-52">[52]</a></span></div></article>
+          <article class="term" id="t-policy-conflict" data-star><h4 class="t-name">ポリシーが食い違うとき<span class="star">★ 重要</span><small>Policy conflicts</small></h4><p class="def">同じエンタープライズの複数の組織から席をもらっている人には、ふつうは「最も緩い」設定が適用されます（どこか1つで有効なら有効）。ただし、メトリクス API や公開コードと一致する提案など、敏感なものは「最も厳しい」設定になります。別々のエンタープライズからもらっている場合は、ほぼ必ず最も厳しい設定です。</p><div class="t-foot"><span class="refs"><a href="#src-52">[52]</a><a href="#src-53">[53]</a></span></div></article>
+          <article class="term" id="t-ccr-policy"><h4 class="t-name">コードレビューのポリシー<small>Copilot code review policy</small></h4><p class="def">組織のメンバーが GitHub.com で Copilot のレビューを使うには、組織のポリシーで有効にします。Copilot のライセンスがないメンバーにも使わせる場合は、「AI クレジットの有料利用」と「ライセンスのないメンバーへの許可」の2つのポリシーを有効にします。</p><div class="t-foot"><span class="refs"><a href="#src-44">[44]</a></span></div></article>
+          <article class="term" id="t-audit-log" data-star><h4 class="t-name">監査ログ<span class="star">★ 重要</span><small>Audit log</small></h4><p class="def">設定やポリシーの変更、ライセンスの付与・解除、GitHub 上のエージェントの活動が記録されます。action:copilot で Copilot 関連の操作、actor:Copilot でエージェントの活動を探せます。保持は180日なので、長期保存には SIEM への転送がすすめられています。</p><p class="tip"><b>ツボ</b>ローカルで送ったプロンプトなど、クライアント側のセッションデータは監査ログに入りません。</p><div class="t-foot"><span class="refs"><a href="#src-54">[54]</a></span></div></article>
+          <article class="term" id="t-rest-seats" data-star><h4 class="t-name">REST API でシートを管理する<span class="star">★ 重要</span><small>Manage subscriptions using the REST API</small></h4><p class="def">Copilot のシートをプログラムから管理できます。組織のシートの一覧、ユーザーやチームの追加・削除、ユーザーごとの割り当ての詳細、組織の Copilot 設定の取得などの操作があります（例：ユーザーの追加は POST /orgs/{org}/copilot/billing/selected_users）。</p><div class="t-foot"><span class="refs"><a href="#src-56">[56]</a></span></div></article>
+          <article class="term" id="t-metrics"><h4 class="t-name">利用状況のメトリクス<small>Copilot usage metrics</small></h4><p class="def">提案の数、採用された数、アクティブユーザー、エディターや言語ごとの内訳などの数字です。REST API で取り出して、導入の効果を測るのに使います。</p><div class="t-foot"><span class="refs"><a href="#src-14">[14]</a><a href="#src-53">[53]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+    <!-- ───────── 3 GitHub Copilot のデータとアーキテクチャ ───────── -->
+    <section class="dom" id="d-data" data-dom="data" aria-labelledby="h-data">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">3</span>
+        <p class="eyebrow">Domain 3 · <b>10–15%</b></p>
+        <h2 id="h-data">GitHub Copilot のデータとアーキテクチャ</h2>
+        <p>プロンプトがどこを通り、どこで何がチェックされ、データがどう扱われるかを問う分野です。流れの順番と、各段階の役割をセットで覚えましょう。</p>
+      </div>
+      <div class="sub">
+        <h3>データの流れ</h3>
+        <div class="terms">
+          <article class="term" id="t-data-flow" data-star><h4 class="t-name">プロンプトが処理される流れ<span class="star">★ 重要</span><small>Prompt process flow</small></h4><p class="def">入りの流れは「安全な送信と文脈の収集 → プロキシ → 有害コンテンツのフィルター → LLM でコードを生成」。出の流れは「後処理と検証 → 合格したものだけを届ける → 利用者の反応がフィードバックになる」です。</p><p class="tip"><b>ツボ</b>順番を並べ替える問題や、「この段階で何をする？」が問われやすいところです。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a></span></div></article>
+          <article class="term" id="t-context-gathering" data-star><h4 class="t-name">文脈の収集<span class="star">★ 重要</span><small>Context gathering</small></h4><p class="def">プロンプトを送るときに、カーソル前後のコード、ファイル名と種類、開いている隣のタブ、プロジェクトの構成とパス、言語とフレームワークの情報を集めます。通信は HTTPS で暗号化されています。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a></span></div></article>
+          <article class="term" id="t-fim" data-star><h4 class="t-name">FIM（Fill-in-the-Middle）<span class="star">★ 重要</span><small>Fill-in-the-Middle</small></h4><p class="def">カーソルの「前」だけでなく「後ろ」のコードも見て、そのあいだを埋める候補を作る前処理の方法です。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a></span></div></article>
+          <article class="term" id="t-neighbor-tabs" data-star><h4 class="t-name">開いているタブ（隣接タブ）<span class="star">★ 重要</span><small>Neighboring tabs</small></h4><p class="def">エディターで開いている他のファイルも、Copilot の文脈として使われます。関係するファイルを開いておくと提案が良くなります。</p><p class="tip"><b>ツボ</b>「4つの S」の Surround（周りを整える）の具体策です。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-proxy" data-star><h4 class="t-name">プロキシ（プロキシフィルター）<span class="star">★ 重要</span><small>Proxy filtering</small></h4><p class="def">組み立てたプロンプトは、GitHub が持つ Microsoft Azure のテナントにあるプロキシサーバーを通ります。ここで、プロンプトを悪用してシステムをだまそうとする攻撃などをブロックします。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a></span></div></article>
+          <article class="term" id="t-toxicity" data-star><h4 class="t-name">有害コンテンツのフィルター<span class="star">★ 重要</span><small>Toxicity filtering</small></h4><p class="def">ヘイトスピーチや不適切な内容、名前・住所・ID 番号などの個人データを取り除くフィルターです。モデルに渡す前と、出力のあとの両方で働きます。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a></span></div></article>
+          <article class="term" id="t-postprocess" data-star><h4 class="t-name">後処理<span class="star">★ 重要</span><small>Post-processing</small></h4><p class="def">モデルの出力を届ける前の最終チェックです。有害な内容を取り除き、コードの品質（XSS や SQL インジェクションのような典型的な脆弱性）を確かめ、設定があれば公開コードとの一致もチェックします。不合格の部分は切り詰めるか捨てます。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a></span></div></article>
+          <article class="term" id="t-lifecycle" data-star><h4 class="t-name">コード提案のライフサイクル<span class="star">★ 重要</span><small>Code suggestion lifecycle</small></h4><p class="def">入力と文脈の収集 → プロキシとフィルター → モデルで生成 → 後処理 → 提示 → 受け入れ・編集・却下 → 次のプロンプト、という一巡りのことです。</p><p class="tip"><b>ツボ</b>出題範囲の言葉は「提案のライフサイクルを可視化する」。図に描けるようにしておくと強いです。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a><a href="#src-1">[1]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>データの扱い</h3>
+        <div class="terms">
+          <article class="term" id="t-retention" data-star><h4 class="t-name">データの保持<span class="star">★ 重要</span><small>Data retention</small></h4><p class="def">既定では、IDE の Copilot Chat と Copilot CLI はプロンプトと提案を保持しません。GitHub 上と GitHub Mobile の Copilot は最大28日保持します（Business と Enterprise の既定）。</p><p class="tip"><b>ツボ</b>数字の「28日」は狙われやすいです。詳しい条件は GitHub Copilot Trust Center で確認します。</p><div class="t-foot"><span class="refs"><a href="#src-8">[8]</a></span></div></article>
+          <article class="term" id="t-training" data-star><h4 class="t-name">学習に使われるか<span class="star">★ 重要</span><small>Use of data for model training</small></h4><p class="def">Copilot Business と Enterprise のデータは、AI モデルの学習に使われません（データ保護契約で禁止）。Free・Pro・Pro+・Max は、2026年4月24日から、設定でオフにしない限り学習に使われることがあります。</p><p class="tip"><b>ツボ</b>個人は Copilot の設定の「Allow GitHub to use my data for AI model training」で無効にできます。</p><div class="t-foot"><span class="refs"><a href="#src-51">[51]</a></span></div></article>
+          <article class="term" id="t-trust-center"><h4 class="t-name">GitHub Copilot Trust Center<small>GitHub Copilot Trust Center</small></h4><p class="def">Copilot の仕組み、セキュリティ、プライバシー、コンプライアンス、知的財産の保護についての情報を GitHub がまとめた公式ページです。</p><div class="t-foot"><span class="refs"><a href="#src-10">[10]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-session-data"><h4 class="t-name">セッションデータ<small>Session data</small></h4><p class="def">Copilot とのやり取りの記録です。Copilot CLI とアプリは ~/.copilot/session-state/ に保存し、既定で自分の GitHub アカウントに同期します（Business／Enterprise はポリシー次第）。同期しても他人には共有されません。</p><div class="t-foot"><span class="refs"><a href="#src-55">[55]</a></span></div></article>
+          <article class="term" id="t-indexing"><h4 class="t-name">リポジトリのインデックス<small>Repository indexing</small></h4><p class="def">意味でコードを探せるようにするための索引です。リポジトリについて質問すると自動で作られます。インデックスはモデルの学習には使われません。</p><div class="t-foot"><span class="refs"><a href="#src-42">[42]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>限界を知る</h3>
+        <div class="terms">
+          <article class="term" id="t-llm-limits" data-star><h4 class="t-name">LLM と Copilot の限界<span class="star">★ 重要</span><small>Limitations of LLMs and Copilot</small></h4><p class="def">間違ったコードを出す、セキュリティの作法を守らないことがある、文脈を取り違える、言語やフレームワークによって精度が違う、新しい・珍しい技術に弱い、学習データの偏りを受け継ぐ、大きな設計判断は苦手、などが挙げられています。</p><div class="t-foot"><span class="refs"><a href="#src-14">[14]</a><a href="#src-57">[57]</a></span></div></article>
+          <article class="term" id="t-nondeterministic"><h4 class="t-name">非決定的（毎回同じとは限らない）<small>Non-deterministic</small></h4><p class="def">AI は確率で答えを作るので、同じ入力でも毎回同じ出力になるとは限りません。カスタム指示も、毎回まったく同じように守られるとは限りません。</p><div class="t-foot"><span class="refs"><a href="#src-34">[34]</a><a href="#src-57">[57]</a></span></div></article>
+          <article class="term" id="t-public-match" data-star><h4 class="t-name">公開コードとの一致<span class="star">★ 重要</span><small>Matches with public code</small></h4><p class="def">確率は低いものの、学習データに含まれる公開コードと一致する提案が出ることがあります。インライン提案で一致するのは1%未満とされています。</p><div class="t-foot"><span class="refs"><a href="#src-57">[57]</a><a href="#src-27">[27]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+    <!-- ───────── 4 プロンプトエンジニアリングとコンテキスト作り ───────── -->
+    <section class="dom" id="d-prompt" data-dom="prompt" aria-labelledby="h-prompt">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">4</span>
+        <p class="eyebrow">Domain 4 · <b>10–15%</b></p>
+        <h2 id="h-prompt">プロンプトエンジニアリングとコンテキスト作り</h2>
+        <p>良い答えを引き出すためのプロンプトの組み立て方と、文脈の与え方を問う分野です。名前のついたテクニック（4つの S、ゼロショット／フューショットなど）は名前と中身をセットで覚えます。</p>
+      </div>
+      <div class="sub">
+        <h3>プロンプトの組み立て</h3>
+        <div class="terms">
+          <article class="term" id="t-prompt-eng" data-star><h4 class="t-name">プロンプトエンジニアリング<span class="star">★ 重要</span><small>Prompt engineering</small></h4><p class="def">AI がプロジェクトに合ったコードを出せるように、明確な指示を組み立てる工夫のことです。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-4s" data-star><h4 class="t-name">4つの S<span class="star">★ 重要</span><small>The 4 S&#x27;s</small></h4><p class="def">Single（1つの課題に絞る）、Specific（具体的に書く）、Short（短く簡潔に）、Surround（わかりやすいファイル名にし、関係ファイルを開いて周りを整える）の4つです。</p><p class="tip"><b>ツボ</b>Learn の教材が「プロンプトの原則」として挙げる、いちばん基本の型です。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-prompt-structure"><h4 class="t-name">プロンプトの構成要素<small>Prompt structure</small></h4><p class="def">目的（何をしてほしいか）、文脈（どのコード・どの前提で）、条件や制約、例、出力の形、を意識して組み立てます。足りないと、Copilot は推測で埋めます。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-zero-shot" data-star><h4 class="t-name">ゼロショット<span class="star">★ 重要</span><small>Zero-shot prompting</small></h4><p class="def">例を見せずに頼む方法です。モデルがもともと知っていることだけで答えるので、よくある定番のパターンに向いています。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-one-shot"><h4 class="t-name">ワンショット<small>One-shot prompting</small></h4><p class="def">例を1つだけ見せて頼む方法です。自分たちの書き方にそろえたいときに効きます。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-few-shot" data-star><h4 class="t-name">フューショット<span class="star">★ 重要</span><small>Few-shot prompting</small></h4><p class="def">例を複数見せて頼む方法です。いくつものケースやエッジケースを扱う、手の込んだ実装に向いています。</p><p class="tip"><b>ツボ</b>「例の数」で見分けます。ゼロ＝0個、ワン＝1個、フュー＝数個。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-examples"><h4 class="t-name">例を示す<small>Provide examples</small></h4><p class="def">入力と出力の例を見せると、求めるパターンが伝わりやすくなり、最初から狙いに近い提案が出ます。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-role-prompt"><h4 class="t-name">ロールプロンプト<small>Role prompting</small></h4><p class="def">「セキュリティの専門家として」のように、役割を指定して頼む方法です。専門分野に寄せた、質の高い答えが出やすくなります。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-comment-prompt"><h4 class="t-name">コメントで指示する<small>Natural language comments</small></h4><p class="def">コードの中に「// 代替テキストのない画像をすべて探す」のようなコメントを書くと、それがプロンプトになり、続きのコードが提案されます。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a><a href="#src-28">[28]</a></span></div></article>
+          <article class="term" id="t-iterate" data-star><h4 class="t-name">アサートとイテレート<span class="star">★ 重要</span><small>Assert and iterate</small></h4><p class="def">1回目で完璧を求めず、出てきたものを見て、指示に詳しさや例を足して頼み直す進め方です。一からやり直すより早く、質の高いコードにたどり着けます。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-break-down" data-star><h4 class="t-name">問題を小さく分ける<span class="star">★ 重要</span><small>Break down complex problems</small></h4><p class="def">大きく複雑な課題は、小さく焦点を絞った質問に分けます。コンテキストウィンドウの制限があるので、分けたほうが正確な答えが返ります。</p><div class="t-foot"><span class="refs"><a href="#src-8">[8]</a><a href="#src-6">[6]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>文脈と会話の履歴</h3>
+        <div class="terms">
+          <article class="term" id="t-context-determined" data-star><h4 class="t-name">文脈の決まり方<span class="star">★ 重要</span><small>How context is determined</small></h4><p class="def">Copilot は、カーソル位置の周り、開いているファイル、チャットで指定したファイルや選択範囲、会話の履歴、カスタム指示などから文脈を組み立てます。自分から文脈を足すほど、答えはプロジェクトに合ってきます。</p><div class="t-foot"><span class="refs"><a href="#src-7">[7]</a><a href="#src-8">[8]</a><a href="#src-34">[34]</a></span></div></article>
+          <article class="term" id="t-add-context"><h4 class="t-name">文脈を足す（#・@・添付）<small>Adding context</small></h4><p class="def">#file、#selection、#codebase などのチャット変数や、ファイルの添付、@ での参加者の指定で、答えの根拠になる情報を渡します。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a><a href="#src-16">[16]</a><a href="#src-33">[33]</a></span></div></article>
+          <article class="term" id="t-chat-history" data-star><h4 class="t-name">チャット履歴<span class="star">★ 重要</span><small>Chat history</small></h4><p class="def">それまでの会話は、次の答えの文脈として使われます。話が長くなると効率が落ち、AI クレジットも多く使います。要約して渡す、話題が変わったら新しい会話にする、が対策です。</p><div class="t-foot"><span class="refs"><a href="#src-8">[8]</a><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-chain-prompt"><h4 class="t-name">チェーンプロンプト<small>Chain prompting</small></h4><p class="def">「関数を作る → エラー処理を足す → テストを足す → コメントを足す」のように、会話を重ねて段階的に仕上げる進め方です。</p><div class="t-foot"><span class="refs"><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-new-chat"><h4 class="t-name">新しい会話を始める（/clear）<small>Start a new chat</small></h4><p class="def">話題が変わったら会話をリセットします。前の話が混ざらず、必要な前提だけを短く渡せます。</p><div class="t-foot"><span class="refs"><a href="#src-33">[33]</a><a href="#src-6">[6]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+    <!-- ───────── 5 GitHub Copilot で開発の生産性を上げる ───────── -->
+    <section class="dom" id="d-prod" data-dom="prod" aria-labelledby="h-prod">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">5</span>
+        <p class="eyebrow">Domain 5 · <b>10–15%</b></p>
+        <h2 id="h-prod">GitHub Copilot で開発の生産性を上げる</h2>
+        <p>コードを書く・直す・説明する・テストする場面で、Copilot をどう使うかを問う分野です。「この作業にはどの機能？」と結びつけて覚えましょう。</p>
+      </div>
+      <div class="sub">
+        <h3>生産性と品質</h3>
+        <div class="terms">
+          <article class="term" id="t-codegen" data-star><h4 class="t-name">コード生成<span class="star">★ 重要</span><small>Code generation</small></h4><p class="def">コメントや関数名、説明から実装を作らせることです。決まりきった定型のコード（ボイラープレート）を作る時間を大きく減らせます。</p><div class="t-foot"><span class="refs"><a href="#src-13">[13]</a><a href="#src-12">[12]</a></span></div></article>
+          <article class="term" id="t-refactor" data-star><h4 class="t-name">リファクタリング<span class="star">★ 重要</span><small>Refactoring</small></h4><p class="def">動きを変えずに、コードを読みやすく・直しやすく整えることです。チャットで改善案を出させたり、Xcode の /simplify のようなコマンドを使ったりします。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-33">[33]</a></span></div></article>
+          <article class="term" id="t-documentation" data-star><h4 class="t-name">ドキュメントの作成<span class="star">★ 重要</span><small>Documentation</small></h4><p class="def">関数のコメントや README を書かせることです。/doc のコマンドもあり、プロジェクト全体で書き方をそろえるのにも役立ちます。</p><div class="t-foot"><span class="refs"><a href="#src-12">[12]</a><a href="#src-33">[33]</a></span></div></article>
+          <article class="term" id="t-explain" data-star><h4 class="t-name">コードの説明（/explain）<span class="star">★ 重要</span><small>Explain code</small></h4><p class="def">知らないコードの動きを説明させます。新しい言語やライブラリを覚える近道になります。</p><p class="tip"><b>ツボ</b>出題範囲の「学習を速める」に対応します。</p><div class="t-foot"><span class="refs"><a href="#src-33">[33]</a><a href="#src-1">[1]</a></span></div></article>
+          <article class="term" id="t-context-switch" data-star><h4 class="t-name">コンテキストスイッチを減らす<span class="star">★ 重要</span><small>Reduce context switching</small></h4><p class="def">エディターを離れて資料を探しに行く回数を減らすことです。API の呼び方や引数を、その場で提案や説明で確認できます。</p><div class="t-foot"><span class="refs"><a href="#src-12">[12]</a></span></div></article>
+          <article class="term" id="t-sample-data" data-star><h4 class="t-name">サンプルデータの生成<span class="star">★ 重要</span><small>Generate sample data</small></h4><p class="def">テストに使う、現実的なダミーデータを作らせることです。手で作る手間が省けます。</p><div class="t-foot"><span class="refs"><a href="#src-12">[12]</a><a href="#src-13">[13]</a></span></div></article>
+          <article class="term" id="t-legacy" data-star><h4 class="t-name">レガシーコードのモダナイズ<span class="star">★ 重要</span><small>Modernize legacy code</small></h4><p class="def">古い言語や古い書き方のコードを、新しい言語・新しい書き方に置き換えることです。説明させて理解 → 書き換え → テストで動きを確かめる、の順で進めます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-13">[13]</a></span></div></article>
+          <article class="term" id="t-sdlc"><h4 class="t-name">SDLC（ソフトウェア開発ライフサイクル）<small>Software development lifecycle</small></h4><p class="def">要件分析、設計と開発、テスト、と続く開発の流れ全体です。Copilot は試作、定型コード、設計パターンの提案、言語の変換、テストケースやテストデータ作りなど、各段階で使えます。</p><div class="t-foot"><span class="refs"><a href="#src-13">[13]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>テストとセキュリティ</h3>
+        <div class="terms">
+          <article class="term" id="t-unit-test" data-star><h4 class="t-name">単体テスト（/tests）<span class="star">★ 重要</span><small>Unit tests</small></h4><p class="def">関数などの小さな部品ごとに動きを確かめるテストです。/tests で選んだコードのテストを生成できます。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a><a href="#src-33">[33]</a></span></div></article>
+          <article class="term" id="t-integration-test" data-star><h4 class="t-name">結合テスト<span class="star">★ 重要</span><small>Integration tests</small></h4><p class="def">複数の部品をつないだときに正しく動くかを確かめるテストです。「このモジュールのデータアクセス層の結合テストを作って」のように頼みます。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a></span></div></article>
+          <article class="term" id="t-edge-case" data-star><h4 class="t-name">エッジケース（境界条件）<span class="star">★ 重要</span><small>Edge cases</small></h4><p class="def">ゼロ、マイナス、空、最大値など、ふつうでない入力のことです。Copilot にテストすべきエッジケースを挙げさせられます。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a><a href="#src-13">[13]</a></span></div></article>
+          <article class="term" id="t-assertion" data-star><h4 class="t-name">アサーション<span class="star">★ 重要</span><small>Assertions</small></h4><p class="def">テストで「結果はこうなるはず」を確かめる文です。Copilot は期待される動きに合うアサーションを提案できます。準備・実行・確認の Arrange-Act-Assert の形を指定することもできます。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a><a href="#src-13">[13]</a></span></div></article>
+          <article class="term" id="t-setuptests"><h4 class="t-name">/setupTests<small>/setupTests</small></h4><p class="def">テストのフレームワークを準備するコマンドです。まだテストのないプロジェクトで最初に使うと便利です。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a></span></div></article>
+          <article class="term" id="t-fixtestfailure"><h4 class="t-name">/fixTestFailure<small>/fixTestFailure</small></h4><p class="def">失敗しているテストを見つけて直すコマンドです。Visual Studio の Test Explorer からも、失敗したテストの修正を頼めます。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a><a href="#src-33">[33]</a></span></div></article>
+          <article class="term" id="t-ghost-tests"><h4 class="t-name">ゴーストテキストでテストを足す<small>Extend tests with ghost text</small></h4><p class="def">すでに書き方の型があるテストファイルなら、続きを書き始めるだけで、同じ型のテストケースが灰色の提案で出てきます。</p><div class="t-foot"><span class="refs"><a href="#src-15">[15]</a></span></div></article>
+          <article class="term" id="t-security-improve" data-star><h4 class="t-name">セキュリティの改善提案<span class="star">★ 重要</span><small>Security improvements</small></h4><p class="def">入力チェックの不足や SQL インジェクションのような弱点を指摘させ、直し方を提案させることです。Copilot CLI には、変更点に絞ったセキュリティレビューのコマンド（/security-review）もあります。</p><p class="tip"><b>ツボ</b>提案もまた AI の出力なので、最後は人が確かめます。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-26">[26]</a></span></div></article>
+          <article class="term" id="t-performance" data-star><h4 class="t-name">パフォーマンスの最適化<span class="star">★ 重要</span><small>Performance optimization</small></h4><p class="def">より速い・軽い書き方を提案させることです。Visual Studio には、選んだコードの実行時間を改善する /optimize があります。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-33">[33]</a><a href="#src-13">[13]</a></span></div></article>
+          <article class="term" id="t-measure"><h4 class="t-name">効果を測る<small>Measure impact</small></h4><p class="def">導入の効果は、提案の数、採用された数、アクティブユーザー数などのメトリクスで測ります。REST API で日ごとの数字を取り出せます。</p><div class="t-foot"><span class="refs"><a href="#src-14">[14]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+    <!-- ───────── 6 プライバシー・コンテンツ除外・セーフガードの設定 ───────── -->
+    <section class="dom" id="d-priv" data-dom="priv" aria-labelledby="h-priv">
+      <div class="dom-head">
+        <span class="dom-no" aria-hidden="true">6</span>
+        <p class="eyebrow">Domain 6 · <b>10–15%</b></p>
+        <h2 id="h-priv">プライバシー・コンテンツ除外・セーフガードの設定</h2>
+        <p>見せたくないファイルを Copilot から外す設定、公開コードとの一致への備え、うまく動かないときの直し方を問う分野です。「だれが・どこで・何を設定するか」をはっきりさせましょう。</p>
+      </div>
+      <div class="sub">
+        <h3>コンテンツ除外</h3>
+        <div class="terms">
+          <article class="term" id="t-content-exclusion" data-star><h4 class="t-name">コンテンツ除外<span class="star">★ 重要</span><small>Content exclusion</small></h4><p class="def">指定したファイルを Copilot に使わせない設定です。除外したファイルではインライン提案が出ず、その内容は他のファイルの提案やチャットの答えにも使われず、Copilot のコードレビューの対象からも外れます。</p><p class="tip"><b>ツボ</b>使えるのは Copilot Business と Enterprise です。</p><div class="t-foot"><span class="refs"><a href="#src-48">[48]</a><a href="#src-19">[19]</a></span></div></article>
+          <article class="term" id="t-ce-who" data-star><h4 class="t-name">除外を設定できる人<span class="star">★ 重要</span><small>Who can configure content exclusion</small></h4><p class="def">リポジトリ管理者は自分のリポジトリ、組織のオーナーは組織から席をもらっている人、エンタープライズのオーナーはエンタープライズの全員に対して設定できます。</p><div class="t-foot"><span class="refs"><a href="#src-48">[48]</a></span></div></article>
+          <article class="term" id="t-ce-syntax"><h4 class="t-name">除外パスの書き方<small>Path syntax</small></h4><p class="def">リポジトリの設定では - "/scripts/**" のように1行に1パスで書きます。fnmatch の書き方が使え、大文字・小文字は区別されません。組織の設定ではリポジトリを指定してからパスを書き、"*": で全リポジトリが対象になります。</p><div class="t-foot"><span class="refs"><a href="#src-49">[49]</a></span></div></article>
+          <article class="term" id="t-ce-limits" data-star><h4 class="t-name">コンテンツ除外の限界<span class="star">★ 重要</span><small>Limitations of content exclusion</small></h4><p class="def">除外はファイルを守る「セキュリティの壁」ではなく、GitHub の道具向けのガードレールです。シンボリックリンクとリモートのファイルシステム上のリポジトリには効きません。IDE が間接的に渡す型の情報などは使われることがあり、他社の MCP サーバーやクライアントでは守られる保証がありません。</p><p class="tip"><b>ツボ</b>Xcode と Eclipse では、チャットとエージェントは除外に対応していません（インライン提案は対応）。</p><div class="t-foot"><span class="refs"><a href="#src-48">[48]</a></span></div></article>
+          <article class="term" id="t-ce-propagate" data-star><h4 class="t-name">除外の反映（最大30分）<span class="star">★ 重要</span><small>Propagating content exclusion changes</small></h4><p class="def">除外を追加・変更してから、すでに設定を読み込んでいる IDE に反映されるまで最大30分かかります。すぐ反映したいときは、VS Code ならコマンドパレットの「Developer: Reload Window」、JetBrains と Visual Studio はアプリの再起動です。</p><p class="tip"><b>ツボ</b>「除外したのに提案が出る」→ まず反映待ちを疑います。</p><div class="t-foot"><span class="refs"><a href="#src-49">[49]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>公開コードと権利</h3>
+        <div class="terms">
+          <article class="term" id="t-public-code-filter" data-star><h4 class="t-name">公開コードと一致する提案のブロック<span class="star">★ 重要</span><small>Suggestions matching public code</small></h4><p class="def">GitHub 上の公開コードと一致する提案を「Block（出さない）」か「Allow（出す）」かを選ぶ設定です。インライン提案では、候補と周り約150文字を公開コードの索引と比べます。個人は自分の設定、組織は管理者が全員分を決めます。</p><p class="tip"><b>ツボ</b>組織から席をもらっている人は、自分で変えられません。複数の組織の設定が違うときは「最も厳しい」設定になります。</p><div class="t-foot"><span class="refs"><a href="#src-27">[27]</a><a href="#src-51">[51]</a><a href="#src-7">[7]</a><a href="#src-53">[53]</a></span></div></article>
+          <article class="term" id="t-code-referencing" data-star><h4 class="t-name">コード参照<span class="star">★ 重要</span><small>Code referencing</small></h4><p class="def">Allow にしているとき（または Block に対応していない製品のとき）、一致した公開コードのリポジトリとライセンスの情報を表示する機能です。出どころとライセンスを見て、使う・出典を書く・消すを判断します。</p><p class="tip"><b>ツボ</b>JetBrains ではログファイルの [Public Code References] で確認できます。</p><div class="t-foot"><span class="refs"><a href="#src-27">[27]</a><a href="#src-50">[50]</a></span></div></article>
+          <article class="term" id="t-ip-indemnity" data-star><h4 class="t-name">IP 補償<span class="star">★ 重要</span><small>IP indemnity</small></h4><p class="def">Copilot の提案を使ったことで知的財産の請求を受けたときに、法的に守ってもらえる契約上の保護です。Copilot Business と Enterprise に含まれます。</p><p class="tip"><b>ツボ</b>Learn の教材では、組織で公開コードと一致する提案をブロックしていることが条件とされています。</p><div class="t-foot"><span class="refs"><a href="#src-10">[10]</a></span></div></article>
+          <article class="term" id="t-dpa"><h4 class="t-name">データ保護契約（DPA）<small>Data Protection Agreement</small></h4><p class="def">データをどう守るかを定めた契約です。Business と Enterprise のデータを、顧客の許可なく学習に使わないこともここで定められています。</p><div class="t-foot"><span class="refs"><a href="#src-10">[10]</a><a href="#src-51">[51]</a></span></div></article>
+          <article class="term" id="t-ownership" data-star><h4 class="t-name">出力の扱いと限界<span class="star">★ 重要</span><small>Ownership and limitations of outputs</small></h4><p class="def">Copilot の出力を採用するかどうか、ライセンス上問題がないかの判断は、使う側に任されています。公開コードとの一致はコード参照で出どころとライセンスを確かめ、権利の細かい扱いは契約（製品の利用条件や DPA）と Trust Center で確認します。</p><div class="t-foot"><span class="refs"><a href="#src-1">[1]</a><a href="#src-27">[27]</a><a href="#src-10">[10]</a></span></div></article>
+        </div>
+      </div>
+      <div class="sub">
+        <h3>エディターの設定とトラブル対応</h3>
+        <div class="terms">
+          <article class="term" id="t-editor-settings" data-star><h4 class="t-name">エディターの設定<span class="star">★ 重要</span><small>Editor settings</small></h4><p class="def">IDE ごとに、Copilot を全体または言語ごとに有効・無効にしたり、提案の出し方を変えたりできます。JetBrains ではステータスアイコンから「全体で無効」か「この言語だけ無効」を選べます。</p><div class="t-foot"><span class="refs"><a href="#src-29">[29]</a></span></div></article>
+          <article class="term" id="t-no-suggestions" data-star><h4 class="t-name">提案が出ないときの確認<span class="star">★ 重要</span><small>Troubleshooting missing suggestions</small></h4><p class="def">ネット接続、拡張機能が最新か、IDE が対応しているか、そのファイルがコンテンツ除外されていないか、を順に確かめます。</p><div class="t-foot"><span class="refs"><a href="#src-11">[11]</a></span></div></article>
+          <article class="term" id="t-bad-suggestions"><h4 class="t-name">提案の質が低いときの対処<small>Improving unsatisfactory suggestions</small></h4><p class="def">わかりやすいコメントや名前で文脈をはっきりさせる、プロンプトの長さや詳しさを調整する、関係ファイルを開く、などで改善します。</p><div class="t-foot"><span class="refs"><a href="#src-11">[11]</a><a href="#src-6">[6]</a></span></div></article>
+          <article class="term" id="t-firewall"><h4 class="t-name">ファイアウォールと許可リスト<small>Firewall allowlist</small></h4><p class="def">会社のファイアウォールが Copilot の通信を止めると、うまく動きません。必要な URL・ポート・プロトコルを許可リストに入れて通します。</p><div class="t-foot"><span class="refs"><a href="#src-11">[11]</a></span></div></article>
+          <article class="term" id="t-ce-troubleshoot"><h4 class="t-name">除外が効かないときの対処<small>Troubleshooting content exclusions</small></h4><p class="def">反映に最大30分かかるので待つか再読み込みする、パスの書き方を見直す、シンボリックリンクやリモートのファイルシステムではないか確かめる、の順で確認します。</p><div class="t-foot"><span class="refs"><a href="#src-49">[49]</a><a href="#src-48">[48]</a><a href="#src-11">[11]</a></span></div></article>
+        </div>
+      </div>
+    </section>
+
+    </div>
+  </section>
+
+  <!-- まぎらわしい組み合わせ -->
+  <section class="sec" aria-labelledby="h-pairs">
+    <div class="sec-head">
+      <p class="eyebrow">Look-alikes</p>
+      <h2 id="h-pairs">試験で迷いやすい、まぎらわしい組み合わせ</h2>
+      <p>選択肢に並んで出てきやすい組み合わせです。「見分け方」の1行を覚えておくと、消去法が速くなります。</p>
+    </div>
+    <div class="pairs">
+      <article class="pair">
+        <h3>インライン提案<i>vs</i>次の編集候補（NES）</h3>
+        <dl><div><dt>インライン提案</dt><dd>カーソルの位置に、続きのコードを灰色で出す。</dd></div><div><dt>次の編集候補</dt><dd>次に直しそうな「別の場所」と内容を予測して出す。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>「いま書いている続き」→ インライン提案。「関連して直すべき次の場所」→ NES。どちらも AI クレジットは使いません。</p>
+        <p class="refs"><a href="#src-28">[28]</a><a href="#src-19">[19]</a></p>
+      </article>
+      <article class="pair">
+        <h3>Ask<i>vs</i>Agent<i>vs</i>Plan</h3>
+        <dl><div><dt>Ask</dt><dd>コードを変えずに質問・理解。</dd></div><div><dt>Agent</dt><dd>ファイルを変更し、コマンドで検証まで。</dd></div><div><dt>Plan</dt><dd>読み取りだけで計画を作り、承認を待つ。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>「変更はまだしたくない」→ Ask か Plan。「計画を先に合意したい」→ Plan。「実装して確かめて」→ Agent。</p>
+        <p class="refs"><a href="#src-16">[16]</a><a href="#src-31">[31]</a><a href="#src-30">[30]</a></p>
+      </article>
+      <article class="pair">
+        <h3>エージェントモード（IDE）<i>vs</i>Copilot cloud agent</h3>
+        <dl><div><dt>エージェントモード</dt><dd>手元の IDE で、見ながら・承認しながら一緒に進める。</dd></div><div><dt>cloud agent</dt><dd>GitHub 上のクラウド環境で非同期に進め、PR で返す。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>「自分は別の作業をしたい」「Issue から PR を作ってほしい」→ cloud agent。</p>
+        <p class="refs"><a href="#src-30">[30]</a><a href="#src-23">[23]</a><a href="#src-22">[22]</a></p>
+      </article>
+      <article class="pair">
+        <h3>カスタム指示<i>vs</i>プロンプトファイル</h3>
+        <dl><div><dt>カスタム指示</dt><dd>範囲内のやり取りすべてに自動で効く。</dd></div><div><dt>プロンプトファイル</dt><dd>自分で呼び出したときだけ効く、再利用のテンプレート。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>「毎回の前提」→ カスタム指示。「ときどき使う定型の頼みごと」→ プロンプトファイル（.prompt.md）。</p>
+        <p class="refs"><a href="#src-34">[34]</a><a href="#src-35">[35]</a></p>
+      </article>
+      <article class="pair">
+        <h3>copilot-instructions.md<i>vs</i>*.instructions.md<i>vs</i>AGENTS.md</h3>
+        <dl><div><dt>copilot-instructions.md</dt><dd>.github/ に置く、リポジトリ全体の指示。</dd></div><div><dt>*.instructions.md</dt><dd>.github/instructions/ に置き、applyTo で対象パスを絞る。</dd></div><div><dt>AGENTS.md</dt><dd>エージェント向けの指示。対応する機能が限られる。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>「Python ファイルにだけ効かせたい」→ *.instructions.md と applyTo。</p>
+        <p class="refs"><a href="#src-34">[34]</a></p>
+      </article>
+      <article class="pair">
+        <h3>カスタムエージェント<i>vs</i>サブエージェント</h3>
+        <dl><div><dt>カスタムエージェント</dt><dd>役割・指示・ツールを決めた専用エージェントの「定義」。</dd></div><div><dt>サブエージェント</dt><dd>会話の途中で作業を切り出して、別の文脈で走らせる「使い方」。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>「メインの文脈を汚さずに調査させたい」→ サブエージェント。「レビュー係を定義したい」→ カスタムエージェント。</p>
+        <p class="refs"><a href="#src-36">[36]</a><a href="#src-32">[32]</a></p>
+      </article>
+      <article class="pair">
+        <h3>コンテンツ除外<i>vs</i>公開コードと一致する提案のブロック</h3>
+        <dl><div><dt>コンテンツ除外</dt><dd>自分たちのファイルを Copilot の「入力」から外す。</dd></div><div><dt>公開コードのブロック</dt><dd>公開コードと一致する「出力」を出さない。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>守る向きが逆です。「社外秘ファイルを読ませない」→ 除外。「ライセンスの心配がある提案を止めたい」→ ブロック。</p>
+        <p class="refs"><a href="#src-48">[48]</a><a href="#src-27">[27]</a></p>
+      </article>
+      <article class="pair">
+        <h3>Block<i>vs</i>Allow（コード参照）</h3>
+        <dl><div><dt>Block</dt><dd>公開コードと一致する提案を出さない。</dd></div><div><dt>Allow</dt><dd>出すが、一致したリポジトリとライセンスを表示する（コード参照）。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>「一致を出さないで」→ Block。「一致したら出典を見て判断したい」→ Allow とコード参照。</p>
+        <p class="refs"><a href="#src-27">[27]</a><a href="#src-50">[50]</a><a href="#src-51">[51]</a></p>
+      </article>
+      <article class="pair">
+        <h3>ゼロショット<i>vs</i>ワンショット<i>vs</i>フューショット</h3>
+        <dl><div><dt>ゼロショット</dt><dd>例なし。定番のパターンに。</dd></div><div><dt>ワンショット</dt><dd>例を1つ。自分たちの書き方にそろえる。</dd></div><div><dt>フューショット</dt><dd>例を数個。複雑な処理やエッジケースに。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>見分け方は「例の数」だけです。</p>
+        <p class="refs"><a href="#src-6">[6]</a></p>
+      </article>
+      <article class="pair">
+        <h3>--allow-tool<i>vs</i>--deny-tool<i>vs</i>--allow-all-tools</h3>
+        <dl><div><dt>--allow-tool</dt><dd>特定のツールを承認なしで使わせる。</dd></div><div><dt>--deny-tool</dt><dd>特定のツールを禁止する。いちばん優先。</dd></div><div><dt>--allow-all-tools</dt><dd>すべてのツールを承認なしで使わせる。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>deny は allow より強い、と覚えます。</p>
+        <p class="refs"><a href="#src-24">[24]</a></p>
+      </article>
+      <article class="pair">
+        <h3>最も緩い<i>vs</i>最も厳しい（ポリシーの食い違い）</h3>
+        <dl><div><dt>最も緩い</dt><dd>どこか1つの組織で有効なら有効。多くのポリシーはこちら。</dd></div><div><dt>最も厳しい</dt><dd>どこか1つで無効なら無効。メトリクス API や公開コード一致など敏感なもの。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>同じエンタープライズ内の複数組織 → 基本は最も緩い。複数のエンタープライズ → ほぼ最も厳しい。</p>
+        <p class="refs"><a href="#src-52">[52]</a><a href="#src-53">[53]</a></p>
+      </article>
+      <article class="pair">
+        <h3>AI クレジット<i>vs</i>プレミアムリクエスト</h3>
+        <dl><div><dt>AI クレジット</dt><dd>2026-06-01 から。モデルとトークン量で消費。1 クレジット＝$0.01。</dd></div><div><dt>プレミアムリクエスト</dt><dd>それ以前の方式。1回のやり取りにモデル倍率をかけて数える。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>どちらも「重い使い方・強いモデルほど多く使う」点は同じです。補完と NES は対象外。</p>
+        <p class="refs"><a href="#src-20">[20]</a><a href="#src-21">[21]</a></p>
+      </article>
+      <article class="pair">
+        <h3>監査ログ<i>vs</i>利用状況のメトリクス</h3>
+        <dl><div><dt>監査ログ</dt><dd>だれが何の設定を変えたか、ライセンスの付与、エージェントの活動。</dd></div><div><dt>メトリクス</dt><dd>どれだけ使われ、どれだけ採用されたかの数字。</dd></div></dl>
+        <p class="rule"><b>見分け方</b>「設定変更の追跡」→ 監査ログ。「導入効果の測定」→ メトリクス。ローカルのプロンプトはどちらにも入りません。</p>
+        <p class="refs"><a href="#src-54">[54]</a><a href="#src-14">[14]</a></p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 名前が変わった用語 -->
+  <section class="sec" aria-labelledby="h-renames">
+    <div class="sec-head">
+      <p class="eyebrow">Renamed</p>
+      <h2 id="h-renames">名前が変わった用語・終わった機能</h2>
+      <p>Copilot は変化がとても速く、出題範囲や Learn の教材の言葉と、いまの画面やドキュメントの言葉がずれていることがあります。同じものだと分かれば迷いません。</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">以前の名前・機能</th><th scope="col">いまの名前・移行先</th><th scope="col">メモ</th><th scope="col">出典</th></tr></thead>
+        <tbody>
+          <tr><td class="old">Copilot coding agent</td><td class="new">Copilot cloud agent</td><td class="note">GitHub Docs は「Copilot cloud agent（formerly Copilot coding agent）」と表記。Learn の教材や出題範囲では旧名も残っています。</td><td class="r"><a href="#src-23">[23]</a><a href="#src-18">[18]</a></td></tr>
+          <tr><td class="old">GitHub.com の Copilot Chat ＋ cloud agent</td><td class="new">Copilot in the cloud</td><td class="note">2026-10-28 から有料プランで提供。Free プランは従来の Copilot Chat のまま。</td><td class="r"><a href="#src-23">[23]</a></td></tr>
+          <tr><td class="old">プレミアムリクエスト（PRU）とモデル倍率</td><td class="new">GitHub AI Credits（使用量ベースの課金）</td><td class="note">2026-06-01 に切り替え。旧方式は既存の年額プランだけ。</td><td class="r"><a href="#src-21">[21]</a><a href="#src-20">[20]</a></td></tr>
+          <tr><td class="old">gh copilot（GitHub CLI の拡張機能）</td><td class="new">GitHub Copilot CLI（copilot コマンド）</td><td class="note">旧拡張は非推奨。2026-01-21 から gh copilot は新しい CLI の入口に。</td><td class="r"><a href="#src-59">[59]</a></td></tr>
+          <tr><td class="old">GitHub Spark</td><td class="new">提供終了（2026-08-31）</td><td class="note">2026-08-04 に新規受付を停止。出題範囲（2026-08-07 版）には名前が残っています。</td><td class="r"><a href="#src-58">[58]</a><a href="#src-1">[1]</a></td></tr>
+          <tr><td class="old">GitHub Models（Spark の llm() が使っていた推論サービス）</td><td class="new">提供終了（2026-07-30）</td><td class="note"></td><td class="r"><a href="#src-58">[58]</a></td></tr>
+          <tr><td class="old">Copilot Edits</td><td class="new">エージェントモードなどの「エージェント」選択が中心</td><td class="note">いまの GitHub Docs には単独の解説ページが見当たりません。Learn では「エージェントモード（Copilot Edits）」と並べて書かれています。</td><td class="r"><a href="#src-17">[17]</a><a href="#src-30">[30]</a></td></tr>
+          <tr><td class="old">コード補完（code completions）</td><td class="new">インライン提案（inline suggestions）</td><td class="note">いまのドキュメントは「インライン提案」が中心。課金の説明などでは completions の言葉も使われています。</td><td class="r"><a href="#src-19">[19]</a><a href="#src-20">[20]</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 注意点 -->
+  <section class="sec narrow" aria-labelledby="h-notes">
+    <div class="sec-head">
+      <p class="eyebrow">Caveats</p>
+      <h2 id="h-notes">使うときの注意点</h2>
+    </div>
+    <ul class="notes">
+      <li><span class="x">範囲</span><div><b>出題範囲は 2026年8月7日版です</b><p>英語版・日本語版とも 2026-08-07 時点のスキルに更新済みでした（2026-11-26 確認）。翻訳版は英語版の約8週間後に更新されるので、受験前に study guide の日付を確認してください。<a href="#src-1">[1]</a></p></div></li>
+      <li><span class="x">誤記</span><div><b>公式の「スキルの概要」に同じ分野が2回出てきます</b><p>「Use GitHub Copilot features（25–30%）」の直後に「GitHub Copilot features（25–30%）」が重複して載っています。本文の分野は6つなので、このページは6分野として扱いました。<a href="#src-1">[1]</a></p></div></li>
+      <li><span class="x">変化</span><div><b>出題範囲のあとにも名前と仕組みが変わっています</b><p>Spark の提供終了（8月）、Copilot in the cloud の開始（10月）などです。問題文が新旧どちらの名前で出るかは公表されていないので、上の表で両方を結びつけておくと安心です。<a href="#src-58">[58]</a><a href="#src-23">[23]</a></p></div></li>
+      <li><span class="x">料金</span><div><b>受験料は 2026-11-26 時点の公式の価格データです</b><p>資格ページで国を選んだときに表示されるものと同じデータです。為替や改定で変わることがあり、税やキャンペーンの扱いは予約画面で確認してください。<a href="#src-2">[2]</a></p></div></li>
+      <li><span class="x">期限</span><div><b>GitHub の資格の有効期間は2年です</b><p>GitHub は Microsoft の更新（無料のオンライン評価）の方式へ移行中で、移行前に期限が切れる資格は6か月延長されると案内されています。<a href="#src-2">[2]</a></p></div></li>
+      <li><span class="x">要約</span><div><b>説明は試験対策のためにかみ砕いた要約です</b><p>LLM やテストのような一般的な用語は、一般的な意味を説明しています。この場合の出典 [1] は「出題範囲に出てくる言葉である」ことの根拠です。正確な仕様や数値は、各出典のページで確認してください。</p></div></li>
+    </ul>
+  </section>
+
+  <!-- 出典 -->
+  <section class="sec" aria-labelledby="h-src">
+    <div class="sec-head">
+      <p class="eyebrow">Sources</p>
+      <h2 id="h-src">根拠にした情報</h2>
+      <p>Microsoft Learn と GitHub の公式の情報です。Microsoft Learn の日付はページのメタ情報（ms.date）の日付で（資格ページ [2] だけは最終更新日）、リンク先は日本語版です。Learn の教材は日付を変えずに本文が直されることがあります。GitHub Docs はページに日付が出ないため、2026-11-26 に英語版で確認したと書いています（日本語版は反映が遅れることがあります）。GitHub Changelog は投稿日です。</p>
+    </div>
+    <div class="src-cols">
+      <ol class="sources">
+        <li id="src-1"><a class="src-title" href="https://learn.microsoft.com/ja-jp/credentials/certifications/resources/study-guides/gh-300" target="_blank" rel="noopener">Study guide for Exam GH-300: GitHub Copilot</a><span class="src-meta"><span class="tag">公式</span><span>2026-05-31</span></span><span class="src-note">6分野と配点、出題項目の全文（2026-08-07 時点のスキル）、受験者像、合格点 700、翻訳版は約8週間後に更新、GA とプレビューの扱い、変更履歴、公式の学習リソース。日本語版も 2026-08-07 版に更新済み（2026-11-26 確認）。</span></li>
+        <li id="src-2"><a class="src-title" href="https://learn.microsoft.com/ja-jp/credentials/certifications/github-copilot/" target="_blank" rel="noopener">GitHub Copilot（資格ページ）</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-05</span></span><span class="src-note">レベル（中級）、試験時間100分、受験できる言語、Pearson VUE、GitHub 資格の有効期間2年と更新方式の移行、再受験は24時間後から。受験料（日本 ¥12,180・米国 $99）は、このページが読み込む公式の価格データで 2026-11-26 に確認。日付はページの最終更新日。</span></li>
+        <li id="src-3"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/paths/copilot/" target="_blank" rel="noopener">GitHub Copilot Fundamentals Part 1 of 2（ラーニングパス）</a><span class="src-meta"><span class="tag">公式</span><span>2025-03-11</span></span><span class="src-note">出題範囲の公式の学習教材。責任ある AI、プロンプト、開発での使いどころ、テスト、管理とカスタマイズ、Spaces など9モジュール。</span></li>
+        <li id="src-4"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/paths/gh-copilot-2/" target="_blank" rel="noopener">GitHub Copilot Fundamentals Part 2 of 2（ラーニングパス）</a><span class="src-meta"><span class="tag">公式</span><span>2025-03-11</span></span><span class="src-note">コードレビュー、エージェントモード、cloud agent（旧 coding agent）、MCP サーバーなど。</span></li>
+        <li id="src-5"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/modules/responsible-ai-with-github-copilot/" target="_blank" rel="noopener">Responsible AI with GitHub Copilot（Mitigate AI risks／Six principles）</a><span class="src-meta"><span class="tag">公式</span><span>2024-09-13</span></span><span class="src-note">AI のリスク、ガバナンス・透明性・人による監督、責任ある AI の6原則（公平性、信頼性と安全性、プライバシーとセキュリティ、包括性、透明性、アカウンタビリティ）。</span></li>
+        <li id="src-6"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/modules/introduction-prompt-engineering-with-github-copilot/2-prompt-engineering-foundations-best-practices" target="_blank" rel="noopener">Prompt engineering foundations and best practices</a><span class="src-meta"><span class="tag">公式</span><span>2024-10-02</span></span><span class="src-note">4つの S、明確さ・文脈・例、アサートとイテレート、ゼロショット／ワンショット／フューショット、チェーンプロンプトと履歴の管理、ロールプロンプト。</span></li>
+        <li id="src-7"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/modules/introduction-prompt-engineering-with-github-copilot/3-github-copilot-user-prompt-process-flow" target="_blank" rel="noopener">GitHub Copilot user prompt process flow</a><span class="src-meta"><span class="tag">公式</span><span>2024-10-02</span></span><span class="src-note">入りの流れ（HTTPS 送信と文脈収集、FIM、プロキシ、有害コンテンツのフィルター、LLM）と出の流れ（後処理、約150文字の公開コード一致フィルター、提示、フィードバック）。</span></li>
+        <li id="src-8"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/modules/introduction-prompt-engineering-with-github-copilot/4-github-copilot-data" target="_blank" rel="noopener">GitHub Copilot data</a><span class="src-meta"><span class="tag">公式</span><span>2024-10-02</span></span><span class="src-note">提案とチャットのデータの扱い、保持期間の既定（IDE と CLI は保持しない、GitHub 上と Mobile は最大28日）、コンテキストウィンドウの制限。</span></li>
+        <li id="src-9"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/modules/introduction-prompt-engineering-with-github-copilot/5-github-copilot-large-language-models" target="_blank" rel="noopener">GitHub Copilot Large Language Models (LLMs)</a><span class="src-meta"><span class="tag">公式</span><span>2024-10-02</span></span><span class="src-note">LLM の特徴、ファインチューニング、LoRA。</span></li>
+        <li id="src-10"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/modules/github-copilot-management-and-customizations/3-github-copilot-contractual-protections-disabling-matching-public-code" target="_blank" rel="noopener">Explore contractual protections in GitHub Copilot and disabling matching public code</a><span class="src-meta"><span class="tag">公式</span><span>2024-10-18</span></span><span class="src-note">IP 補償（Business／Enterprise。組織で公開コード一致のブロックが条件）、DPA、Trust Center、公開コードのフィルター。</span></li>
+        <li id="src-11"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/modules/github-copilot-management-and-customizations/5-troubleshoot-common-issues-with-github-copilot" target="_blank" rel="noopener">Troubleshoot common problems with GitHub Copilot</a><span class="src-meta"><span class="tag">公式</span><span>2024-10-18</span></span><span class="src-note">提案が出ない、コンテンツ除外が効かない、提案の質が低いときの確認ポイント。</span></li>
+        <li id="src-12"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/modules/developer-use-cases-for-ai-with-github-copilot/2-boost-developer-productivity" target="_blank" rel="noopener">Boost developer productivity with AI</a><span class="src-meta"><span class="tag">公式</span><span>2024-10-09</span></span><span class="src-note">コンテキストスイッチの削減、ドキュメント作成、サンプルデータの生成など。</span></li>
+        <li id="src-13"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/modules/developer-use-cases-for-ai-with-github-copilot/4-ai-software-development-lifecycle" target="_blank" rel="noopener">AI in the Software Development Lifecycle (SDLC)</a><span class="src-meta"><span class="tag">公式</span><span>2024-10-09</span></span><span class="src-note">要件分析・設計と開発・テストなど、開発の各段階での使いどころ。</span></li>
+        <li id="src-14"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/modules/developer-use-cases-for-ai-with-github-copilot/5-understand-limitations-measure-impact" target="_blank" rel="noopener">Understand limitations and measure impact</a><span class="src-meta"><span class="tag">公式</span><span>2024-10-09</span></span><span class="src-note">Copilot の限界（誤り、セキュリティ、言語による差、学習データの偏り、設計判断）と、利用状況メトリクスの REST API。</span></li>
+        <li id="src-15"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/modules/develop-unit-tests-using-github-copilot-tools/" target="_blank" rel="noopener">Develop unit tests using GitHub Copilot tools</a><span class="src-meta"><span class="tag">公式</span><span>2026-05-12</span></span><span class="src-note">/tests、/setupTests、/fixTestFailure、Plan エージェントでのテスト計画、ゴーストテキストでのテスト追加、エッジケース、Arrange-Act-Assert、#codebase。</span></li>
+        <li id="src-16"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/modules/advanced-github-copilot/2-advanced-github-copilot-features" target="_blank" rel="noopener">Advanced GitHub Copilot features</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-11</span></span><span class="src-note">チャット、インラインチャット、スラッシュコマンド、Ask と Agent の使い分け。</span></li>
+        <li id="src-17"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/modules/github-copilot-agent-mode/2-what-is-agent-mode" target="_blank" rel="noopener">What is GitHub Copilot Agent Mode?</a><span class="src-meta"><span class="tag">公式</span><span>2025-03-17</span></span><span class="src-note">エージェントモードの動き（関係ファイルの特定、編集、ターミナルコマンド、繰り返しの修正）と Copilot Edits。</span></li>
+        <li id="src-18"><a class="src-title" href="https://learn.microsoft.com/ja-jp/training/modules/github-copilot-code-agent/2-security-risks-limitations-copilot-code-agent" target="_blank" rel="noopener">Security, risks, and limitations of Copilot in the cloud</a><span class="src-meta"><span class="tag">公式</span><span>2025-09-22</span></span><span class="src-note">cloud agent の安全策：copilot/ ブランチだけに push、ファイアウォール、ワークフローは承認まで動かない、依頼者は承認できない、共著のコミット。</span></li>
+        <li id="src-19"><a class="src-title" href="https://docs.github.com/en/copilot/get-started/plans" target="_blank" rel="noopener">Plans for GitHub Copilot</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">プランの種類と料金（Free／Student／Pro $10／Pro+ $39／Max $100／Business $19／Enterprise $39／Copilot access）、AI クレジットの量、プランごとの機能（コンテンツ除外・組織のポリシーは Business／Enterprise）。</span></li>
+        <li id="src-20"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/billing-and-usage/individuals/billing" target="_blank" rel="noopener">Usage-based billing for individuals</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">GitHub AI Credits の仕組み（1 クレジット＝$0.01、モデルとトークン量で決まる、毎月1日 UTC にリセット）、補完と次の編集候補は対象外、Free は月2,000回の補完。</span></li>
+        <li id="src-21"><a class="src-title" href="https://docs.github.com/en/copilot/reference/copilot-billing/request-based-billing-legacy/what-changed-with-billing" target="_blank" rel="noopener">What changed with Copilot billing (legacy)</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">2026-06-01 にプレミアムリクエスト（PRU）とモデル倍率の課金から、AI クレジットの使用量ベース課金に変更。旧方式は既存の年額プランだけ。</span></li>
+        <li id="src-22"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/agent-capabilities/about-agents/about-github-copilot-agents" target="_blank" rel="noopener">About GitHub Copilot agents</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">エージェントとチャット・オートメーションの違い、エージェントを使える場所（Copilot アプリ、CLI、IDE、GitHub）、人が責任を持つこと。</span></li>
+        <li id="src-23"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/copilot-surfaces/copilot-on-github" target="_blank" rel="noopener">GitHub Copilot on GitHub.com and GitHub Mobile</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">2026-10-28 からの Copilot in the cloud（有料プラン）、クライアント・セッション・環境、GitHub Actions とクラウドサンドボックスの違い（データ保持28日／アカウントの存続中）。</span></li>
+        <li id="src-24"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/copilot-surfaces/copilot-cli" target="_blank" rel="noopener">GitHub Copilot CLI</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">対話モードとプログラムモード（-p）、プランモード、ツールの承認と --allow-tool／--deny-tool／--allow-all-tools、信頼済みディレクトリ、自動圧縮（95%）、コンテンツ除外への対応。</span></li>
+        <li id="src-25"><a class="src-title" href="https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli" target="_blank" rel="noopener">Installing GitHub Copilot CLI</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">前提条件と、npm（@github/copilot、Node.js 22 以上）・WinGet・Homebrew・インストールスクリプトでの入れ方。</span></li>
+        <li id="src-26"><a class="src-title" href="https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference" target="_blank" rel="noopener">GitHub Copilot CLI command reference</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">CLI のスラッシュコマンド一覧（/model、/mcp、/delegate、/compact、/context、/resume、/fleet、/review、/security-review など）。</span></li>
+        <li id="src-27"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/copilot-surfaces/copilot-in-ides" target="_blank" rel="noopener">GitHub Copilot in IDEs</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">IDE でできること（提案、チャット、エージェントモード、カスタマイズ）、公開コードとの一致の参照（約150文字、1%未満）。</span></li>
+        <li id="src-28"><a class="src-title" href="https://docs.github.com/en/copilot/how-tos/copilot-in-your-ide/copilot-for-common-tasks/get-ide-code-suggestions" target="_blank" rel="noopener">Getting code suggestions in your IDE with GitHub Copilot</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">灰色の提案を Tab で確定、Alt+]／Alt+[ で別の候補、Esc で却下、次の編集候補（NES）の使い方。</span></li>
+        <li id="src-29"><a class="src-title" href="https://docs.github.com/en/copilot/how-tos/copilot-in-your-ide/set-up-copilot/configure-in-ide" target="_blank" rel="noopener">Configuring GitHub Copilot in your environment</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">IDE で Copilot を有効・無効にする、言語ごとの設定、提案の表示設定。</span></li>
+        <li id="src-30"><a class="src-title" href="https://docs.github.com/en/copilot/how-tos/copilot-in-your-ide/use-copilot-agents/use-agent-mode" target="_blank" rel="noopener">Using agent mode</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">エージェントモードの動き、コマンドは既定で承認制、対応 IDE（VS Code、Visual Studio、JetBrains、Xcode、Eclipse）。</span></li>
+      </ol>
+      <ol class="sources" start="31" style="counter-reset:src 30">
+        <li id="src-31"><a class="src-title" href="https://docs.github.com/en/copilot/how-tos/copilot-in-your-ide/use-copilot-agents/use-plan-mode" target="_blank" rel="noopener">Using plan mode</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">読み取り専用で調べて計画を作り、承認されるまでコードを変更しない Plan エージェント。</span></li>
+        <li id="src-32"><a class="src-title" href="https://docs.github.com/en/copilot/how-tos/copilot-in-your-ide/use-copilot-agents/use-subagents" target="_blank" rel="noopener">Using subagents in your IDE</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">自分のコンテキストウィンドウで独立して動き結果だけ返すサブエージェント、runSubagent ツール、サブエージェントはさらにサブエージェントを作れない。</span></li>
+        <li id="src-33"><a class="src-title" href="https://docs.github.com/en/copilot/reference/chat-cheat-sheet" target="_blank" rel="noopener">GitHub Copilot Chat cheat sheet</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">IDE ごとのスラッシュコマンド（/explain、/fix、/tests、/doc、/optimize など）、チャット変数（#file、#selection など）、チャット参加者（@github、@terminal、@vscode、@azure）。</span></li>
+        <li id="src-34"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/prompting-and-context/custom-instructions" target="_blank" rel="noopener">Custom instructions for GitHub Copilot</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">個人・リポジトリ・組織の指示、.github/copilot-instructions.md、.github/instructions/*.instructions.md（applyTo）、AGENTS.md、GitHub.com での優先順位。</span></li>
+        <li id="src-35"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/prompting-and-context/prompt-files" target="_blank" rel="noopener">Prompt files for GitHub Copilot</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">再利用できるプロンプトのテンプレート（.github/prompts/*.prompt.md）、対応 IDE、カスタム指示との違い。</span></li>
+        <li id="src-36"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/customizations/custom-agents" target="_blank" rel="noopener">About custom agents</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">役割・指示・ツールを決めた専用エージェント。YAML frontmatter つきの Markdown（エージェントプロファイル）。</span></li>
+        <li id="src-37"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/customizations/agent-skills" target="_blank" rel="noopener">About agent skills</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">指示・スクリプト・資料をまとめたフォルダー（SKILL.md）。必要なときだけ読み込まれる。オープン標準。</span></li>
+        <li id="src-38"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/customizations/hooks" target="_blank" rel="noopener">About hooks</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">セッションの開始・終了、プロンプト入力、ツール呼び出しなどでシェルコマンドを実行。承認・拒否や監査ログに使える。</span></li>
+        <li id="src-39"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/customizations/mcp" target="_blank" rel="noopener">About Model Context Protocol (MCP)</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">MCP はモデルとデータ・ツールをつなぐオープン標準。IDE、CLI、Copilot アプリ、GitHub.com のエージェントで使える。GitHub MCP Registry。</span></li>
+        <li id="src-40"><a class="src-title" href="https://docs.github.com/en/copilot/how-tos/copilot-in-your-ide/copilot-for-common-tasks/use-the-github-mcp-server" target="_blank" rel="noopener">Using the GitHub MCP server in your IDE</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">GitHub が提供・保守する MCP サーバー。全ユーザーが使えるが、個々のツールは元の機能と同じ権限が必要。</span></li>
+        <li id="src-41"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/prompting-and-context/copilot-memory" target="_blank" rel="noopener">About Copilot Memory</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">リポジトリの事実（共同作業者と共有）と個人の好みを記憶する仕組み。</span></li>
+        <li id="src-42"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/prompting-and-context/repository-indexing" target="_blank" rel="noopener">Indexing repositories for Copilot</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">セマンティックコード検索のインデックス。モデルの学習には使わない。初回は大きなリポジトリで最大60秒ほど。</span></li>
+        <li id="src-43"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/models/auto-model-selection" target="_blank" rel="noopener">About Copilot auto model selection</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">Copilot がモデルを選ぶ仕組みと、使える場所。</span></li>
+        <li id="src-44"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/code-review" target="_blank" rel="noopener">GitHub Copilot code review</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">対応する場所、組織のポリシーでの有効化、ライセンスのないメンバーへの開放、自動レビュー（ユーザー設定と ruleset）。</span></li>
+        <li id="src-45"><a class="src-title" href="https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-code-review" target="_blank" rel="noopener">Using GitHub Copilot code review</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">既定は「Comment」のレビューで必須承認数に数えない、再レビューの依頼、Review new pushes。</span></li>
+        <li id="src-46"><a class="src-title" href="https://docs.github.com/en/copilot/how-tos/copilot-on-github/copilot-for-github-tasks/create-a-pr-summary" target="_blank" rel="noopener">Creating a pull request summary with GitHub Copilot</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">PR の説明欄やコメントに要約を作る。既存の説明は考慮しない。</span></li>
+        <li id="src-47"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/prompting-and-context/spaces" target="_blank" rel="noopener">About GitHub Copilot Spaces</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">リポジトリ・コード・PR・Issue・メモ・画像などをまとめて回答の土台にする。Free を含む全ライセンスで作成でき、共有も可能。</span></li>
+        <li id="src-48"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/content-exclusion" target="_blank" rel="noopener">Content exclusion for GitHub Copilot</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">除外の効果、設定できる人、ツールごとの対応表、限界（セキュリティ境界ではない、シンボリックリンクとリモートファイルシステムは対象外、IDE が間接的に渡す情報）。</span></li>
+        <li id="src-49"><a class="src-title" href="https://docs.github.com/en/copilot/how-tos/configure-content-exclusion/exclude-content-from-copilot" target="_blank" rel="noopener">Excluding content from GitHub Copilot</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">パスの書き方（fnmatch、大文字小文字を区別しない）、組織でのリポジトリ指定、反映まで最大30分と再読み込みの方法。</span></li>
+        <li id="src-50"><a class="src-title" href="https://docs.github.com/en/copilot/how-tos/copilot-in-your-ide/copilot-for-common-tasks/find-matching-code" target="_blank" rel="noopener">Finding public code that matches GitHub Copilot suggestions</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">コード参照の見方（JetBrains のログの [Public Code References] など）。Allow のとき、または Block に対応しない製品で表示。</span></li>
+        <li id="src-51"><a class="src-title" href="https://docs.github.com/en/copilot/how-tos/manage-your-account/manage-policies" target="_blank" rel="noopener">Managing GitHub Copilot policies as an individual subscriber</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">公開コードと一致する提案の Allow／Block、モデルの学習への利用設定（Business／Enterprise のデータは学習に使わない、個人プランは 2026-04-24 から既定で使われうる）。</span></li>
+        <li id="src-52"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/enterprise/policies" target="_blank" rel="noopener">GitHub Copilot policies for enterprises and organizations</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">ポリシーの仕組み、エンタープライズが先に決めて「組織に任せる」こともできる、複数の組織・エンタープライズから席をもらったときの扱い、監査ログでの監視。</span></li>
+        <li id="src-53"><a class="src-title" href="https://docs.github.com/en/copilot/reference/enterprise-administrators/policy-conflicts" target="_blank" rel="noopener">Feature availability when GitHub Copilot policies conflict in organizations</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">最も緩い／最も厳しい組織に合わせるポリシーの一覧（メトリクス API と公開コード一致は最も厳しい）。</span></li>
+        <li id="src-54"><a class="src-title" href="https://docs.github.com/en/copilot/how-tos/administer-copilot/manage-for-enterprise/review-audit-logs" target="_blank" rel="noopener">Reviewing audit logs for GitHub Copilot</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">記録されるもの（設定・ポリシー・ライセンスの変更、GitHub 上のエージェントの活動）、記録されないもの（ローカルのプロンプト）、action:copilot、actor:Copilot、180日保持。</span></li>
+        <li id="src-55"><a class="src-title" href="https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/session-data" target="_blank" rel="noopener">About GitHub Copilot session data</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">セッションデータの保存場所（~/.copilot/session-state/）、同期とポリシー、共有の既定。</span></li>
+        <li id="src-56"><a class="src-title" href="https://docs.github.com/en/rest/copilot/copilot-user-management" target="_blank" rel="noopener">REST API endpoints for Copilot user management</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">シートの一覧、ユーザー・チームの追加と削除、ユーザーの割り当ての詳細、組織の Copilot 設定の取得（操作名は GitHub Docs 内のリンクで確認）。</span></li>
+        <li id="src-57"><a class="src-title" href="https://docs.github.com/en/copilot/responsible-use/inline-suggestions" target="_blank" rel="noopener">Application card: GitHub Copilot inline suggestions</a><span class="src-meta"><span class="tag">公式</span><span>2026-11-26 確認</span></span><span class="src-note">インライン提案の用途・限界（範囲、偏り、セキュリティ、公開コード一致、不正確なコード）・安全策（フィルター、重複検出、人による確認）。</span></li>
+        <li id="src-58"><a class="src-title" href="https://github.blog/changelog/2026-08-04-upcoming-deprecation-of-github-spark-on-github-com" target="_blank" rel="noopener">Upcoming deprecation of GitHub Spark on github.com（GitHub Changelog）</a><span class="src-meta"><span class="tag">公式</span><span>2026-08-04</span></span><span class="src-note">2026-08-04 から新規利用とアプリ作成を停止、2026-08-31 まで書き出しのために利用可能、公開済みアプリは動き続ける。GitHub Models は 2026-07-30 に終了。</span></li>
+        <li id="src-59"><a class="src-title" href="https://github.blog/changelog/2026-01-21-install-and-use-github-copilot-cli-directly-from-the-github-cli" target="_blank" rel="noopener">Install and use GitHub Copilot CLI directly from the GitHub CLI（GitHub Changelog）</a><span class="src-meta"><span class="tag">公式</span><span>2026-01-21</span></span><span class="src-note">旧 CLI 拡張（GitHub Copilot in the CLI）は非推奨に。gh copilot で新しい Copilot CLI をインストール・起動できるようになった。</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span>調査日 2026-11-26。出題範囲は 2026-08-07 版をもとにしています。Copilot の機能・名前・料金は更新が続いているため、受験前に出典のページで最新の状態を確認してください。</span>
+    <span>あわせて読む：<a href="study_ab-100-glossary.html">AB-100 用語集</a>・<a href="study_ai-103-glossary.html">AI-103 用語集</a>（Frontier Engineer バッジのほかの2試験）</span>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const KEY = "gh300-glossary:v1";
+  const root = document.documentElement;
+  root.classList.remove("no-js");
+
+  const $ = id => document.getElementById(id);
+  const terms = [...document.querySelectorAll(".term")];
+  const doms = [...document.querySelectorAll(".dom")];
+  const subs = [...document.querySelectorAll(".sub")];
+  const norm = s => s.normalize("NFKC").toLowerCase().replace(/\s+/g, " ");
+  terms.forEach(t => { t.dataset.text = norm(t.querySelector(".t-name").textContent + " " + t.querySelector(".def").textContent + " " + (t.querySelector(".tip")?.textContent || "")); });
+
+  // 語数を数えて表示（ヘッダー・目次・状態表示）
+  const total = terms.length;
+  document.querySelectorAll("[data-total]").forEach(n => { n.textContent = total; });
+  document.querySelectorAll("[data-stars]").forEach(n => { n.textContent = terms.filter(t => t.hasAttribute("data-star")).length; });
+  doms.forEach(d => {
+    const n = d.querySelectorAll(".term").length;
+    document.querySelectorAll(`[data-dcount="${d.dataset.dom}"]`).forEach(x => { x.textContent = n + "語"; });
+  });
+
+  // 「覚えた」はこのブラウザにだけ保存
+  let got = {};
+  try{
+    const saved = JSON.parse(localStorage.getItem(KEY) || "null");
+    if(saved && saved.got && typeof saved.got === "object") got = saved.got;
+  }catch(_){}
+  const save = () => { try{ localStorage.setItem(KEY, JSON.stringify({ got })); }catch(_){} };
+
+  const state = { q:"", dom:"all", star:false, todo:false, quiz:false };
+
+  terms.forEach(t => {
+    const foot = t.querySelector(".t-foot");
+    const peek = document.createElement("button");
+    peek.type = "button"; peek.className = "peek"; peek.textContent = "意味を見る";
+    peek.addEventListener("click", () => {
+      const open = t.classList.toggle("open");
+      peek.textContent = open ? "かくす" : "意味を見る";
+    });
+    const btn = document.createElement("button");
+    btn.type = "button"; btn.className = "got";
+    const paint = on => {
+      btn.setAttribute("aria-pressed", String(on));
+      btn.textContent = on ? "覚えた ✓" : "覚えた";
+      t.classList.toggle("is-got", on);
+    };
+    paint(!!got[t.id]);
+    btn.addEventListener("click", () => {
+      const on = btn.getAttribute("aria-pressed") !== "true";
+      if(on) got[t.id] = 1; else delete got[t.id];
+      save(); paint(on); apply();
+    });
+    foot.append(peek, btn);
+  });
+
+  function apply(){
+    const words = norm(state.q).trim().split(" ").filter(Boolean);
+    let shown = 0;
+    terms.forEach(t => {
+      const ok = (state.dom === "all" || t.closest(".dom").dataset.dom === state.dom)
+        && (!state.star || t.hasAttribute("data-star"))
+        && (!state.todo || !got[t.id])
+        && words.every(w => t.dataset.text.includes(w));
+      t.hidden = !ok;
+      if(ok) shown++;
+    });
+    subs.forEach(s => { s.hidden = !s.querySelector(".term:not([hidden])"); });
+    doms.forEach(d => { d.hidden = !d.querySelector(".term:not([hidden])"); });
+    $("shown").textContent = shown;
+    $("gotn").textContent = terms.filter(t => got[t.id]).length;
+    $("empty").hidden = shown > 0;
+  }
+
+  const q = $("q");
+  q.addEventListener("input", () => { state.q = q.value; apply(); });
+  q.addEventListener("keydown", e => { if(e.key === "Escape"){ q.value = ""; state.q = ""; apply(); } });
+  addEventListener("keydown", e => {
+    if(e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+    const tag = (document.activeElement && document.activeElement.tagName) || "";
+    if(tag === "INPUT" || tag === "TEXTAREA") return;
+    e.preventDefault(); q.focus();
+  });
+
+  const chips = [...document.querySelectorAll(".chip")];
+  chips.forEach(c => c.addEventListener("click", () => {
+    state.dom = c.dataset.dom;
+    chips.forEach(x => x.setAttribute("aria-pressed", String(x === c)));
+    apply();
+  }));
+
+  document.querySelectorAll(".tg").forEach(b => b.addEventListener("click", () => {
+    const k = b.dataset.toggle;
+    state[k] = !state[k];
+    b.setAttribute("aria-pressed", String(state[k]));
+    if(k === "quiz"){
+      root.classList.toggle("quiz", state.quiz);
+      terms.forEach(t => {
+        t.classList.remove("open");
+        const p = t.querySelector(".peek"); if(p) p.textContent = "意味を見る";
+      });
+    }
+    apply();
+  }));
+
+  apply();
+})();
+</script>
+</body>
+</html>
