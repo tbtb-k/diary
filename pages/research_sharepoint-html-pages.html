@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="SharePoint の新機能「HTML ページ」の提供状況・できること・できないことを公式情報で整理し、投稿と閲覧を一体化した AI 活用事例の共有ページの設計案をまとめました。2026-11-27 調査。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>SharePoint HTMLページ：最新情報と事例共有ページの作り方</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  /* Layout: 1本の読み物カラム（最大800px）。結論 → 用語 → 提供状況 → できる/できない → 管理 → 事例共有の設計案 → 形式比較 → 項目 → 投稿ルート → 完成イメージ → 頼み方 → 落とし穴 → 進め方 → 代替手段 → 根拠 */
+  --bg:#F3F6F8;
+  --surface:#FFFFFF;
+  --sunk:#E8EEF2;
+  --ink:#152029;
+  --muted:#55636E;
+  --line:#D4DEE5;
+  --accent:#0B6684;
+  --accent-soft:#DCEEF4;
+  --ok:#276F43;
+  --ok-soft:#E1F1E6;
+  --warn:#8A5700;
+  --warn-soft:#FAEED6;
+  --ng:#A3291F;
+  --ng-soft:#F8E2DF;
+  --info:#46525D;
+  --info-soft:#E6EBEE;
+  --hl:#FFF5D3;
+  --f1:#DCEBF6; --f2:#E2F0E6; --f3:#F2EBDD;
+  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1418;
+    --surface:#151F25;
+    --sunk:#1B2830;
+    --ink:#E4EDF2;
+    --muted:#9AABB6;
+    --line:#293943;
+    --accent:#5DC1DE;
+    --accent-soft:#11303B;
+    --ok:#74C795;
+    --ok-soft:#14301F;
+    --warn:#E5AE52;
+    --warn-soft:#382811;
+    --ng:#F19087;
+    --ng-soft:#3B1916;
+    --info:#B3C0CA;
+    --info-soft:#24313A;
+    --hl:#2C2914;
+    --f1:#142A3A; --f2:#15301F; --f3:#33291A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1418;
+  --surface:#151F25;
+  --sunk:#1B2830;
+  --ink:#E4EDF2;
+  --muted:#9AABB6;
+  --line:#293943;
+  --accent:#5DC1DE;
+  --accent-soft:#11303B;
+  --ok:#74C795;
+  --ok-soft:#14301F;
+  --warn:#E5AE52;
+  --warn-soft:#382811;
+  --ng:#F19087;
+  --ng-soft:#3B1916;
+  --info:#B3C0CA;
+  --info-soft:#24313A;
+  --hl:#2C2914;
+  --f1:#142A3A; --f2:#15301F; --f3:#33291A;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:16px;
+  line-height:1.8;
+  -webkit-text-size-adjust:100%;
+}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+b,strong{font-weight:700}
+code,.mono{font-family:var(--f-mono);font-size:.86em}
+
+.page{
+  max-width:800px;
+  margin:0 auto;
+  padding-block:40px 64px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid;
+  gap:56px;
+}
+.page > *{min-width:0}
+
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.4;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.55rem, 4.6vw, 2.2rem);letter-spacing:.01em}
+h2{font-size:1.42rem}
+h3{font-size:1.06rem}
+p{margin:0}
+ul,ol{margin:0;padding-left:1.3em}
+li + li{margin-top:4px}
+
+section{display:grid;gap:18px}
+section > *{min-width:0}
+.sec-lead{color:var(--muted)}
+
+/* ---------- ヘッダー ---------- */
+.hero{display:grid;gap:16px}
+.eyebrow{
+  display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;
+  font-size:.82rem;letter-spacing:.08em;color:var(--muted);font-weight:700;
+}
+.eyebrow span{font-family:var(--f-mono);font-weight:500;letter-spacing:0}
+.lead{font-size:1.02rem}
+.meta{
+  display:grid;gap:6px;margin:0;
+  font-size:.88rem;color:var(--muted);
+  border-top:1px solid var(--line);padding-top:12px;
+}
+.meta div{display:grid;grid-template-columns:4.5em 1fr;gap:8px}
+.meta dt{font-weight:700}
+.meta dd{margin:0}
+
+/* ---------- 引用番号 ---------- */
+.c{white-space:nowrap}
+.c a{
+  font-family:var(--f-mono);font-size:.72rem;font-weight:500;
+  text-decoration:none;color:var(--accent);
+  padding:0 1px;vertical-align:.2em;
+}
+.c a:hover{text-decoration:underline}
+
+/* ---------- 確度タグ ---------- */
+.tag{
+  display:inline-block;font-size:.72rem;font-weight:700;line-height:1;
+  padding:4px 7px;border-radius:999px;vertical-align:.12em;white-space:nowrap;
+}
+.tag.off{background:var(--accent-soft);color:var(--accent)}
+.tag.ana{background:var(--info-soft);color:var(--info)}
+.tag.unv{background:var(--warn-soft);color:var(--warn)}
+.tag.thr{background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
+
+/* ---------- 結論 ---------- */
+.verdict{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-left:6px solid var(--accent);
+  border-radius:14px;
+  padding:24px 24px 22px;
+  display:grid;gap:16px;
+}
+.label{font-size:.8rem;letter-spacing:.12em;color:var(--accent);font-family:var(--f-body)}
+.verdict-main{font-family:var(--f-display);font-size:clamp(1.12rem, 3.4vw, 1.36rem);line-height:1.6}
+.verdict-main em{font-style:normal;background:linear-gradient(transparent 62%, var(--accent-soft) 62%)}
+.verdict ol{display:grid;gap:8px;padding-left:1.4em}
+.verdict ol li{margin:0}
+.three{
+  display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:10px;
+}
+.three div{
+  background:var(--sunk);border-radius:10px;padding:12px 14px;
+  display:grid;gap:2px;
+}
+.three b{font-family:var(--f-display);font-size:1.02rem}
+.three span{font-size:.84rem;color:var(--muted);line-height:1.6}
+
+/* ---------- 用語 ---------- */
+.terms{display:grid;gap:0;margin:0;border-top:1px solid var(--line)}
+.terms div{display:grid;grid-template-columns:11em 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.terms dt{font-weight:700}
+.terms dd{margin:0;font-size:.94rem}
+
+/* ---------- タイムライン ---------- */
+.timeline{list-style:none;padding:0;margin:0;display:grid;gap:0;border-left:3px solid var(--line);margin-left:6px}
+.timeline li{margin:0;position:relative;padding:4px 0 14px 20px}
+.timeline li::before{
+  content:"";position:absolute;left:-9px;top:10px;width:15px;height:15px;border-radius:50%;
+  background:var(--surface);border:3px solid var(--accent);
+}
+.timeline li.now::before{background:var(--accent)}
+.timeline .when{font-family:var(--f-mono);font-size:.82rem;color:var(--muted)}
+.timeline p{font-size:.94rem}
+
+/* ---------- 表 ---------- */
+.table-wrap{
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+}
+table{width:100%;min-width:640px;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+thead th{background:var(--sunk);font-size:.8rem;letter-spacing:.04em;color:var(--muted);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tbody th{font-weight:700}
+tr.hl td,tr.hl th{background:var(--hl)}
+tr.group th{background:var(--sunk);font-family:var(--f-display);font-size:.86rem;color:var(--ink)}
+td.st{white-space:nowrap;width:1%}
+.pill{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:.8rem;font-weight:700;line-height:1;
+  padding:5px 9px;border-radius:999px;white-space:nowrap;
+}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.cond{background:var(--warn-soft);color:var(--warn)}
+.pill.ng{background:var(--ng-soft);color:var(--ng)}
+.pill.na{background:var(--info-soft);color:var(--info)}
+.scroll-hint{display:none;font-size:.78rem;color:var(--muted);margin-top:-10px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:.82rem;color:var(--muted);align-items:center}
+
+.note{
+  background:var(--sunk);border-radius:12px;padding:14px 16px;
+  font-size:.92rem;display:grid;gap:6px;
+}
+.note b{font-family:var(--f-display)}
+.warnbox{
+  border-left:4px solid var(--warn);background:var(--warn-soft);border-radius:8px;
+  padding:10px 12px;font-size:.9rem;
+}
+.path{
+  display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;
+  font-size:.86rem;background:var(--sunk);border-radius:8px;padding:8px 10px;
+}
+.path span{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:1px 8px;white-space:nowrap}
+.path i{font-style:normal;color:var(--muted)}
+
+/* ---------- 管理まわり ---------- */
+.admin{display:grid;gap:12px}
+.admin-item{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:16px 18px;display:grid;gap:8px;
+}
+.admin-item p{font-size:.93rem}
+
+/* ---------- 設計図（流れ） ---------- */
+.why{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:10px}
+.why div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:4px}
+.why b{font-family:var(--f-display)}
+.why span{font-size:.9rem;color:var(--muted)}
+.pipe{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:28px;position:relative}
+.stage{
+  border-radius:14px;padding:16px;display:grid;gap:8px;align-content:start;
+  border:1px solid var(--line);position:relative;
+}
+.stage:nth-child(1){background:var(--f1)}
+.stage:nth-child(2){background:var(--f2)}
+.stage:nth-child(3){background:var(--f3)}
+.stage + .stage::before{
+  content:"→";position:absolute;left:-23px;top:50%;transform:translateY(-50%);
+  font-family:var(--f-mono);font-size:1.1rem;color:var(--muted);
+}
+.stage-k{font-size:.76rem;font-weight:700;letter-spacing:.08em;color:var(--muted)}
+.stage h3{font-size:1.02rem}
+.stage ul{font-size:.88rem;padding-left:1.1em}
+.who{display:flex;justify-content:space-between;gap:12px;font-size:.84rem;color:var(--muted);flex-wrap:wrap}
+.who span{background:var(--sunk);border-radius:999px;padding:2px 12px}
+
+/* ---------- 代替・2択 ---------- */
+.alts{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:12px}
+.alt{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:10px;align-content:start}
+.alt.rec{border:2px solid var(--accent)}
+.alt-meta{display:flex;flex-wrap:wrap;gap:6px}
+.alt p,.alt li{font-size:.93rem}
+.chip{
+  font-size:.76rem;background:var(--sunk);border:1px solid var(--line);
+  border-radius:999px;padding:2px 10px;color:var(--muted);white-space:nowrap;
+}
+.chip.acc{background:var(--accent-soft);border-color:transparent;color:var(--accent);font-weight:700}
+
+/* ---------- プロンプト ---------- */
+.prompt{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+}
+.prompt-head{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:8px 12px;background:var(--sunk);font-size:.82rem;color:var(--muted);font-weight:700;
+}
+.prompt pre{
+  margin:0;padding:14px 16px;white-space:pre-wrap;overflow-wrap:anywhere;
+  font-family:var(--f-body);font-size:.92rem;line-height:1.75;
+}
+.btn{
+  font:inherit;font-size:.8rem;font-weight:700;cursor:pointer;
+  background:var(--accent);color:var(--surface);border:none;border-radius:8px;padding:5px 12px;
+}
+
+/* ---------- 完成イメージ（デモ） ---------- */
+.demo{
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;
+  padding:16px;display:grid;gap:14px;
+}
+.demo-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.demo-title{font-family:var(--f-display);font-size:1.08rem}
+.demo-post{
+  font:inherit;font-size:.84rem;font-weight:700;text-decoration:none;
+  background:var(--accent);color:var(--surface);border-radius:999px;padding:6px 14px;
+}
+.demo-stats{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:10px}
+.demo-stats div{background:var(--sunk);border-radius:10px;padding:10px 12px;display:grid}
+.demo-stats span{font-size:.76rem;color:var(--muted);font-weight:700}
+.demo-stats b{font-family:var(--f-mono);font-weight:500;font-size:1.3rem}
+.demo-filters{display:grid;gap:8px}
+.demo-chips{display:flex;flex-wrap:wrap;gap:6px}
+.demo-chips button{
+  font:inherit;font-size:.8rem;cursor:pointer;border-radius:999px;padding:3px 12px;
+  background:var(--surface);color:var(--muted);border:1px solid var(--line);
+}
+.demo-chips button[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.demo-row{display:flex;gap:8px;flex-wrap:wrap}
+.demo-row select,.demo-row input{
+  font:inherit;font-size:.86rem;color:var(--ink);background:var(--surface);
+  border:1px solid var(--line);border-radius:8px;padding:5px 10px;min-width:0;
+}
+.demo-row input{flex:1 1 180px}
+.demo-cards{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:10px}
+.dcard{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:6px;align-content:start;background:var(--bg)}
+.dcard h4{margin:0;font-family:var(--f-display);font-size:.96rem;line-height:1.5}
+.dcard p{font-size:.86rem;color:var(--muted);line-height:1.6}
+.dcard-meta{display:flex;flex-wrap:wrap;gap:4px}
+.dcard details{font-size:.84rem}
+.dcard summary{cursor:pointer;color:var(--accent);font-weight:700}
+.dcard dl{margin:6px 0 0;display:grid;gap:4px}
+.dcard dt{font-weight:700;font-size:.78rem;color:var(--muted)}
+.dcard dd{margin:0}
+.demo-empty{font-size:.9rem;color:var(--muted);text-align:center;padding:12px}
+.demo-cap{font-size:.82rem;color:var(--muted)}
+
+/* ---------- 注意点 ---------- */
+.cautions{display:grid;gap:10px;list-style:none;padding:0;margin:0}
+.cautions li{
+  margin:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px;font-size:.93rem;
+}
+.cautions b{display:block;font-family:var(--f-display);margin-bottom:2px}
+
+/* ---------- 進め方 ---------- */
+.flow{list-style:none;padding:0;margin:0;display:grid;gap:12px;counter-reset:step -1}
+.flow li{
+  margin:0;
+  position:relative;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px 14px 60px;
+  counter-increment:step;
+}
+.flow li::before{
+  content:counter(step);
+  position:absolute;left:16px;top:14px;
+  width:30px;height:30px;border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--accent);color:var(--surface);
+  font-family:var(--f-mono);font-weight:500;font-size:.9rem;
+}
+.flow h3{margin-bottom:4px;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.flow h3 small{font-family:var(--f-body);font-weight:500;font-size:.8rem;color:var(--muted)}
+.flow p{font-size:.94rem}
+.flow li.key{border:2px solid var(--accent)}
+
+/* ---------- 根拠 ---------- */
+.srcs{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.srcs li{
+  margin:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;display:grid;gap:6px;scroll-margin-top:16px;
+}
+.srcs li:target{outline:2px solid var(--accent);outline-offset:2px}
+.src-top{display:flex;gap:10px;align-items:baseline}
+.src-n{font-family:var(--f-mono);font-weight:500;color:var(--accent);flex:none}
+.src-t{font-weight:700;line-height:1.5}
+.src-meta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:.8rem;color:var(--muted)}
+.src-sum{font-size:.9rem}
+.src-url{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);overflow-wrap:anywhere;word-break:break-all}
+
+/* ---------- フッター ---------- */
+.foot{
+  border-top:1px solid var(--line);padding-top:18px;
+  font-size:.84rem;color:var(--muted);display:grid;gap:8px;
+}
+.foot ul{padding-left:1.2em;display:grid;gap:2px}
+.foot li{margin:0}
+
+@media (max-width:640px){
+  .page{gap:44px;padding-block:28px 48px}
+  .verdict{padding:20px 16px}
+  .three,.why,.alts,.demo-cards{grid-template-columns:1fr}
+  .terms div{grid-template-columns:1fr;gap:2px}
+  .pipe{grid-template-columns:1fr;gap:26px}
+  .stage + .stage::before{content:"↓";left:50%;top:-23px;transform:translateX(-50%)}
+  .scroll-hint{display:block}
+  .flow li{padding-left:54px}
+  .flow li::before{left:12px}
+}
+</style>
+</head>
+<body>
+<main class="page">
+
+<!-- ================= ヘッダー ================= -->
+<header class="hero">
+  <div class="eyebrow">調査メモ <span>2026-11-27</span> SharePoint Online / Microsoft 365</div>
+  <h1>SharePoint の「HTML ページ」で<br>事例共有ページを作る</h1>
+  <p class="lead">SharePoint に、HTML ファイルをそのまま「ページ」として公開できる新機能「HTML ページ」が届き始めています<span class="c"><a href="#s1">[1]</a><a href="#s3">[3]</a></span>。この記事では、まず公式情報をもとに提供状況・できること・できないことを整理し、そのうえで<strong>「投稿」と「閲覧」を一体化した AI 活用事例の共有ページ</strong>の設計案をまとめます。</p>
+  <dl class="meta">
+    <div><dt>調査日</dt><dd>2026-11-27</dd></div>
+    <div><dt>対象</dt><dd>SharePoint Online の「サイトのページ」に置く HTML ページ（Microsoft 365 ロードマップ 569208）</dd></div>
+    <div><dt>根拠</dt><dd>Microsoft サポート記事・Microsoft 公式ブログ・メッセージセンターなど 6件（うち第三者 3件）</dd></div>
+  </dl>
+  <div class="legend">
+    <span><span class="tag off">公式</span> 公式に記載あり</span>
+    <span><span class="tag thr">第三者</span> 第三者の検証記事</span>
+    <span><span class="tag ana">考察</span> 筆者の提案・推測</span>
+    <span><span class="tag unv">未確認</span> 公式に記載なし</span>
+  </div>
+</header>
+
+<!-- ================= 結論 ================= -->
+<section class="verdict" aria-labelledby="h-verdict">
+  <h2 id="h-verdict" class="label">結論</h2>
+  <p class="verdict-main">HTML ページは<em>「見せる」のは得意、「受け付ける」のは苦手</em>です。だから事例共有は、<em>投稿はフォーム → リストに貯める → HTML ページで見せる</em>、と役割を分けるのが理想です。</p>
+  <ol>
+    <li>HTML ページは、ページの中の「安全な箱」で動くため、JavaScript での絞り込みや検索、SharePoint リストのデータ表示はできますが、ページの中からファイルをアップロードしたり、リストに書き込んだりはできません<span class="c"><a href="#s1">[1]</a><a href="#s2">[2]</a></span>。</li>
+    <li>投稿の中身は PPTX や HTML ではなく<strong>フォームの入力項目</strong>にするのがおすすめです。全部の事例が同じ形でそろい、部署やツールで絞り込めて、集計もできます。PPTX は「添付してもよい」くらいの位置づけにします<span class="tag ana">考察</span>。</li>
+    <li>ただし HTML ページは<strong>スマホアプリで見られない・コメントやいいねがない</strong>ため、告知や盛り上げは Teams やふつうのモダンページと組み合わせます<span class="c"><a href="#s1">[1]</a></span>。</li>
+  </ol>
+  <div class="three" role="list">
+    <div role="listitem"><b>集める</b><span>投稿フォーム<br>入力5分を目標に</span></div>
+    <div role="listitem"><b>貯める</b><span>SharePoint リスト<br>添付ファイルもここに</span></div>
+    <div role="listitem"><b>見せる</b><span>HTML ページ<br>カード一覧＋絞り込み</span></div>
+  </div>
+</section>
+
+<!-- ================= 用語 ================= -->
+<section aria-labelledby="h-terms">
+  <h2 id="h-terms">先に押さえておきたい言葉</h2>
+  <dl class="terms">
+    <div><dt>HTML ページ</dt><dd>HTML ファイル（Web ページの元になるファイル）を、SharePoint の「ページ」として公開できる新しい種類のページです。これまでのページ（モダンページ、拡張子 .aspx）と並んで使えます<span class="c"><a href="#s3">[3]</a></span>。</dd></div>
+    <div><dt>サイトのページ<br>（Site Pages）</dt><dd>SharePoint サイトのページが保存される場所（ライブラリ）です。HTML ページもここに保存されます<span class="c"><a href="#s1">[1]</a></span>。</dd></div>
+    <div><dt>サンドボックス</dt><dd>ページの中に用意された「安全な箱」です。HTML はこの箱の中だけで動き、SharePoint のメニューやほかのデータに勝手に手を出せません<span class="c"><a href="#s1">[1]</a></span>。</dd></div>
+    <div><dt>ライブデータ</dt><dd>SharePoint リスト・Excel・CSV の中身を、ページを開いたり更新したりしたときに最新の状態で表示する仕組みです<span class="c"><a href="#s2">[2]</a></span>。</dd></div>
+    <div><dt>CDN</dt><dd>インターネット上で公開されている部品（グラフを描くプログラムなど）の配布元です。HTML ページでは、Microsoft が用意したもの以外は読み込めません<span class="c"><a href="#s1">[1]</a></span>。</dd></div>
+    <div><dt>SharePoint リスト</dt><dd>Excel の表のように、行と列でデータを貯められる SharePoint の機能です。今回の設計案では「事例の置き場」にします。</dd></div>
+  </dl>
+</section>
+
+<!-- ================= 提供状況 ================= -->
+<section aria-labelledby="h-status">
+  <h2 id="h-status">提供状況と、はじめ方</h2>
+  <p class="sec-lead">2026年11月27日時点で、一般提供（GA）の展開が進んでいる最中です。テナント（会社の Microsoft 365 環境）によっては、まだ届いていない可能性があります。</p>
+  <ol class="timeline">
+    <li><span class="when">2026-09-25</span><p>メッセージセンターで告知（MC1479517、ロードマップ 569208）<span class="c"><a href="#s3">[3]</a></span></p></li>
+    <li><span class="when">2026-10 上旬</span><p>パブリックプレビュー開始の予定<span class="c"><a href="#s3">[3]</a></span>。10月22日に Microsoft の公式ブログで紹介<span class="c"><a href="#s2">[2]</a></span></p></li>
+    <li class="now"><span class="when">2026-11 中旬〜12 下旬</span><p>全世界で一般提供の展開予定<span class="c"><a href="#s3">[3]</a></span>。Microsoft の担当者はブログのコメントで「年末から 2027 年初めにかけて GA を展開していく」と回答しています<span class="c"><a href="#s2">[2]</a></span></p></li>
+  </ol>
+  <div class="note">
+    <b>自分のテナントに来ているかの確かめ方</b>
+    <p>サイトの「＋新規」に「HTML ページ」があるか、または「サイトのページ」ライブラリの「作成またはアップロード」に「HTML ページをアップロード」があるかを見ます<span class="c"><a href="#s1">[1]</a></span>。</p>
+  </div>
+
+  <h3>作り方は3通り</h3>
+  <p class="scroll-hint">← 表は横にスクロールできます</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>方法</th><th>やり方</th><th>Copilot ライセンス</th><th>根拠</th></tr></thead>
+      <tbody>
+        <tr><th>Copilot に作らせる</th><td>「＋新規」→「HTML ページ」、または右下の Copilot ボタンから、作りたいページを文章で頼みます。参考ファイルも添付できます。下書きが編集モードで開きます</td><td class="st"><span class="pill cond">必要</span></td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+        <tr><th>HTML ファイルをアップロード</th><td>「サイトのページ」→「作成またはアップロード」→「HTML ページをアップロード」または「HTML フォルダーをアップロード」。画像や動画は「サイトのアセット」に自動で置かれます</td><td class="st"><span class="pill ok">不要</span></td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+        <tr><th>置いてある .html を移す</th><td>ドキュメントライブラリの .html を「サイトのページ」へ移動またはコピーします。「SharePoint で編集」を選ぶと、元の場所からは消えて「サイトのページ」に移ります</td><td class="st"><span class="pill ok">不要</span></td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>ページ上の文字や画像をクリックして直接直す・公開する・共有する・見る、はどれも Copilot ライセンスなしでできます。公開しても、見られる人が増えるわけではなく、もともとそのページを見る権限がある人に表示されます<span class="c"><a href="#s1">[1]</a><a href="#s3">[3]</a></span>。</p>
+</section>
+
+<!-- ================= できる・できない ================= -->
+<section aria-labelledby="h-matrix">
+  <h2 id="h-matrix">できること・できないこと</h2>
+  <p class="sec-lead">事例共有ページづくりに特に関わる行を黄色で強調しています。</p>
+  <div class="legend">
+    <span><span class="pill ok">○ できる</span></span>
+    <span><span class="pill cond">△ 条件つき</span></span>
+    <span><span class="pill ng">✕ できない</span> 公式に「非対応」と明記</span>
+    <span><span class="pill na">記載なし</span></span>
+  </div>
+  <p class="scroll-hint">← 表は横にスクロールできます</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>項目</th><th>判定</th><th>くわしく</th><th>根拠</th></tr></thead>
+      <tbody>
+        <tr class="group"><th colspan="4">動き・見た目</th></tr>
+        <tr><th>JavaScript</th><td class="st"><span class="pill cond">△ 条件つき</span></td><td>同じ HTML ファイルの中に書いたものは動きます。絞り込み・検索・タブ切り替えなどに使えます</td><td class="st"><span class="c"><a href="#s1">[1]</a><a href="#s2">[2]</a></span></td></tr>
+        <tr><th>外部の部品（ライブラリ）</th><td class="st"><span class="pill cond">△ 条件つき</span></td><td>Microsoft が用意した Chart.js（グラフ）・Mermaid（図）・React・Fluent UI・Babylon（3D）だけ使えます。それ以外の CDN の部品は使えません</td><td class="st"><span class="c"><a href="#s1">[1]</a><a href="#s2">[2]</a></span></td></tr>
+        <tr><th>外部のフォント・CSS</th><td class="st"><span class="pill na">記載なし</span></td><td>公式に記載はありません。外への通信が制限されているため、Google Fonts などは効かない可能性があります <span class="tag unv">未確認</span></td><td class="st">—</td></tr>
+        <tr><th>画像</th><td class="st"><span class="pill cond">△ 条件つき</span></td><td>HTML に埋め込んだもの（base64）か、同じドメインに置いたものだけ表示できます</td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+        <tr><th>動画・音声</th><td class="st"><span class="pill cond">△ 条件つき</span></td><td>1つ 8MB まで、ページ全体で 24MB まで。大きいものは重ねて再生する形かリンクになります</td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+        <tr><th>サイトのテーマ（色・フォント）</th><td class="st"><span class="pill cond">△ 条件つき</span></td><td>Copilot が作ったページには付きますが、アップロードした HTML には自動では付きません</td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+        <tr><th>ファイルの大きさ</th><td class="st"><span class="pill cond">△ 条件つき</span></td><td>HTML ファイルは 10MB まで（画像・動画は別枠）</td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+
+        <tr class="group"><th colspan="4">データ・通信</th></tr>
+        <tr class="hl"><th>SharePoint リスト・Excel・CSV の表示</th><td class="st"><span class="pill ok">○ できる</span></td><td>ページを開いた・更新したときに最新のデータが表示されます。リアルタイムに自動で変わるわけではありません</td><td class="st"><span class="c"><a href="#s1">[1]</a><a href="#s2">[2]</a></span></td></tr>
+        <tr class="hl"><th>ページの中からのアップロード・リストへの書き込み</th><td class="st"><span class="pill ng">✕ できない</span></td><td>HTML の中でのアップロード・ダウンロードは非対応と Microsoft の担当者が回答しています。外部 API の呼び出しや自由な通信もできません</td><td class="st"><span class="c"><a href="#s1">[1]</a><a href="#s2">[2]</a></span></td></tr>
+        <tr><th>外部サービスのデータ（Jira など）</th><td class="st"><span class="pill ng">✕ できない</span></td><td>サードパーティのライブデータは非対応です</td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+        <tr><th>ブラウザーへの保存（localStorage）</th><td class="st"><span class="pill ng">✕ できない</span></td><td>サンドボックスからは使えません</td><td class="st"><span class="c"><a href="#s1">[1]</a><a href="#s2">[2]</a></span></td></tr>
+        <tr><th>見る人ごとのデータの出し分け</th><td class="st"><span class="pill na">記載なし</span></td><td>リストのデータが見る人の権限に応じて絞られるかは、公式に書かれていません <span class="tag unv">未確認</span></td><td class="st">—</td></tr>
+
+        <tr class="group"><th colspan="4">ファイル・リンク</th></tr>
+        <tr class="hl"><th>Word・PowerPoint・PDF をページ内に表示</th><td class="st"><span class="pill ng">✕ できない</span></td><td>リンクから新しいタブで開く形になります（同じドメインのファイル）</td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+        <tr class="hl"><th>SharePoint の外へのリンク</th><td class="st"><span class="pill cond">△ 条件つき</span></td><td>サイト管理者が「HTML フィールドのセキュリティ」に行き先のドメインを追加する必要があります。同じサイト・同じテナントへのリンクはそのまま使えます</td><td class="st"><span class="c"><a href="#s1">[1]</a><a href="#s2">[2]</a></span></td></tr>
+        <tr><th>ページ内の見出しへのリンク</th><td class="st"><span class="pill ok">○ できる</span></td><td>アンカーリンクに対応しています</td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+
+        <tr class="group"><th colspan="4">運用・見る場所</th></tr>
+        <tr><th>予約公開・承認</th><td class="st"><span class="pill ok">○ できる</span></td><td>モダンページと同じように使えます</td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+        <tr><th>アクセス数の確認</th><td class="st"><span class="pill ok">○ できる</span></td><td>モダンページに近い分析ができます</td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+        <tr><th>Teams（パソコン）での表示</th><td class="st"><span class="pill ok">○ できる</span></td><td>Teams の中の SharePoint アプリで表示・編集できます</td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+        <tr class="hl"><th>スマホアプリでの表示</th><td class="st"><span class="pill ng">✕ できない</span></td><td>SharePoint のスマホアプリでは表示も編集もできず、Teams のスマホアプリでも表示できません</td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+        <tr class="hl"><th>コメント・いいね</th><td class="st"><span class="pill ng">✕ できない</span></td><td>非対応です</td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+        <tr><th>ニュースとして配信・Teams や Viva Engage への拡散</th><td class="st"><span class="pill ng">✕ できない</span></td><td>非対応です。メールは「リンクとして送る」だけできます</td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+        <tr><th>共同編集・テンプレート保存・非公開の下書き</th><td class="st"><span class="pill ng">✕ できない</span></td><td>非対応です</td><td class="st"><span class="c"><a href="#s1">[1]</a></span></td></tr>
+        <tr><th>PDF に印刷</th><td class="st"><span class="pill ng">✕ できない</span></td><td>現時点では非対応と Microsoft の担当者が回答しています</td><td class="st"><span class="c"><a href="#s2">[2]</a></span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ================= 管理 ================= -->
+<section aria-labelledby="h-admin">
+  <h2 id="h-admin">管理まわり</h2>
+  <div class="admin">
+    <div class="admin-item">
+      <h3>最初からオン。止めるのはサイトごと</h3>
+      <p>HTML ページは既定で使える状態です。サイトの所有者が、次の場所で「HTML ファイルを許可」をオフにすると、そのサイトでは使えなくなります。普通のドキュメントライブラリにある HTML ファイルには影響しません<span class="c"><a href="#s1">[1]</a></span>。</p>
+      <div class="path"><span>サイトのページ</span><i>→</i><span>ファイルの種類</span><i>→</i><span>HTML ファイルを許可</span></div>
+      <p><strong>テナント全体でまとめてオフにすることはできません</strong><span class="c"><a href="#s1">[1]</a><a href="#s2">[2]</a></span>。なお、設定がオフでも Copilot が HTML ページを作れてしまう事象を調査中と、Microsoft の担当者がコメントしています<span class="c"><a href="#s2">[2]</a></span>。</p>
+    </div>
+    <div class="admin-item">
+      <h3>外部へのリンクを許可する</h3>
+      <p>SharePoint の外のサイト（たとえば Microsoft Forms）へリンクするには、サイト管理者が許可リストにドメインを追加します。許可されていないと「組織がこのサイトへのアクセスを許可していないため、このリンクを開けません」という表示になります<span class="c"><a href="#s1">[1]</a></span>。</p>
+      <div class="path"><span>設定</span><i>→</i><span>サイト情報</span><i>→</i><span>すべてのサイト設定を表示</span><i>→</i><span>HTML フィールドのセキュリティ</span></div>
+    </div>
+    <div class="admin-item">
+      <h3>PowerShell で確認する</h3>
+      <p>サイトでこの機能が有効かは、PnP PowerShell の <code>Get-PnPFeature</code> で「HtmlPages」という機能を確認できます（機能 ID は公式記事に記載）<span class="c"><a href="#s1">[1]</a></span>。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 設計案 ================= -->
+<section aria-labelledby="h-design">
+  <h2 id="h-design">事例共有ページの設計案 <span class="tag ana">考察</span></h2>
+  <p class="sec-lead">ここからは、上の仕様をふまえた提案です。</p>
+  <p>事例共有がうまくいかない理由は、だいたい次の2つです。設計は、この2つをつぶすことに集中します。</p>
+  <div class="why">
+    <div><b>① 投稿がめんどくさい</b><span>資料づくりに30分かかると、誰も出さなくなります。→ 投稿は5分で終わるようにする</span></div>
+    <div><b>② 読みたい事例が見つからない</b><span>ファイルが並んでいるだけだと、探す気になりません。→ 部署やツールで絞り込めるようにする</span></div>
+  </div>
+
+  <h3>おすすめ構成：フォームで集めて、リストに貯めて、HTML ページで見せる</h3>
+  <div class="who"><span>投稿する人</span><span>見る人</span></div>
+  <div class="pipe">
+    <div class="stage">
+      <span class="stage-k">① 集める</span>
+      <h3>投稿フォーム</h3>
+      <ul>
+        <li>決まった項目に入力するだけ</li>
+        <li>PPTX やスクショは添付してもよい</li>
+        <li>目標は入力5分</li>
+      </ul>
+    </div>
+    <div class="stage">
+      <span class="stage-k">② 貯める</span>
+      <h3>SharePoint リスト「AI活用事例」</h3>
+      <ul>
+        <li>1事例＝1行</li>
+        <li>事務局が「公開」に切り替え</li>
+        <li>添付ファイルもここに</li>
+      </ul>
+    </div>
+    <div class="stage">
+      <span class="stage-k">③ 見せる</span>
+      <h3>HTML ページ「事例ギャラリー」</h3>
+      <ul>
+        <li>カード一覧と絞り込み・検索</li>
+        <li>件数と削減時間の合計をグラフに</li>
+        <li>右上に「事例を投稿する」ボタン</li>
+      </ul>
+    </div>
+  </div>
+  <p>見る人にとっては、ボタン1つで投稿でき、投稿した事例は次にページを開いたときに一覧に並びます。HTML ページ自体は投稿を受け付けられませんが、<strong>「投稿ボタン」と「最新データの表示」で、利用者からは1つのページに見えます</strong>。</p>
+</section>
+
+<!-- ================= 形式比較 ================= -->
+<section aria-labelledby="h-format">
+  <h2 id="h-format">投稿の形式は何がいい？ <span class="tag ana">考察</span></h2>
+  <p class="sec-lead">結論：<strong>中身はフォームに入力、PPTX は添付してもよい、HTML は投稿者に作らせない</strong>。</p>
+  <p class="scroll-hint">← 表は横にスクロールできます</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>比べる点</th><th>フォーム入力</th><th>PPTX</th><th>HTML（投稿者が作る）</th></tr></thead>
+      <tbody>
+        <tr><th>投稿のしやすさ</th><td><span class="pill ok">◎</span> 5分で終わる</td><td><span class="pill cond">△</span> 作るのに30分以上</td><td><span class="pill cond">△</span> AI に作らせても手直しが大変</td></tr>
+        <tr><th>見た目のそろい方</th><td><span class="pill ok">◎</span> 自動でそろう</td><td><span class="pill cond">△</span> 人によってバラバラ</td><td><span class="pill cond">△</span> 自由すぎてバラバラ</td></tr>
+        <tr class="hl"><th>絞り込み・集計</th><td><span class="pill ok">◎</span> できる</td><td><span class="pill ng">✕</span> できない</td><td><span class="pill ng">✕</span> できない</td></tr>
+        <tr class="hl"><th>HTML ページの中で読めるか</th><td><span class="pill ok">◎</span> そのまま読める</td><td><span class="pill ng">✕</span> 新しいタブで開くだけ<span class="c"><a href="#s1">[1]</a></span></td><td><span class="pill cond">○</span> 1件1ページにすれば見やすい</td></tr>
+        <tr><th>運用の手間・リスク</th><td><span class="pill ok">低い</span></td><td><span class="pill ok">低い</span></td><td><span class="pill cond">中くらい</span> 外部の部品は動かない<span class="c"><a href="#s1">[1]</a></span>。中身の確認が必要。アップロードにはサイトの編集権限が必要<span class="c"><a href="#s1">[1]</a></span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <b>HTML は「見せる仕組み」の側が作るもの</b>
+    <p>投稿者は文章を書くだけで、きれいな見た目は仕組みが自動でつける、という分担が理想です。HTML ページへのアップロードには「サイトのページ」の編集権限が要るため<span class="c"><a href="#s1">[1]</a></span>、全員に HTML を作ってもらう運用は、権限の面でもおすすめしにくいです。</p>
+  </div>
+</section>
+
+<!-- ================= 項目案 ================= -->
+<section aria-labelledby="h-fields">
+  <h2 id="h-fields">投稿フォームの項目案 <span class="tag ana">考察</span></h2>
+  <p class="sec-lead">そのまま SharePoint リストの列になります。必須を絞って、入力5分を目標にします。</p>
+  <p class="scroll-hint">← 表は横にスクロールできます</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>項目</th><th>形式</th><th>必須</th><th>ねらい</th></tr></thead>
+      <tbody>
+        <tr><th>タイトル</th><td>1行</td><td class="st">◎</td><td>カードの見出し</td></tr>
+        <tr><th>ひとことで言うと（50字）</th><td>1行</td><td class="st">◎</td><td>一覧で内容がひと目で分かる</td></tr>
+        <tr><th>部署</th><td>選択肢</td><td class="st">◎</td><td>絞り込み用</td></tr>
+        <tr><th>使ったツール</th><td>選択肢（Copilot Chat／Word・Excel・PowerPoint・Teams・Outlook の Copilot／Agent Builder／Copilot Studio／その他）</td><td class="st">◎</td><td>絞り込み用</td></tr>
+        <tr><th>使う前：困っていたこと</th><td>複数行</td><td class="st">◎</td><td>読む人が「自分ごと」にできる</td></tr>
+        <tr class="hl"><th>やったこと（使ったプロンプトも）</th><td>複数行</td><td class="st">◎</td><td>読んだ人がその場でマネできる。いちばん大事な欄</td></tr>
+        <tr><th>使った後：どうなったか</th><td>複数行</td><td class="st">◎</td><td>効果を伝える</td></tr>
+        <tr><th>減った時間（月あたり）</th><td>数値</td><td class="st">○</td><td>「合計○時間削減」の集計に使う</td></tr>
+        <tr><th>マネしやすさ</th><td>★1〜3</td><td class="st">○</td><td>はじめての人が選びやすくなる</td></tr>
+        <tr><th>添付（PPTX・PDF・スクショ）</th><td>ファイル</td><td class="st">任意</td><td>もっと知りたい人向け</td></tr>
+        <tr><th>公開状態</th><td>下書き／確認中／公開（事務局が切り替え）</td><td class="st">—</td><td>確認してから一覧に出す</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ================= 投稿ルート ================= -->
+<section aria-labelledby="h-route">
+  <h2 id="h-route">投稿の受け付け方は2択 <span class="tag ana">考察</span></h2>
+  <div class="alts">
+    <div class="alt rec">
+      <div class="alt-meta"><span class="chip acc">まずはこちら</span><span class="chip">かんたん</span><span class="chip">追加費用なし</span></div>
+      <h3>A. リストの「新規」フォームをそのまま使う</h3>
+      <ul>
+        <li>リストを作るだけで、入力画面が自動でできます</li>
+        <li>添付ファイルも付けられます</li>
+        <li>同じ SharePoint の中なので、HTML ページからリンクするときに許可の設定がいりません<span class="c"><a href="#s1">[1]</a></span></li>
+      </ul>
+    </div>
+    <div class="alt">
+      <div class="alt-meta"><span class="chip">慣れてきたら</span><span class="chip">Power Automate が必要</span></div>
+      <h3>B. Microsoft Forms ＋ Power Automate</h3>
+      <ul>
+        <li>入力画面がとっつきやすく、ファイルアップロードの質問も使えます</li>
+        <li>Power Automate で回答をリストに登録し、Teams に「新着事例」を通知することもできます</li>
+        <li>Forms は SharePoint の外なので、HTML ページからリンクするにはサイト管理者がドメインを許可する必要があります<span class="c"><a href="#s1">[1]</a></span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 完成イメージ ================= -->
+<section aria-labelledby="h-demo">
+  <h2 id="h-demo">完成イメージ（さわれる見本）</h2>
+  <p class="sec-lead">HTML ページの中の JavaScript でできる「絞り込み・検索・集計」を、小さく再現した見本です。データは架空です。実際のページでは、ここに SharePoint リストのデータが入ります。</p>
+  <div class="demo" id="demo">
+    <div class="demo-top">
+      <span class="demo-title">AI 活用事例ギャラリー</span>
+      <a class="demo-post" href="#h-route">＋ 事例を投稿する</a>
+    </div>
+    <div class="demo-stats">
+      <div><span>表示中の事例</span><b id="d-count">0</b></div>
+      <div><span>減った時間の合計（月）</span><b id="d-hours">0</b></div>
+    </div>
+    <div class="demo-filters">
+      <div class="demo-chips" id="d-tools" role="group" aria-label="使ったツールで絞り込む"></div>
+      <div class="demo-row">
+        <select id="d-dept" aria-label="部署で絞り込む"><option value="">すべての部署</option></select>
+        <input id="d-q" type="search" placeholder="キーワードで探す（例：議事録）" aria-label="キーワードで探す">
+      </div>
+    </div>
+    <div class="demo-cards" id="d-cards"></div>
+    <p class="demo-cap">※ カードの「くわしく」を開くと、使う前・やったこと・使った後が読めます。</p>
+  </div>
+</section>
+
+<!-- ================= 頼み方 ================= -->
+<section aria-labelledby="h-prompt">
+  <h2 id="h-prompt">Copilot でギャラリーページを作るときの頼み方 <span class="tag ana">考察</span></h2>
+  <p class="sec-lead">Copilot ライセンスがある場合の例です。［ ］の中は自分の環境に合わせて書き換えます。</p>
+  <div class="prompt">
+    <div class="prompt-head"><span>Copilot への依頼文（例）</span><button class="btn" type="button" id="copy-btn">コピー</button></div>
+<pre id="prompt-text">このサイトの「AI活用事例」リストのライブデータを使って、事例ギャラリーの HTML ページを作って。
+・カード形式で、タイトル・部署・使ったツール・減った時間・ひとことを表示
+・上に「部署」「使ったツール」の絞り込みボタンと、キーワード検索
+・いちばん上に、事例の件数と減った時間の合計をグラフで表示
+・公開状態が「公開」のものだけ表示
+・カードを押すと、使う前／やったこと／使った後を表示。添付ファイルは新しいタブで開くリンクに
+・右上に「事例を投稿する」ボタン（リンク先：［投稿フォームの URL］）</pre>
+  </div>
+  <ul class="cautions">
+    <li><b>「ライブデータで」とはっきり書く</b>書かないと、作った時点のデータが HTML に丸ごとコピーされ、新しい投稿が反映されないページになることがあると、第三者の検証記事で報告されています<span class="c"><a href="#s4">[4]</a><a href="#s6">[6]</a></span> <span class="tag thr">第三者</span></li>
+    <li><b>「ライブ」は「開き直したら最新」の意味</b>データは、ページを読み込むときに SharePoint が箱の中へ渡す仕組みで、新しいデータを見るにはページの再読み込みが必要、という検証結果があります<span class="c"><a href="#s5">[5]</a></span> <span class="tag thr">第三者</span></li>
+    <li><b>ライセンスがない場合</b>自分で書いた HTML は外と通信できないため、リストのデータを読みに行けません。リストにつながったページは Copilot で作る前提と考えたほうが安全です <span class="tag ana">考察</span>。その場合は、下の「進め方」のステップ1の形で十分に回せます。</li>
+  </ul>
+</section>
+
+<!-- ================= 落とし穴 ================= -->
+<section aria-labelledby="h-pitfalls">
+  <h2 id="h-pitfalls">気をつけたい落とし穴</h2>
+  <ul class="cautions">
+    <li><b>スマホで見られない</b>SharePoint・Teams のスマホアプリでは表示できません<span class="c"><a href="#s1">[1]</a></span>。スマホで見る人が多い職場では、新着事例の告知をモダンページのニュースや Teams で行い、パソコンで HTML ページを開いてもらう流れにします。</li>
+    <li><b>いいね・コメントがない</b>HTML ページには反応を返す仕組みがありません<span class="c"><a href="#s1">[1]</a></span>。盛り上げは Teams のチャネルに任せ、ページからチャネルへリンクを張ります。</li>
+    <li><b>「公開だけ表示」は見せ方の話</b>見る人の権限ごとにデータが出し分けられるかは公式に記載がありません <span class="tag unv">未確認</span>。表に出したくない情報は、そもそもリストに書かない運用にしておくと安心です。</li>
+    <li><b>いま展開中の機能</b>一般提供の展開が続いている最中なので、仕様や画面が変わる可能性があります<span class="c"><a href="#s2">[2]</a><a href="#s3">[3]</a></span>。</li>
+    <li><b>手元の HTML をそのままアップロードするとき</b>外部の CDN から読み込む部品は動きません<span class="c"><a href="#s1">[1]</a></span>。Google Fonts などの外部フォントも効かない可能性があります <span class="tag unv">未確認</span>。その場合もフォントが標準のものになるだけで、文章は読めます。</li>
+  </ul>
+</section>
+
+<!-- ================= 進め方 ================= -->
+<section aria-labelledby="h-steps">
+  <h2 id="h-steps">進め方 <span class="tag ana">考察</span></h2>
+  <p class="sec-lead">最初から完璧を目指すより、「まず5件集まる状態」を早く作るのが成功の近道です。</p>
+  <ol class="flow">
+    <li><h3>確認する <small>目安 30分</small></h3><p>HTML ページがテナントに来ているか、Copilot ライセンスがあるか、スマホで見る人がどれくらいいるかを確認します。</p></li>
+    <li class="key"><h3>リストと入口をつくる <small>目安 半日</small></h3><p>リストを作り、ふつうのモダンページにリスト（カード表示）と「投稿する」ボタンを置きます。<strong>HTML ページがまだ来ていなくても、これだけで運用を始められます</strong>。</p></li>
+    <li><h3>HTML のギャラリーに差し替える <small>目安 1日</small></h3><p>Copilot で HTML のギャラリーページを作り、入口をそちらに切り替えます。</p></li>
+    <li><h3>いい事例を記事にする <small>随時</small></h3><p>事務局がいい事例を選び、添付の PPTX を Copilot に渡して、1件1ページの HTML 記事にします。</p></li>
+    <li><h3>エージェントで探せるようにする <small>お好みで</small></h3><p>事例リストを知識源にした SharePoint エージェントで、「この業務に使える事例はある？」に答えられるようにします。</p></li>
+  </ol>
+</section>
+
+<!-- ================= 代替手段 ================= -->
+<section aria-labelledby="h-alt">
+  <h2 id="h-alt">HTML ページが使えないときの代わり <span class="tag ana">考察</span></h2>
+  <div class="alts">
+    <div class="alt">
+      <div class="alt-meta"><span class="chip">難易度：低</span><span class="chip">追加費用なし</span><span class="chip">スマホ OK</span></div>
+      <h3>モダンページ＋リスト Web パーツ</h3>
+      <p>ふつうのモダンページにリストを置き、ギャラリー（カード）表示にします。絞り込みはリストのビューで行います。コメントやニュース配信も使えます。見た目の自由度は HTML ページより低くなります。</p>
+    </div>
+    <div class="alt">
+      <div class="alt-meta"><span class="chip">難易度：低</span><span class="chip">追加費用なし</span><span class="chip">PPTX 中心なら</span></div>
+      <h3>モダンページ＋「強調表示されたコンテンツ」</h3>
+      <p>PPTX や PDF を置いたドキュメントライブラリを、サムネイルつきのカードで並べる Web パーツです。ファイル中心で運用したい場合に向きますが、部署やツールでの絞り込みはファイルに列を足す必要があります。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 根拠 ================= -->
+<section aria-labelledby="h-src">
+  <h2 id="h-src">根拠</h2>
+  <ol class="srcs">
+    <li id="s1">
+      <div class="src-top"><span class="src-n">[1]</span><a class="src-t" href="https://support.microsoft.com/en-us/sharepoint/create-edit-publish-html-pages">Create, upload, edit, and publish HTML pages in SharePoint</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>Microsoft サポート</span><span>更新日の表示なし（2026-11-27 閲覧）</span></div>
+      <p class="src-sum">作り方3通り、ロールとライセンスの対応表、サイト所有者の設定、サンドボックス（安全な箱）の説明、できる・できないの一覧、10MB の上限、HTML フィールドのセキュリティ、テナント単位では止められないこと。日本語版も同じ内容です。</p>
+      <p class="src-url">https://support.microsoft.com/en-us/sharepoint/create-edit-publish-html-pages<br>（日本語版）https://support.microsoft.com/ja-jp/sharepoint/create-edit-publish-html-pages</p>
+    </li>
+    <li id="s2">
+      <div class="src-top"><span class="src-n">[2]</span><a class="src-t" href="https://techcommunity.microsoft.com/blog/spblog/publish-rich-and-interactive-content-with-html-pages-in-sharepoint/4565918">Publish rich and interactive content with HTML pages in SharePoint</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>Microsoft Tech Community（SharePoint Blog）</span><span>2026-10-22 公開／担当者のコメント 2026-11-10</span></div>
+      <p class="src-sum">「リスト・Excel・CSV のライブデータを更新時に表示できる」こと、使える部品の一覧、外部 API は呼べないこと。コメント欄で担当者が、GA は年末〜2027年初めにかけて展開、HTML 内でのアップロード・ダウンロードと PDF 印刷は非対応、設定オフでも Copilot が作れてしまう事象を調査中、と回答。</p>
+      <p class="src-url">https://techcommunity.microsoft.com/blog/spblog/publish-rich-and-interactive-content-with-html-pages-in-sharepoint/4565918</p>
+    </li>
+    <li id="s3">
+      <div class="src-top"><span class="src-n">[3]</span><a class="src-t" href="https://mc.merill.net/message/MC1479517">MC1479517 - SharePoint: HTML pages</a></div>
+      <div class="src-meta"><span class="tag off">公式</span><span>メッセージセンターの転載（mc.merill.net）</span><span>2026-09-25 公開</span></div>
+      <p class="src-sum">ロードマップ 569208。プレビューは 2026年10月上旬、一般提供は 11月中旬〜12月下旬の予定。「サイトのページ」に保存され、公開しても新しい権限は付かないこと。</p>
+      <p class="src-url">https://mc.merill.net/message/MC1479517</p>
+    </li>
+    <li id="s4">
+      <div class="src-top"><span class="src-n">[4]</span><a class="src-t" href="https://spdenis.com/sharepoint-html-pages-part-2-a-comprehensive-list-of-experiments-after-ga/">SharePoint HTML pages, part 2, a comprehensive list of experiments after GA</a></div>
+      <div class="src-meta"><span class="tag thr">第三者</span><span>spdenis.com</span><span>日付不明（本文は取得できず、検索結果の要約で確認）</span></div>
+      <p class="src-sum">一般提供後の検証記事。ライブデータを明示しないと、作成時点のデータが HTML にコピーされるケースがあったと報告。</p>
+      <p class="src-url">https://spdenis.com/sharepoint-html-pages-part-2-a-comprehensive-list-of-experiments-after-ga/</p>
+    </li>
+    <li id="s5">
+      <div class="src-top"><span class="src-n">[5]</span><a class="src-t" href="https://espc.tech/learning-hub/blog/sharepoint-html-pages-what-they-can-and-cannot-do/">SharePoint HTML pages, what they can and cannot do</a></div>
+      <div class="src-meta"><span class="tag thr">第三者</span><span>ESPC Learning Hub</span><span>日付不明（本文は取得できず、検索結果の要約で確認）</span></div>
+      <p class="src-sum">SharePoint がデータを箱の中へ渡してから HTML の JavaScript が動くこと、新しいデータを見るにはページ全体の再読み込みが必要なこと。</p>
+      <p class="src-url">https://espc.tech/learning-hub/blog/sharepoint-html-pages-what-they-can-and-cannot-do/</p>
+    </li>
+    <li id="s6">
+      <div class="src-top"><span class="src-n">[6]</span><a class="src-t" href="https://sharepointmaven.com/create-html-dashboards-in-sharepoint-with-copilot/">Create HTML Dashboards in SharePoint with Copilot</a></div>
+      <div class="src-meta"><span class="tag thr">第三者</span><span>SharePoint Maven</span><span>日付不明（本文は取得できず、検索結果の要約で確認）</span></div>
+      <p class="src-sum">Copilot でリストや Excel からダッシュボード型の HTML ページを作る手順の紹介。</p>
+      <p class="src-url">https://sharepointmaven.com/create-html-dashboards-in-sharepoint-with-copilot/</p>
+    </li>
+  </ol>
+</section>
+
+<!-- ================= フッター ================= -->
+<footer class="foot">
+  <p>調査日：2026-11-27。提供状況はテナントや時期によって変わります。使う前に、自分の環境の画面とメッセージセンターで最新の状態を確認してください。</p>
+  <ul>
+    <li>[1] Microsoft サポート：更新日の表示なし（2026-11-27 閲覧）</li>
+    <li>[2] Microsoft Tech Community：2026-10-22 公開、担当者コメント 2026-11-10</li>
+    <li>[3] MC1479517：2026-09-25 公開</li>
+    <li>[4]〜[6] 第三者記事：日付不明（検索結果の要約で確認）</li>
+  </ul>
+</footer>
+
+</main>
+
+<script>
+(function(){
+  /* ---------- 依頼文のコピー ---------- */
+  var btn = document.getElementById("copy-btn");
+  var pre = document.getElementById("prompt-text");
+  if (btn && pre) {
+    btn.addEventListener("click", function(){
+      var text = pre.textContent;
+      var done = function(){ btn.textContent = "コピーしました"; setTimeout(function(){ btn.textContent = "コピー"; }, 1600); };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, function(){ selectText(); });
+        } else { selectText(); }
+      } catch (e) { selectText(); }
+    });
+  }
+  function selectText(){
+    try {
+      var r = document.createRange(); r.selectNodeContents(pre);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = "選択しました";
+    } catch (e) {}
+  }
+
+  /* ---------- 完成イメージ（架空データ） ---------- */
+  var data = [
+    {t:"会議の議事録と宿題リストを自動で作る", d:"営業部", tool:"Teams の Copilot", h:6, s:1, one:"会議が終わったら、要点と宿題が3分でそろう",
+     b:"会議のたびに議事録づくりに30分かかっていた", a:"会議後に「決まったことと宿題を担当者ごとに表で」と頼むだけにした", r:"議事録が当日中に共有されるようになった"},
+    {t:"問い合わせの一次回答のたたき台", d:"カスタマーサポート", tool:"Agent Builder", h:12, s:2, one:"よくある質問はエージェントが下書き",
+     b:"同じような問い合わせへの回答を毎回ゼロから書いていた", a:"過去の回答集を知識にしたエージェントを作り、下書きを出してもらう", r:"回答までの時間が半分くらいになった"},
+    {t:"月次レポートのグラフとコメント", d:"経理部", tool:"Excel の Copilot", h:8, s:2, one:"数字の変化の説明文まで一気に作る",
+     b:"グラフ作りと前月比のコメント書きに半日かかっていた", a:"「前月から大きく変わった項目とその理由の候補を」と頼んで下書きを作る", r:"確認と手直しだけで済むようになった"},
+    {t:"社内規程の Q&A エージェント", d:"総務部", tool:"Copilot Studio", h:15, s:3, one:"規程の問い合わせに24時間こたえる",
+     b:"「この場合の申請は？」という質問が毎日のように来ていた", a:"規程集を知識にしたエージェントを作り、Teams で公開", r:"総務への問い合わせが目に見えて減った"},
+    {t:"提案書の骨子づくり", d:"営業部", tool:"Copilot Chat", h:5, s:1, one:"白紙からではなく、たたき台から考える",
+     b:"提案書の構成を考えるのに時間がかかっていた", a:"お客様の課題と過去の提案を伝えて、目次と各ページの要点を出してもらう", r:"考える時間を中身に使えるようになった"},
+    {t:"新人向け FAQ の整備", d:"人事部", tool:"Agent Builder", h:4, s:2, one:"新人の「誰に聞けば？」をなくす",
+     b:"新人から同じ質問が何度も来ていた", a:"入社手続きの資料をまとめて、質問にこたえるエージェントを用意", r:"新人が自分で調べられるようになった"}
+  ];
+  var tools = ["すべて"]; var depts = [];
+  data.forEach(function(x){ if (tools.indexOf(x.tool) < 0) tools.push(x.tool); if (depts.indexOf(x.d) < 0) depts.push(x.d); });
+  var state = {tool:"すべて", dept:"", q:""};
+  var chipsEl = document.getElementById("d-tools");
+  var deptEl = document.getElementById("d-dept");
+  var qEl = document.getElementById("d-q");
+  var cardsEl = document.getElementById("d-cards");
+  if (!chipsEl || !cardsEl) return;
+
+  tools.forEach(function(name){
+    var b = document.createElement("button");
+    b.type = "button"; b.textContent = name;
+    b.setAttribute("aria-pressed", name === state.tool ? "true" : "false");
+    b.addEventListener("click", function(){
+      state.tool = name;
+      Array.prototype.forEach.call(chipsEl.children, function(c){ c.setAttribute("aria-pressed", c.textContent === name ? "true" : "false"); });
+      render();
+    });
+    chipsEl.appendChild(b);
+  });
+  depts.forEach(function(name){ var o = document.createElement("option"); o.value = name; o.textContent = name; deptEl.appendChild(o); });
+  deptEl.addEventListener("change", function(){ state.dept = deptEl.value; render(); });
+  qEl.addEventListener("input", function(){ state.q = qEl.value.trim(); render(); });
+
+  function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  function render(){
+    var list = data.filter(function(x){
+      if (state.tool !== "すべて" && x.tool !== state.tool) return false;
+      if (state.dept && x.d !== state.dept) return false;
+      if (state.q) {
+        var hay = [x.t, x.one, x.b, x.a, x.r, x.d, x.tool].join(" ");
+        if (hay.indexOf(state.q) < 0) return false;
+      }
+      return true;
+    });
+    document.getElementById("d-count").textContent = list.length + " 件";
+    document.getElementById("d-hours").textContent = list.reduce(function(s, x){ return s + x.h; }, 0) + " 時間";
+    cardsEl.textContent = "";
+    if (!list.length) { cardsEl.appendChild(el("p", "demo-empty", "条件に合う事例はありません")); return; }
+    list.forEach(function(x){
+      var c = el("article", "dcard");
+      c.appendChild(el("h4", null, x.t));
+      var m = el("div", "dcard-meta");
+      m.appendChild(el("span", "chip", x.d));
+      m.appendChild(el("span", "chip acc", x.tool));
+      m.appendChild(el("span", "chip", "月" + x.h + "時間減"));
+      m.appendChild(el("span", "chip", "マネしやすさ " + "★".repeat(x.s)));
+      c.appendChild(m);
+      c.appendChild(el("p", null, x.one));
+      var det = el("details");
+      det.appendChild(el("summary", null, "くわしく"));
+      var dl = el("dl");
+      [["使う前", x.b], ["やったこと", x.a], ["使った後", x.r]].forEach(function(p){
+        var w = el("div"); w.appendChild(el("dt", null, p[0])); w.appendChild(el("dd", null, p[1])); dl.appendChild(w);
+      });
+      det.appendChild(dl);
+      c.appendChild(det);
+      cardsEl.appendChild(c);
+    });
+  }
+  render();
+})();
+</script>
+</body>
+</html>
