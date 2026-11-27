@@ -201,6 +201,18 @@ let browser;
     });
     await wait(450); await shot(page, '04c_link_390');
     await page.evaluate(() => { window.__game.debug.god(false); const p = window.__game.world().player; p.hp = p.maxHp; });
+    // Day 27 の実績3つ：誘爆3つで「誘爆リレー」がその場で取れる。だいばくはつ・まよわず一直線は条件のとおりに判定される
+    await wait(700);
+    const na = await page.evaluate(() => {
+      const A = window.__game.ACH, f = id => A.find(a => a.id === id);
+      let have = {}; try { have = JSON.parse(localStorage.getItem('hs-ach') || '{}'); } catch (_) {}
+      const c5 = f('chain5'), l3 = f('link3'), nr = f('noreroll');
+      return { exists: !!(c5 && l3 && nr), linkSaved: !!have.link3, linkNow: window.__game.world().achGot.some(a => a.id === 'link3'),
+        c5: !!c5 && c5.ok({ chainBest: 5 }) && !c5.ok({ chainBest: 4 }),
+        l3: !!l3 && l3.ok({ linkBest: 3 }) && !l3.ok({ linkBest: 2 }),
+        nr: !!nr && nr.ok({ clear: true, rerolls: 2 }) && !nr.ok({ clear: true, rerolls: 1 }) && !nr.ok({ clear: false, rerolls: 2 }) };
+    });
+    check('新しい実績（だいばくはつ・誘爆リレー・まよわず一直線）が条件どおりに取れる', na.exists && na.linkSaved && na.linkNow && na.c5 && na.l3 && na.nr, JSON.stringify(na));
     // 一時停止
     await page.click('#b-pause');
     check('一時停止できる', await visible(page, 'pause'));

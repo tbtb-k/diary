@@ -300,8 +300,11 @@ h2.jp{font-family:var(--font);font-weight:800;font-size:28px}
 /* ================================================================
    版の情報（毎日の更新で、ここに1件ずつ足していく。新しい順）
    ================================================================ */
-const GAME = { day: 26, date: '2026-11-27' };
+const GAME = { day: 27, date: '2026-11-28' };
 const PATCH_NOTES = [
+  { day: 27, date: '2026-11-28', title: '新しい実績が3つ増えたよ！',
+    items: ['💣「だいばくはつ」：ドカンの爆発で5体まきこむ', '🔗「誘爆リレー」：ドカンを3つつなげて爆発させる', '🎯「まよわず一直線」：3択を1回も引き直さずにクリアする'],
+    ask: 'タイトルの「🏅 実績」で一覧を見て、新しい3つをねらってみてね！' },
   { day: 26, date: '2026-11-27', title: 'ドカンが「誘爆」するよ！',
     items: ['ドカンの爆発に、ほかのドカンが巻きこまれると、少しおくれてそっちも爆発するよ', 'つながった爆発で倒した数は、まとめて「○体まきこみ！」に出るよ', '自機に当たるのは、つながった爆発のうち1回だけだから安心してね'],
     ask: 'ドカンが何体か集まったところで1つ爆発させて、連鎖をつなげてみてね！' },
@@ -1769,6 +1772,10 @@ const ACH = [
   { id: 'arsenal', icon: '🧰', name: 'ぜんぶのせ', d: '武器を4つとも持つ', ok: g => Object.keys(g.weapons).length >= 4 },
   { id: 'evolve', icon: '⚡', name: 'はじめての進化', d: '武器を進化させる（パルスストーム／ギャラクシー）', ok: () => pulseEvolved() || orbitEvolved() },
   { id: 'lv30', icon: '🚀', name: 'Lv30 到達', d: '1回でレベル30になる', ok: g => g.level >= 30 },
+  // Day 27：ドカンの記録（Day 19 の chainBest・Day 26 の linkBest）と、引き直しなしのクリア
+  { id: 'chain5', icon: '💣', name: 'だいばくはつ', d: 'ドカンの爆発で5体まきこむ', ok: g => (g.chainBest || 0) >= 5 },
+  { id: 'link3', icon: '🔗', name: '誘爆リレー', d: 'ドカンを3つつなげて爆発させる', ok: g => (g.linkBest || 0) >= 3 },
+  { id: 'noreroll', icon: '🎯', name: 'まよわず一直線', d: '3択を1回も引き直さずにクリアする', ok: g => g.clear && g.rerolls >= 2 },
 ];
 function loadAch() { const a = store.get('hs-ach', {}); return a && typeof a === 'object' ? a : {}; }
 function unlockAch(g) {
