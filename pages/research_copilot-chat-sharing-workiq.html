@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Microsoft 365 Copilot のチャット共有（セッション共有・応答共有）で、Work IQ をオンにした会話がどう扱われるか、共有エラーの切り分け方と管理者の設定箇所をまとめた調査メモ。調査日 2026年11月28日。">
+<style>
+  *{box-sizing:border-box}
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+</style>
+<title>Copilotチャット共有とWork IQ</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F1F3F5;
+  --surface:#FFFFFF;
+  --surface-sunk:#EAEEF1;
+  --ink:#171B21;
+  --muted:#5B6673;
+  --line:#DCE1E6;
+  --line-strong:#C2CBD3;
+  --accent:#1F5C7A;
+  --accent-soft:#E4EEF3;
+  --ok:#2C6B50;
+  --ok-soft:#E1EFE7;
+  --warn:#8A5A15;
+  --warn-soft:#F5EBD9;
+  --none:#8C3B3B;
+  --none-soft:#F4E3E3;
+  --tag-official:#1F5C7A;
+  --tag-third:#6B5B8A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161B;
+    --surface:#1A1F26;
+    --surface-sunk:#141920;
+    --ink:#E6EAEF;
+    --muted:#9BA6B2;
+    --line:#2B323B;
+    --line-strong:#3C4753;
+    --accent:#7CBDDA;
+    --accent-soft:#1B2C36;
+    --ok:#87CBA4;
+    --ok-soft:#18271F;
+    --warn:#E2B36C;
+    --warn-soft:#2A2318;
+    --none:#E59696;
+    --none-soft:#2B1C1C;
+    --tag-official:#7CBDDA;
+    --tag-third:#B7A6D6;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161B;
+  --surface:#1A1F26;
+  --surface-sunk:#141920;
+  --ink:#E6EAEF;
+  --muted:#9BA6B2;
+  --line:#2B323B;
+  --line-strong:#3C4753;
+  --accent:#7CBDDA;
+  --accent-soft:#1B2C36;
+  --ok:#87CBA4;
+  --ok-soft:#18271F;
+  --warn:#E2B36C;
+  --warn-soft:#2A2318;
+  --none:#E59696;
+  --none-soft:#2B1C1C;
+  --tag-official:#7CBDDA;
+  --tag-third:#B7A6D6;
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  font-size:15px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:780px;margin:0 auto;padding-inline:20px;padding-block:40px 64px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 14px;
+}
+h1{
+  font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;
+  font-weight:700;font-size:clamp(25px,5.4vw,36px);line-height:1.4;
+  letter-spacing:.01em;margin:0 0 20px;text-wrap:balance;
+}
+.meta{
+  display:flex;flex-wrap:wrap;gap:8px 24px;padding-block:16px;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  font-size:13px;color:var(--muted);
+}
+.meta b{
+  display:block;font-size:10.5px;font-weight:500;letter-spacing:.12em;
+  color:var(--muted);opacity:.8;font-family:"IBM Plex Mono",monospace;
+}
+.meta span{color:var(--ink);font-size:13.5px;line-height:1.6}
+
+.verdict{
+  margin-block:32px;background:var(--surface);
+  border:1px solid var(--line);border-left:5px solid var(--accent);
+  padding:24px 22px;
+}
+.verdict h2{
+  font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;
+  font-size:18px;font-weight:600;line-height:1.65;margin:0 0 12px;text-wrap:balance;
+}
+.verdict p{margin:0 0 10px;font-size:14px;color:var(--muted)}
+.verdict p:last-child{margin-bottom:0}
+.verdict strong{color:var(--ink);font-weight:700}
+
+.hypo{
+  margin-block:28px;background:var(--surface-sunk);
+  border:1px dashed var(--line-strong);padding:20px 18px;
+}
+.hypo h3{
+  margin:0 0 10px;font-size:11px;letter-spacing:.12em;
+  font-family:"IBM Plex Mono",monospace;font-weight:500;color:var(--muted);
+}
+.hypo p{margin:0;font-size:14px;line-height:1.85}
+.hypo .quote{
+  font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;
+  font-size:15.5px;line-height:1.8;margin-bottom:10px;
+}
+
+section{margin-block:44px}
+h2.sec{
+  font-size:13px;font-weight:700;letter-spacing:.1em;margin:0 0 6px;
+  padding-bottom:10px;border-bottom:2px solid var(--ink);
+  display:flex;align-items:baseline;gap:10px;
+}
+h2.sec em{
+  font-style:normal;font-family:"IBM Plex Mono",monospace;
+  font-size:11px;font-weight:400;color:var(--muted);letter-spacing:.04em;
+}
+.lead{font-size:13.5px;color:var(--muted);margin:14px 0 18px}
+
+.scroller{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:13.5px}
+th,td{padding:13px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{
+  background:var(--surface-sunk);font-size:11px;letter-spacing:.08em;
+  font-weight:700;color:var(--muted);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+tr.focus td{background:var(--accent-soft)}
+td.q{font-weight:500;line-height:1.6}
+td.note{color:var(--muted);font-size:12.5px;line-height:1.65}
+.pill{
+  display:inline-block;white-space:nowrap;font-size:11.5px;font-weight:700;
+  padding:3px 9px;border-radius:2px;letter-spacing:.02em;
+}
+.p-ok{background:var(--ok-soft);color:var(--ok)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-none{background:var(--none-soft);color:var(--none)}
+.ref{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--accent);white-space:nowrap}
+
+/* steps */
+.steps{list-style:none;margin:0;padding:0}
+.steps>li{
+  display:grid;grid-template-columns:44px 1fr;gap:0 14px;
+  padding-block:20px;border-bottom:1px solid var(--line);
+}
+.steps>li:last-child{border-bottom:none}
+.s-n{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;
+  color:var(--accent);padding-top:3px;
+}
+.s-body h3{margin:0 0 8px;font-size:15px;font-weight:700;line-height:1.6}
+.s-body p{margin:0 0 8px;font-size:13.5px;color:var(--muted);line-height:1.85}
+.s-body p:last-child{margin-bottom:0}
+.s-watch{
+  display:inline-block;margin-top:4px;font-size:12.5px;
+  padding:6px 11px;background:var(--surface-sunk);border-left:3px solid var(--accent);
+  color:var(--ink);line-height:1.7;
+}
+.readout{
+  margin-top:20px;background:var(--surface);border:1px solid var(--line);padding:18px;
+}
+.readout h3{margin:0 0 12px;font-size:13px;font-weight:700;letter-spacing:.04em}
+.readout dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:10px 14px;font-size:13.5px}
+.readout dt{white-space:nowrap}
+.readout dd{margin:0;line-height:1.75;color:var(--muted)}
+.readout dd b{color:var(--ink)}
+
+.alts{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.alt{background:var(--surface);border:1px solid var(--line);padding:20px 18px}
+.alt h3{margin:0 0 10px;font-size:15px;font-weight:700;line-height:1.6}
+.alt p{margin:0 0 14px;font-size:13.5px;color:var(--muted)}
+.alt dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:12.5px;border-top:1px dashed var(--line-strong);padding-top:12px}
+.alt dt{color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;padding-top:3px}
+.alt dd{margin:0;line-height:1.7}
+
+.ev{display:grid;grid-template-columns:38px 1fr;gap:0 12px;padding-block:18px;border-bottom:1px solid var(--line)}
+.ev:last-of-type{border-bottom:none}
+.ev-n{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--accent);padding-top:2px}
+.ev-title{margin:0 0 6px;font-size:14.5px;font-weight:700;line-height:1.6}
+.ev-title a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:3px}
+.ev-title a:hover{text-decoration-color:var(--accent)}
+.ev-bar{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-bottom:8px}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;padding:2px 7px;border:1px solid currentColor;border-radius:2px}
+.t-official{color:var(--tag-official)}
+.t-third{color:var(--tag-third)}
+.ev-date{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted)}
+.ev-sum{margin:0 0 8px;font-size:13.5px;color:var(--muted);line-height:1.8}
+.ev-url{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);opacity:.75;word-break:break-all;line-height:1.5}
+
+ul.caution{margin:0;padding:0;list-style:none}
+ul.caution li{position:relative;padding-left:20px;margin-bottom:12px;font-size:13.5px;line-height:1.85}
+ul.caution li::before{content:"";position:absolute;left:2px;top:.72em;width:7px;height:7px;background:var(--accent)}
+ul.caution b{font-weight:700}
+
+footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+footer h3{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;font-weight:500;margin:0 0 10px}
+footer ol{margin:0 0 16px;padding-left:20px}
+footer li{margin-bottom:3px;line-height:1.7}
+.disclaim{font-size:11.5px;line-height:1.8;opacity:.85;margin:0}
+
+@media (max-width:420px){
+  .wrap{padding-block:28px 48px}
+  .verdict{padding:20px 16px}
+  .steps>li{grid-template-columns:34px 1fr;gap:0 10px}
+  .readout dl{grid-template-columns:1fr;gap:4px}
+  .readout dt{padding-top:6px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<style>
+.flow{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.flow li{
+  display:grid;grid-template-columns:44px 1fr;gap:0 14px;align-items:start;
+  background:var(--surface);border:1px solid var(--line);padding:16px 16px 16px 14px;
+}
+.flow li.hit{border-left:4px solid var(--warn)}
+.flow .f-n{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;color:var(--accent);padding-top:3px}
+.flow h3{margin:0 0 4px;font-size:14.5px;font-weight:700;line-height:1.6}
+.flow p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.8}
+.flow p b{color:var(--ink)}
+.who{
+  display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;
+  padding:1px 7px;margin-right:6px;border-radius:2px;vertical-align:2px;
+  background:var(--accent-soft);color:var(--accent);
+}
+.who.admin{background:var(--warn-soft);color:var(--warn)}
+.related{
+  margin-top:28px;font-size:13px;color:var(--muted);
+  padding:12px 14px;border:1px dashed var(--line-strong);background:var(--surface-sunk);
+}
+.related a{color:var(--accent)}
+@media (max-width:420px){
+  .flow li{grid-template-columns:34px 1fr;gap:0 10px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">調査メモ / Microsoft Copilot</p>
+  <h1>Work IQ をオンにしたチャットは<br>同僚と共有できるのか</h1>
+  <div class="meta">
+    <div><b>調査日</b><span class="mono">2026-11-28</span></div>
+    <div><b>調査対象</b><span>Microsoft 365 Copilot のセッション共有・応答共有</span></div>
+    <div><b>前提</b><span>職場・学校アカウント／Work IQ が使えるライセンス</span></div>
+  </div>
+</header>
+
+<div class="verdict">
+  <h2>Work IQ がオンでも、共有の仕組みそのものは使えます。参照元の資料は相手の権限がないと開けませんが、その資料をもとに書かれた回答文は、リンクを開いた社内の人ならそのまま読めます。</h2>
+  <p>共有は、できあがった会話の<strong>スナップショット（その時点の写し）</strong>を渡す仕組みです。権限のチェックがかかるのは、相手が参照元のファイルやメールを開こうとしたときだけです。相手が見られない資料にもとづく部分を<strong>回答文から隠す仕組みは、公式ドキュメントに見当たりませんでした</strong>。</p>
+  <p>その代わり、秘密度ラベルや組織のポリシーによって<strong>共有そのものが止められる</strong>ことがあります。Work IQ をオンにした会話でだけ共有エラーが出るなら、参照した資料のラベルが原因の可能性が高いと考えられます。ただし、どのラベルで止まるのかは公式に書かれておらず、<strong>現時点では推測</strong>です。</p>
+</div>
+
+<div class="hypo">
+  <h3>確かめたかった疑問</h3>
+  <p class="quote">Work IQ をオンにした会話は、相手が見られない資料を使っている。だから共有しても、相手には回答が見えない（あるいは共有できない）のではないか。</p>
+  <p>あわせて、実際に Work IQ をオンにした会話を共有しようとするとエラーが出た、という事象があり、管理センターで直せる設定があるかも確認しました。</p>
+</div>
+
+<section>
+  <h2 class="sec">仕組み <em>How it works</em></h2>
+  <p class="lead">「資料は見られないのに、回答文は見える」のは、権限をチェックするタイミングが違うためです。会議メモのコピーを渡す場面にたとえると分かりやすくなります。メモに出てくる金庫の資料は、鍵（権限）がなければ開けません。でも、メモに中身が書き写してあれば、その部分は誰でも読めます。</p>
+  <ol class="flow">
+    <li>
+      <div class="f-n">01</div>
+      <div><h3>あなたが質問する</h3><p>Copilot は<b>質問した人（あなた）の権限</b>で、読んでよい資料かどうかを確認してから読みます。</p></div>
+    </li>
+    <li>
+      <div class="f-n">02</div>
+      <div><h3>Copilot が回答文を書く</h3><p>資料の内容をもとに回答文ができます。この時点で、回答は<b>ただの文章</b>になっています。</p></div>
+    </li>
+    <li class="hit">
+      <div class="f-n">03</div>
+      <div><h3>共有リンクを作る</h3><p>共有は、その文章の<b>スナップショット</b>を渡すだけです。相手向けに回答を作り直すわけではありません。</p></div>
+    </li>
+    <li class="hit">
+      <div class="f-n">04</div>
+      <div><h3>相手がリンクを開く</h3><p>質問文と回答文は<b>そのまま表示</b>されます。参照元のファイル・メール・会議・チャットは、<b>相手に元々アクセス権がある場合だけ</b>開けます。</p></div>
+    </li>
+  </ol>
+  <p class="lead" style="margin-top:16px">ちなみに、相手が<b>自分で同じ質問をした場合</b>は、Copilot は相手が見られない資料を使いません。共有はこの段階を通らないので、ここに抜け道が生まれます。</p>
+</section>
+
+<section>
+  <h2 class="sec">可否マトリクス <em>Matrix</em></h2>
+  <p class="lead">網かけの行が、今回の疑問に直接かかわる部分です。「✕ 記載なし」は「公式に書かれていない＝未確認」という意味で、「できない」と断定するものではありません。</p>
+  <div class="scroller">
+    <table>
+      <thead>
+        <tr>
+          <th style="min-width:220px">確認したいこと</th>
+          <th>判定</th>
+          <th style="min-width:230px">公式ドキュメントの状況</th>
+          <th>根拠</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="focus">
+          <td class="q">Work IQ をオンにした会話を共有できるか</td>
+          <td><span class="pill p-warn">△ 条件付き</span></td>
+          <td class="note">Work IQ のオン・オフで共有を制限するという記載はありません。ただし「組織の共有ポリシーや秘密度ラベルの保護により、共有できない会話や応答がある」と明記されています。</td>
+          <td class="ref">[1][2]</td>
+        </tr>
+        <tr class="focus">
+          <td class="q">相手が見られない資料をもとにした回答文は、相手に見えるか</td>
+          <td><span class="pill p-ok">○ 見える</span></td>
+          <td class="note">「リンクを開いた人は、共有内容に含まれる質問と応答を閲覧できる」と明記されています。回答の一部を隠す・墨消しするといった仕組みの記載はありません。</td>
+          <td class="ref">[1][2]</td>
+        </tr>
+        <tr>
+          <td class="q">参照元のファイル・メール・会議・チャットを相手が開けるか</td>
+          <td><span class="pill p-warn">△ 相手の権限次第</span></td>
+          <td class="note">共有しても、参照元へのアクセス権は誰にも付与されません。開けるのは、元々権限を持っている人だけです。</td>
+          <td class="ref">[1][2][3]</td>
+        </tr>
+        <tr class="focus">
+          <td class="q">秘密度ラベル付きの内容を含む会話を共有できるか</td>
+          <td><span class="pill p-warn">△ 一部のみ</span></td>
+          <td class="note">管理者の共有設定は、「一般」「パブリック」など低いラベルの内容や、ラベルなしの内容を共有できるかを決めるものとされています。高いラベルの扱いや、何のラベルで判定するかは書かれていません。</td>
+          <td class="ref">[1][2]</td>
+        </tr>
+        <tr class="focus">
+          <td class="q">Work IQ をオンにした会話だけ共有を許可する管理設定があるか</td>
+          <td><span class="pill p-none">✕ 記載なし</span></td>
+          <td class="note">共有の設定は、テナント全体でオン・オフを切り替える1つだけです。ユーザーやグループ単位での調整もできません。</td>
+          <td class="ref">[2][3]</td>
+        </tr>
+        <tr>
+          <td class="q">共有リンクを開ける人</td>
+          <td><span class="pill p-ok">○ 社内のみ</span></td>
+          <td class="note">職場・学校アカウントで共有した場合は、同じ組織の人だけが開けます。開くにはサインインが必要です。</td>
+          <td class="ref">[1][3]</td>
+        </tr>
+        <tr>
+          <td class="q">共有したあとに続けた会話は、相手に見えるか</td>
+          <td><span class="pill p-ok">○ 見えない</span></td>
+          <td class="note">リンクを作った時点の内容で固定されます。そのあとに追加したやり取りは含まれません。</td>
+          <td class="ref">[1][3]</td>
+        </tr>
+        <tr>
+          <td class="q">相手が続きを質問したとき、相手の権限で資料を参照するか</td>
+          <td><span class="pill p-warn">△ 未確認</span></td>
+          <td class="note">相手が続きを質問すると、相手のチャット履歴に別のコピーが作られます。そこで何を参照するかは書かれていません。Work IQ は「使っている本人がアクセスできる資料だけを参照する」原則なので、相手の権限で動く可能性が高い、というのは推測です。</td>
+          <td class="ref">[1][4]</td>
+        </tr>
+        <tr>
+          <td class="q">ブロックされた共有は記録に残るか</td>
+          <td><span class="pill p-ok">○ 残る</span></td>
+          <td class="note">Microsoft Purview（Microsoft のデータ保護・コンプライアンスの仕組み）に、共有したこと、リンクが開かれたこと、ポリシーで止められた共有が記録されます。</td>
+          <td class="ref">[2]</td>
+        </tr>
+        <tr>
+          <td class="q">受け取る側に必要なライセンス／リンクの有効期限</td>
+          <td><span class="pill p-none">✕ 記載なし</span></td>
+          <td class="note">どちらも公式ページには書かれていませんでした。</td>
+          <td class="ref">[1][2]</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">共有のしかた <em>How to share</em></h2>
+  <div class="readout" style="margin-top:14px">
+    <h3>利用者の操作</h3>
+    <dl>
+      <dt>チャット全体</dt>
+      <dd>会話の上部にある<b>「共有」→「チャットの共有」→「リンクのコピー」</b>。質問と回答がすべて含まれます。</dd>
+      <dt>回答1つだけ</dt>
+      <dd>回答の<b>「…」（その他のオプション）→「応答の共有」→「リンクのコピー」</b>。その回答と、もとになった質問だけが含まれます。見せる範囲をしぼりたいときに向いています。</dd>
+      <dt>共有をやめる</dt>
+      <dd>Copilot の<b>「設定」→「データ コントロール」→「共有リンク」→「共有を停止」</b>。元の会話を削除しても、その会話のリンクは無効になります。</dd>
+    </dl>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">共有エラーの切り分け <em>Troubleshooting</em></h2>
+  <p class="lead">Work IQ をオンにした会話でだけ共有エラーが出る場合の確認手順です。上の3つは利用者が5分ほどで試せます。下の3つは管理者に確認してもらう項目です。</p>
+  <ol class="steps">
+    <li>
+      <div class="s-n">STEP 1</div>
+      <div class="s-body">
+        <h3><span class="who">利用者</span>資料を使わない質問で試す</h3>
+        <p>Work IQ をオンにしたまま、社内の資料が関係しない質問をして、その回答を共有してみます。</p>
+        <span class="s-watch">見るポイント：成功すれば、原因は参照した資料の側だと分かります</span>
+      </div>
+    </li>
+    <li>
+      <div class="s-n">STEP 2</div>
+      <div class="s-body">
+        <h3><span class="who">利用者</span>参照元のラベルを確認する</h3>
+        <p>エラーが出た回答の参照元を開き、「社外秘」「機密」などの秘密度ラベルが付いていないかを見ます。ラベルなし、または「一般」の資料だけを使った会話で試すのも有効です。</p>
+        <span class="s-watch">見るポイント：高いラベルの資料が混ざっているか</span>
+      </div>
+    </li>
+    <li>
+      <div class="s-n">STEP 3</div>
+      <div class="s-body">
+        <h3><span class="who">利用者</span>エラーの文言と時刻を控える</h3>
+        <p>画面に出たメッセージをそのまま書き写し、発生した日時と一緒に控えます。管理者やサポートに問い合わせるときに必ず必要になります。</p>
+      </div>
+    </li>
+    <li>
+      <div class="s-n">STEP 4</div>
+      <div class="s-body">
+        <h3><span class="who admin">管理者</span>共有設定がオンか確認する</h3>
+        <p>Microsoft 365 管理センター →「Copilot」→「設定」→「<span class="mono">Copilot sharing</span>」の「<span class="mono">Allow users to share Copilot responses</span>」にチェックが入っているかを確認します。オフのときは「共有」ボタン自体が表示されなくなるため、Work IQ オフの会話が共有できているなら、ここは原因ではありません。</p>
+      </div>
+    </li>
+    <li>
+      <div class="s-n">STEP 5</div>
+      <div class="s-body">
+        <h3><span class="who admin">管理者</span>Purview の監査ログを見る</h3>
+        <p>ポリシーによって止められた共有は、Microsoft Purview の監査ログに記録されます。STEP 3 で控えた時刻をもとに探すと、ポリシーで止められたのかどうかが分かります。</p>
+      </div>
+    </li>
+    <li>
+      <div class="s-n">STEP 6</div>
+      <div class="s-body">
+        <h3><span class="who admin">管理者</span>DLP ポリシーとサービスの状態を確認する</h3>
+        <p>Purview の DLP（データ損失防止：機密データの持ち出しや利用を止める仕組み）に、Copilot を対象にしたポリシーがないかを確認します。管理センターの「正常性」→「サービス正常性」で障害が出ていないかも見ます。どれも当てはまらなければ、エラーの文言と時刻を添えて Microsoft サポートに問い合わせます。</p>
+      </div>
+    </li>
+  </ol>
+
+  <div class="readout">
+    <h3>結果の読み方</h3>
+    <dl>
+      <dt><span class="pill p-warn">STEP 1 で成功</span></dt>
+      <dd><b>参照した資料が原因の可能性が高いです。</b>ラベルやポリシーで止められているなら、情報を守る仕組みが正しく働いている状態です。共有したい場合は、下の対処法を使います。</dd>
+      <dt><span class="pill p-none">STEP 1 でも失敗</span></dt>
+      <dd><b>資料以外に原因があります。</b>STEP 4〜6 を管理者に確認してもらい、それでも分からなければサポートに問い合わせます。</dd>
+    </dl>
+  </div>
+
+  <div class="readout">
+    <h3>管理者向けの設定（参考）</h3>
+    <dl>
+      <dt>場所</dt>
+      <dd>Microsoft 365 管理センター →「Copilot」→「設定」→「<span class="mono">Copilot sharing</span>」</dd>
+      <dt>設定名</dt>
+      <dd><span class="mono">Allow users to share Copilot responses</span>（メッセージセンターの告知 MC1461700 では「<span class="mono">Copilot session and response sharing</span>」と書かれており、表記に差があります）</dd>
+      <dt>既定</dt>
+      <dd>オン</dd>
+      <dt>範囲</dt>
+      <dd>テナント全体のみ。ユーザーやグループ単位の調整はできません</dd>
+      <dt>権限</dt>
+      <dd>閲覧は AI 閲覧者、変更は AI 管理者</dd>
+      <dt>反映</dt>
+      <dd>保存後の新しい共有から。組織全体に行き渡るまで少し時間がかかります</dd>
+    </dl>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">対処法 <em>Workaround</em></h2>
+  <p class="lead">ラベルで止められた会話を、ラベルを外して無理に共有するのはおすすめしません。代わりに、次の2つの方法があります。</p>
+  <div class="alts">
+    <div class="alt">
+      <h3>案A：質問文（プロンプト）を渡す</h3>
+      <p>回答ではなく<b>質問文を同僚に渡して、その人の Copilot で聞いてもらいます</b>。Copilot は同僚が見られる資料だけを使って答えるので、見せてはいけない情報が漏れる心配がありません。</p>
+      <dl>
+        <dt>難易度</dt><dd>低（質問文をコピーするだけ）</dd>
+        <dt>副作用</dt><dd>相手の権限によって答えの内容が変わる／相手にも Copilot が使える環境が必要</dd>
+      </dl>
+    </div>
+    <div class="alt">
+      <h3>案B：共有用に回答を作り直す</h3>
+      <p>共有してよい資料だけを使って質問し直し、<b>その回答だけを「応答の共有」で渡します</b>。Work IQ をオフにして、共有してよい資料を添付して聞く方法もあります。</p>
+      <dl>
+        <dt>難易度</dt><dd>低〜中（質問し直す手間がかかる）</dd>
+        <dt>副作用</dt><dd>添付した資料の中身も回答に出るため、添付するものは慎重に選ぶ</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">根拠 <em>Evidence</em></h2>
+  <p class="lead">公式ドキュメントを一次情報として優先しています。日付は、ページに表示されている日付か、ページのメタ情報（<span class="mono">ms.date</span>）です。</p>
+
+  <div class="ev">
+    <div class="ev-n">[1]</div>
+    <div>
+      <p class="ev-title"><a href="https://support.microsoft.com/ja-jp/microsoft-365-copilot/share-conversations-responses-in-microsoft-copilot">Microsoft Copilot で会話と応答を共有する（Share conversations and responses in Microsoft Copilot）</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">日付表示なし（2026-11-28 取得）</span></div>
+      <p class="ev-sum">利用者向けの説明ページです。チャット全体と応答1つの共有手順、職場・学校アカウントなら社内の人だけが開けること、内容が<strong>スナップショット</strong>であることが書かれています。「リンクを開いた人は、含まれる質問と応答を閲覧できる」「共有しても参照元のコンテンツへのアクセス権は付与されない」とあり、<strong>ポリシーや秘密度ラベルの保護によって共有できない会話・応答がある</strong>とも明記されています。共有の停止は「設定」→「データ コントロール」→「共有リンク」から行います。ページ冒頭には「Home（新しい開始画面）の展開中のため、表示が説明と異なる場合がある」という注記があります。</p>
+      <p class="ev-url">support.microsoft.com/ja-jp/microsoft-365-copilot/share-conversations-responses-in-microsoft-copilot</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[2]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/copilot/manage/microsoft-copilot-manage-content-sharing">Manage content sharing for Microsoft Copilot</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">ms.date 2026-09-25 / メタ更新 2026-11-03</span></div>
+      <p class="ev-sum">管理者向けのページです。設定場所（管理センター →「Copilot」→「設定」→「Copilot sharing」）、設定名、既定でオンであること、組織全体に一括で効くこと、必要なロールが書かれています。この設定は<strong>「一般」「パブリック」など低いラベルの内容や、ラベルなしの内容を共有できるかも決める</strong>とされています。また、Purview に共有・リンクのアクセス・<strong>ブロックされた共有</strong>が記録されると書かれています。一方、高いラベルの扱いや判定の基準は書かれていません。</p>
+      <p class="ev-url">learn.microsoft.com/en-us/copilot/manage/microsoft-copilot-manage-content-sharing</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[3]</div>
+    <div>
+      <p class="ev-title"><a href="https://mc.merill.net/message/MC1461700">MC1461700 - Session and Response Sharing in M365 Copilot</a></p>
+      <div class="ev-bar"><span class="tag t-third">第三者（メッセージセンターの転載）</span><span class="ev-date">公開 2026-08-25 / 更新 2026-09-08</span></div>
+      <p class="ev-sum">Microsoft 365 メッセージセンターの告知を転載したサイトです。共有は同じ組織内に限られ、相手は読み取り専用で開けること、共有しても参照元のファイル・メール・会議・チャットへのアクセス権は付与されないことが書かれています。全世界向けの提供は<strong>2026年8月下旬に始まり、9月下旬に完了する予定</strong>とされています。設定はテナント全体のみで、グループ単位の調整はできないとも書かれています。ロードマップ ID は 562353 です。Work IQ や秘密度ラベルには触れていません。</p>
+      <p class="ev-url">mc.merill.net/message/MC1461700</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[4]</div>
+    <div>
+      <p class="ev-title"><a href="https://support.microsoft.com/en-us/microsoft-365-copilot/what-information-does-copilot-use-to-answer-my-prompt">What information does Copilot use to answer my prompt?</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">日付表示なし（2026-11-28 取得）</span></div>
+      <p class="ev-sum">Work IQ の説明ページです。オンにすると、Copilot がメール・ファイル・チャット・会議などの業務データを参照できるようになります。そのうえで「<strong>Work IQ がオンのとき、Copilot は利用者がすでにアクセスを許可されている業務コンテンツだけを参照できる</strong>」と書かれています。旧「職場／Web」タブは Work IQ ボタンに置き換わったとされています。共有には触れていません。</p>
+      <p class="ev-url">support.microsoft.com/en-us/microsoft-365-copilot/what-information-does-copilot-use-to-answer-my-prompt</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[5]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/purview/dlp-microsoft365-copilot-location-learn-about">Microsoft Purview DLP for Microsoft 365 Copilot and Cowork</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">ms.date 2026-11-09 / メタ更新 2026-11-10</span></div>
+      <p class="ev-sum">Copilot を対象にした DLP ポリシーの説明です。ポリシーの対象場所は「<span class="mono">Microsoft Copilot, Copilot Chat, and Copilot Cowork</span>」です。ラベル付きの機密ファイルやメールを<strong>Copilot が処理しないようにできます</strong>。その場合、対象の資料は参照元の一覧には出ますが、中身は回答に使われません。機密情報を含む質問への回答を止める機能も、プレビューとして用意されています。共有リンクには触れていません。</p>
+      <p class="ev-url">learn.microsoft.com/en-us/purview/dlp-microsoft365-copilot-location-learn-about</p>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="ev-n">[6]</div>
+    <div>
+      <p class="ev-title"><a href="https://learn.microsoft.com/en-us/purview/ai-m365-copilot-considerations">Considerations for Microsoft Purview to manage Microsoft 365 Copilot and Channel Agent in Teams</a></p>
+      <div class="ev-bar"><span class="tag t-official">公式</span><span class="ev-date">ms.date 2026-06-30</span></div>
+      <p class="ev-sum">Copilot と秘密度ラベルの関係についての注意点です。暗号化付きのラベルで<strong>抽出（EXTRACT）の権限がない資料は、Copilot が要約せず、リンクで示すだけ</strong>になります。また、サイトやチームに付けたラベルは中のファイルに引き継がれないため、Copilot から見るとラベルなしの扱いになる場合があります。共有には触れていません。</p>
+      <p class="ev-url">learn.microsoft.com/en-us/purview/ai-m365-copilot-considerations</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">注意点 <em>Caveats</em></h2>
+  <ul class="caution">
+    <li><b>回答文は相手に見える前提で、共有する前に読み返してください。</b>特に注意したいのは、ラベルは付いていないのにアクセス権だけをしぼっている資料（一部の人しか見られない SharePoint のフォルダーなど）です。ラベルによる歯止めがかからないので、要約された内容がそのまま社内の人に読まれる可能性があります。</li>
+    <li><b>共有を通すために、資料のラベルを外したり弱めたりするのは避けてください。</b>情報を守る仕組みが働かなくなります。</li>
+    <li><b>「ラベルが原因で共有エラーが出ている」というのは推測です。</b>公式ドキュメントには、どのラベルで止まるのか、何のラベルで判定するのかが書かれていません。確かめるには、アクセス権をしぼったテスト用のファイルで回答を作り、その資料を見られない同僚にリンクを開いてもらうのが確実です。</li>
+    <li><b>表示や設定名は、テナントや時期によって変わります。</b>Copilot の新しい開始画面（Home）は展開中です。管理センターの設定名も、メッセージセンターと Learn で表記が違います。</li>
+    <li><b>受け取る側のライセンス、リンクの有効期限、相手が続きを質問したときの参照先は未確認です。</b>説明に使うときは「公式には書かれていない」と添えてください。</li>
+  </ul>
+  <p class="related">関連ページ：<a href="./research_copilot-workiq-toggle-persistence.html">ピン留めしたチャットで Work IQ がオフに戻るのはなぜか</a></p>
+</section>
+
+<footer>
+  <h3>出典日付一覧</h3>
+  <ol>
+    <li>[1] Share conversations and responses in Microsoft Copilot — 日付表示なし、2026-11-28 取得（公式）</li>
+    <li>[2] Manage content sharing for Microsoft Copilot — ms.date 2026-09-25 / メタ更新 2026-11-03（公式）</li>
+    <li>[3] MC1461700 - Session and Response Sharing in M365 Copilot — 公開 2026-08-25 / 更新 2026-09-08（第三者・メッセージセンターの転載）</li>
+    <li>[4] What information does Copilot use to answer my prompt? — 日付表示なし、2026-11-28 取得（公式）</li>
+    <li>[5] Microsoft Purview DLP for Microsoft 365 Copilot and Cowork — ms.date 2026-11-09 / メタ更新 2026-11-10（公式）</li>
+    <li>[6] Considerations for Microsoft Purview to manage Microsoft 365 Copilot and Channel Agent in Teams — ms.date 2026-06-30（公式）</li>
+  </ol>
+  <p class="disclaim">調査日: 2026年11月28日。本ページは公開されている情報をもとにした調査メモで、実際のテナントでの動作確認はしていません。提供状況・画面・設定名は、テナント・地域・時期によって変わる可能性があります。</p>
+</footer>
+
+</div>
+</body>
+</html>
